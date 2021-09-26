@@ -36,9 +36,14 @@ android {
     buildFeatures{
         dataBinding true
     }
+
+    buildFeatures{
+        viewBinding true
+    }
 }
 
 dependencies {
+    def lifecycle_version = "2.4.0-beta01"
     def room_version = "2.3.0"
     def coroutines_version = "1.5.1"
     def retrofit_version = "2.9.0"
@@ -65,14 +70,19 @@ dependencies {
 
     //Room, Gson
     implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.google.code.gson:gson:2.8.8'
 
-    //Lifecycles only (without ViewModel or LiveData)
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
 }
