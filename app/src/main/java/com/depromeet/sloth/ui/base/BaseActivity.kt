@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.base
+package com.depromeet.sloth.ui.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

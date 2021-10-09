@@ -1,6 +1,5 @@
-package com.depromeet.sloth.presentation.base
+package com.depromeet.sloth.ui.base
 
-import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
