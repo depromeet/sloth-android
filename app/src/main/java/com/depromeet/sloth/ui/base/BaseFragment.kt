@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.base
+package com.depromeet.sloth.ui.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.Job
 
-abstract class BaseFragment<VM: BaseViewModel, VB: ViewBinding> : Fragment() {
-
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
     abstract val viewModel: VM
 
     protected lateinit var binding: VB
@@ -35,7 +34,7 @@ abstract class BaseFragment<VM: BaseViewModel, VB: ViewBinding> : Fragment() {
     //상태 값을 초기화
     open fun initState() {
         initViews()
-        fetchJob = viewModel.fetchData()
+        fetchJob = viewModel.fetchJob()
         observeData()
     }
 
@@ -44,7 +43,7 @@ abstract class BaseFragment<VM: BaseViewModel, VB: ViewBinding> : Fragment() {
     abstract fun observeData()
 
     override fun onDestroy() {
-        if(fetchJob.isActive){
+        if (fetchJob.isActive) {
             fetchJob.cancel()
         }
         super.onDestroy()

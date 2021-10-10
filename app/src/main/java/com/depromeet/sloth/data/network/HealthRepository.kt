@@ -1,8 +1,20 @@
 package com.depromeet.sloth.data.network
 
-class HealthRepository {
+import java.lang.Exception
 
-    private val generator = ServiceGenerator()
+class HealthRepository(
+    private val generator: ServiceGenerator
+) {
+    suspend fun getHealth(): HealthState<HealthResponse> {
+        generator.createService(HealthService::class.java).fetchHealth()?.run {
+            return HealthState.Success(
+                this.body() ?: HealthResponse(
+                    status = true,
+                    health = "default"
+                )
+            )
+        }
 
-    suspend fun getHealth() = generator.createService(HealthService::class.java).fetchHealth()
+        return HealthState.Error(Exception("Retrofit Exception"))
+    }
 }

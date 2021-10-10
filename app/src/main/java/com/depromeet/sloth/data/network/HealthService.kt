@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface HealthService {
+
     @GET("api/health")
-    suspend fun fetchHealth(): Response<HealthResponse>
+    suspend fun fetchHealth(): Response<HealthResponse>?
 }
