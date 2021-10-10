@@ -34,7 +34,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
     //상태 값을 초기화
     open fun initState() {
         initViews()
-        fetchJob = viewModel.fetchJob()
+        fetchJob = viewModel.fetchData()
         observeData()
     }
 

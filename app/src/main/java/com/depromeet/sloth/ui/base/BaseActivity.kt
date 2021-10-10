@@ -25,7 +25,7 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActiv
     //상태 값을 초기화
     open fun initState() {
         initViews()
-        fetchJob = viewModel.fetchJob()
+        fetchJob = viewModel.fetchData()
         observeData()
     }
 

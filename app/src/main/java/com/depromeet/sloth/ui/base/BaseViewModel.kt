@@ -6,5 +6,5 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel : ViewModel() {
-    fun fetchJob(): Job = viewModelScope.launch { }
+    open fun fetchData(): Job = viewModelScope.launch{ }
 }

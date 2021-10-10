@@ -24,9 +24,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
         mainScope {
             viewModel.processHealthWork(Dispatchers.IO).let {
-                when(it) {
+                when (it) {
                     is HealthState.Success<HealthResponse> -> Log.e("Success", "${it.data}")
-                    is HealthState.Error ->  Log.e("Error", "${it.exception}")
+                    is HealthState.Error -> Log.e("Error", "${it.exception}")
                 }
             }
         }
