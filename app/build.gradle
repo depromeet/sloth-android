@@ -18,6 +18,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "KAKAO_API_KEY", KAKAO_API_KEY)
+        buildConfigField("String", "GOOGLE_API_KEY", GOOGLE_API_KEY)
+        buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
     }
 
     buildTypes {
@@ -90,4 +92,6 @@ dependencies {
 
     //Kakao login
     implementation "com.kakao.sdk:v2-user:2.8.1"
+
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
 }

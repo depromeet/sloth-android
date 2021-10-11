@@ -15,10 +15,10 @@
         android:theme="@style/Theme.Sloth"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
