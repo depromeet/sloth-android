@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlin.coroutines.CoroutineContext
 
-class MainViewModel : BaseViewModel() {
+class TestViewModel : BaseViewModel() {
     private val repository = HealthRepository(ServiceGenerator())
 
     /**

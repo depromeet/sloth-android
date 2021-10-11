@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">sloth</string>
+    <string name="KAKAO_API_KEY">kakao62bfe4b1cb5dd6c6cd8d07a931cf4fd5</string>
 </resources>
