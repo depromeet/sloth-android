@@ -20,6 +20,7 @@ android {
         buildConfigField("String", "KAKAO_API_KEY", KAKAO_API_KEY)
         buildConfigField("String", "GOOGLE_API_KEY", GOOGLE_API_KEY)
         buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
+        buildConfigField("String", "GOOGLE_CLIENT_SECRET", GOOGLE_CLIENT_SECRET)
     }
 
     buildTypes {
@@ -93,5 +94,7 @@ dependencies {
     //Kakao login
     implementation "com.kakao.sdk:v2-user:2.8.1"
 
+    //Google login
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
 }

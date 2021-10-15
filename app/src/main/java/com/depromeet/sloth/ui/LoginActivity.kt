@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.kakao.sdk.auth.model.OAuthToken
@@ -20,6 +19,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import com.google.android.gms.common.Scopes
+import com.google.android.gms.common.api.Scope
+import com.squareup.okhttp.*
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import com.squareup.okhttp.FormEncodingBuilder
+
+
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -35,6 +44,14 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val googleClientId = BuildConfig.GOOGLE_CLIENT_ID
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))
+            .requestIdToken(googleClientId)
+            .requestServerAuthCode(googleClientId)
+            .requestEmail()
+            .build()
+
         loginLauncher = registerForActivityResult(
             StartActivityForResult())
             { result ->
@@ -43,11 +60,6 @@ class LoginActivity : AppCompatActivity() {
                     handleSignInResult(task)
                 }
             }
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
-            .requestEmail()
-            .build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
@@ -60,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.googleLogin.setOnClickListener { view ->
             when(view.id) {
-                R.id.google_login -> loginWithGoogle()
+                com.depromeet.sloth.R.id.google_login -> loginWithGoogle()
             }
         }
     }
@@ -102,20 +114,54 @@ class LoginActivity : AppCompatActivity() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
+            val serverAuthCode = account?.serverAuthCode.toString()
             val idToken = account?.idToken.toString()
             val email = account?.email.toString()
             val displayName = account?.displayName.toString()
 
+            Log.d( "serverAuthCode", serverAuthCode)
             Log.d("idToken", idToken)
-            Log.d("account", email)
+            Log.d("email", email)
             Log.d("displayName", displayName)
+
+            val client = OkHttpClient()
+            val requestBody = FormEncodingBuilder()
+                .add("grant_type", "authorization_code")
+                .add(
+                    "client_id",
+                    BuildConfig.GOOGLE_CLIENT_ID
+                )
+                .add("client_secret", BuildConfig.GOOGLE_CLIENT_SECRET)
+                .add("redirect_uri", "")
+                .add("code", serverAuthCode)
+                .build()
+            val request: Request = Request.Builder()
+                .url("https://www.googleapis.com/oauth2/v4/token")
+                .post(requestBody)
+                .build()
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(request: Request?, e: IOException) {
+                    Log.e("error", e.toString())
+                }
+
+                @Throws(IOException::class)
+                override fun onResponse(response: Response) {
+                    try {
+                        val jsonObject = JSONObject(response.body().string())
+                        val message = jsonObject.toString(5)
+                        Log.i("message", message)
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+            })
+
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.e("로그인 실패", "signInResult:failed code=" + e.statusCode)
         }
     }
-
 
     override fun onStart() {
         super.onStart()
