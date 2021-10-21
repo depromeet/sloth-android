@@ -31,7 +31,7 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActiv
 
     open fun initViews() = Unit
 
-    open fun observeData() =Unit
+    open fun observeData() = Unit
 
     fun mainScope(block: suspend () -> Unit) {
         lifecycleScope.launchWhenCreated {

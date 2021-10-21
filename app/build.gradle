@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -22,6 +23,7 @@ android {
         buildConfigField("String", "GOOGLE_API_KEY", GOOGLE_API_KEY)
         buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
         buildConfigField("String", "GOOGLE_CLIENT_SECRET", GOOGLE_CLIENT_SECRET)
+        buildConfigField("String", "SLOTH_BASE_URL", SLOTH_BASE_URL)
     }
 
     buildTypes {
@@ -50,6 +52,7 @@ android {
 }
 
 dependencies {
+
     def lifecycle_version = "2.4.0-beta01"
     def room_version = "2.3.0"
     def coroutines_version = "1.5.1"
@@ -98,4 +101,9 @@ dependencies {
     //Google login
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
 }

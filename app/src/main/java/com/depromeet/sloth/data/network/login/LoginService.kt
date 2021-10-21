@@ -6,5 +6,8 @@ import retrofit2.http.POST
 
 interface LoginService {
     @POST("api/oauth/login")
-    suspend fun authorizeWithServer(@Body loginRequest: LoginRequest): Response<LoginResponse>?
+    suspend fun fetchAuthTokens(@Body request: LoginRequest): Response<LoginResponse>?
+
+    @POST("oauth2/v4/token")
+    suspend fun fetchAccessToken(): Response<LoginAccessResponse>?
 }
