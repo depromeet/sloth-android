@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network
+package com.depromeet.sloth.data.network.health
 
 import retrofit2.Response
 import retrofit2.http.GET

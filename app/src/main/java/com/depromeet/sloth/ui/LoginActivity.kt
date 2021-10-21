@@ -1,10 +1,8 @@
 package com.depromeet.sloth.ui
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.kakao.sdk.auth.model.OAuthToken
@@ -19,21 +17,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import com.depromeet.sloth.data.network.login.LoginResponse
+import com.depromeet.sloth.data.network.login.LoginState
+import com.depromeet.sloth.ui.base.BaseActivity
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.squareup.okhttp.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import com.squareup.okhttp.FormEncodingBuilder
 
 
+class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
+    override val viewModel: LoginViewModel
+        get() = LoginViewModel()
 
-
-class LoginActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityLoginBinding
+    override fun getViewBinding(): ActivityLoginBinding {
+        return ActivityLoginBinding.inflate(layoutInflater)
+    }
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -41,7 +43,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val googleClientId = BuildConfig.GOOGLE_CLIENT_ID
@@ -53,13 +54,14 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         loginLauncher = registerForActivityResult(
-            StartActivityForResult())
-            { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    handleSignInResult(task)
-                }
+            StartActivityForResult()
+        )
+        { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleSignInResult(task)
             }
+        }
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
@@ -71,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.googleLogin.setOnClickListener { view ->
-            when(view.id) {
+            when (view.id) {
                 com.depromeet.sloth.R.id.google_login -> loginWithGoogle()
             }
         }
@@ -86,7 +88,17 @@ class LoginActivity : AppCompatActivity() {
                 Log.e("로그인 실패", error.message ?: "NULL")
             } else if (token != null) {
                 Log.e("로그인 성공 -> accessToken ", token.toString())
-                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                mainScope {
+                    viewModel.getAuthInfo(
+                        accessToken = token.accessToken,
+                        socialType = "KAKAO"
+                    ).let {
+                        when (it) {
+                            is LoginState.Success<LoginResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
+                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                        }
+                    }
+                }
             }
         }
     }
@@ -100,7 +112,17 @@ class LoginActivity : AppCompatActivity() {
                 Log.e("로그인 실패", error.message ?: "NULL")
             } else if (token != null) {
                 Log.e("로그인 성공 -> accessToken ", token.toString())
-                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                mainScope {
+                    viewModel.getAuthInfo(
+                        accessToken = token.accessToken,
+                        socialType = "KAKAO"
+                    ).let {
+                        when (it) {
+                            is LoginState.Success<LoginResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
+                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                        }
+                    }
+                }
             }
         }
     }
@@ -119,18 +141,15 @@ class LoginActivity : AppCompatActivity() {
             val email = account?.email.toString()
             val displayName = account?.displayName.toString()
 
-            Log.d( "serverAuthCode", serverAuthCode)
+            Log.d("serverAuthCode", serverAuthCode)
             Log.d("idToken", idToken)
             Log.d("email", email)
             Log.d("displayName", displayName)
 
-            val client = OkHttpClient()
+            val client = com.squareup.okhttp.OkHttpClient()
             val requestBody = FormEncodingBuilder()
                 .add("grant_type", "authorization_code")
-                .add(
-                    "client_id",
-                    BuildConfig.GOOGLE_CLIENT_ID
-                )
+                .add("client_id", BuildConfig.GOOGLE_CLIENT_ID)
                 .add("client_secret", BuildConfig.GOOGLE_CLIENT_SECRET)
                 .add("redirect_uri", "")
                 .add("code", serverAuthCode)
