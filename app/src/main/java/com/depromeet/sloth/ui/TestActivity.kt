@@ -13,9 +13,7 @@ class TestActivity : BaseActivity<TestViewModel, ActivityTestBinding>() {
     override val viewModel: TestViewModel
         get() = TestViewModel()
 
-    override fun getViewBinding(): ActivityTestBinding {
-        return ActivityTestBinding.inflate(layoutInflater)
-    }
+    override fun getViewBinding(): ActivityTestBinding = ActivityTestBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
