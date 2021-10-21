@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -15,6 +17,13 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "KAKAO_API_KEY", KAKAO_API_KEY)
+        buildConfigField("String", "GOOGLE_API_KEY", GOOGLE_API_KEY)
+        buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
+        buildConfigField("String", "GOOGLE_CLIENT_SECRET", GOOGLE_CLIENT_SECRET)
+        buildConfigField("String", "SLOTH_BASE_URL", SLOTH_BASE_URL)
+        buildConfigField("String", "GOOGLE_BASE_URL", GOOGLE_BASE_URL)
     }
 
     buildTypes {
@@ -43,6 +52,7 @@ android {
 }
 
 dependencies {
+
     def lifecycle_version = "2.4.0-beta01"
     def room_version = "2.3.0"
     def coroutines_version = "1.5.1"
@@ -85,4 +95,15 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
+    //Kakao login
+    implementation "com.kakao.sdk:v2-user:2.8.1"
+
+    //Google login
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
 }
