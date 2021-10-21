@@ -18,12 +18,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "TARGET_SERVER", TARGET_SERVER)
         buildConfigField("String", "KAKAO_API_KEY", KAKAO_API_KEY)
         buildConfigField("String", "GOOGLE_API_KEY", GOOGLE_API_KEY)
         buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
         buildConfigField("String", "GOOGLE_CLIENT_SECRET", GOOGLE_CLIENT_SECRET)
         buildConfigField("String", "SLOTH_BASE_URL", SLOTH_BASE_URL)
+        buildConfigField("String", "GOOGLE_BASE_URL", GOOGLE_BASE_URL)
     }
 
     buildTypes {

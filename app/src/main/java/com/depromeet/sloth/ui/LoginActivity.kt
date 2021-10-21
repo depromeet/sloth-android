@@ -17,14 +17,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import com.depromeet.sloth.data.network.login.LoginResponse
+import com.depromeet.sloth.data.network.login.LoginSlothResponse
 import com.depromeet.sloth.data.network.login.LoginState
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.network.login.LoginAccessResponse
+import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
@@ -91,19 +91,13 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             } else if (token != null) {
                 Log.e("로그인 성공 -> accessToken ", token.toString())
                 mainScope {
-                    viewModel.getAuthInfo(
+                    viewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginResponse> -> Log.e(
-                                "인증정보 수신 성공",
-                                it.data.toString()
-                            )
-                            is LoginState.Error -> Log.e(
-                                "인증정보 수신 실패",
-                                it.exception.message ?: "Unsupported Exception"
-                            )
+                            is LoginState.Success<LoginSlothResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
+                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
                         }
                     }
                 }
@@ -121,12 +115,12 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             } else if (token != null) {
                 Log.e("로그인 성공 -> accessToken ", token.toString())
                 mainScope {
-                    viewModel.getAuthInfo(
+                    viewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
+                            is LoginState.Success<LoginSlothResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
                             is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
                         }
                     }
@@ -146,9 +140,9 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
             mainScope {
                 authCode?.run {
-                    viewModel.getAccessToken(this).let {
+                    viewModel.fetchGoogleAuthInfo(this).let {
                         when (it) {
-                            is LoginState.Success<LoginAccessResponse> -> {
+                            is LoginState.Success<LoginGoogleResponse> -> {
                                 Log.d("Success", "${it.data}")
                                 accessToken = it.data.access_token
                                 Log.d("accessToken", accessToken)
@@ -159,9 +153,9 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                         }
                     }
 
-                    viewModel.getRefreshToken(accessToken, "GOOGLE").let {
+                    viewModel.fetchSlothAuthInfo(accessToken, "GOOGLE").let {
                         when (it) {
-                            is LoginState.Success<LoginResponse> -> {
+                            is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("Success", "${it.data}")
                                 accessToken = it.data.accessToken
                                 refreshToken = it.data.refreshToken

@@ -1,7 +1,7 @@
 package com.depromeet.sloth.data.network.login
 
 /**
- *   LoginRespoonse
+ *   LoginResponse
  *
  *  "accessToken": "string",
  *  "accessTokenExpireTime": "yyyy-MM-dd HH:mm:ss",
@@ -9,7 +9,7 @@ package com.depromeet.sloth.data.network.login
  *  "refreshTokenExpireTime": "yyyy-MM-dd HH:mm:ss"
  */
 
-data class LoginResponse(
+data class LoginSlothResponse(
     var accessToken: String = "",
     var accessTokenExpireTime: String = "",
     var refreshToken: String = "",

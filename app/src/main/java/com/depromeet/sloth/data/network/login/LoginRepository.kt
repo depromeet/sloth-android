@@ -5,53 +5,40 @@ import com.depromeet.sloth.data.network.ServiceGenerator
 import com.depromeet.sloth.data.network.ServiceGenerator.createService
 
 class LoginRepository {
-    suspend fun login(accessToken: String, socialType: String): LoginState<LoginResponse> {
+    suspend fun fetchSlothAuthInfo(accessToken: String, socialType: String): LoginState<LoginSlothResponse> {
         ServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.TARGET_SERVER,
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         ).createService(
             serviceClass = LoginService::class.java,
-        ).fetchAuthTokens(
-            LoginRequest(socialType = socialType)
+        ).fetchSlothAuthInfo(
+            LoginSlothRequest(
+                socialType = socialType
+            )
         )?.run {
             return LoginState.Success(
-                this.body() ?: LoginResponse()
+                this.body() ?: LoginSlothResponse()
             )
         } ?: return LoginState.Error(Exception("Login Exception"))
     }
 
-    suspend fun getAccessToken(serverAuthCode: String): LoginState<LoginAccessResponse> {
-        ServiceGenerator.createGoogleService(
-            LoginService::class.java,
-            serverAuthCode
-        ).fetchAccessToken()?.run {
-            return LoginState.Success(
-                this.body() ?: LoginAccessResponse(
-                    access_token = "access_token",
-                    expires_in = 0,
-                    scope = "scope",
-                    token_type = "token_type",
-                    id_token = "id_token",
-                )
-            )
-        }
-        return LoginState.Error(Exception("Retrofit Exception"))
-    }
-
-    suspend fun getAuthTokens(accessToken: String, socialType: String): LoginState<LoginResponse> {
+    suspend fun fetchGoogleAuthInfo(authCode: String): LoginState<LoginGoogleResponse> {
         ServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.TARGET_SERVER,
-            authToken = accessToken
+            targetUrl = BuildConfig.GOOGLE_BASE_URL
         ).createService(
-            LoginService::class.java
-        ).fetchAuthTokens(
-            LoginRequest(socialType = socialType)
+            serviceClass = LoginService::class.java
+        ).fetchGoogleAuthInfo(
+            LoginGoogleRequest(
+                grant_type = "authorization_code",
+                client_id = BuildConfig.GOOGLE_CLIENT_ID,
+                client_secret = BuildConfig.GOOGLE_CLIENT_SECRET,
+                redirect_uri = "",
+                code = authCode
+            )
         )?.run {
             return LoginState.Success(
-                this.body() ?: LoginResponse()
+                this.body() ?: LoginGoogleResponse()
             )
-        }
-
-        return LoginState.Error(Exception("Retrofit Exception"))
+        } ?: return LoginState.Error(Exception("Retrofit Exception"))
     }
 }
