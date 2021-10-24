@@ -1,7 +1,6 @@
 package com.depromeet.sloth.data.network.health
 
 import com.depromeet.sloth.data.network.ServiceGenerator
-import com.depromeet.sloth.data.network.ServiceGenerator.createService
 import java.lang.Exception
 
 class HealthRepository {
@@ -9,9 +8,9 @@ class HealthRepository {
         ServiceGenerator.setBuilderOptions(
             targetUrl = "Input your test url",
             authToken = "Input your test token"
-        ).createService(
-            serviceClass = HealthService::class.java
-        ).fetchHealth()?.run {
+        )
+            .create(HealthService::class.java)
+            .fetchHealth()?.run {
             return HealthState.Success(
                 this.body() ?: HealthResponse()
             )

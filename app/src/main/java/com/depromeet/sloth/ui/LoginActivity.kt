@@ -28,11 +28,9 @@ import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
-    override val viewModel: LoginViewModel
-        get() = LoginViewModel()
+    override val viewModel: LoginViewModel = LoginViewModel()
 
-    override fun getViewBinding(): ActivityLoginBinding =
-        ActivityLoginBinding.inflate(layoutInflater)
+    override fun getViewBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -96,8 +94,14 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
-                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                            is LoginState.Success<LoginSlothResponse> -> Log.e(
+                                "인증정보 수신 성공",
+                                it.data.toString()
+                            )
+                            is LoginState.Error -> Log.e(
+                                "인증정보 수신 실패",
+                                it.exception.message ?: "Unsupported Exception"
+                            )
                         }
                     }
                 }
@@ -120,8 +124,14 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> Log.e("인증정보 수신 성공", it.data.toString())
-                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                            is LoginState.Success<LoginSlothResponse> -> Log.e(
+                                "인증정보 수신 성공",
+                                it.data.toString()
+                            )
+                            is LoginState.Error -> Log.e(
+                                "인증정보 수신 실패",
+                                it.exception.message ?: "Unsupported Exception"
+                            )
                         }
                     }
                 }
