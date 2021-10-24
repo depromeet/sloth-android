@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.sloth.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name = "android:background">@color/white</item>
+        <item name = "android:title">@null</item>
+    </style>
+
+    <style name="Widget.sloth.Toolbar.WithArrow" parent="Widget.sloth.Toolbar">
+        <item name = "navigationIcon">@drawable/ic_back_arrow</item>
+        <item name = "android:background">@color/white</item>
+    </style>
+
+    <style name="Widget.sloth.Toolbar.WithClose" parent="Widget.sloth.Toolbar">
+        <item name = "navigationIcon">@drawable/ic_close</item>
+        <item name = "android:background">@color/white</item>
+    </style>
+</resources>
