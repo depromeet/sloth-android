@@ -4,25 +4,120 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.LoginActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/kakao_login"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/kakao_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/google_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="44dp"
+        android:ellipsize="marquee"
+        android:gravity="top"
+        android:lineSpacingExtra="6sp"
+        android:maxLines="2"
+        android:text="@string/title_main"
+        android:textSize="28sp"
+        android:translationY="-2.8sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_goneMarginTop="44dp" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="12dp"
+        android:gravity="top"
+        android:lineSpacingExtra="3sp"
+        android:text="@string/title_sub"
+        android:textSize="14sp"
+        android:translationY="-1.4sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_main" />
+
+    <View
+        android:id="@+id/group_230"
+        android:layout_width="154.26dp"
+        android:layout_height="184.44dp"
+        android:background="@drawable/icon_login_sloth"
+        app:layout_constraintBottom_toTopOf="@id/google_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_sub"
+        app:layout_constraintVertical_bias="0.55" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/google_login"
+        android:layout_width="320dp"
+        android:layout_height="44dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/background_login_google"
+        android:paddingHorizontal="11dp"
+        app:layout_constraintBottom_toTopOf="@id/kakao_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_login_google"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/login_google"
+            android:textColor="#D9000000"
+            android:translationY="-1.6sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/kakao_login"
+        android:layout_width="320dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/background_login_kakao"
+        android:paddingHorizontal="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon_kakao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_login_kakaotalk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/login_kakao"
+            android:textColor="#D9000000"
+            android:translationY="-1.6sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
