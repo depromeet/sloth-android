@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.login
 
 import android.app.Activity
 import android.os.Bundle
@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.Scope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.login.LoginGoogleResponse
+import com.depromeet.sloth.ui.home.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
@@ -94,14 +95,11 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> Log.e(
-                                "인증정보 수신 성공",
-                                it.data.toString()
-                            )
-                            is LoginState.Error -> Log.e(
-                                "인증정보 수신 실패",
-                                it.exception.message ?: "Unsupported Exception"
-                            )
+                            is LoginState.Success<LoginSlothResponse> -> {
+                                Log.e("인증정보 수신 성공", it.data.toString())
+                                nextActivity()
+                            }
+                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
                         }
                     }
                 }
@@ -124,14 +122,11 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                         socialType = "KAKAO"
                     ).let {
                         when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> Log.e(
-                                "인증정보 수신 성공",
-                                it.data.toString()
-                            )
-                            is LoginState.Error -> Log.e(
-                                "인증정보 수신 실패",
-                                it.exception.message ?: "Unsupported Exception"
-                            )
+                            is LoginState.Success<LoginSlothResponse> -> {
+                                Log.e("인증정보 수신 성공", it.data.toString())
+                                nextActivity()
+                            }
+                            is LoginState.Error -> Log.e("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
                         }
                     }
                 }
@@ -174,6 +169,8 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
                                 Log.d("refreshToken", refreshToken)
 
                                 viewModel.saveAuthToken(pm, accessToken, refreshToken)
+
+                                nextActivity()
                             }
                             is LoginState.Error ->
                                 Log.d("Error", "${it.exception}")
@@ -186,5 +183,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.e("로그인 실패", "signInResult:failed code=" + e.statusCode)
         }
+    }
+
+    private fun nextActivity() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 }

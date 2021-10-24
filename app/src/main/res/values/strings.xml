@@ -5,4 +5,8 @@
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
     <string name="login_google">구글 아이디로 로그인</string>
     <string name="login_kakao">카카오 아이디로 로그인</string>
+
+    <string name="menu_today">투데이</string>
+    <string name="menu_class">강의목록</string>
+    <string name="menu_mypage">마이페이지</string>
 </resources>

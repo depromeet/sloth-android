@@ -17,5 +17,6 @@
     <style name="Theme.Sloth.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimary">@color/sloth</item>
     </style>
 </resources>

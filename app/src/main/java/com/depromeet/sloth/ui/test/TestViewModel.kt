@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.test
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.health.HealthRepository
