@@ -5,9 +5,7 @@ import android.content.Intent
 import com.depromeet.sloth.databinding.ActivityRegisterNicknameBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import android.text.Editable
-
 import android.text.TextWatcher
-import android.view.WindowManager
 import com.depromeet.sloth.R
 
 
@@ -22,7 +20,6 @@ class RegisterNicknameActivity :
 
     companion object {
         fun newIntent(activity: Activity) = Intent(activity, RegisterNicknameActivity::class.java)
-
     }
 
     override fun initViews() = with(binding) {

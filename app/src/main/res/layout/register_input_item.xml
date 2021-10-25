@@ -18,13 +18,14 @@
 
     <EditText
         android:id="@+id/inputEditText"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="60dp"
         android:layout_margin="12dp"
-        android:background="@drawable/edit_text_border"
+        android:background="@drawable/widget_border"
         android:paddingHorizontal="12dp"
         android:hint="@string/category_hint"
-        android:inputType="text"
         app:layout_constraintTop_toBottomOf="@+id/categoryTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">sloth</string>
     <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
+
     <string name="category">카테고리</string>
     <string name="category_hint">카테고리 힌트</string>
     <string name="register_new_lesson">새로운 인강 등록</string>
@@ -11,4 +12,12 @@
     <string name="welcome">환영합니다!</string>
     <string name="nickname">닉네임</string>
     <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요.</string>
+
+    <string name="Sun">일</string>
+    <string name="Mon">월</string>
+    <string name="Tue">화</string>
+    <string name="Wed">수</string>
+    <string name="Thu">목</string>
+    <string name="Fri">금</string>
+    <string name="Sat">토</string>
 </resources>
