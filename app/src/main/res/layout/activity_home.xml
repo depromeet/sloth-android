@@ -4,10 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.home.HomeActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navigation_bottom">
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navi"
+        android:id="@+id/navigation_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_menu_rounded"

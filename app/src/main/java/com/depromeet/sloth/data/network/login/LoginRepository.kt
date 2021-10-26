@@ -21,6 +21,7 @@ class LoginRepository {
                 return LoginState.Success(
                     this.body() ?: LoginSlothResponse()
                 )
+
             } ?: return LoginState.Error(Exception("Login Exception"))
     }
 

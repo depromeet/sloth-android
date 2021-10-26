@@ -10,20 +10,30 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        findViewById<BottomNavigationView>(R.id.bottom_navi).setOnItemSelectedListener {
-            when(it.itemId) {
-                R.id.menu_today -> {
+        supportFragmentManager.fragmentFactory = SlothFragmentFactory()
 
-                }
-                R.id.menu_class -> {
+        initNavigationEvent()
+    }
 
+    private fun initNavigationEvent() {
+        val navigationView = findViewById<BottomNavigationView>(R.id.navigation_bottom)
+        navigationView.run {
+            setOnItemSelectedListener {
+                when (it.itemId) {
+                    R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
+                    R.id.menu_class -> changeFragment(ClassFragment::class.java.name)
+                    R.id.menu_mypage -> changeFragment(MypageFragment::class.java.name)
                 }
-                R.id.menu_mypage -> {
 
-                }
+                true
             }
-
-            true
+            this.selectedItemId = R.id.menu_today
         }
     }
+
+    private fun changeFragment(className: String) {
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, className)
+        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
+    }
+
 }
