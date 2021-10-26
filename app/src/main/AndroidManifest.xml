@@ -20,6 +20,20 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="true" >
 
+        </activity>
+
+        <activity
+            android:name=".ui.RegisterLesson1Activity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" >
+
+        </activity>
+
+        <activity
+            android:name=".ui.RegisterLesson2Activity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,26 +42,9 @@
         </activity>
 
         <activity
-            android:name=".ui.RegisterLesson1Activity"
-            android:exported="true" >
-
-        </activity>
-
-        <activity
-            android:name=".ui.RegisterLesson2Activity"
-            android:exported="true" >
-
-        </activity>
-
-        <activity
             android:name=".ui.LoginActivity"
             android:exported="true">
 
-        </activity>
-        <activity android:name=".ui.TestActivity" />
-        <activity
-            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -58,6 +55,12 @@
                     android:host="oauth"
                     android:scheme="@string/KAKAO_API_KEY" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".ui.TestActivity" />
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
         </activity>
     </application>
 

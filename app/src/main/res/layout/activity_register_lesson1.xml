@@ -59,21 +59,129 @@
         app:layout_constraintTop_toBottomOf="@id/guideTextView"
         app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical">-->
+
+        <!--            <androidx.recyclerview.widget.RecyclerView-->
+        <!--                android:id="@+id/recyclerView"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginHorizontal="12dp"-->
+        <!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/guideTextView" />-->
+
+        <!--        </LinearLayout>-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/siteTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/guideTextView" />
+                android:layout_margin="12dp"
+                android:text="@string/lesson_site"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
-        </LinearLayout>
+            <Spinner
+                android:id="@+id/siteSpinner"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/widget_border"
+                android:entries="@array/site_array"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/siteTextView"
+                tools:visibility="visible" />
 
+            <TextView
+                android:id="@+id/categoryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/lesson_category"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/siteSpinner"
+                tools:visibility="visible" />
+
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/widget_border"
+                android:entries="@array/category_array"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/categoryTextView"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/countTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/lesson_count"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/categorySpinner"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/countEditText"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/widget_border"
+                android:hint="@string/enter_lesson_count"
+                android:paddingHorizontal="12dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/countTextView"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:text="@string/lesson_name"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/countEditText" />
+
+            <EditText
+                android:id="@+id/nameEditText"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/widget_border"
+                android:hint="@string/enter_lesson_name"
+                android:paddingHorizontal="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.core.widget.NestedScrollView>

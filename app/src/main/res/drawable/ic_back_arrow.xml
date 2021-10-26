@@ -16,3 +16,24 @@
         android:fillType="evenOdd"/>
   </group>
 </vector>
+
+<!--<vector-->
+<!--  xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--  xmlns:aapt="http://schemas.android.com/aapt"-->
+<!--  android:width="8.3dp"-->
+<!--  android:height="15.3dp"-->
+<!--  android:viewportWidth="8.3"-->
+<!--  android:viewportHeight="15.3">-->
+
+<!--  <group>-->
+
+<!--    <clip-path-->
+<!--        android:pathData="M0 0H8.295V15.2975H0V0Z" />-->
+
+<!--    <path-->
+<!--        android:pathData="M0 0V15.2975H8.295V0"-->
+<!--        android:fillColor="#222222" />-->
+
+<!--  </group>-->
+
+<!--</vector>-->
