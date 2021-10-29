@@ -6,7 +6,7 @@
     </style>
 
     <style name="Widget.Sloth.Toolbar.WithArrow" parent="Widget.Sloth.Toolbar">
-        <item name = "navigationIcon">@drawable/ic_back_arrow</item>
+        <item name = "navigationIcon">@drawable/ic_back_arrow_24</item>
         <item name = "android:background">@color/white</item>
     </style>
 
@@ -18,4 +18,7 @@
     <style name="ChipTextStyle">
         <item name="android:textSize">18sp</item>
     </style>
+
+
+
 </resources>

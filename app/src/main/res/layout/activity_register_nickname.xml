@@ -41,19 +41,20 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <TextView
-        android:id="@+id/categoryTextView"
+        android:id="@+id/nicknameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginTop="32dp"
         android:text="@string/nickname"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideTextView" />
 
 
     <EditText
-        android:id="@+id/inputEditText"
+        android:id="@+id/nicknameEditText"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="12dp"
@@ -61,7 +62,8 @@
         android:hint="@string/nickname_hint"
         android:paddingHorizontal="12dp"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/categoryTextView" />
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/nicknameTextView" />
 
     <Button
         android:id="@+id/registerButton"

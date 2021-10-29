@@ -1,6 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Sloth" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <item name="toolbarStyle">@style/Widget.Sloth.Toolbar</item>
+        <item name="toolbarWithArrowButtonStyle">@style/Widget.Sloth.Toolbar.WithArrow</item>
+        <item name="toolbarWithCloseButtonStyle">@style/Widget.Sloth.Toolbar.WithClose</item>
+
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_500</item>
         <item name="colorPrimaryVariant">@color/primary_700</item>

@@ -8,6 +8,9 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
@@ -16,10 +19,20 @@ import com.depromeet.sloth.data.network.login.LoginState
 import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberInfoState
 import com.depromeet.sloth.data.network.register.RegisterState
+import android.widget.DatePicker
+
+import android.app.DatePickerDialog.OnDateSetListener
+
+import android.app.DatePickerDialog
+import com.depromeet.sloth.data.db.PreferenceManager
+import java.lang.Exception
+import java.util.*
 
 
 class RegisterNicknameActivity :
     BaseActivity<RegisterViewModel, ActivityRegisterNicknameBinding>() {
+
+    private val pm: PreferenceManager = PreferenceManager(this)
 
     lateinit var accessToken: String
 
@@ -29,14 +42,6 @@ class RegisterNicknameActivity :
     override fun getViewBinding(): ActivityRegisterNicknameBinding =
         ActivityRegisterNicknameBinding.inflate(layoutInflater)
 
-    companion object {
-        fun newIntent(activity: Activity, accessToken: String) = Intent(activity, RegisterNicknameActivity::class.java).apply{
-            putExtra(ACCESS_TOKEN, accessToken)
-        }
-
-        private const val ACCESS_TOKEN = "accessToken"
-    }
-
 
     lateinit var memberId: String
 
@@ -45,28 +50,12 @@ class RegisterNicknameActivity :
     override fun initViews() = with(binding) {
         toolbar.setNavigationOnClickListener { finish() }
 
-        inputEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+        accessToken = pm.getAccessToken().toString()
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty()) {
-                    registerButton.setBackgroundColor(resources.getColor(R.color.gray_300, theme))
-                } else {
-                    registerButton.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
-                }
-            }
-        })
+        focusInputForm(nicknameEditText, registerButton)
 
         registerButton.setOnClickListener {
-            val nickname = inputEditText.text.toString()
-
-            //accessToken = intent.getStringExtra(ACCESS_TOKEN).toString()
-
-            //임시
-            val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBQ0NFU1MiLCJhdWQiOiJtcmF6MzA2OEBnbWFpbC5jb20iLCJpYXQiOjE2MzUyNzQ0NTIsImV4cCI6MTYzNTI3NTM1Mn0.KZfN5RkuVdMx_xtriXgoihxpoCPpP9fhhalkBjM8Wue9idOSP5O-mdQfYhV1qly9ErLkEWH-FYUpz8Uk7n5_Vw"
+            val nickname = nicknameEditText.text.toString()
 
             if(nickname.isNotEmpty()) {
                 mainScope {
@@ -88,9 +77,8 @@ class RegisterNicknameActivity :
                                 Log.d("Error", "${it.exception}")
                         }
                     }
-                    /*
-                    기존의 닉네임과 비교
-                     */
+
+                    /*기존의 닉네임과 비교*/
                     if(nickname != memberName) {
                         viewModel.registerNickname(accessToken, nickname).let {
                             when (it) {
@@ -115,5 +103,44 @@ class RegisterNicknameActivity :
                 */
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun unlockButton(button: Button) {
+        button.isEnabled = true
+        button.setBackgroundColor(
+            resources.getColor(
+                R.color.primary_500,
+                theme
+            )
+        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun lockButton(button: Button) {
+        button.isEnabled = false
+        button.setBackgroundColor(
+            resources.getColor(
+                R.color.gray_300,
+                theme
+            )
+        )
+    }
+
+    private fun focusInputForm(editText: EditText, button: Button) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable.isNullOrEmpty()) {
+                    lockButton(button)
+                } else {
+                    unlockButton(button)
+                }
+            }
+        })
     }
 }

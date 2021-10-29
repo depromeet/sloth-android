@@ -18,9 +18,9 @@ class PreferenceManager(
         private const val DEFAULT_VALUE_LONG = -1L
         private const val DEFAULT_VALUE_FLOAT = -1f
 
-        const val KEY_ID_TOKEN = "ID_TOKEN"
-        const val KEY_ACCESS_TOKEN = "ACCESS_TOKEN"
-        const val KEY_REFRESH_TOKEN = "REFRESH_TOKEN"
+        const val ID_TOKEN = "idToken"
+        const val ACCESS_TOKEN = "accessToken"
+        const val REFRESH_TOKEN = "refreshToken"
     }
 
     private fun getPreferences(context: Context): SharedPreferences {
@@ -156,22 +156,26 @@ class PreferenceManager(
     }
 
     fun putAccessToken(accessToken: String) {
-        editor.putString(KEY_ACCESS_TOKEN, accessToken)
+        editor.putString(ACCESS_TOKEN, accessToken)
         editor.apply()
     }
 
     fun putAuthToken(accessToken: String, refreshToken: String) {
-        editor.putString(KEY_ACCESS_TOKEN, accessToken)
-        editor.putString(KEY_REFRESH_TOKEN, refreshToken)
+        editor.putString(ACCESS_TOKEN, accessToken)
+        editor.putString(REFRESH_TOKEN, refreshToken)
         editor.apply()
     }
 
+    fun getAccessToken(): String? {
+        return prefs.getString(ACCESS_TOKEN, null)
+    }
+
     fun getIdToken(): String? {
-        return prefs.getString(KEY_ID_TOKEN, null)
+        return prefs.getString(ID_TOKEN, null)
     }
 
     fun removeIdToken() {
-        editor.putString(KEY_ID_TOKEN, null)
+        editor.putString(ID_TOKEN, null)
         editor.apply()
     }
 }

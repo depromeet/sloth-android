@@ -8,9 +8,10 @@ import com.depromeet.sloth.data.network.login.*
 
 class RegisterRepository {
 
-    suspend fun registerLesson(lessonModel: LessonModel): RegisterState<RegisterLessonResponse> {
+    suspend fun registerLesson(accessToken: String, lessonModel: LessonModel): RegisterState<RegisterLessonResponse> {
         ServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.SLOTH_BASE_URL
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
+            authToken = accessToken
         ).createService(
             serviceClass = RegisterService::class.java,
         ).registerLesson(
@@ -19,7 +20,6 @@ class RegisterRepository {
                 categoryId = lessonModel.categoryId,
                 endDate = lessonModel.endDate,
                 lessonName = lessonModel.lessonName,
-                memberId = lessonModel.memberId,
                 message = lessonModel.message,
                 price = lessonModel.price,
                 siteId = lessonModel.siteId,

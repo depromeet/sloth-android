@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.member.MemberInfoRepository
@@ -20,7 +21,7 @@ class RegisterViewModel: BaseViewModel() {
         registerRepository.registerNickname(accessToken, nickname)
     }.await()
 
-    suspend fun registerLesson(lessonModel: LessonModel) = viewModelScope.async {
-        registerRepository.registerLesson(lessonModel)
+    suspend fun registerLesson(accessToken: String, lessonModel: LessonModel) = viewModelScope.async {
+        registerRepository.registerLesson(accessToken, lessonModel)
     }.await()
 }

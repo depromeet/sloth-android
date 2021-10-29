@@ -81,95 +81,96 @@
                 android:layout_margin="12dp"
                 android:background="@drawable/widget_border"
                 android:hint="@string/max_30"
-                android:paddingHorizontal="12dp"
-                android:visibility="gone"
                 android:maxLength="30"
+                android:paddingHorizontal="12dp"
+                android:inputType="text"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/messageTextView"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/alertTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:text="@string/alert_cycle"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/messageEditText"
-                tools:visibility="visible" />
+<!--            <TextView-->
+<!--                android:id="@+id/alertTextView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="12dp"-->
+<!--                android:text="@string/alert_cycle"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="18sp"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/messageEditText"-->
+<!--                tools:visibility="visible" />-->
 
-            <LinearLayout
-                android:id="@+id/chipGroupLayout"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:layout_margin="12dp"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/alertTextView"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/chipGroupLayout"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_margin="12dp"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:visibility="gone"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/alertTextView"-->
+<!--                tools:visibility="visible">-->
 
-                <com.google.android.material.chip.ChipGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+<!--                <com.google.android.material.chip.ChipGroup-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent">-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/sun"
-                        android:text="@string/Sun"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/sun"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Sun" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/mon"
-                        android:text="@string/Mon"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/mon"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Mon" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/tue"
-                        android:text="@string/Tue"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/tue"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Tue" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/wed"
-                        android:text="@string/Wed"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/wed"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Wed" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/thu"
-                        android:text="@string/Thu"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/thu"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Thu" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/fri"
-                        android:text="@string/Fri"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/fri"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Fri" />-->
 
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/ChipTextStyle"
-                        android:id="@+id/sat"
-                        android:text="@string/Sat"/>
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:id="@+id/sat"-->
+<!--                        style="@style/ChipTextStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/Sat" />-->
 
-                </com.google.android.material.chip.ChipGroup>
+<!--                </com.google.android.material.chip.ChipGroup>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <TextView
                 android:id="@+id/priceTextView"
@@ -181,7 +182,7 @@
                 android:textSize="18sp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chipGroupLayout"
+                app:layout_constraintTop_toBottomOf="@id/messageEditText"
                 tools:visibility="visible" />
 
             <EditText
@@ -192,9 +193,9 @@
                 android:layout_marginTop="192dp"
                 android:background="@drawable/widget_border"
                 android:hint="@string/lesson_price_example"
+                android:inputType="number"
                 android:paddingHorizontal="12dp"
                 android:visibility="gone"
-                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +203,7 @@
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/endTextView"
+                android:id="@+id/endDayTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -215,21 +216,22 @@
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/endDay"
+                android:id="@+id/endDateTextView"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
                 android:background="@drawable/widget_border"
-                android:paddingHorizontal="12dp"
+                android:textColor="@color/black"
+                android:padding="16dp"
                 android:visibility="gone"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/endTextView"
+                app:layout_constraintTop_toBottomOf="@+id/endDayTextView"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/startTextView"
+                android:id="@+id/startDayTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -237,38 +239,38 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/endDay" />
+                app:layout_constraintTop_toBottomOf="@id/endDateTextView" />
 
             <TextView
-                android:id="@+id/startDay"
+                android:id="@+id/startDateTextView"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
                 android:background="@drawable/widget_border"
-                android:paddingHorizontal="12dp"
+                android:padding="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/startTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/startDayTextView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical">-->
 
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/recyclerView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="12dp"-->
-<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/guideTextView" />-->
+        <!--            <androidx.recyclerview.widget.RecyclerView-->
+        <!--                android:id="@+id/recyclerView"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginHorizontal="12dp"-->
+        <!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/guideTextView" />-->
 
-<!--        </LinearLayout>-->
-
+        <!--        </LinearLayout>-->
 
 
     </androidx.core.widget.NestedScrollView>
@@ -278,6 +280,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/gray_300"
         android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
