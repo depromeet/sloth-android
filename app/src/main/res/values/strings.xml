@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">sloth</string>
     <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
-    <string name="title_main"><b><font color="#53E183">나</font><font color="#000000">보다</font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부도 열심히 한다</font></b></string>
+    <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다</font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부도 열심히 한다</font></string>
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
     <string name="login_google">구글 아이디로 로그인</string>
     <string name="login_kakao">카카오 아이디로 로그인</string>
+    <string name="register_title"><font color="#000000">나나공을 이용하시려면\n개인정보 동의가 필요해요</font></string>
+    <string name="register_policy"><u><font color="#ABABAB">‘나나공’ 서비스 개인정보 처리 방침</font></u></string>
 </resources>
