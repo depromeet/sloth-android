@@ -78,7 +78,6 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                 if (flag == 1) {
                     lockButton(registerButton)
 
-                    focusInputForm(nameEditText, registerButton)
                     focusInputForm(countEditText, registerButton)
 
                     registerButton.setOnClickListener {
@@ -97,9 +96,6 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                         hideKeyboard()
 
                         if (flag == 2) {
-                            focusInputForm(nameEditText, registerButton)
-                            focusInputForm(countEditText, registerButton)
-
                             lockButton(registerButton)
 
                             categorySpinner.onItemSelectedListener = object :
@@ -142,9 +138,6 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                         lockButton(registerButton)
                                     } else {
                                         if (flag == 3) {
-                                            focusInputForm(nameEditText, registerButton)
-                                            focusInputForm(countEditText, registerButton)
-
                                             siteSpinner.onItemSelectedListener =
                                                 object : AdapterView.OnItemSelectedListener {
                                                     override fun onItemSelected(

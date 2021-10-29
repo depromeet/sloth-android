@@ -33,7 +33,6 @@ class PreferenceManager(
 
     /**
      * String 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -44,7 +43,6 @@ class PreferenceManager(
 
     /**
      * boolean 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -55,7 +53,6 @@ class PreferenceManager(
 
     /**
      * int 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -66,7 +63,6 @@ class PreferenceManager(
 
     /**
      * long 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -77,7 +73,6 @@ class PreferenceManager(
 
     /**
      * float 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -88,7 +83,6 @@ class PreferenceManager(
 
     /**
      * String 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -98,7 +92,6 @@ class PreferenceManager(
 
     /**
      * boolean 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -108,7 +101,6 @@ class PreferenceManager(
 
     /**
      * int 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -118,7 +110,6 @@ class PreferenceManager(
 
     /**
      * long 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -128,7 +119,6 @@ class PreferenceManager(
 
     /**
      * float 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -138,7 +128,6 @@ class PreferenceManager(
 
     /**
      * 키 값 삭제
-     * @param context
      * @param key
      */
     fun removeKey(key: String?) {
@@ -148,34 +137,39 @@ class PreferenceManager(
 
     /**
      * 모든 저장 데이터 삭제
-     * @param context
      */
     fun clear() {
         editor.clear()
         editor.apply()
     }
 
+    /**
+     * accessToken 저장
+     * @param accessToken
+     */
     fun putAccessToken(accessToken: String) {
         editor.putString(ACCESS_TOKEN, accessToken)
         editor.apply()
     }
 
+    /**
+     * accessToken, refreshToken (인증 토큰) 저장
+     *
+     * @param accessToken
+     * @param refreshToken
+     */
     fun putAuthToken(accessToken: String, refreshToken: String) {
         editor.putString(ACCESS_TOKEN, accessToken)
         editor.putString(REFRESH_TOKEN, refreshToken)
         editor.apply()
     }
 
+    /**
+     * 저장한 accessToken 로드
+     *
+     * @return
+     */
     fun getAccessToken(): String? {
         return prefs.getString(ACCESS_TOKEN, null)
-    }
-
-    fun getIdToken(): String? {
-        return prefs.getString(ID_TOKEN, null)
-    }
-
-    fun removeIdToken() {
-        editor.putString(ID_TOKEN, null)
-        editor.apply()
     }
 }
