@@ -28,5 +28,6 @@
     <style name="AppModalStyle"
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_login_bottom_rounded_white</item>
+        <item name="colorPrimary">@color/sloth</item>
     </style>
 </resources>

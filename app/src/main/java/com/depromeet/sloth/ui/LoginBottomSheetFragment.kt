@@ -17,6 +17,7 @@ import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 import com.depromeet.sloth.data.network.login.LoginSlothResponse
 import com.depromeet.sloth.data.network.login.LoginState
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
+import com.depromeet.sloth.ui.login.LoginViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

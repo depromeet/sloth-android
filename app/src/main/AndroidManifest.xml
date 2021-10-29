@@ -15,9 +15,11 @@
         android:theme="@style/Theme.Sloth.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.home.HomeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.TestActivity" />
+        <activity android:name=".ui.test.TestActivity" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

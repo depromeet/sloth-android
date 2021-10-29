@@ -1,10 +1,16 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.LoginBottomSheetFragment
+import com.depromeet.sloth.ui.LoginListener
+import com.depromeet.sloth.ui.RegisterBottomSheetFragment
+import com.depromeet.sloth.ui.RegisterListener
+import com.depromeet.sloth.ui.home.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
@@ -51,7 +57,8 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             val registerListener = object : RegisterListener {
                 override fun onAgree() {
                     closeRegisterBottomSheet()
-                    //닉네임 등록화면으로 넘어가는 로직
+                    //닉네임 등록화면 또는 홈화면으로 넝머가는 로직
+                    nextActivity()
                 }
 
                 override fun onCancel() {
@@ -75,5 +82,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
     private fun closeRegisterBottomSheet() {
         registerBottomSheet?.dismiss()
         registerBottomSheet = null
+    }
+
+    private fun nextActivity() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 }

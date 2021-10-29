@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.test
 
 import android.os.Bundle
 import android.util.Log
