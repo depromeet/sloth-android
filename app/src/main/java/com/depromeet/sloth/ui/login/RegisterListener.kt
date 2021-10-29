@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.login
 
 interface RegisterListener {
     fun onAgree()

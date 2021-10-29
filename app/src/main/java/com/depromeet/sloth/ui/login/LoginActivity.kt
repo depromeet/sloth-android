@@ -6,10 +6,6 @@ import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.LoginBottomSheetFragment
-import com.depromeet.sloth.ui.LoginListener
-import com.depromeet.sloth.ui.RegisterBottomSheetFragment
-import com.depromeet.sloth.ui.RegisterListener
 import com.depromeet.sloth.ui.home.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
