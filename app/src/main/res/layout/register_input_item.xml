@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="60dp"
         android:layout_margin="12dp"
-        android:background="@drawable/widget_border"
+        android:background="@drawable/shape_widget_border"
         android:paddingHorizontal="12dp"
         android:hint="@string/category_hint"
         app:layout_constraintTop_toBottomOf="@+id/categoryTextView" />

@@ -21,7 +21,7 @@
     <string name="Fri">금</string>
     <string name="Sat">토</string>
 
-    <string name="enter_lesson_name">수강할 인강 이름을 입력해 주세요.</string>
+    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요.</string>
     <string name="lesson_name">강의 이름</string>
     <string name="enter_lesson_count">강의 개수를 입력해 주세요.</string>
     <string name="lesson_count">강의 개수</string>
@@ -29,7 +29,7 @@
     <string name="lesson_site">강의 사이트</string>
     <string name="lesson_start">강의 시작일</string>
     <string name="lesson_end">완강 목표일</string>
-    <string name="lesson_price_example">예) 10,000원</string>
+    <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
     <string name="lesson_price">강의 금액</string>
     <string name="alert_cycle">푸시 알람 주기</string>
     <string name="max_30">최대 30자 까지 입력 가능합니다.</string>

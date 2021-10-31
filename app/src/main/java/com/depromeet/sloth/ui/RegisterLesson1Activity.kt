@@ -1,17 +1,11 @@
 package com.depromeet.sloth.ui
 
 import android.animation.ObjectAnimator
-import android.app.Activity
-import android.content.Intent
-import android.graphics.Color
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
@@ -20,12 +14,10 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityRegisterLesson1Binding
 import com.depromeet.sloth.ui.base.BaseActivity
 import kotlin.math.ceil
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegisterLesson1Binding>() {
@@ -40,8 +32,6 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
     private var currentSiteId: Int? = null
 
-    lateinit var lessonName: String
-    lateinit var totalNumber: Number
     lateinit var categoryId: Number
     lateinit var siteId: Number
 
@@ -49,8 +39,7 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun initViews() = with(binding) {
-
-        toolbar.setNavigationOnClickListener { finish() }
+        tbRegisterLesson.setNavigationOnClickListener { finish() }
 
         Log.d("currentSiteId", currentSiteId.toString())
 
@@ -60,14 +49,12 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
         val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson1Activity, R.anim.slide_down)
 
         if (flag == 0) {
-            lockButton(registerButton)
+            lockButton(btnRegisterLesson)
 
-            focusInputForm(nameEditText, registerButton)
+            focusInputForm(etRegisterLessonName, btnRegisterLesson)
 
-            registerButton.setOnClickListener {
-                lessonName = nameEditText.text.toString()
-
-                startAnimation(aniSlide, countTextView, countEditText)
+            btnRegisterLesson.setOnClickListener {
+                startAnimation(aniSlide, tvRegisterLessonCount, etRegisterLessonCount)
 
                 flag += 1
 
@@ -76,18 +63,16 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                 hideKeyboard()
 
                 if (flag == 1) {
-                    lockButton(registerButton)
+                    lockButton(btnRegisterLesson)
 
-                    focusInputForm(countEditText, registerButton)
+                    focusInputForm(etRegisterLessonCount, btnRegisterLesson)
 
-                    registerButton.setOnClickListener {
+                    btnRegisterLesson.setOnClickListener {
 
-                        totalNumber = countEditText.text.toString().toInt()
-
-                        startAnimation(aniSlide, categoryTextView, categorySpinner)
+                        startAnimation(aniSlide, tvRegisterLessonCategory, spnRegisterLessonCategory)
 
                         /*첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음*/
-                        categorySpinner.setSelection(0, false)
+                        spnRegisterLessonCategory.setSelection(0, false)
 
                         flag += 1
 
@@ -96,9 +81,9 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                         hideKeyboard()
 
                         if (flag == 2) {
-                            lockButton(registerButton)
+                            lockButton(btnRegisterLesson)
 
-                            categorySpinner.onItemSelectedListener = object :
+                            spnRegisterLessonCategory.onItemSelectedListener = object :
                                 AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(
                                     p0: AdapterView<*>?,
@@ -106,11 +91,11 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                     p2: Int,
                                     p3: Long
                                 ) {
-                                    categoryId = categorySpinner.selectedItemPosition
+                                    categoryId = spnRegisterLessonCategory.selectedItemPosition
 
-                                    if (!siteTextView.isVisible) {
+                                    if (!tvRegisterLessonSite.isVisible) {
 
-                                        startAnimation(aniSlide, siteTextView, siteSpinner)
+                                        startAnimation(aniSlide, tvRegisterLessonSite, spnRegisterLessonSite)
                                     }
 
                                     /* 강의 사이트 스피너에서 다시 돌아왔을 경우 progressbar 가 계속 차오르는 경우의 대한 예외 처리*/
@@ -124,21 +109,21 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                     }
 
                                     if (currentSiteId != null) {
-                                        siteSpinner.setSelection(currentSiteId!!)
+                                        spnRegisterLessonSite.setSelection(currentSiteId!!)
 
                                         if (categoryId != 0 && siteId != 0) {
-                                            unlockButton(registerButton)
+                                            unlockButton(btnRegisterLesson)
                                         }
                                     } else {
                                         /*첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음*/
-                                        siteSpinner.setSelection(0, false)
+                                        spnRegisterLessonSite.setSelection(0, false)
                                     }
 
                                     if (categoryId == 0) {
-                                        lockButton(registerButton)
+                                        lockButton(btnRegisterLesson)
                                     } else {
                                         if (flag == 3) {
-                                            siteSpinner.onItemSelectedListener =
+                                            spnRegisterLessonSite.onItemSelectedListener =
                                                 object : AdapterView.OnItemSelectedListener {
                                                     override fun onItemSelected(
                                                         p0: AdapterView<*>?,
@@ -147,9 +132,9 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                                         p3: Long
                                                     ) {
                                                         if (currentSiteId != null) {
-                                                            if (currentSiteId != siteSpinner.selectedItemPosition) {
+                                                            if (currentSiteId != spnRegisterLessonSite.selectedItemPosition) {
                                                                 currentSiteId =
-                                                                    siteSpinner.selectedItemPosition
+                                                                    spnRegisterLessonSite.selectedItemPosition
                                                                 siteId = currentSiteId!!.toInt()
                                                                 Log.d(
                                                                     "siteId changed to",
@@ -160,7 +145,7 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                                             }
                                                         } else {
                                                             siteId =
-                                                                siteSpinner.selectedItemPosition
+                                                                spnRegisterLessonSite.selectedItemPosition
                                                         }
                                                         Log.d("categoryId: ", categoryId.toString())
                                                         Log.d("siteId", siteId.toString())
@@ -174,23 +159,24 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                                             hideKeyboard()
                                                         }
                                                         if (siteId == 0) {
-                                                            lockButton(registerButton)
+                                                            lockButton(btnRegisterLesson)
                                                         }
 
                                                         if (categoryId != 0 && siteId != 0) {
                                                             currentSiteId = siteId.toInt()
-                                                            unlockButton(registerButton)
+                                                            unlockButton(btnRegisterLesson)
                                                         }
 
-                                                        registerButton.setOnClickListener {
+                                                        btnRegisterLesson.setOnClickListener {
                                                             Log.d(
                                                                 "LessonName: ",
-                                                                lessonName
+                                                                etRegisterLessonName.text.toString()
                                                             )
 
                                                             Log.d(
                                                                 "totalNumber: ",
-                                                                totalNumber.toString()
+                                                                //totalNumber.toString()
+                                                                etRegisterLessonCount.text.toString()
                                                             )
                                                             Log.d(
                                                                 "categoryId: ",
@@ -211,8 +197,8 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                                             startActivity(
                                                                 RegisterLesson2Activity.newIntent(
                                                                     this@RegisterLesson1Activity,
-                                                                    lessonName,
-                                                                    totalNumber as Int,
+                                                                    etRegisterLessonName.text.toString(),
+                                                                    etRegisterLessonCount.text.toString().toInt(),
                                                                     categoryId as Int + siteArraySize as Int,
                                                                     siteId as Int
                                                                 )
@@ -243,7 +229,7 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
     private fun fillProgressbar(count: Int, default: Int) {
         val animation = ObjectAnimator.ofInt(
-            binding.progressbar,
+            binding.pbRegisterLesson,
             "progress",
             default + ceil((count - 1) * 12.5).toInt(),
             default + ceil(count * 12.5).toInt()
@@ -291,7 +277,9 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {

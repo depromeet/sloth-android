@@ -7,7 +7,7 @@
     tools:context=".ui.RegisterNicknameActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/tb_register_nickname"
         style="?attr/toolbarWithArrowButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/registerTextView"
+            android:id="@+id/tv_register_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -28,7 +28,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/guideTextView"
+        android:id="@+id/tv_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -38,10 +38,10 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tb_register_nickname" />
 
     <TextView
-        android:id="@+id/nicknameTextView"
+        android:id="@+id/tv_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -50,23 +50,23 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideTextView" />
+        app:layout_constraintTop_toBottomOf="@id/tv_guide" />
 
 
     <EditText
-        android:id="@+id/nicknameEditText"
+        android:id="@+id/et_register_nickname"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="12dp"
-        android:background="@drawable/widget_border"
+        android:background="@drawable/shape_widget_border"
         android:hint="@string/nickname_hint"
         android:paddingHorizontal="12dp"
         android:textSize="18sp"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/nicknameTextView" />
+        app:layout_constraintTop_toBottomOf="@id/tv_nickname" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/btn_register_nickname"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_margin="16dp"

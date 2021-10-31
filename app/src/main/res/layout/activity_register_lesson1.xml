@@ -7,7 +7,7 @@
     tools:context=".ui.RegisterLesson1Activity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/tb_register_lesson"
         style="?attr/toolbarWithArrowButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/registerTextView"
+            android:id="@+id/tv_register_lesson"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -27,13 +27,13 @@
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressbar"
+        android:id="@+id/pb_register_lesson"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tb_register_lesson" />
 
     <TextView
-        android:id="@+id/guideTextView"
+        android:id="@+id/tv_register_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
@@ -43,42 +43,27 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressbar" />
+        app:layout_constraintTop_toBottomOf="@id/pb_register_lesson" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+        android:id="@+id/nsv_register_lesson"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:animateLayoutChanges="true"
-        app:layout_constraintBottom_toTopOf="@id/registerButton"
+        app:layout_constraintBottom_toTopOf="@id/btn_register_lesson"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideTextView"
+        app:layout_constraintTop_toBottomOf="@id/tv_register_guide"
         app:layout_constraintVertical_bias="0.0">
-
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:orientation="vertical">-->
-
-        <!--            <androidx.recyclerview.widget.RecyclerView-->
-        <!--                android:id="@+id/recyclerView"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginHorizontal="12dp"-->
-        <!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-        <!--                app:layout_constraintTop_toBottomOf="@id/guideTextView" />-->
-
-        <!--        </LinearLayout>-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/siteTextView"
+                android:id="@+id/tv_register_lesson_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -91,20 +76,21 @@
                 tools:visibility="visible" />
 
             <Spinner
-                android:id="@+id/siteSpinner"
+                android:id="@+id/spn_register_lesson_site"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
-                android:background="@drawable/widget_border"
+                android:background="@drawable/shape_widget_border"
                 android:entries="@array/site_array"
                 android:visibility="gone"
+                android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/siteTextView"
+                app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_site"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/categoryTextView"
+                android:id="@+id/tv_register_lesson_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -113,24 +99,25 @@
                 android:textSize="18sp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/siteSpinner"
+                app:layout_constraintTop_toBottomOf="@id/spn_register_lesson_site"
                 tools:visibility="visible" />
 
             <Spinner
-                android:id="@+id/categorySpinner"
+                android:id="@+id/spn_register_lesson_category"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
-                android:background="@drawable/widget_border"
+                android:background="@drawable/shape_widget_border"
                 android:entries="@array/category_array"
                 android:visibility="gone"
+                android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/categoryTextView"
+                app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_category"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/countTextView"
+                android:id="@+id/tv_register_lesson_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -139,26 +126,26 @@
                 android:textSize="18sp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/categorySpinner"
+                app:layout_constraintTop_toBottomOf="@id/spn_register_lesson_category"
                 tools:visibility="visible" />
 
             <EditText
-                android:id="@+id/countEditText"
+                android:id="@+id/et_register_lesson_count"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
-                android:background="@drawable/widget_border"
+                android:background="@drawable/shape_widget_border"
                 android:hint="@string/enter_lesson_count"
                 android:paddingHorizontal="12dp"
                 android:visibility="gone"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/countTextView"
+                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_count"
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/nameTextView"
+                android:id="@+id/tv_register_lesson_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -166,28 +153,27 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/countEditText" />
+                app:layout_constraintTop_toBottomOf="@id/et_register_lesson_count" />
 
             <EditText
-                android:id="@+id/nameEditText"
+                android:id="@+id/et_register_lesson_name"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="12dp"
-                android:background="@drawable/widget_border"
+                android:background="@drawable/shape_widget_border"
                 android:hint="@string/enter_lesson_name"
                 android:paddingHorizontal="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_name" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     </androidx.core.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/btn_register_lesson"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_margin="16dp"

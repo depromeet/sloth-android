@@ -27,7 +27,9 @@ import com.depromeet.sloth.data.network.register.RegisterState
 import com.depromeet.sloth.databinding.ActivityRegisterLesson2Binding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.util.adapter.RegisterAdapter
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.lang.Exception
 import java.text.DecimalFormat
@@ -76,14 +78,13 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
     lateinit var categoryId: Number
     lateinit var endDate: String
     lateinit var lessonName: String
-    lateinit var price: Number
     lateinit var message: String
     lateinit var siteId: Number
     lateinit var startDate: String
     lateinit var totalNumber: Number
 
-    private var startDay: Date? = null
-    private var endDay: Date? = null
+    private var startDay: Long? = null
+    private var endDay: Long? = null
 
     /*
     alertDays 는 일단은 null 로 세팅
@@ -94,7 +95,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
     @RequiresApi(Build.VERSION_CODES.N)
     override fun initViews() = with(binding) {
 
-        toolbar.setNavigationOnClickListener {
+        tbRegisterLesson.setNavigationOnClickListener {
             onBackPressed()
         }
 
@@ -108,128 +109,116 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
         }
 
-        progressbar.progress = 50
-
-        /*val animation = AlphaAnimation(0f, 1f)
-        animation.duration = 300*/
+        pbRegisterLesson.progress = 50
 
         val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson2Activity, R.anim.slide_down)
 
         if (flag == 0) {
-            startDateTextView.setOnClickListener {
+            tvRegisterStartLessonDate.setOnClickListener {
 
-                var calendar: Calendar = Calendar.getInstance()
+                var materialDateBuilder = MaterialDatePicker.Builder.datePicker()
 
-                var datePickerDialog = DatePickerDialog(
-                    this@RegisterLesson2Activity, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                    { view, year, monthOfYear, dayOfMonth ->
-                        try {
-                            val month =
-                                if (monthOfYear + 1 < 10) "0" + (monthOfYear + 1) else (monthOfYear + 1).toString()
-                            val date =
-                                if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth.toString()
-                            val pickedDate = "$year-$month-$date"
+                materialDateBuilder.setTitleText("강의 시작일")
 
-                            startDay = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse(
-                                year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth
-                            )
-                            Log.d("startDay: ", startDay.toString())
+                var materialDatePicker = materialDateBuilder.build()
 
-                            startDate = pickedDate
-                            startDateTextView.text = pickedDate
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                )
+                materialDatePicker.show(supportFragmentManager, "calendar")
 
-                datePickerDialog.datePicker.calendarViewShown = false
-                datePickerDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                datePickerDialog.show()
+                materialDatePicker.addOnPositiveButtonClickListener {
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
-                startAnimation(aniSlide, endDayTextView, endDateTextView)
+                    calendar.time = Date(it)
 
-                flag += 1
+                    val pickerDate = getPickerTime(calendar.time)
 
-                fillProgressbar(flag, 50)
+                    binding.tvRegisterStartLessonDate.text = pickerDate
 
-                hideKeyboard()
+                    startDay = calendar.timeInMillis
+
+                    startDate = pickerDate
+
+                    startAnimation(aniSlide, tvRegisterEndLesson, tvRegisterEndLessonDate)
+                }
+
+                if (flag < 1) {
+                    flag += 1
+
+                    fillProgressbar(flag, 50)
+
+                    hideKeyboard()
+                }
 
                 if (flag == 1) {
-                    endDateTextView.setOnClickListener {
+                    tvRegisterEndLessonDate.setOnClickListener {
 
-                        calendar = Calendar.getInstance()
+                        val constraintsBuilder =
+                            CalendarConstraints.Builder()
+                                .setValidator(DateValidatorPointForward.from(startDay!!))
 
-                        datePickerDialog = DatePickerDialog(
-                            this@RegisterLesson2Activity,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            { _, year, monthOfYear, dayOfMonth ->
-                                try {
-                                    val month =
-                                        if (monthOfYear + 1 < 10) "0" + (monthOfYear + 1) else (monthOfYear + 1).toString()
-                                    val date =
-                                        if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth.toString()
-                                    val pickedDate = "$year-$month-$date"
+                        materialDateBuilder = MaterialDatePicker.Builder.datePicker()
+                            .setCalendarConstraints(constraintsBuilder.build())
 
-                                    endDay =
-                                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(
-                                            year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth
-                                        )
-                                    Log.d("endDate: ", endDay.toString())
+                        materialDatePicker = materialDateBuilder.build()
 
-                                    endDate = pickedDate
-                                    endDateTextView.text = pickedDate
+                        materialDatePicker.show(supportFragmentManager, "calendar")
 
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            },
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH),
-                        )
-                        datePickerDialog.datePicker.minDate = startDay!!.time
-                        datePickerDialog.datePicker.calendarViewShown = false
-                        datePickerDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                        datePickerDialog.show()
+                        materialDatePicker.addOnPositiveButtonClickListener {
+                            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
-                        startAnimation(aniSlide, priceTextView, priceEditText)
+                            calendar.time = Date(it)
 
-                        flag += 1
+                            val pickerDate = getPickerTime(calendar.time)
 
-                        fillProgressbar(flag, 50)
+                            binding.tvRegisterEndLessonDate.text = pickerDate
 
-                        hideKeyboard()
+                            endDay = calendar.timeInMillis
+
+                            endDate = pickerDate
+
+                            if (!tvRegisterLessonPrice.isVisible)
+                                startAnimation(aniSlide, tvRegisterLessonPrice, etRegisterLessonPrice)
+
+                        }
+
+                        if (flag < 2) {
+
+                            flag += 1
+
+                            fillProgressbar(flag, 50)
+
+                            hideKeyboard()
+                        }
 
                         if (flag == 2) {
-                            lockButton(registerButton)
+                            lockButton(btnRegisterLesson)
 
-                            focusInputForm(priceEditText, registerButton)
+                            focusInputForm(etRegisterLessonPrice, btnRegisterLesson)
 
-                            registerButton.setOnClickListener {
+                            btnRegisterLesson.setOnClickListener {
 
-                                price = priceEditText.text.toString().toInt()
+                                //price = priceEditText.text.toString().toInt()
 
-                                val df = DecimalFormat("#,###")
+                                /*val df = DecimalFormat("#,###")
                                 val changedPriceFormat = df.format(price)
 
-                                priceEditText.setText("${changedPriceFormat}원")
+                                priceEditText.setText("${changedPriceFormat}원")*/
 
-                                startAnimation(aniSlide, messageTextView, messageEditText)
+                                startAnimation(aniSlide, tvRegisterLessonMessage, etRegisterLessonMessage)
 
-                                flag += 1
+                                if (flag < 3) {
 
-                                fillProgressbar(flag, 50)
+                                    flag += 1
 
-                                hideKeyboard()
+                                    fillProgressbar(flag, 50)
+
+                                    hideKeyboard()
+                                }
 
                                 if (flag == 3) {
-                                    registerButton.setOnClickListener {
+                                    btnRegisterLesson.setOnClickListener {
 
-                                        message = messageEditText.text.toString()
+                                        message = etRegisterLessonMessage.text.toString()
+
 
                                         val lessonInfo = LessonModel(
                                             alertDays = alertDays,
@@ -237,7 +226,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                             endDate = endDate,
                                             lessonName = lessonName,
                                             message = message,
-                                            price = price.toInt(),
+                                            price = etRegisterLessonPrice.text.toString().toInt(),
                                             siteId = siteId.toInt(),
                                             startDate = startDate,
                                             totalNumber = totalNumber.toInt()
@@ -270,10 +259,10 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
     private fun fillProgressbar(count: Int, default: Int) {
         val animation = ObjectAnimator.ofInt(
-            binding.progressbar,
+            binding.pbRegisterLesson,
             "progress",
-            default + ceil((count - 1) * 12.5).toInt(),
-            default + ceil(count * 12.5).toInt()
+            default + ceil((count - 1) * 16.667).toInt(),
+            default + ceil(count * 16.667).toInt()
         )
 
         animation.duration = 300
@@ -343,5 +332,10 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+    }
+
+    fun getPickerTime(date: Date): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+        return formatter.format(date)
     }
 }

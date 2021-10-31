@@ -48,14 +48,14 @@ class RegisterNicknameActivity :
     lateinit var memberName: String
 
     override fun initViews() = with(binding) {
-        toolbar.setNavigationOnClickListener { finish() }
+        tbRegisterNickname.setNavigationOnClickListener { finish() }
 
         accessToken = pm.getAccessToken().toString()
 
-        focusInputForm(nicknameEditText, registerButton)
+        focusInputForm(etRegisterNickname, btnRegisterNickname)
 
-        registerButton.setOnClickListener {
-            val nickname = nicknameEditText.text.toString()
+        btnRegisterNickname.setOnClickListener {
+            val nickname = etRegisterNickname.text.toString()
 
             if(nickname.isNotEmpty()) {
                 mainScope {
