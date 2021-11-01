@@ -11,4 +11,38 @@
     <string name="menu_today">투데이</string>
     <string name="menu_class">강의목록</string>
     <string name="menu_mypage">마이페이지</string>
+
+    <string name="category">카테고리</string>
+    <string name="category_hint">카테고리 힌트</string>
+    <string name="register_new_lesson">새로운 인강 등록</string>
+    <string name="setup_lecture">어떤 강의를 들으시나요?</string>
+    <string name="next">다음</string>
+    <string name="setup_goal">완강 목표를 설정해 보세요!</string>
+    <string name="register_account_info">계정 정보 등록</string>
+    <string name="welcome">환영합니다!</string>
+    <string name="nickname">닉네임</string>
+    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요.</string>
+
+    <string name="Sun">일</string>
+    <string name="Mon">월</string>
+    <string name="Tue">화</string>
+    <string name="Wed">수</string>
+    <string name="Thu">목</string>
+    <string name="Fri">금</string>
+    <string name="Sat">토</string>
+
+    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요.</string>
+    <string name="lesson_name">강의 이름</string>
+    <string name="enter_lesson_count">강의 개수를 입력해 주세요.</string>
+    <string name="lesson_count">강의 개수</string>
+    <string name="lesson_category">카테고리</string>
+    <string name="lesson_site">강의 사이트</string>
+    <string name="lesson_start">강의 시작일</string>
+    <string name="lesson_end">완강 목표일</string>
+    <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
+    <string name="lesson_price">강의 금액</string>
+    <string name="alert_cycle">푸시 알람 주기</string>
+    <string name="max_30">최대 30자 까지 입력 가능합니다.</string>
+    <string name="message">각오 한마디(선택)</string>
+
 </resources>
