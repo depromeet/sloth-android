@@ -3,15 +3,12 @@ package com.depromeet.sloth.ui
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
@@ -22,20 +19,13 @@ import androidx.core.view.isVisible
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.model.LessonModel
-import com.depromeet.sloth.data.model.RegisterModel
 import com.depromeet.sloth.data.network.register.RegisterState
 import com.depromeet.sloth.databinding.ActivityRegisterLesson2Binding
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.util.adapter.RegisterAdapter
 import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
-import java.lang.Exception
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.ceil
 

@@ -1,7 +1,5 @@
 package com.depromeet.sloth.data.model
 
-import com.google.gson.annotations.SerializedName
-
 data class LessonModel(
     val alertDays: String?,
     val categoryId: Int,
