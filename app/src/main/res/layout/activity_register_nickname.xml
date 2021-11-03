@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="12dp"
-        android:background="@drawable/shape_widget_border"
+        android:background="@drawable/shape_edit_text_border"
         android:hint="@string/nickname_hint"
         android:paddingHorizontal="12dp"
         android:textSize="18sp"
