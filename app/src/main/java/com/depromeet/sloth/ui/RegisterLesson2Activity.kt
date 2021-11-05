@@ -185,8 +185,6 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                         }
 
                         if (flag == 2) {
-                            //lockButton(btnRegisterLesson)
-
                             focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
 
                             btnRegisterLesson.setOnClickListener {
