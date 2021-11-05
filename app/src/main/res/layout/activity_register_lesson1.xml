@@ -10,9 +10,10 @@
         android:id="@+id/tb_register_lesson"
         style="?attr/toolbarWithArrowButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHeight_percent="0.0875"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -36,8 +37,8 @@
         android:id="@+id/tv_register_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginVertical="18dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="30dp"
         android:text="@string/setup_lecture"
         android:textColor="@color/black"
         android:textSize="24sp"
@@ -45,28 +46,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pb_register_lesson" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/nsv_register_lesson"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="30dp"
         android:animateLayoutChanges="true"
         app:layout_constraintBottom_toTopOf="@id/btn_register_lesson"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_register_guide"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@id/tv_register_guide">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_register_lesson_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_marginStart="16dp"
                 android:text="@string/lesson_site"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -78,12 +77,14 @@
             <Spinner
                 android:id="@+id/spn_register_lesson_site"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="12dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_spinner_border"
                 android:entries="@array/site_array"
                 android:visibility="gone"
                 android:spinnerMode="dropdown"
+                android:paddingHorizontal="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_site"
@@ -93,7 +94,8 @@
                 android:id="@+id/tv_register_lesson_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/lesson_category"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -105,11 +107,13 @@
             <Spinner
                 android:id="@+id/spn_register_lesson_category"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="12dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_spinner_border"
                 android:entries="@array/category_array"
                 android:visibility="gone"
+                android:paddingHorizontal="8dp"
                 android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +124,8 @@
                 android:id="@+id/tv_register_lesson_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/lesson_count"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -132,11 +137,12 @@
             <EditText
                 android:id="@+id/et_register_lesson_count"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="12dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_edit_text_border"
                 android:hint="@string/enter_lesson_count"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="16dp"
                 android:visibility="gone"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -148,7 +154,8 @@
                 android:id="@+id/tv_register_lesson_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/lesson_name"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -158,12 +165,13 @@
             <EditText
                 android:id="@+id/et_register_lesson_name"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_margin="12dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_edit_text_border"
                 android:hint="@string/enter_lesson_name"
                 android:inputType="text"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_name" />
@@ -171,12 +179,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <Button
         android:id="@+id/btn_register_lesson"
+        app:layout_constraintHeight_percent="0.0875"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="0dp"
         android:layout_margin="16dp"
         android:text="@string/next"
         android:backgroundTint="@color/gray_300"

@@ -104,7 +104,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
         val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson2Activity, R.anim.slide_down)
 
         if (flag == 0) {
-            tvRegisterStartLessonDate.setOnClickListener {
+            tvRegisterStartLessonDateInfo.setOnClickListener {
 
                 var materialDateBuilder = MaterialDatePicker.Builder.datePicker()
 
@@ -121,13 +121,16 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
                     val pickerDate = getPickerTime(calendar.time)
 
-                    binding.tvRegisterStartLessonDate.text = pickerDate
+                    binding.tvRegisterStartLessonDateInfo.text = pickerDate
 
                     startDay = calendar.timeInMillis
 
                     startDate = pickerDate
 
-                    startAnimation(aniSlide, tvRegisterEndLesson, tvRegisterEndLessonDate)
+                    if (!tvRegisterEndLessonDate.isVisible) {
+
+                        startAnimation(aniSlide, tvRegisterEndLessonDate, tvRegisterEndLessonDateInfo)
+                    }
                 }
 
                 if (flag < 1) {
@@ -139,7 +142,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                 }
 
                 if (flag == 1) {
-                    tvRegisterEndLessonDate.setOnClickListener {
+                    tvRegisterEndLessonDateInfo.setOnClickListener {
 
                         val constraintsBuilder =
                             CalendarConstraints.Builder()
@@ -159,14 +162,14 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
                             val pickerDate = getPickerTime(calendar.time)
 
-                            binding.tvRegisterEndLessonDate.text = pickerDate
+                            binding.tvRegisterEndLessonDateInfo.text = pickerDate
 
                             endDay = calendar.timeInMillis
 
                             endDate = pickerDate
 
                             if (!tvRegisterLessonPrice.isVisible)
-                                startAnimation(aniSlide, tvRegisterLessonPrice, etRegisterLessonPrice)
+                                startAnimation(aniSlide, tvRegisterLessonPrice, etRegisterLessonPriceInfo)
 
                         }
 
@@ -182,7 +185,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                         if (flag == 2) {
                             lockButton(btnRegisterLesson)
 
-                            focusInputForm(etRegisterLessonPrice, btnRegisterLesson)
+                            focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
 
                             btnRegisterLesson.setOnClickListener {
 
@@ -193,7 +196,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
                                 priceEditText.setText("${changedPriceFormat}원")*/
 
-                                startAnimation(aniSlide, tvRegisterLessonMessage, etRegisterLessonMessage)
+                                startAnimation(aniSlide, tvRegisterLessonMessage, etRegisterLessonMessageInfo)
 
                                 if (flag < 3) {
 
@@ -207,7 +210,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                 if (flag == 3) {
                                     btnRegisterLesson.setOnClickListener {
 
-                                        message = etRegisterLessonMessage.text.toString()
+                                        message = etRegisterLessonMessageInfo.text.toString()
 
 
                                         val lessonInfo = LessonModel(
@@ -216,7 +219,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                             endDate = endDate,
                                             lessonName = lessonName,
                                             message = message,
-                                            price = etRegisterLessonPrice.text.toString().toInt(),
+                                            price = etRegisterLessonPriceInfo.text.toString().toInt(),
                                             siteId = siteId.toInt(),
                                             startDate = startDate,
                                             totalNumber = totalNumber.toInt()
@@ -324,7 +327,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
         overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
     }
 
-    fun getPickerTime(date: Date): String {
+    private fun getPickerTime(date: Date): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
         return formatter.format(date)
     }
