@@ -104,6 +104,8 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
         val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson2Activity, R.anim.slide_down)
 
         if (flag == 0) {
+            lockButton(btnRegisterLesson)
+
             tvRegisterStartLessonDateInfo.setOnClickListener {
 
                 var materialDateBuilder = MaterialDatePicker.Builder.datePicker()
@@ -183,7 +185,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
                         }
 
                         if (flag == 2) {
-                            lockButton(btnRegisterLesson)
+                            //lockButton(btnRegisterLesson)
 
                             focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
 
