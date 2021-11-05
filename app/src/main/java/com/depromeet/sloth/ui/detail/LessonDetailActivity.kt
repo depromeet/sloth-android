@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -72,49 +73,13 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                 when (it) {
                     is LessonDetailState.Success -> {
                         Log.d("fetch Success", "${it.data}")
-                        binding.apply {
 
-                            tvDetailLessonCategory.text = it.data.categoryName
-                            pbDetailCurrentLessonProgress.progress = it.data.currentProgressRate
-
-                            startDate = it.data.startDate
-                            startDateInfo = changeDateFormat(startDate)
-
-                            endDate = it.data.endDate
-                            endDateInfo = changeDateFormat(endDate)
-
-                            tvDetailLessonPeriodInfo.text = "$startDateInfo - $endDateInfo"
-                            pbDetailGoalLessonProgress.progress = it.data.goalProgressRate
-                            tvDetailLessonName.text = it.data.lessonName
-                            tvDetailLessonMessageInfo.text = it.data.message
-                            totalNumber = it.data.totalNumber.toString()
-                            tvDetailLessonCountInfo.text = totalNumber
-                            tvDetailLessonPriceInfo.text = it.data.price.toString()
-                            presentNumber = it.data.presentNumber.toString()
-                            tvDetailLessonPresentNumber.text =
-                                "내가 들은 강의: ${totalNumber}개 중 ${presentNumber}개"
-
-                            price = it.data.wastePrice.toString().toInt()
-
-                            val df = DecimalFormat("#,###")
-                            val changedPriceFormat = df.format(price)
-
-                            tvDetailLessonLoseMoneyInfo.text = "${changedPriceFormat}원"
-                            tvDetailLessonEndDate.text = "목표 완강일: $endDateInfo"
-
-                            tvDetailLessonRemainDay.text = "D-${it.data.remainDay}"
-
-                            if (it.data.remainDay <= 10) {
-                                tvDetailLessonWarning.visibility = View.VISIBLE
-                            }
-                        }
+                        initLessonInfo(it.data)
                     }
 
                     is LessonDetailState.Error -> {
                         Log.d("fetch Error", "${it.exception}")
                     }
-
-
                 }
             }
         }
@@ -127,6 +92,55 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         }
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initLessonInfo(data: LessonDetailResponse) {
+        binding.apply {
+
+            tvDetailLessonCategory.text = data.categoryName
+
+            pbDetailCurrentLessonProgress.labelText = "${data.currentProgressRate}%"
+            pbDetailCurrentLessonProgress.progress = data.currentProgressRate.toFloat()
+
+            pbDetailGoalLessonProgress.labelText = "${data.goalProgressRate}%"
+            pbDetailGoalLessonProgress.progress = data.goalProgressRate.toFloat()
+
+            startDate = data.startDate
+            startDateInfo = changeDateFormat(startDate)
+
+            endDate = data.endDate
+            endDateInfo = changeDateFormat(endDate)
+
+            tvDetailLessonPeriodInfo.text = "$startDateInfo - $endDateInfo"
+            tvDetailLessonName.text = data.lessonName
+            tvDetailLessonMessageInfo.text = data.message
+            totalNumber = data.totalNumber.toString()
+            tvDetailLessonCountInfo.text = totalNumber
+
+            presentNumber = data.presentNumber.toString()
+            tvDetailLessonPresentNumber.text =
+                "내가 들은 강의: ${totalNumber}개 중 ${presentNumber}개"
+
+            tvDetailLessonLoseMoneyInfo.text = changeDecimalFormat(data.wastePrice)
+
+            tvDetailLessonPriceInfo.text = changeDecimalFormat(data.price)
+
+            tvDetailLessonEndDate.text = "목표 완강일: $endDateInfo"
+
+            tvDetailLessonRemainDay.text = "D-${data.remainDay}"
+
+            if (data.remainDay <= 10) {
+                tvDetailLessonWarning.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun changeDecimalFormat(data: Int): String {
+        val df = DecimalFormat("#,###")
+        val changedPriceFormat = df.format(data)
+
+        return "${changedPriceFormat}원"
     }
 
     private fun changeDateFormat(date: ArrayList<String>): String {

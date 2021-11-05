@@ -35,4 +35,5 @@
     <string name="lesson_current_number">내가 들은 강의: 24개 중 10개</string>
     <string name="lesson_current_progress">현재 진행률</string>
     <string name="lesson_goal_progress">목표 진행률</string>
+    <string name="sloth_image">sloth_image</string>
 </resources>
