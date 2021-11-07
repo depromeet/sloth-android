@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.home.TodayLessonResponse
+import com.depromeet.sloth.data.network.home.LessonResponse
 
 class TodayLessonAdapter(
     private val bodyType: BodyType
 ) :
-    ListAdapter<TodayLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
+    ListAdapter<LessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
         TodayLessonDiffCallback
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayLessonViewHolder {
@@ -49,7 +49,7 @@ class TodayLessonAdapter(
         private val todayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
 
-        fun onBind(lesson: TodayLessonResponse) {
+        fun onBind(lesson: LessonResponse) {
             init(lesson)
 
             todayLessonPlus.setOnClickListener {
@@ -63,7 +63,7 @@ class TodayLessonAdapter(
             }
         }
 
-        private fun init(lesson: TodayLessonResponse) {
+        private fun init(lesson: LessonResponse) {
             val remainDay = lesson.remainDay //D-day
             todayLessonCategory.text = lesson.categoryName
             todayLessonName.text = lesson.lessonName
@@ -112,8 +112,8 @@ class TodayLessonAdapter(
     }
 
     override fun onCurrentListChanged(
-        previousList: List<TodayLessonResponse?>,
-        currentList: List<TodayLessonResponse?>
+        previousList: List<LessonResponse?>,
+        currentList: List<LessonResponse?>
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
@@ -125,17 +125,17 @@ class TodayLessonAdapter(
     }
 }
 
-object TodayLessonDiffCallback : DiffUtil.ItemCallback<TodayLessonResponse>() {
+object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonResponse>() {
     override fun areItemsTheSame(
-        oldItem: TodayLessonResponse,
-        newItem: TodayLessonResponse
+        oldItem: LessonResponse,
+        newItem: LessonResponse
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: TodayLessonResponse,
-        newItem: TodayLessonResponse
+        oldItem: LessonResponse,
+        newItem: LessonResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName
     }

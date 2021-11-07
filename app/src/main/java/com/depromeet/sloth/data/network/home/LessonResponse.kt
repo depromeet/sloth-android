@@ -19,7 +19,7 @@ package com.depromeet.sloth.data.network.home
  *   "totalNumber": 0
  */
 
-data class TodayLessonResponse (
+data class LessonResponse (
     var categoryName: String = "",
     var currentProgressRate: Int = 0,
     var endDate: String = "",
