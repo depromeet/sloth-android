@@ -116,6 +116,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
+                                loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
                                 loginListener.onSuccess()
                             }
                             is LoginState.Error -> {
@@ -146,6 +147,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
+                                loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
                                 loginListener.onSuccess()
                             }
                             is LoginState.Error -> {
