@@ -41,8 +41,4 @@ object ServiceGenerator {
 
         return retrofit
     }
-
-    fun <S> Retrofit.createService(
-        serviceClass: Class<S>
-    ): S = retrofit.create(serviceClass)
 }

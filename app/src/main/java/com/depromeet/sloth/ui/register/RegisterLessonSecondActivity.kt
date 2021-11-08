@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.register
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -20,7 +20,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.register.RegisterState
-import com.depromeet.sloth.databinding.ActivityRegisterLesson2Binding
+import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
@@ -29,13 +29,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
 
-class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegisterLesson2Binding>() {
+class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
 
     override val viewModel: RegisterViewModel
         get() = RegisterViewModel()
 
-    override fun getViewBinding(): ActivityRegisterLesson2Binding =
-        ActivityRegisterLesson2Binding.inflate(layoutInflater)
+    override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
+        ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
 
     private val pm = PreferenceManager(this)
 
@@ -49,7 +49,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
             totalNumber: Int,
             categoryId: Int,
             siteId: Int
-        ) = Intent(activity, RegisterLesson2Activity::class.java).apply {
+        ) = Intent(activity, RegisterLessonSecondActivity::class.java).apply {
             putExtra(LESSON_NAME, lessonName)
             putExtra(TOTAL_NUMBER, totalNumber)
             putExtra(CATEGORY_ID, categoryId)
@@ -101,7 +101,7 @@ class RegisterLesson2Activity : BaseActivity<RegisterViewModel, ActivityRegister
 
         pbRegisterLesson.progress = 50
 
-        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson2Activity, R.anim.slide_down)
+        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonSecondActivity, R.anim.slide_down)
 
         if (flag == 0) {
             lockButton(btnRegisterLesson)

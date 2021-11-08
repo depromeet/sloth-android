@@ -4,25 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.LoginActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.login.LoginActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/kakao_login"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_login_title_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/kakao_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/google_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="44dp"
+        android:ellipsize="marquee"
+        android:gravity="top"
+        android:lineSpacingExtra="6sp"
+        android:maxLines="2"
+        android:text="@string/title_main"
+        android:textSize="28sp"
+        android:translationY="-2.8sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_goneMarginTop="44dp" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_login_title_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="12dp"
+        android:gravity="top"
+        android:lineSpacingExtra="3sp"
+        android:text="@string/title_sub"
+        android:textSize="14sp"
+        android:translationY="-1.4sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_login_title_main" />
+
+    <View
+        android:layout_width="154dp"
+        android:layout_height="184dp"
+        android:background="@drawable/ic_login_sloth"
+        app:layout_constraintBottom_toTopOf="@id/btn_login_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_login_title_sub"
+        app:layout_constraintVertical_bias="0.55" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login_start"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="24dp"
+        android:background="@drawable/bg_login_policy_rounded_sloth"
+        android:lineSpacingExtra="3sp"
+        android:text="나나공 시작하기"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:translationY="-1.6sp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

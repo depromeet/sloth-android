@@ -172,4 +172,17 @@ class PreferenceManager(
     fun getAccessToken(): String? {
         return prefs.getString(ACCESS_TOKEN, null)
     }
+
+    fun getRefreshToken(): String? {
+        return prefs.getString(REFRESH_TOKEN, null)
+    }
+
+    fun getIdToken(): String? {
+        return prefs.getString(ID_TOKEN, null)
+    }
+
+    fun removeIdToken() {
+        editor.putString(ID_TOKEN, null)
+        editor.apply()
+    }
 }
