@@ -18,9 +18,9 @@ class PreferenceManager(
         private const val DEFAULT_VALUE_LONG = -1L
         private const val DEFAULT_VALUE_FLOAT = -1f
 
-        const val KEY_ID_TOKEN = "ID_TOKEN"
-        const val KEY_ACCESS_TOKEN = "ACCESS_TOKEN"
-        const val KEY_REFRESH_TOKEN = "REFRESH_TOKEN"
+        const val ID_TOKEN = "idToken"
+        const val ACCESS_TOKEN = "accessToken"
+        const val REFRESH_TOKEN = "refreshToken"
     }
 
     private fun getPreferences(context: Context): SharedPreferences {
@@ -33,7 +33,6 @@ class PreferenceManager(
 
     /**
      * String 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -44,7 +43,6 @@ class PreferenceManager(
 
     /**
      * boolean 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -55,7 +53,6 @@ class PreferenceManager(
 
     /**
      * int 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -66,7 +63,6 @@ class PreferenceManager(
 
     /**
      * long 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -77,7 +73,6 @@ class PreferenceManager(
 
     /**
      * float 값 저장
-     * @param context
      * @param key
      * @param value
      */
@@ -88,7 +83,6 @@ class PreferenceManager(
 
     /**
      * String 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -98,7 +92,6 @@ class PreferenceManager(
 
     /**
      * boolean 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -108,7 +101,6 @@ class PreferenceManager(
 
     /**
      * int 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -118,7 +110,6 @@ class PreferenceManager(
 
     /**
      * long 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -128,7 +119,6 @@ class PreferenceManager(
 
     /**
      * float 값 로드
-     * @param context
      * @param key
      * @return
      */
@@ -138,7 +128,6 @@ class PreferenceManager(
 
     /**
      * 키 값 삭제
-     * @param context
      * @param key
      */
     fun removeKey(key: String?) {
@@ -148,38 +137,52 @@ class PreferenceManager(
 
     /**
      * 모든 저장 데이터 삭제
-     * @param context
      */
     fun clear() {
         editor.clear()
         editor.apply()
     }
 
+    /**
+     * accessToken 저장
+     * @param accessToken
+     */
     fun putAccessToken(accessToken: String) {
-        editor.putString(KEY_ACCESS_TOKEN, accessToken)
+        editor.putString(ACCESS_TOKEN, accessToken)
         editor.apply()
     }
 
+    /**
+     * accessToken, refreshToken (인증 토큰) 저장
+     *
+     * @param accessToken
+     * @param refreshToken
+     */
     fun putAuthToken(accessToken: String, refreshToken: String) {
-        editor.putString(KEY_ACCESS_TOKEN, accessToken)
-        editor.putString(KEY_REFRESH_TOKEN, refreshToken)
+        editor.putString(ACCESS_TOKEN, accessToken)
+        editor.putString(REFRESH_TOKEN, refreshToken)
         editor.apply()
     }
 
+    /**
+     * 저장한 accessToken 로드
+     *
+     * @return
+     */
     fun getAccessToken(): String? {
-        return prefs.getString(KEY_ACCESS_TOKEN, null)
+        return prefs.getString(ACCESS_TOKEN, null)
     }
 
     fun getRefreshToken(): String? {
-        return prefs.getString(KEY_REFRESH_TOKEN, null)
+        return prefs.getString(REFRESH_TOKEN, null)
     }
 
     fun getIdToken(): String? {
-        return prefs.getString(KEY_ID_TOKEN, null)
+        return prefs.getString(ID_TOKEN, null)
     }
 
     fun removeIdToken() {
-        editor.putString(KEY_ID_TOKEN, null)
+        editor.putString(ID_TOKEN, null)
         editor.apply()
     }
 }
