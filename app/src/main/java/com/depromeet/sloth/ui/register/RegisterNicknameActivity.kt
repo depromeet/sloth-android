@@ -1,31 +1,21 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.register
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import com.depromeet.sloth.databinding.ActivityRegisterNicknameBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.login.LoginSlothResponse
-import com.depromeet.sloth.data.network.login.LoginState
 import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberInfoState
 import com.depromeet.sloth.data.network.register.RegisterState
-import android.widget.DatePicker
 
-import android.app.DatePickerDialog.OnDateSetListener
-
-import android.app.DatePickerDialog
 import com.depromeet.sloth.data.db.PreferenceManager
-import java.lang.Exception
 import java.util.*
 
 

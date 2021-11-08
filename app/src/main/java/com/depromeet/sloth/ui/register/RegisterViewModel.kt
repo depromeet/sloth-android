@@ -1,13 +1,11 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.register
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.member.MemberInfoRepository
 import com.depromeet.sloth.data.network.register.RegisterRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class RegisterViewModel: BaseViewModel() {
     private val registerRepository = RegisterRepository()

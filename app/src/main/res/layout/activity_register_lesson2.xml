@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.RegisterLesson2Activity">
+    tools:context=".ui.register.RegisterLessonSecondActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_register_lesson"

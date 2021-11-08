@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.register
 
 import android.animation.ObjectAnimator
 import android.os.Build
@@ -20,7 +20,7 @@ import kotlin.math.ceil
 import java.util.*
 
 
-class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegisterLesson1Binding>() {
+class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLesson1Binding>() {
 
     override val viewModel: RegisterViewModel
         get() = RegisterViewModel()
@@ -46,7 +46,7 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
         /*val animation = AlphaAnimation(0f, 1f)
         animation.duration = 300*/
 
-        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLesson1Activity, R.anim.slide_down)
+        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonFirstActivity, R.anim.slide_down)
 
         if (flag == 0) {
             lockButton(btnRegisterLesson)
@@ -195,10 +195,11 @@ class RegisterLesson1Activity : BaseActivity<RegisterViewModel, ActivityRegister
                                                             )
 
                                                             startActivity(
-                                                                RegisterLesson2Activity.newIntent(
-                                                                    this@RegisterLesson1Activity,
+                                                                RegisterLessonSecondActivity.newIntent(
+                                                                    this@RegisterLessonFirstActivity,
                                                                     etRegisterLessonName.text.toString(),
-                                                                    etRegisterLessonCount.text.toString().toInt(),
+                                                                    etRegisterLessonCount.text.toString()
+                                                                        .toInt(),
                                                                     categoryId as Int + siteArraySize as Int,
                                                                     siteId as Int
                                                                 )
