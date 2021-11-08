@@ -20,7 +20,11 @@ import kotlin.math.ceil
 import java.util.*
 
 
+<<<<<<< HEAD:app/src/main/java/com/depromeet/sloth/ui/register/RegisterLessonFirstActivity.kt
 class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
+=======
+class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLesson1Binding>() {
+>>>>>>> 3e53aba3f5680cb8c0761ab6246b1046e04436d5:app/src/main/java/com/depromeet/sloth/ui/RegisterLesson1Activity.kt
 
     override val viewModel: RegisterViewModel
         get() = RegisterViewModel()
