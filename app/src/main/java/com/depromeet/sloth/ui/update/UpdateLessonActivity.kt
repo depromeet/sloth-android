@@ -3,6 +3,7 @@ package com.depromeet.sloth.ui.update
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,11 +12,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.view.ViewGroup
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatButton
 import androidx.room.Update
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
@@ -44,6 +45,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
     lateinit var lessonId: String
 
+
     companion object {
         fun newIntent(activity: Activity,lessonId: String, lessonModel: LessonModel) = Intent(activity, UpdateLessonActivity::class.java).apply {
             putExtra(LESSON_ID, lessonId)
@@ -53,6 +55,12 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         private const val LESSON_ID = "lessonId"
         private const val LESSON_MODEL = "lessonModel"
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initViews()
     }
 
     override fun initViews() = with(binding) {
@@ -69,6 +77,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         lessonId = "74"
 
 
+        /*test*/
         lessonModel = LessonModel(
             alertDays = null,
             categoryId = 11,
@@ -131,35 +140,33 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun unlockButton(button: Button) {
+    private fun unlockButton(button: AppCompatButton) {
         button.isEnabled = true
-        button.setBackgroundColor(
-            resources.getColor(
-                R.color.primary_500,
-                theme
-            )
+        button.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.bg_login_policy_rounded_sloth
         )
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun lockButton(button: Button) {
+    private fun lockButton(button: AppCompatButton) {
         button.isEnabled = false
-        button.setBackgroundColor(
-            resources.getColor(
-                R.color.gray_300,
-                theme
-            )
+        button.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.bg_login_policy_rounded_gray
         )
     }
 
-    private fun focusInputForm(editText: EditText, button: Button) {
+    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
@@ -172,7 +179,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         })
     }
 
-    private fun focusSpinnerForm(spinner: Spinner, button: Button) {
+    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val spinnerId = spinner.selectedItemPosition
