@@ -2,9 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.Sloth" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <item name="toolbarStyle">@style/Widget.Sloth.Toolbar</item>
-        <item name="toolbarWithArrowButtonStyle">@style/Widget.Sloth.Toolbar.WithArrow</item>
-
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_500</item>
         <item name="colorPrimaryVariant">@color/primary_700</item>
@@ -18,7 +15,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.Sloth.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Sloth.NoActionBar" parent="Theme.Sloth">
+        <item name="toolbarStyle">@style/Widget.Sloth.Toolbar</item>
+        <item name="toolbarWithArrowButtonStyle">@style/Widget.Sloth.Toolbar.WithArrow</item>
+
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
