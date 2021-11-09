@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -53,10 +54,11 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     }
 
-    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun initViews() = with(binding) {
-        tbDetailLesson.setNavigationOnClickListener { finish() }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initViews()
 
         accessToken = pm.getAccessToken().toString()
 
@@ -84,11 +86,20 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             }
         }
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun initViews() = with(binding) {
+        tbDetailLesson.setNavigationOnClickListener { finish() }
+
+
         btnDetailLessonUpdate.setOnClickListener {
-            //intent, lessonId
+            //UpdateLessonActivity.newIntent(this, lessonId, lessonModel)
         }
 
         btnDetailLessonRemove.setOnClickListener {
+            //dialog, remove api
 
         }
 
