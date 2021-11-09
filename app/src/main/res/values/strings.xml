@@ -11,4 +11,9 @@
     <string name="menu_today">투데이</string>
     <string name="menu_class">강의목록</string>
     <string name="menu_mypage">마이페이지</string>
+    <string name="profile_name">이름</string>
+    <string name="profile_email">xxx@gmail.com</string>
+    <string name="finish">완료</string>
+    <string name="member_name">이름</string>
+    <string name="profile_image">profileImage</string>
 </resources>

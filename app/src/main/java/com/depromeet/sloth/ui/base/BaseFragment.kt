@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.Job
 
@@ -38,9 +39,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
         observeData()
     }
 
+    fun mainScope(block: suspend () -> Unit) {
+        lifecycleScope.launchWhenCreated {
+            block.invoke()
+        }
+    }
+
     open fun initViews() = Unit
 
-    abstract fun observeData()
+    open fun observeData() = Unit
 
     override fun onDestroy() {
         if (fetchJob.isActive) {
