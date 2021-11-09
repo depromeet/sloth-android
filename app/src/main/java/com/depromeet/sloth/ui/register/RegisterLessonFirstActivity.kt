@@ -37,16 +37,15 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
     lateinit var siteArraySize: Number
 
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun initViews() = with(binding) {
+        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonFirstActivity, R.anim.slide_down)
+
         tbRegisterLesson.setNavigationOnClickListener { finish() }
 
-        Log.d("currentSiteId", currentSiteId.toString())
-
         /*val animation = AlphaAnimation(0f, 1f)
-        animation.duration = 300*/
-
-        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonFirstActivity, R.anim.slide_down)
+        animation.duration = 500*/
 
         if (flag == 0) {
             lockButton(btnRegisterLesson)
