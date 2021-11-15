@@ -34,7 +34,10 @@ class HeaderAdapter(
 
     enum class HeaderType(val title: String) {
         FINISHED("이번주 완료한 강의"),
-        NOT_FINISHED("이번주 들어야하는 강의")
+        NOT_FINISHED("이번주 들어야하는 강의"),
+        DOING("진행중인 강의"),
+        PLANNING("예정된 강의"),
+        PASSED("지난 강의")
     }
 
     companion object {
