@@ -19,7 +19,8 @@
         <activity
             android:name=".ui.register.RegisterNicknameActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+        </activity>
 
         <activity
             android:name=".ui.register.RegisterLessonFirstActivity"

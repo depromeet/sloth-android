@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberInfoState
@@ -96,32 +98,33 @@ class RegisterNicknameActivity :
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun unlockButton(button: Button) {
+    private fun unlockButton(button: AppCompatButton) {
         button.isEnabled = true
-        button.setBackgroundColor(
-            resources.getColor(
-                R.color.primary_500,
-                theme
-            )
+        button.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.bg_login_policy_rounded_sloth
         )
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun lockButton(button: Button) {
+    private fun lockButton(button: AppCompatButton) {
         button.isEnabled = false
-        button.setBackgroundColor(
-            resources.getColor(
-                R.color.gray_300,
-                theme
-            )
+        button.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.bg_login_policy_rounded_gray
         )
     }
 
-    private fun focusInputForm(editText: EditText, button: Button) {
+    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
@@ -133,4 +136,5 @@ class RegisterNicknameActivity :
             }
         })
     }
+
 }
