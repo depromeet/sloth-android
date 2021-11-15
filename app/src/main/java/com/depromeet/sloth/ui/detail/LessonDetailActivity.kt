@@ -7,12 +7,16 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.room.Delete
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DecimalFormat
 
 class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonDetailBinding>() {
@@ -40,9 +44,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
     lateinit var startDateInfo: String
 
     lateinit var endDateInfo: String
-
-    lateinit var price: Number
-
 
     companion object {
         fun newIntent(activity: Activity, lessonId: String) =
@@ -94,15 +95,39 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         tbDetailLesson.setNavigationOnClickListener { finish() }
 
 
-        btnDetailLessonUpdate.setOnClickListener {
+        btnDetailUpdateLesson.setOnClickListener {
             //UpdateLessonActivity.newIntent(this, lessonId, lessonModel)
         }
 
-        btnDetailLessonRemove.setOnClickListener {
-            //dialog, remove api
-
+        btnDetailDeleteLesson.setOnClickListener {
+            MaterialAlertDialogBuilder(this@LessonDetailActivity)
+                .setMessage(getString(R.string.delete_dialog_message))
+                .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                    deleteLesson(accessToken, lessonId)
+                    Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                    finish() /*화면 종료*/
+                }
+                .show()
         }
 
+    }
+
+    private fun deleteLesson(accessToken: String, lessonId: String) {
+        mainScope {
+            viewModel.deleteLesson(accessToken = accessToken, lessonId = lessonId).let {
+                when(it) {
+                    is LessonDetailState.Success<*> -> {
+                        Log.d("Delete Success", "${it.data}")
+                    }
+                    is LessonDetailState.Error -> {
+                        Log.d("Delete Error", "${it.exception}")
+                    }
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")

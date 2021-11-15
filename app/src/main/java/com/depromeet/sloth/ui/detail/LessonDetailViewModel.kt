@@ -14,4 +14,8 @@ class LessonDetailViewModel: BaseViewModel() {
     suspend fun fetchLessonDetailInfo(accessToken: String, lessonId: String) = viewModelScope.async {
         lessonDetailRepository.fetchLessonDetailInfo(accessToken, lessonId)
     }.await()
+
+    suspend fun deleteLesson(accessToken: String, lessonId: String) = viewModelScope.async {
+        lessonDetailRepository.deleteLesson(accessToken, lessonId)
+    }.await()
 }

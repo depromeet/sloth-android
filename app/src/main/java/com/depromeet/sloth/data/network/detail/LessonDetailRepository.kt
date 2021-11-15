@@ -24,4 +24,22 @@ class LessonDetailRepository {
                 )
             } ?: return LessonDetailState.Error(Exception("Retrofit Exception"))
     }
+
+    suspend fun deleteLesson(
+        accessToken: String,
+        lessonId: String
+    ): LessonDetailState<DeleteLessonResponse> {
+        ServiceGenerator.setBuilderOptions(
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
+            authToken = accessToken
+        )
+            .create(LessonDetailService::class.java)
+            .deleteLesson(
+                lessonId,
+            )?.run {
+                return LessonDetailState.Success(
+                    this.body() ?: DeleteLessonResponse()
+                )
+            } ?: return LessonDetailState.Error(Exception("Retrofit Exception"))
+    }
 }

@@ -316,7 +316,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
                 <Button
-                    android:id="@+id/btn_detail_lesson_update"
+                    android:id="@+id/btn_detail_update_lesson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="38dp"
@@ -421,7 +421,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
                 <Button
-                    android:id="@+id/btn_detail_lesson_remove"
+                    android:id="@+id/btn_detail_delete_lesson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="335dp"
