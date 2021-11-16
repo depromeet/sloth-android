@@ -29,11 +29,13 @@
         android:background="@drawable/bg_home_today_item_rounded_category_gray"
         android:gravity="center_vertical|center_horizontal"
         android:text="개발"
+        android:textColor="@color/black"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/tv_class_lesson_remain"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_today_lesson_name"
+        android:id="@+id/tv_class_lesson_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -54,7 +56,7 @@
         android:textSize="12sp"
         android:translationY="-1.2sp"
         app:layout_constraintStart_toStartOf="@id/tv_class_lesson_remain"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_class_lesson_name" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_class_lesson_price"
@@ -69,7 +71,7 @@
         android:textStyle="bold"
         android:translationY="-1.2sp"
         app:layout_constraintStart_toEndOf="@id/tv_class_lesson_price_start"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_class_lesson_name" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_class_lesson_price_end"
@@ -82,7 +84,7 @@
         android:textStyle="bold"
         android:translationY="-1.2sp"
         app:layout_constraintStart_toEndOf="@id/tv_class_lesson_price"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_class_lesson_name" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vw_class_lesson_goal_text"
@@ -108,18 +110,39 @@
         app:layout_constraintStart_toStartOf="@id/pb_class_lesson_bar"
         app:layout_constraintTop_toTopOf="@id/pb_class_lesson_bar" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_class_lesson_goal_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_class_goal_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:text="40%"
-        android:textColor="@color/white"
-        android:textSize="12sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/pb_class_lesson_bar"
         app:layout_constraintEnd_toEndOf="@id/vw_class_lesson_goal_line"
-        app:layout_constraintTop_toTopOf="@id/pb_class_lesson_bar" />
+        app:layout_constraintTop_toTopOf="@id/pb_class_lesson_bar">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_class_lesson_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="40"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_class_lesson_goal_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_class_lesson_goal_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/pb_class_lesson_bar"
@@ -129,8 +152,10 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="20dp"
+        android:max="10000"
         android:progressDrawable="@drawable/pg_home_class_lesson"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_class_lesson_price_start" />
 
@@ -150,9 +175,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:text="60%"
+        android:text="60"
         android:textColor="@color/sloth"
         app:layout_constraintStart_toEndOf="@id/tv_class_lesson_percent_start"
+        app:layout_constraintTop_toBottomOf="@id/pb_class_lesson_bar" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_class_lesson_percent_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="%"
+        android:textColor="@color/sloth"
+        app:layout_constraintStart_toEndOf="@id/tv_class_lesson_percent"
         app:layout_constraintTop_toBottomOf="@id/pb_class_lesson_bar" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -162,7 +197,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:text="남았어요"
-        app:layout_constraintStart_toEndOf="@id/tv_class_lesson_percent"
+        app:layout_constraintStart_toEndOf="@id/tv_class_lesson_percent_text"
         app:layout_constraintTop_toBottomOf="@id/pb_class_lesson_bar" />
 
     <androidx.appcompat.widget.AppCompatTextView
