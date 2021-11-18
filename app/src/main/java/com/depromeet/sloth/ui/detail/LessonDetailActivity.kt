@@ -6,17 +6,17 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.widget.Button
 import androidx.annotation.RequiresApi
-import androidx.room.Delete
+import androidx.appcompat.app.AlertDialog
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DecimalFormat
 
 class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonDetailBinding>() {
@@ -45,6 +45,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var endDateInfo: String
 
+    //lateinit var dlg: LessonDeleteDialog
+
     companion object {
         fun newIntent(activity: Activity, lessonId: String) =
             Intent(activity, LessonDetailActivity::class.java).apply {
@@ -69,7 +71,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         }*/
 
         /*test*/
-        lessonId = "80"
+        lessonId = "47970"
 
         mainScope {
             viewModel.fetchLessonDetailInfo(accessToken = accessToken, lessonId = lessonId).let {
@@ -86,7 +88,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                 }
             }
         }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -100,17 +101,13 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         }
 
         btnDetailDeleteLesson.setOnClickListener {
-            MaterialAlertDialogBuilder(this@LessonDetailActivity)
-                .setMessage(getString(R.string.delete_dialog_message))
-                .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+            val dlg = LessonDeleteDialog(this@LessonDetailActivity)
+            dlg.listener = object: LessonDeleteDialog.LessonDeleteDialogClickedListener {
+                override fun onDeleteClicked() {
                     deleteLesson(accessToken, lessonId)
-                    Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish() /*화면 종료*/
                 }
-                .show()
+            }
+            dlg.start()
         }
 
     }
