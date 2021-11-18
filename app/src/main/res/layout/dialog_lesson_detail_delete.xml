@@ -4,7 +4,7 @@
     android:layout_width="312dp"
     android:layout_height="200dp"
     android:layout_gravity="center"
-    android:background="@drawable/bg_menu_rounded">
+    android:background="@drawable/bg_dialog_rounded">
 
     <ImageView
         android:id="@+id/iv_detail"
