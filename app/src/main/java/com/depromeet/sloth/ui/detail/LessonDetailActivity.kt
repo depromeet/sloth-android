@@ -131,13 +131,48 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
     private fun initLessonInfo(data: LessonDetailResponse) {
         binding.apply {
 
-            tvDetailLessonCategory.text = data.categoryName
-
+            /*현재 진행율 */
             pbDetailCurrentLessonProgress.labelText = "${data.currentProgressRate}%"
             pbDetailCurrentLessonProgress.progress = data.currentProgressRate.toFloat()
 
+            /*목표 진행율 */
             pbDetailGoalLessonProgress.labelText = "${data.goalProgressRate}%"
             pbDetailGoalLessonProgress.progress = data.goalProgressRate.toFloat()
+
+            /*강의 요약*/
+            if(data.currentProgressRate >= data.goalProgressRate) {
+                tvDetailLessonSummary.setText(R.string.mission_success)
+            }
+            else {
+                tvDetailLessonSummary.setText(R.string.mission_fail)
+            }
+
+            /*현재 내가 날린 돈*/
+            tvDetailLessonLoseMoneyInfo.text = changeDecimalFormat(data.wastePrice)
+
+            /*남은 날짜*/
+            tvDetailLessonRemainDay.text = "D-${data.remainDay}"
+
+            /*마감 임박*/
+            if (data.remainDay <= 10) {
+                tvDetailLessonWarning.visibility = View.VISIBLE
+            }
+
+            /*강의 카테고리*/
+            tvDetailLessonCategory.text = data.categoryName
+
+            /*강의 사이트*/
+            tvDetailLessonSite.text = data.siteName
+
+            totalNumber = data.totalNumber.toString()
+
+            /*내가 들은 강의*/
+            presentNumber = data.presentNumber.toString()
+            tvDetailLessonPresentNumberInfo.text =
+                " ${totalNumber}개 중 ${presentNumber}개"
+
+            /*강의 개수*/
+            tvDetailLessonCountInfo.text = totalNumber
 
             startDate = data.startDate
             startDateInfo = changeDateFormat(startDate)
@@ -145,27 +180,18 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             endDate = data.endDate
             endDateInfo = changeDateFormat(endDate)
 
-            tvDetailLessonPeriodInfo.text = "$startDateInfo - $endDateInfo"
+            /*목표 완강일*/
+            tvDetailLessonEndDateInfo.text = " $endDateInfo"
+
+            /*완강 목표일*/
+            tvDetailLessonPeriodInfo.text = " $startDateInfo - $endDateInfo"
             tvDetailLessonName.text = data.lessonName
-            tvDetailLessonMessageInfo.text = data.message
-            totalNumber = data.totalNumber.toString()
-            tvDetailLessonCountInfo.text = totalNumber
 
-            presentNumber = data.presentNumber.toString()
-            tvDetailLessonPresentNumber.text =
-                "내가 들은 강의: ${totalNumber}개 중 ${presentNumber}개"
-
-            tvDetailLessonLoseMoneyInfo.text = changeDecimalFormat(data.wastePrice)
-
+            /*강의 금액*/
             tvDetailLessonPriceInfo.text = changeDecimalFormat(data.price)
 
-            tvDetailLessonEndDate.text = "목표 완강일: $endDateInfo"
-
-            tvDetailLessonRemainDay.text = "D-${data.remainDay}"
-
-            if (data.remainDay <= 10) {
-                tvDetailLessonWarning.visibility = View.VISIBLE
-            }
+            /*각오 한 마디*/
+            tvDetailLessonMessageInfo.text = data.message
         }
     }
 

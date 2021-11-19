@@ -16,7 +16,7 @@
     <string name="lesson_info">강의 정보</string>
     <string name="lesson_price">금액</string>
     <string name="lesson_price_info">250,000원</string>
-    <string name="lesson_end_date_info">2021.10.24 – 2021.12.24</string>
+    <string name="lesson_period_date_info">2021.10.24 – 2021.12.24</string>
     <string name="lesson_message">각오 한마디</string>
     <string name="lesson_message_info">완강까지 열심히 달려보자!</string>
     <string name="remove">삭제하기</string>
@@ -24,15 +24,16 @@
     <string name="lesson_count_info">24강</string>
     <string name="lesson_count">강의 개수</string>
     <string name="lesson_name_info">프로그래밍 시작하기 : 파이썬 입문(Inflearn Original)</string>
-    <string name="misson_fail">목표를 채우지 못했어요!</string>
+    <string name="mission_fail">목표를 채우지 못했어요!</string>
+    <string name="mission_success">꾸준히 듣고 있는 중이에요!</string>
     <string name="waste_money">현재 내가 날린 돈</string>
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
     <string name="develop">개발</string>
     <string name="inflearn">인프런</string>
     <string name="lesson_progress">강의 진행률</string>
-    <string name="lesson_goal_date">목표 완강일: 2021.12.24</string>
-    <string name="lesson_current_number">내가 들은 강의: 24개 중 10개</string>
+    <string name="lesson_goal_date">목표 완강일:</string>
+    <string name="lesson_present_number">내가 들은 강의:</string>
     <string name="lesson_current_progress">현재 진행률</string>
     <string name="lesson_goal_progress">목표 진행률</string>
     <string name="sloth_image">sloth_image</string>
@@ -42,4 +43,6 @@
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
+    <string name="lesson_goal_date_info">2021. 12. 24</string>
+    <string name="lesson_present_number_info">24개 중 10개</string>
 </resources>

@@ -14,11 +14,11 @@ class LessonDeleteDialog(context: Context) {
     lateinit var btnDelete: Button
     lateinit var btnCancel: Button
 
+    private val dlg = Dialog(context)
+
     interface LessonDeleteDialogClickedListener {
         fun onDeleteClicked()
     }
-
-    private val dlg = Dialog(context)
 
     fun start() {
         /*타이틀바 제거*/
