@@ -31,8 +31,8 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true">
-
         </activity>
+
         <activity android:name=".ui.test.TestActivity" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

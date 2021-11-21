@@ -11,11 +11,21 @@
         style="?attr/toolbarWithArrowButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="#F9FAF9"
+        android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="#F9FAF9"
-        >
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_detail_update_lesson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:text="@string/update"
+            android:textColor="@color/gray_600"
+            android:textSize="16sp" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -46,8 +56,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
                     android:layout_marginTop="40dp"
-                    android:src="@drawable/ic_detail_sloth"
                     android:contentDescription="@string/sloth_image"
+                    android:src="@drawable/ic_detail_sloth"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -361,19 +371,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_detail_update_lesson"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="38dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_detail_rounded_gray"
-                    android:text="@string/update"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
-
                 <TextView
                     android:id="@+id/tv_detail_lesson_count"
                     android:layout_width="wrap_content"
@@ -472,15 +469,16 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_detail_delete_lesson"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="335dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_detail_rounded_caution"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/bg_detail_rounded_gray"
                     android:text="@string/remove"
-                    android:textColor="@color/white"
+                    android:textColor="@color/gray_500"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_message_info" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
