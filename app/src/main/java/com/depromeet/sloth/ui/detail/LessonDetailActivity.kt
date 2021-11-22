@@ -3,12 +3,14 @@ package com.depromeet.sloth.ui.detail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
@@ -154,6 +156,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             /*마감 임박*/
             if (data.remainDay <= 10) {
                 tvDetailLessonWarning.visibility = View.VISIBLE
+                tvDetailLessonRemainDay.setTextColor(ContextCompat.getColor(this@LessonDetailActivity, R.color.error))
             }
 
             /*강의 카테고리*/
