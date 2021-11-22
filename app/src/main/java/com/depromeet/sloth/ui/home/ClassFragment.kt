@@ -1,10 +1,12 @@
 package com.depromeet.sloth.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.network.home.LessonResponse
+import com.depromeet.sloth.data.network.home.LessonState
+import com.depromeet.sloth.data.network.home.AllLessonResponse
 import com.depromeet.sloth.databinding.FragmentClassBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import java.text.SimpleDateFormat
@@ -22,12 +24,42 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var lessonList = listOf<AllLessonResponse>()
+
+        mainScope {
+            preferenceManager.getAccessToken()?.run {
+                viewModel.fetchLessonAllList(
+                    accessToken = this
+                ).let {
+                    when (it) {
+                        is LessonState.Success<List<AllLessonResponse>> -> {
+                            lessonList = it.data
+                            //등록된 리스트를 불러온 후에 어댑터와 연결하는 작업 필요함
+                        }
+                        is LessonState.Error -> {
+                            Log.d("Error", "${it.exception}")
+                        }
+                        is LessonState.Unauthorized -> {
+                            //정책 확인 필요
+                            Log.d("Error", "Unauthorized")
+                        }
+                        is LessonState.NotFound -> {
+                            Log.d("Error", "NotFound")
+                        }
+                        is LessonState.Forbidden -> {
+                            Log.d("Error", "Forbidden")
+                        }
+                    }
+                }
+            }
+        }
+
         setTestData()
     }
 
     private fun setTestData() {
-        val dummyList = listOf<LessonResponse>(
-            LessonResponse(
+        val dummyList = listOf<AllLessonResponse>(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nScala 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 8,
@@ -37,7 +69,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2021-08-19 10:12:14",
                 endDate = "2021-11-24 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nKotlin 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 0,
@@ -47,7 +79,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2021-12-22 10:12:14",
                 endDate = "2022-11-11 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nC++ 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 0,
@@ -57,7 +89,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2022-01-12 10:12:14",
                 endDate = "2022-11-24 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nPython 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 6,
@@ -67,7 +99,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2021-11-10 10:12:14",
                 endDate = "2021-12-24 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nGolang 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 8,
@@ -77,7 +109,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2021-09-19 10:12:14",
                 endDate = "2021-10-22 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nRuby 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 4,
@@ -87,7 +119,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 startDate = "2021-11-15 10:12:14",
                 endDate = "2021-11-30 10:12:14"
             ),
-            LessonResponse(
+            AllLessonResponse(
                 lessonName = "프로그래밍 시작하기 : \nJava 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 1,

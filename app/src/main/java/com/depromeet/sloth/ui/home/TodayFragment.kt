@@ -5,8 +5,9 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.network.home.LessonListState
-import com.depromeet.sloth.data.network.home.LessonResponse
+import com.depromeet.sloth.data.network.home.LessonState
+import com.depromeet.sloth.data.network.home.AllLessonResponse
+import com.depromeet.sloth.data.network.home.WeeklyLessonResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 
@@ -22,29 +23,29 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var lessonList = listOf<LessonResponse>()
+        var lessonList = listOf<AllLessonResponse>()
 
         mainScope {
             preferenceManager.getAccessToken()?.run {
-                viewModel.fetchLessonList(
+                viewModel.fetchLessonAllList(
                     accessToken = this
                 ).let {
                     when (it) {
-                        is LessonListState.Success<List<LessonResponse>> -> {
+                        is LessonState.Success<List<AllLessonResponse>> -> {
                             lessonList = it.data
                             //등록된 리스트를 불러온 후에 어댑터와 연결하는 작업 필요함
                         }
-                        is LessonListState.Error -> {
+                        is LessonState.Error -> {
                             Log.d("Error", "${it.exception}")
                         }
-                        is LessonListState.Unauthorized -> {
+                        is LessonState.Unauthorized -> {
                             //정책 확인 필요
                             Log.d("Error", "Unauthorized")
                         }
-                        is LessonListState.NotFound -> {
+                        is LessonState.NotFound -> {
                             Log.d("Error", "NotFound")
                         }
-                        is LessonListState.Forbidden -> {
+                        is LessonState.Forbidden -> {
                             Log.d("Error", "Forbidden")
                         }
                     }
@@ -56,54 +57,54 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     }
 
     private fun setTestData() {
-        val dummyList = listOf<LessonResponse>(
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
+        val dummyList = listOf<WeeklyLessonResponse>(
+            WeeklyLessonResponse(
                 categoryName = "개발",
-                currentProgressRate = 1,
-                goalProgressRate = 4,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
+                remainNumber = 1,
+                presentNumber = 4,
                 remainDay = 9,
-                isFinished = false
+                weeklyFinished = false
             ),
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
+            WeeklyLessonResponse(
                 categoryName = "디자인",
-                currentProgressRate = 0,
-                goalProgressRate = 5,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
+                remainNumber = 0,
+                presentNumber = 5,
                 remainDay = 19,
-                isFinished = false
+                weeklyFinished = false
             ),
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
+            WeeklyLessonResponse(
                 categoryName = "기획",
-                currentProgressRate = 1,
-                goalProgressRate = 4,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
+                remainNumber = 1,
+                presentNumber = 4,
                 remainDay = 10,
-                isFinished = false
+                weeklyFinished = false
             ),
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
+            WeeklyLessonResponse(
                 categoryName = "개발",
-                currentProgressRate = 3,
-                goalProgressRate = 3,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
+                remainNumber = 3,
+                presentNumber = 3,
                 remainDay = 7,
-                isFinished = true
+                weeklyFinished = true
             ),
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
+            WeeklyLessonResponse(
                 categoryName = "디자인",
-                currentProgressRate = 6,
-                goalProgressRate = 6,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
+                remainNumber = 6,
+                presentNumber = 6,
                 remainDay = 11,
-                isFinished = true
+                weeklyFinished = true
             ),
-            LessonResponse(
-                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
+            WeeklyLessonResponse(
                 categoryName = "기획",
-                currentProgressRate = 8,
-                goalProgressRate = 8,
+                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
+                remainNumber = 8,
+                presentNumber = 8,
                 remainDay = 1,
-                isFinished = true
+                weeklyFinished = true
             )
         )
 
@@ -120,10 +121,10 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
         dummyList.let {
             finishedLessonAdapter.submitList(
-                dummyList.filter { it.isFinished }
+                dummyList.filter { it.weeklyFinished }
             )
             notFinishedLessonAdapter.submitList(
-                dummyList.filter { it.isFinished.not() }
+                dummyList.filter { it.weeklyFinished.not() }
             )
         }
 

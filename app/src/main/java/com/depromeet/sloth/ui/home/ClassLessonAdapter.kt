@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.home.LessonResponse
+import com.depromeet.sloth.data.network.home.AllLessonResponse
 import kotlin.math.ceil
 
 class ClassLessonAdapter(
     private val bodyType: BodyType
-) : ListAdapter<LessonResponse, ClassLessonAdapter.ClassLessonViewHolder>(
+) : ListAdapter<AllLessonResponse, ClassLessonAdapter.ClassLessonViewHolder>(
     ClassLessonDiffCallback
 ) {
     override fun onCreateViewHolder(
@@ -45,8 +45,8 @@ class ClassLessonAdapter(
     }
 
     override fun onCurrentListChanged(
-        previousList: List<LessonResponse?>,
-        currentList: List<LessonResponse?>
+        previousList: List<AllLessonResponse?>,
+        currentList: List<AllLessonResponse?>
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
@@ -70,16 +70,16 @@ class ClassLessonAdapter(
         private val classLessonPlanningDate = itemView.findViewById<TextView>(R.id.tv_class_lesson_planning_date)
         private val classLessonPassedCount = itemView.findViewById<TextView>(R.id.tv_class_lesson_total_count)
 
-        fun onBind(lesson: LessonResponse) {
-            classLessonCategory.text = lesson.categoryName
-            classLessonName.text = lesson.lessonName
-            classLessonPrice.text = lesson.price.toString()
+        fun onBind(allLesson: AllLessonResponse) {
+            classLessonCategory.text = allLesson.categoryName
+            classLessonName.text = allLesson.lessonName
+            classLessonPrice.text = allLesson.price.toString()
 
             when (bodyType) {
                 BodyType.DOING -> {
-                    val progressRate = lesson.currentProgressRate / lesson.totalNumber.toFloat()
-                    classLessonCurrentNumber.text = lesson.currentProgressRate.toString()
-                    classLessonTotalNumber.text = lesson.totalNumber.toString()
+                    val progressRate = allLesson.currentProgressRate / allLesson.totalNumber.toFloat()
+                    classLessonCurrentNumber.text = allLesson.currentProgressRate.toString()
+                    classLessonTotalNumber.text = allLesson.totalNumber.toString()
                     classLessonPercent.text = ceil((100 - (progressRate * 100)).toDouble()).toInt().toString()
                     classLessonGoal.text = (progressRate * 100).toInt().toString()
 
@@ -95,7 +95,7 @@ class ClassLessonAdapter(
                         classLessonBar.progress,
                         (progressRate * 10000).toInt()
                     )
-                    Log.e("test2", (ceil(progressRate.toDouble()) * 10000).toInt().toString())
+
                     animation.apply {
                         addListener(
                             onEnd = {
@@ -109,11 +109,11 @@ class ClassLessonAdapter(
                 }
 
                 BodyType.PLANNING -> {
-                    classLessonPlanningDate.text = lesson.startDate.split(" ")[0]
+                    classLessonPlanningDate.text = allLesson.startDate.split(" ")[0]
                 }
 
                 BodyType.PASSED -> {
-                    classLessonPassedCount.text = lesson.totalNumber.toString()
+                    classLessonPassedCount.text = allLesson.totalNumber.toString()
                 }
             }
         }
@@ -126,17 +126,17 @@ class ClassLessonAdapter(
     }
 }
 
-object ClassLessonDiffCallback : DiffUtil.ItemCallback<LessonResponse>() {
+object ClassLessonDiffCallback : DiffUtil.ItemCallback<AllLessonResponse>() {
     override fun areItemsTheSame(
-        oldItem: LessonResponse,
-        newItem: LessonResponse
+        oldItem: AllLessonResponse,
+        newItem: AllLessonResponse
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: LessonResponse,
-        newItem: LessonResponse
+        oldItem: AllLessonResponse,
+        newItem: AllLessonResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName
     }

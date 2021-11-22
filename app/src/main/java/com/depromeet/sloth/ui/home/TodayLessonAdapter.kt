@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.home.LessonResponse
+import com.depromeet.sloth.data.network.home.AllLessonResponse
+import com.depromeet.sloth.data.network.home.WeeklyLessonResponse
 
 class TodayLessonAdapter(
     private val bodyType: BodyType
 ) :
-    ListAdapter<LessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
+    ListAdapter<WeeklyLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
         TodayLessonDiffCallback
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayLessonViewHolder {
@@ -49,37 +50,37 @@ class TodayLessonAdapter(
         private val todayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
 
-        fun onBind(lesson: LessonResponse) {
-            init(lesson)
+        fun onBind(allLesson: WeeklyLessonResponse) {
+            init(allLesson)
 
             todayLessonPlus.setOnClickListener {
-                updateProgress(true, lesson.goalProgressRate)
-                updateText(true, lesson.goalProgressRate)
+                updateProgress(true, allLesson.presentNumber)
+                updateText(true, allLesson.presentNumber)
             }
 
             todayLessonMinus.setOnClickListener {
-                updateProgress(false, lesson.goalProgressRate)
-                updateText(false, lesson.goalProgressRate)
+                updateProgress(false, allLesson.presentNumber)
+                updateText(false, allLesson.presentNumber)
             }
         }
 
-        private fun init(lesson: LessonResponse) {
-            val remainDay = lesson.remainDay //D-day
-            todayLessonCategory.text = lesson.categoryName
-            todayLessonName.text = lesson.lessonName
-            todayLessonCurrentNum.text = lesson.currentProgressRate.toString()
-            todayLessonTotalNum.text = lesson.goalProgressRate.toString()
-            todayLessonRemain.text = "D-$remainDay"
+        private fun init(allLesson: WeeklyLessonResponse) {
+            val remainDay = allLesson.remainDay //D-day
+            todayLessonCategory.text = allLesson.categoryName
+            todayLessonName.text = allLesson.lessonName
+            todayLessonCurrentNum.text = allLesson.remainNumber.toString()
+            todayLessonTotalNum.text = allLesson.presentNumber.toString()
+            "D-$remainDay".also { todayLessonRemain.text = it }
             todayLessonBar.let {
-                nowProgress = lesson.currentProgressRate
-                it.max = lesson.goalProgressRate * 1000
-                it.progress = lesson.currentProgressRate * 1000
+                nowProgress = allLesson.remainNumber
+                it.max = allLesson.presentNumber * 1000
+                it.progress = allLesson.remainNumber * 1000
             }
 
-            if(lesson.isFinished) {
+            if(allLesson.weeklyFinished) {
                 todayLessonRemain.setTextColor(Color.WHITE)
             } else {
-                when (lesson.remainDay) {
+                when (allLesson.remainDay) {
                     in 0 until 10 -> todayLessonRemain.setTextColor(Color.RED)
                     else -> todayLessonRemain.setTextColor(Color.BLACK)
                 }
@@ -100,7 +101,12 @@ class TodayLessonAdapter(
                 false -> nowProgress--
             }
 
-            val animation = ObjectAnimator.ofInt(todayLessonBar, "progress", todayLessonBar.progress, nowProgress * 1000)
+            val animation = ObjectAnimator.ofInt(
+                todayLessonBar,
+                "progress",
+                todayLessonBar.progress, nowProgress * 1000
+            )
+
             animation.apply {
                 duration = 500
                 interpolator = when (isUp) {
@@ -112,8 +118,8 @@ class TodayLessonAdapter(
     }
 
     override fun onCurrentListChanged(
-        previousList: List<LessonResponse?>,
-        currentList: List<LessonResponse?>
+        previousList: List<WeeklyLessonResponse?>,
+        currentList: List<WeeklyLessonResponse?>
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
@@ -125,17 +131,17 @@ class TodayLessonAdapter(
     }
 }
 
-object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonResponse>() {
+object TodayLessonDiffCallback : DiffUtil.ItemCallback<WeeklyLessonResponse>() {
     override fun areItemsTheSame(
-        oldItem: LessonResponse,
-        newItem: LessonResponse
+        oldItem: WeeklyLessonResponse,
+        newItem: WeeklyLessonResponse
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: LessonResponse,
-        newItem: LessonResponse
+        oldItem: WeeklyLessonResponse,
+        newItem: WeeklyLessonResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName
     }
