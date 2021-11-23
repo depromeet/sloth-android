@@ -252,7 +252,7 @@
                 android:layout_height="56dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginVertical="32dp"
-                android:background="@drawable/bg_login_policy_rounded_gray"
+                android:background="@drawable/bg_update_rounded_gray"
                 android:text="@string/finish"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"

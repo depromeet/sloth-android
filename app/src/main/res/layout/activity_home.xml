@@ -24,7 +24,7 @@
         android:id="@+id/navigation_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_menu_rounded"
+        android:background="@drawable/bg_menu_rounded"
         android:elevation="20dp"
         app:itemIconTint="@drawable/selector_menu_bottom"
         app:itemTextColor="@drawable/selector_menu_bottom"

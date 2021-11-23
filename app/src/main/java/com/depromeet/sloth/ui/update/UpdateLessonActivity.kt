@@ -60,12 +60,6 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViews()
-    }
-
-    override fun initViews() = with(binding) {
-        tbUpdateLesson.setNavigationOnClickListener { finish() }
-
         accessToken = pm.getAccessToken().toString()
 
         /*intent.apply {
@@ -75,7 +69,6 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
         /*test*/
         lessonId = "74"
-
 
         /*test*/
         lessonModel = LessonModel(
@@ -90,14 +83,20 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
             totalNumber = 32
         )
 
+        siteArraySize = resources.getStringArray(R.array.site_array).size - 1
+
+        initViews()
+    }
+
+    override fun initViews() = with(binding) {
+        tbUpdateLesson.setNavigationOnClickListener { finish() }
+
         focusInputForm(etUpdateLessonName, btnUpdateLesson)
         focusInputForm(etUpdateLessonCount, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonCategory, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
 
         initLessonInfo(lessonModel)
-
-        siteArraySize = resources.getStringArray(R.array.site_array).size - 1
 
         btnUpdateLesson.setOnClickListener {
             mainScope {
@@ -112,6 +111,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                     when(it) {
                         is UpdateLessonState.Success -> {
                             Log.d("Update Success", "${it.data}")
+                            Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
                         }
 
                         is UpdateLessonState.Error -> {
@@ -120,6 +120,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                     }
                 }
             }
+            finish()
         }
     }
 
@@ -127,8 +128,10 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     private fun initLessonInfo(lessonModel: LessonModel?) = with(binding) {
         etUpdateLessonName.setText(lessonModel!!.lessonName)
         etUpdateLessonCount.setText(lessonModel.totalNumber.toString())
+
         spnUpdateLessonCategory.setSelection(lessonModel.categoryId)
         spnUpdateLessonSite.setSelection(lessonModel.siteId)
+
         tvUpdateEndLessonDate.text = lessonModel.endDate
         tvUpdateStartLessonDate.text = lessonModel.startDate
 
@@ -144,9 +147,8 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         button.isEnabled = true
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_login_policy_rounded_sloth
+            R.drawable.bg_update_rounded_sloth
         )
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -154,7 +156,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         button.isEnabled = false
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_login_policy_rounded_gray
+            R.drawable.bg_update_rounded_gray
         )
     }
 
