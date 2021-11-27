@@ -28,6 +28,10 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.detail.LessonDetailActivity"
+            android:exported="true" />
+
+        <activity
             android:name=".ui.home.HomeActivity"
             android:exported="true" />
 
@@ -37,7 +41,6 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
