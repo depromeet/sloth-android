@@ -25,7 +25,9 @@ class LoginRepository {
             } ?: return LoginState.Error(Exception("Login Exception"))
     }
 
-    suspend fun fetchGoogleAuthInfo(authCode: String): LoginState<LoginGoogleResponse> {
+    suspend fun fetchGoogleAuthInfo(
+        authCode: String
+    ): LoginState<LoginGoogleResponse> {
         ServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.GOOGLE_BASE_URL
         )
