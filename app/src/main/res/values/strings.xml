@@ -5,8 +5,10 @@
     <string name="category">카테고리</string>
     <string name="category_hint">카테고리 힌트</string>
     <string name="register_new_lesson">새로운 인강 등록</string>
+    <string name="update_lesson">강의 정보 수정</string>
     <string name="setup_lecture">어떤 강의를 들으시나요?</string>
     <string name="next">다음</string>
+    <string name="finish">완료</string>
     <string name="setup_goal">완강 목표를 설정해 보세요!</string>
     <string name="register_account_info">계정 정보 등록</string>
     <string name="welcome">환영합니다!</string>
@@ -45,6 +47,7 @@
     <string name="menu_today">투데이</string>
     <string name="menu_class">강의목록</string>
     <string name="menu_mypage">마이페이지</string>
+
     <string name="d_day">D-19</string>
     <string name="update">수정</string>
     <string name="lesson_info">강의 정보</string>

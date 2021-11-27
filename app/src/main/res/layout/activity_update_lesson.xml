@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.update.UpdateLessonActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tb_update_lesson"
+        style="?attr/toolbarWithArrowButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="0dp">
+
+        <TextView
+            android:id="@+id/tv_update_lesson"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/update_lesson"
+            android:textColor="@color/gray_600"
+            android:textSize="16sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_update_lesson"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tb_update_lesson">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_update_lesson_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="34dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_name"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_update_lesson_name"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_edit_text_border"
+                android:hint="@string/lesson_name"
+                android:inputType="text"
+                android:paddingHorizontal="12dp"
+                android:textColorHint="@color/gray_500"
+                android:textSize="16sp"
+                android:textColor="@color/gray_600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_name" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/lesson_count"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_update_lesson_name" />
+
+            <EditText
+                android:id="@+id/et_update_lesson_count"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_edit_text_border"
+                android:hint="@string/lesson_count"
+                android:inputType="number"
+                android:textColorHint="@color/gray_500"
+                android:paddingHorizontal="12dp"
+                android:textSize="16sp"
+                android:textColor="@color/gray_500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_count" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_category"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_update_lesson_count" />
+
+            <Spinner
+                android:id="@+id/spn_update_lesson_category"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_spinner_border"
+                android:entries="@array/category_array"
+                android:paddingHorizontal="6dp"
+                android:spinnerMode="dropdown"
+                android:textColor="@color/gray_500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_update_lesson_category" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_site"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_site"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spn_update_lesson_category" />
+
+            <Spinner
+                android:id="@+id/spn_update_lesson_site"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_spinner_border"
+                android:entries="@array/site_array"
+                android:paddingHorizontal="6dp"
+                android:spinnerMode="dropdown"
+                android:textColor="@color/gray_500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_site" />
+
+            <TextView
+                android:id="@+id/tv_update_start_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_start"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spn_update_lesson_site" />
+
+            <TextView
+                android:id="@+id/tv_update_start_lesson_date"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_spinner_border_disabled"
+                android:padding="16dp"
+                android:paddingHorizontal="12dp"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson" />
+
+            <TextView
+                android:id="@+id/tv_update_end_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_end"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson_date" />
+
+            <TextView
+                android:id="@+id/tv_update_end_lesson_date"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_spinner_border_disabled"
+                android:padding="16dp"
+                android:paddingHorizontal="12dp"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_price"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson_date" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_price_info"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/shape_edit_text_border_disabled"
+                android:padding="16dp"
+                android:paddingHorizontal="12dp"
+                android:text="@string/lesson_price"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/lesson_message"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price_info" />
+
+            <TextView
+                android:id="@+id/tv_update_lesson_message_info"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/shape_edit_text_border_disabled"
+                android:maxLength="30"
+                android:padding="16dp"
+                android:paddingHorizontal="12dp"
+                android:text="@string/lesson_message"
+                android:textColor="@color/gray_500"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_update_lesson"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/bg_update_rounded_gray"
+                android:text="@string/finish"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message_info"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="16dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

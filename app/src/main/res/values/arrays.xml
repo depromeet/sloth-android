@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="category_array">
+
         <item>카테고리를 선택해 주세요.</item>
         <item>개발</item>
         <item>디자인</item>
@@ -17,6 +18,7 @@
     </string-array>
 
     <string-array name="site_array">
+
         <item>사이트를 선택해 주세요.</item>
         <item>패스트캠퍼스</item>
         <item>인프런</item>
