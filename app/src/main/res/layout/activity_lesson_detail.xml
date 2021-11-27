@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="128dp"
-                    android:text="@string/lesson_end_date"
+                    android:text="@string/lesson_period"
                     android:textColor="@color/gray_500"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"

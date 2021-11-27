@@ -20,7 +20,7 @@
     <string name="lesson_message">각오 한마디</string>
     <string name="lesson_message_info">완강까지 열심히 달려보자!</string>
     <string name="remove">삭제</string>
-    <string name="lesson_end_date">완강 목표일</string>
+    <string name="lesson_period">수강 기간</string>
     <string name="lesson_count_info">24강</string>
     <string name="lesson_count">강의 개수</string>
     <string name="lesson_name_info">프로그래밍 시작하기 : 파이썬 입문(Inflearn Original)</string>

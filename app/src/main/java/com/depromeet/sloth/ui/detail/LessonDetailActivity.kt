@@ -184,7 +184,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             /*목표 완강일*/
             tvDetailLessonEndDateInfo.text = " $endDateInfo"
 
-            /*완강 목표일*/
+            /*수강 기간*/
             tvDetailLessonPeriodInfo.text = " $startDateInfo - $endDateInfo"
             tvDetailLessonName.text = data.lessonName
 
