@@ -22,6 +22,7 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.home.HomeActivity
 
 class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
+//    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: MypageViewModel = MypageViewModel()
 
@@ -38,6 +39,7 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
 
         /*액티비티의 변수 사용*/
         accessToken = (activity as? HomeActivity)?.accessToken ?: ""
+        //accessToken = preferenceManager.getAccessToken().toString()
 
         initViews()
 

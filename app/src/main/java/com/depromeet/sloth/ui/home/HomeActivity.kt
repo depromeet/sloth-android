@@ -43,5 +43,4 @@ class HomeActivity : AppCompatActivity() {
         val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, className)
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
-
 }

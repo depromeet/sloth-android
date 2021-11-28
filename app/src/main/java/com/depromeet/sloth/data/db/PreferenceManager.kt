@@ -18,6 +18,7 @@ class PreferenceManager(
         private const val DEFAULT_VALUE_LONG = -1L
         private const val DEFAULT_VALUE_FLOAT = -1f
 
+        const val ID_TOKEN = "idToken"
         const val ACCESS_TOKEN = "accessToken"
         const val REFRESH_TOKEN = "refreshToken"
     }
@@ -181,4 +182,12 @@ class PreferenceManager(
         return prefs.getString(REFRESH_TOKEN, null)
     }
 
+    fun getIdToken(): String? {
+        return prefs.getString(ID_TOKEN, null)
+    }
+
+    fun removeIdToken() {
+        editor.putString(ID_TOKEN, null)
+        editor.apply()
+    }
 }

@@ -18,7 +18,6 @@
     <style name="Theme.Sloth.NoActionBar" parent="Theme.Sloth">
         <item name="toolbarStyle">@style/Widget.Sloth.Toolbar</item>
         <item name="toolbarWithArrowButtonStyle">@style/Widget.Sloth.Toolbar.WithArrow</item>
-
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>

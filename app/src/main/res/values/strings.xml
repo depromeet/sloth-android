@@ -1,6 +1,42 @@
 <resources>
     <string name="app_name">sloth</string>
     <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
+
+    <string name="category">카테고리</string>
+    <string name="category_hint">카테고리 힌트</string>
+    <string name="register_new_lesson">새로운 인강 등록</string>
+    <string name="update_lesson">강의 정보 수정</string>
+    <string name="setup_lecture">어떤 강의를 들으시나요?</string>
+    <string name="next">다음</string>
+    <string name="finish">완료</string>
+    <string name="setup_goal">완강 목표를 설정해 보세요!</string>
+    <string name="register_account_info">계정 정보 등록</string>
+    <string name="welcome">환영합니다!</string>
+    <string name="nickname">닉네임</string>
+    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요.</string>
+
+    <string name="Sun">일</string>
+    <string name="Mon">월</string>
+    <string name="Tue">화</string>
+    <string name="Wed">수</string>
+    <string name="Thu">목</string>
+    <string name="Fri">금</string>
+    <string name="Sat">토</string>
+
+    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요.</string>
+    <string name="lesson_name">강의 이름</string>
+    <string name="enter_lesson_count">강의 개수를 입력해 주세요.</string>
+    <string name="lesson_count">강의 개수</string>
+    <string name="lesson_category">카테고리</string>
+    <string name="lesson_site">강의 사이트</string>
+    <string name="lesson_start">강의 시작일</string>
+    <string name="lesson_end">완강 목표일</string>
+    <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
+    <string name="lesson_price">강의 금액</string>
+    <string name="alert_cycle">푸시 알람 주기</string>
+    <string name="max_30">최대 30자 까지 입력 가능합니다.</string>
+    <string name="lesson_message">각오 한마디(선택)</string>
+
     <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다</font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부도 열심히 한다</font></string>
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
     <string name="login_google">구글 아이디로 로그인</string>
@@ -13,7 +49,39 @@
     <string name="menu_mypage">마이페이지</string>
     <string name="profile_name">이름</string>
     <string name="profile_email">xxx@gmail.com</string>
-    <string name="finish">완료</string>
     <string name="member_name">이름</string>
     <string name="profile_image">profileImage</string>
+    <string name="d_day">D-19</string>
+    <string name="update">수정</string>
+    <string name="lesson_info">강의 정보</string>
+    <string name="lesson_price_info">250,000원</string>
+    <string name="lesson_period_date_info">2021.10.24 – 2021.12.24</string>
+    <string name="lesson_detail_message">각오 한마디</string>
+    <string name="lesson_message_info">완강까지 열심히 달려보자!</string>
+    <string name="remove">삭제</string>
+    <string name="lesson_period">수강 기간</string>
+    <string name="lesson_count_info">24강</string>
+    <string name="lesson_name_info">프로그래밍 시작하기 : 파이썬 입문(Inflearn Original)</string>
+    <string name="mission_fail">목표를 채우지 못했어요!</string>
+    <string name="mission_success">꾸준히 듣고 있는 중이에요!</string>
+    <string name="waste_money">현재 내가 날린 돈</string>
+    <string name="waste_money_info">50,000원</string>
+    <string name="lesson_warning">마감 임박</string>
+    <string name="develop">개발</string>
+    <string name="inflearn">인프런</string>
+    <string name="lesson_progress">강의 진행률</string>
+    <string name="lesson_goal_date">목표 완강일:</string>
+    <string name="lesson_present_number">내가 들은 강의:</string>
+    <string name="lesson_current_progress">현재 진행률</string>
+    <string name="lesson_goal_progress">목표 진행률</string>
+    <string name="sloth_image">sloth_image</string>
+    <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
+    <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
+    <string name="delete_dialog_message">정말 강의를 삭제하시겠어요?</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="caution">caution</string>
+    <string name="lesson_goal_date_info">2021. 12. 24</string>
+    <string name="lesson_present_number_info">24개 중 10개</string>
+    <string name="home_today_title"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
 </resources>

@@ -7,7 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="sloth">#53E183</color>
 
     <color name="primary_700">#095222</color>
     <color name="primary_600">#208442</color>
@@ -20,7 +19,9 @@
     <color name="gray_600">#222222</color>
     <color name="gray_500">#565656</color>
     <color name="gray_300">#D6D6D6</color>
+    <color name="gray_200">#ECECEC</color>
     <color name="gray_100">#F5F5F5</color>
 
     <color name="error">#EC105F</color>
+    <color name="sloth">#53E183</color>
 </resources>
