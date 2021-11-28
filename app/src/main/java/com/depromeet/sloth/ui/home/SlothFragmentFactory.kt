@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.home
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import com.depromeet.sloth.ui.home.mypage.MypageFragment
 
 class SlothFragmentFactory : FragmentFactory() {
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {

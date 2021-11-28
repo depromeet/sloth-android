@@ -173,6 +173,11 @@ class PreferenceManager(
         return prefs.getString(ACCESS_TOKEN, null)
     }
 
+    /**
+     * 저장한 refreshToken 로드
+     *
+     * @return
+     */
     fun getRefreshToken(): String? {
         return prefs.getString(REFRESH_TOKEN, null)
     }

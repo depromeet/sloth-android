@@ -14,7 +14,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
 
     protected lateinit var binding: VB
 
-    private lateinit var fetchJob: Job
+//    private lateinit var fetchJob: Job
 
     abstract fun getViewBinding(): VB
 
@@ -27,21 +27,17 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initState()
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        //initState()
+//    }
 
     //상태 값을 초기화
-    open fun initState() {
-        initViews()
-        fetchJob = viewModel.fetchData()
-        observeData()
-    }
-
-    open fun initViews() = Unit
-
-    open fun observeData() = Unit
+//    open fun initState() {
+//        initViews()
+//        fetchJob = viewModel.fetchData()
+//        observeData()
+//    }
 
     fun mainScope(block: suspend () -> Unit) {
         lifecycleScope.launchWhenCreated {
@@ -49,10 +45,14 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        if (fetchJob.isActive) {
-            fetchJob.cancel()
-        }
-        super.onDestroy()
-    }
+    open fun initViews() = Unit
+
+    open fun observeData() = Unit
+
+//    override fun onDestroy() {
+//        if (fetchJob.isActive) {
+//            fetchJob.cancel()
+//        }
+//        super.onDestroy()
+//    }
 }

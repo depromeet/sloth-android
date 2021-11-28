@@ -3,12 +3,20 @@ package com.depromeet.sloth.ui.home
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.ui.home.mypage.MypageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
+
+    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+    lateinit var accessToken: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        accessToken = pm.getAccessToken().toString()
 
         supportFragmentManager.fragmentFactory = SlothFragmentFactory()
 
