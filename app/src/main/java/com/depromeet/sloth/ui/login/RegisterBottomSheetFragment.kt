@@ -18,7 +18,7 @@ class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBottomBinding.inflate(inflater, container, false)
         binding = _binding!!
 
@@ -38,7 +38,9 @@ class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun openSlothPolicy() {
-        //정책 WebView로 보여주는 로직
+        //정책 WebView 로 보여주는 로직
+        startActivity(SlothPolicyWebViewActivity.newIntent(requireContext()))
+
     }
 
     fun setRegisterListener(registerListener: RegisterListener) {

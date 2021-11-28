@@ -41,6 +41,9 @@
             android:exported="true" />
 
         <activity
+            android:name=".ui.login.SlothPolicyWebViewActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.home.HomeActivity"
             android:exported="true" />
 
