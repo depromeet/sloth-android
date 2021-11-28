@@ -54,13 +54,13 @@ class TodayLessonAdapter(
             init(allLesson)
 
             todayLessonPlus.setOnClickListener {
-                updateProgress(true, allLesson.presentNumber)
-                updateText(true, allLesson.presentNumber)
+                updateProgress(true, allLesson.untilTodayNumber)
+                updateText(true, allLesson.untilTodayNumber)
             }
 
             todayLessonMinus.setOnClickListener {
-                updateProgress(false, allLesson.presentNumber)
-                updateText(false, allLesson.presentNumber)
+                updateProgress(false, allLesson.untilTodayNumber)
+                updateText(false, allLesson.untilTodayNumber)
             }
         }
 
@@ -68,16 +68,16 @@ class TodayLessonAdapter(
             val remainDay = allLesson.remainDay //D-day
             todayLessonCategory.text = allLesson.categoryName
             todayLessonName.text = allLesson.lessonName
-            todayLessonCurrentNum.text = allLesson.remainNumber.toString()
-            todayLessonTotalNum.text = allLesson.presentNumber.toString()
+            todayLessonCurrentNum.text = allLesson.presentNumber.toString()
+            todayLessonTotalNum.text = allLesson.untilTodayNumber.toString()
             "D-$remainDay".also { todayLessonRemain.text = it }
             todayLessonBar.let {
-                nowProgress = allLesson.remainNumber
-                it.max = allLesson.presentNumber * 1000
-                it.progress = allLesson.remainNumber * 1000
+                nowProgress = allLesson.presentNumber
+                it.max = allLesson.untilTodayNumber * 1000
+                it.progress = allLesson.presentNumber * 1000
             }
 
-            if(allLesson.weeklyFinished) {
+            if(allLesson.untilTodayFinished) {
                 todayLessonRemain.setTextColor(Color.WHITE)
             } else {
                 when (allLesson.remainDay) {

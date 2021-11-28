@@ -8,9 +8,9 @@ package com.depromeet.sloth.data.network.home
  *   "lessonName": "string",
  *   "presentNumber": 0,
  *   "remainDay": 0,
- *   "remainNumber": 0,
  *   "siteName": "string",
- *   "weeklyFinished": false
+ *   "untilTodayFinished": false,
+ *   "untilTodayNumber": 0
  */
 
 data class WeeklyLessonResponse (
@@ -19,7 +19,7 @@ data class WeeklyLessonResponse (
     var lessonName: String = "",
     var presentNumber: Int = 0,
     var remainDay: Int = 0,
-    var remainNumber: Int = 0,
     var siteName: String = "",
-    var weeklyFinished: Boolean = false
+    var untilTodayFinished: Boolean = false,
+    var untilTodayNumber: Int = 0
 )

@@ -61,50 +61,50 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
             WeeklyLessonResponse(
                 categoryName = "개발",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
-                remainNumber = 1,
                 presentNumber = 4,
                 remainDay = 9,
-                weeklyFinished = false
+                untilTodayFinished = false,
+                untilTodayNumber = 8
             ),
             WeeklyLessonResponse(
                 categoryName = "디자인",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
-                remainNumber = 0,
                 presentNumber = 5,
                 remainDay = 19,
-                weeklyFinished = false
+                untilTodayFinished = true,
+                untilTodayNumber = 5
             ),
             WeeklyLessonResponse(
                 categoryName = "기획",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
-                remainNumber = 1,
                 presentNumber = 4,
                 remainDay = 10,
-                weeklyFinished = false
+                untilTodayFinished = false,
+                untilTodayNumber = 6
             ),
             WeeklyLessonResponse(
                 categoryName = "개발",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
-                remainNumber = 3,
-                presentNumber = 3,
+                presentNumber = 6,
                 remainDay = 7,
-                weeklyFinished = true
+                untilTodayFinished = true,
+                untilTodayNumber = 6
             ),
             WeeklyLessonResponse(
                 categoryName = "디자인",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
-                remainNumber = 6,
-                presentNumber = 6,
+                presentNumber = 1,
                 remainDay = 11,
-                weeklyFinished = true
+                untilTodayFinished = false,
+                untilTodayNumber = 4
             ),
             WeeklyLessonResponse(
                 categoryName = "기획",
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
-                remainNumber = 8,
-                presentNumber = 8,
+                presentNumber = 2,
                 remainDay = 1,
-                weeklyFinished = true
+                untilTodayFinished = false,
+                untilTodayNumber = 3
             )
         )
 
@@ -121,10 +121,10 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
         dummyList.let {
             finishedLessonAdapter.submitList(
-                dummyList.filter { it.weeklyFinished }
+                dummyList.filter { it.untilTodayFinished }
             )
             notFinishedLessonAdapter.submitList(
-                dummyList.filter { it.weeklyFinished.not() }
+                dummyList.filter { it.untilTodayFinished.not() }
             )
         }
 
