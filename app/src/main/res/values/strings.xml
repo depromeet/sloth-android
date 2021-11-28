@@ -84,4 +84,5 @@
     <string name="lesson_goal_date_info">2021. 12. 24</string>
     <string name="lesson_present_number_info">24개 중 10개</string>
     <string name="home_today_title"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
+    <string name="close">close</string>
 </resources>
