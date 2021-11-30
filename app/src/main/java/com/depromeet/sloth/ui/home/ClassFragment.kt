@@ -9,6 +9,7 @@ import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.AllLessonResponse
 import com.depromeet.sloth.databinding.FragmentClassBinding
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +24,8 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initViews()
 
         var lessonList = listOf<AllLessonResponse>()
 
@@ -55,6 +58,8 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
         }
 
         setTestData()
+
+
     }
 
     private fun setTestData() {
@@ -189,6 +194,14 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
         binding.rvClassLesson.let {
             it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             it.adapter = concatAdapter
+        }
+    }
+
+    override fun initViews() {
+        super.initViews()
+
+        binding.ivClassRegister.setOnClickListener {
+            startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
         }
     }
 }

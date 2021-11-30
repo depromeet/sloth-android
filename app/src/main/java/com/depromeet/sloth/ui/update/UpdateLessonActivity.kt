@@ -98,7 +98,6 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
                         is UpdateLessonState.Error -> {
                             Log.d("Update Error", "${it.exception}")
-                            finish()
                         }
                     }
                 }

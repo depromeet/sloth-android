@@ -1,6 +1,8 @@
 package com.depromeet.sloth.ui.register
 
 import android.animation.ObjectAnimator
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,6 +31,10 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
     override fun getViewBinding(): ActivityRegisterLessonFirstBinding =
         ActivityRegisterLessonFirstBinding.inflate(layoutInflater)
+
+    companion object {
+        fun newIntent(activity: Activity) = Intent(activity, RegisterLessonFirstActivity::class.java)
+    }
 
     private var flag = 0
 
