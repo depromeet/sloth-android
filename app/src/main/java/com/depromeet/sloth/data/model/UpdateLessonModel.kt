@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.db.model
+ package com.depromeet.sloth.data.model
 
 data class UpdateLessonModel (
     val categoryId: Int,

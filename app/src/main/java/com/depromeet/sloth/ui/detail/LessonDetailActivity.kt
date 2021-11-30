@@ -3,7 +3,6 @@ package com.depromeet.sloth.ui.detail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +12,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import java.text.DecimalFormat
 
 class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonDetailBinding>() {
@@ -37,13 +38,15 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var presentNumber: String
 
-    lateinit var startDate: ArrayList<String>
-
-    lateinit var endDate: ArrayList<String>
-
     lateinit var startDateInfo: String
 
     lateinit var endDateInfo: String
+
+    lateinit var lessonModel: LessonModel
+
+    lateinit var categoryArray: Array<String>
+
+    lateinit var siteArray: Array<String>
 
     companion object {
         fun newIntent(activity: Activity, lessonId: String) =
@@ -62,6 +65,16 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         initViews()
 
         accessToken = pm.getAccessToken().toString()
+
+        categoryArray = resources.getStringArray(R.array.category_array)
+
+        siteArray = resources.getStringArray(R.array.site_array)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
 
         /*intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
@@ -95,7 +108,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
 
         tvDetailUpdateLesson.setOnClickListener {
-            //UpdateLessonActivity.newIntent(this, lessonId, lessonModel)
+            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lessonModel))
         }
 
         btnDetailDeleteLesson.setOnClickListener {
@@ -129,7 +142,20 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     @SuppressLint("SetTextI18n")
     private fun initLessonInfo(data: LessonDetailResponse) {
+
         binding.apply {
+
+            lessonModel = LessonModel(
+                alertDays = data.alertDays,
+                categoryId = categoryArray.indexOf(data.categoryName),
+                endDate = data.endDate.toString(),
+                lessonName = data.lessonName,
+                message = data.message,
+                price = data.price,
+                siteId = siteArray.indexOf(data.siteName),
+                startDate = data.startDate.toString(),
+                totalNumber = data.totalNumber,
+            )
 
             /*현재 진행율 */
             pbDetailCurrentLessonProgress.labelText = "${data.currentProgressRate}%"
@@ -175,11 +201,11 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             /*강의 개수*/
             tvDetailLessonCountInfo.text = totalNumber
 
-            startDate = data.startDate
-            startDateInfo = changeDateFormat(startDate)
+            /*강의 시작 날짜*/
+            startDateInfo = changeDateFormat(data.startDate)
 
-            endDate = data.endDate
-            endDateInfo = changeDateFormat(endDate)
+            /*강의 종료 날짜*/
+            endDateInfo = changeDateFormat(data.endDate)
 
             /*목표 완강일*/
             tvDetailLessonEndDateInfo.text = " $endDateInfo"

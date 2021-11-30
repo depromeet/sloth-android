@@ -11,7 +11,7 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActiv
 
     protected lateinit var binding: VB
 
-    private lateinit var fetchJob: Job
+    //private lateinit var fetchJob: Job
 
     abstract fun getViewBinding(): VB
 
@@ -19,15 +19,15 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActiv
         super.onCreate(savedInstanceState)
         binding = getViewBinding()
         setContentView(binding.root)
-        initState()
+        //initState()
     }
 
     //상태 값을 초기화
-    open fun initState() {
-        initViews()
-        fetchJob = viewModel.fetchData()
-        observeData()
-    }
+//    open fun initState() {
+//        initViews()
+//        fetchJob = viewModel.fetchData()
+//        observeData()
+//    }
 
     open fun initViews() = Unit
 
@@ -39,10 +39,10 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActiv
         }
     }
 
-    override fun onDestroy() {
-        if(fetchJob.isActive){
-            fetchJob.cancel()
-        }
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+//        if(fetchJob.isActive){
+//            fetchJob.cancel()
+//        }
+//        super.onDestroy()
+//    }
 }

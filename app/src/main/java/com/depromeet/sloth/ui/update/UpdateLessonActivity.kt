@@ -3,29 +3,23 @@ package com.depromeet.sloth.ui.update
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
-import androidx.room.Update
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.db.model.LessonModel
-import com.depromeet.sloth.data.db.model.UpdateLessonModel
+import com.depromeet.sloth.data.model.LessonModel
+import com.depromeet.sloth.data.model.UpdateLessonModel
 import com.depromeet.sloth.data.network.update.UpdateLessonState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.ui.base.BaseActivity
-import kotlinx.parcelize.Parcelize
 import java.text.DecimalFormat
 
 class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateLessonBinding>() {
@@ -37,7 +31,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
     private val pm = PreferenceManager(this)
 
-    private var lessonModel:LessonModel? = null
+    lateinit var lessonModel: LessonModel
 
     lateinit var accessToken: String
 
@@ -45,6 +39,9 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
     lateinit var lessonId: String
 
+    lateinit var startDate: ArrayList<String>
+
+    lateinit var endDate: ArrayList<String>
 
     companion object {
         fun newIntent(activity: Activity,lessonId: String, lessonModel: LessonModel) = Intent(activity, UpdateLessonActivity::class.java).apply {
@@ -62,26 +59,10 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
         accessToken = pm.getAccessToken().toString()
 
-        /*intent.apply {
+        intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
-            lessonModel = getParcelableExtra(LESSON_MODEL)
-        }*/
-
-        /*test*/
-        lessonId = "74"
-
-        /*test*/
-        lessonModel = LessonModel(
-            alertDays = null,
-            categoryId = 11,
-            endDate = "2021-11-02",
-            lessonName=  "ㅇㅇㅇ",
-            message = "아자아자 화이팅",
-            price = 32000,
-            siteId = 2,
-            startDate = "2021-10-31",
-            totalNumber = 32
-        )
+            lessonModel = getParcelableExtra(LESSON_MODEL)!!
+        }
 
         siteArraySize = resources.getStringArray(R.array.site_array).size - 1
 
@@ -112,15 +93,17 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                         is UpdateLessonState.Success -> {
                             Log.d("Update Success", "${it.data}")
                             Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                            finish()
                         }
 
                         is UpdateLessonState.Error -> {
                             Log.d("Update Error", "${it.exception}")
+                            finish()
                         }
                     }
                 }
             }
-            finish()
+
         }
     }
 
@@ -132,14 +115,14 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         spnUpdateLessonCategory.setSelection(lessonModel.categoryId)
         spnUpdateLessonSite.setSelection(lessonModel.siteId)
 
-        tvUpdateEndLessonDate.text = lessonModel.endDate
-        tvUpdateStartLessonDate.text = lessonModel.startDate
+        tvUpdateStartLessonDate.text = changeDateFormat(lessonModel.startDate)
+        tvUpdateEndLessonDate.text = changeDateFormat(lessonModel.endDate)
 
         val df = DecimalFormat("#,###")
         val changedPriceFormat = df.format(lessonModel.price)
 
         tvUpdateLessonPriceInfo.text = "${changedPriceFormat}원"
-        tvUpdateLessonMessageInfo.text = lessonModel.message.toString()
+        tvUpdateLessonMessageInfo.text = lessonModel.message
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -197,5 +180,27 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                 unlockButton(button)
             }
         }
+    }
+
+    private fun changeDateFormat(date: String): String {
+        Log.d("date", date)
+
+        val dateArr = date.split(",")
+
+        Log.d("dateArr", dateArr.toString())
+
+        val yearOfDate = dateArr[0].replace("[", "")
+        val monthOfDate = changeDate(dateArr[1])
+        val dayOfDate = changeDate(dateArr[2]).replace("]", "")
+
+        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
+    }
+
+    private fun changeDate(data: String): String {
+        var tmp = data
+        if (tmp.length == 1) {
+            tmp = "0$tmp"
+        }
+        return tmp
     }
 }

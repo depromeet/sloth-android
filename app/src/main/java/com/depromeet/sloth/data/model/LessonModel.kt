@@ -1,13 +1,17 @@
 package com.depromeet.sloth.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LessonModel(
-    val alertDays: String?,
-    val categoryId: Int,
-    val endDate: String,
-    val lessonName: String,
-    val message: String,
-    val price: Int,
-    val siteId: Int,
-    val startDate: String,
-    val totalNumber: Int
-)
+    var alertDays: String?,
+    var categoryId: Int,
+    var endDate: String,
+    var lessonName: String,
+    var message: String,
+    var price: Int,
+    var siteId: Int,
+    var startDate: String,
+    var totalNumber: Int
+): Parcelable

@@ -1,7 +1,7 @@
 package com.depromeet.sloth.data.network.update
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.db.model.UpdateLessonModel
+import com.depromeet.sloth.data.model.UpdateLessonModel
 import com.depromeet.sloth.data.network.ServiceGenerator
 
 class UpdateLessonRepository {

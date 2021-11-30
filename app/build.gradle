@@ -113,4 +113,7 @@ dependencies {
 
     //ProgressView
     implementation "com.github.skydoves:progressview:1.1.2"
+
+    //Jsoup
+    implementation 'org.jsoup:jsoup:1.13.1'
 }
