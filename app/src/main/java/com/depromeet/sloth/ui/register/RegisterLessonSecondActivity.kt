@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -82,6 +83,13 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     alertDays 는 일단은 null 로 세팅
     message 는 선택사항
      */
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initViews()
+    }
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.N)
@@ -234,10 +242,14 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                                 when (it) {
                                                     is RegisterState.Success -> {
                                                         Log.d("Register Success", "${it.data}")
+                                                        Toast.makeText(this@RegisterLessonSecondActivity, "강의가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                                                        finish()
                                                     }
 
-                                                    is RegisterState.Error ->
+                                                    is RegisterState.Error -> {
                                                         Log.d("Register Error", "${it.exception}")
+                                                        Toast.makeText(this@RegisterLessonSecondActivity, "강의 등록을 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                                                    }
                                                 }
                                             }
                                         }

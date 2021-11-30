@@ -98,6 +98,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
                         is UpdateLessonState.Error -> {
                             Log.d("Update Error", "${it.exception}")
+                            Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정을 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:background="@drawable/bg_home_tdoay_item_rounded_sloth">
+    android:background="@drawable/bg_home_today_item_rounded_sloth">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_today_lesson_remain"

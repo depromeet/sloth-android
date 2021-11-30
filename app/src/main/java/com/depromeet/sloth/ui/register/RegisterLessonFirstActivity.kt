@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -45,6 +46,11 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
     lateinit var siteArraySize: Number
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initViews()
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun initViews() = with(binding) {
@@ -56,7 +62,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         animation.duration = 500*/
 
         if (flag == 0) {
-            lockButton(btnRegisterLesson)
+            //lockButton(btnRegisterLesson)
 
             focusInputForm(etRegisterLessonName, btnRegisterLesson)
 
@@ -70,7 +76,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                 hideKeyboard()
 
                 if (flag == 1) {
-                    lockButton(btnRegisterLesson)
+                    //lockButton(btnRegisterLesson)
 
                     focusInputForm(etRegisterLessonCount, btnRegisterLesson)
 
@@ -262,9 +268,14 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         button.isEnabled = true
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_login_policy_rounded_sloth
+            R.drawable.bg_register_rounded_sloth
         )
-
+//        button.setBackgroundColor(
+//            resources.getColor(
+//                R.color.primary_500,
+//                theme
+//            )
+//        )
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -272,8 +283,14 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         button.isEnabled = false
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_login_policy_rounded_gray
+            R.drawable.bg_register_rounded_gray
         )
+//        button.setBackgroundColor(
+//            resources.getColor(
+//                R.color.gray_300,
+//                theme
+//            )
+//        )
     }
 
     private fun focusInputForm(editText: EditText, button: AppCompatButton) {
