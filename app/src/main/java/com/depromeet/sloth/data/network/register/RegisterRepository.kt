@@ -3,6 +3,7 @@ package com.depromeet.sloth.data.network.register
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.member.MemberInfoState
 
 class RegisterRepository {
     suspend fun registerLesson(
@@ -27,9 +28,13 @@ class RegisterRepository {
                     totalNumber = lessonModel.totalNumber
                 )
             )?.run {
-                return RegisterState.Success(
-                    this.body() ?: RegisterLessonResponse()
-                )
+                return when(this.code()) {
+                    200 -> RegisterState.Success(this.body() ?: RegisterLessonResponse())
+                    401 -> RegisterState.Unauthorized
+                    403 -> RegisterState.Forbidden
+                    404 -> RegisterState.NotFound
+                    else -> RegisterState.Error(java.lang.Exception("Uncaught Exception"))
+                }
             } ?: return RegisterState.Error(Exception("Register Exception"))
     }
 

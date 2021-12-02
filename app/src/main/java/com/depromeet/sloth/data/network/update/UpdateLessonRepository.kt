@@ -3,6 +3,8 @@ package com.depromeet.sloth.data.network.update
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.model.UpdateLessonModel
 import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.register.RegisterLessonResponse
+import com.depromeet.sloth.data.network.register.RegisterState
 
 class UpdateLessonRepository {
     suspend fun updateLessonInfo(accessToken: String, lessonId: String, updateLessonModel: UpdateLessonModel): UpdateLessonState<UpdateLessonResponse> {
@@ -20,9 +22,13 @@ class UpdateLessonRepository {
                     totalNumber = updateLessonModel.totalNumber
                 )
             )?.run {
-                return UpdateLessonState.Success(
-                    this.body() ?: UpdateLessonResponse()
-                )
+                    return when(this.code()) {
+                        200 -> UpdateLessonState.Success(this.body() ?: UpdateLessonResponse())
+                        204 -> UpdateLessonState.NoContent
+                        401 -> UpdateLessonState.Unauthorized
+                        403 -> UpdateLessonState.Forbidden
+                        else -> UpdateLessonState.Error(Exception("Uncaught Exception"))
+                    }
             } ?: return UpdateLessonState.Error(Exception("Retrofit Exception"))
     }
 }

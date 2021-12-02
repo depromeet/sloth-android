@@ -19,9 +19,13 @@ class LessonDetailRepository {
             .fetchLessonDetailInfo(
                 lessonId,
             )?.run {
-                return LessonDetailState.Success(
-                    this.body() ?: LessonDetailResponse()
-                )
+                return when(this.code()) {
+                    200 -> LessonDetailState.Success(this.body() ?: LessonDetailResponse())
+                    401 -> LessonDetailState.Unauthorized
+                    403 -> LessonDetailState.Forbidden
+                    404 -> LessonDetailState.NotFound
+                    else -> LessonDetailState.Error(Exception("Uncaught Exception"))
+                }
             } ?: return LessonDetailState.Error(Exception("Retrofit Exception"))
     }
 
@@ -37,9 +41,13 @@ class LessonDetailRepository {
             .deleteLesson(
                 lessonId,
             )?.run {
-                return LessonDetailState.Success(
-                    this.body() ?: DeleteLessonResponse()
-                )
+                return when(this.code()) {
+                    200 -> LessonDetailState.Success(this.body() ?: DeleteLessonResponse())
+                    401 -> LessonDetailState.Unauthorized
+                    403 -> LessonDetailState.Forbidden
+                    404 -> LessonDetailState.NotFound
+                    else -> LessonDetailState.Error(Exception("Uncaught Exception"))
+                }
             } ?: return LessonDetailState.Error(Exception("Retrofit Exception"))
     }
 }

@@ -82,7 +82,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         }*/
 
         /*test*/
-        lessonId = "6"
+        lessonId = "19"
 
         mainScope {
             viewModel.fetchLessonDetailInfo(accessToken = accessToken, lessonId = lessonId).let {

@@ -243,13 +243,16 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                                     is RegisterState.Success -> {
                                                         Log.d("Register Success", "${it.data}")
                                                         Toast.makeText(this@RegisterLessonSecondActivity, "강의가 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                                                        finish()
+
+                                                        setResult(RESULT_OK, Intent(this@RegisterLessonSecondActivity, RegisterLessonFirstActivity::class.java))
+                                                        if(!isFinishing) finish()
                                                     }
 
                                                     is RegisterState.Error -> {
                                                         Log.d("Register Error", "${it.exception}")
                                                         Toast.makeText(this@RegisterLessonSecondActivity, "강의 등록을 실패하였습니다.", Toast.LENGTH_SHORT).show()
                                                     }
+                                                    else -> Unit
                                                 }
                                             }
                                         }

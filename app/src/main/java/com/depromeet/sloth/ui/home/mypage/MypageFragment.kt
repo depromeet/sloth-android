@@ -62,6 +62,7 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                     is MypageState.Error -> {
                         Log.d("fetch error", "${it.exception}")
                     }
+                    else -> Unit
                 }
             }
             binding.pbMypage.visibility = View.GONE

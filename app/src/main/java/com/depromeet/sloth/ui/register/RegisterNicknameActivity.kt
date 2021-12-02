@@ -67,6 +67,8 @@ class RegisterNicknameActivity :
                             }
                             is MemberInfoState.Error ->
                                 Log.d("Error", "${it.exception}")
+
+                            else -> Unit
                         }
                     }
 
@@ -80,6 +82,7 @@ class RegisterNicknameActivity :
 
                                 is RegisterState.Error ->
                                     Log.d("Register Error", "${it.exception}")
+                                else -> Unit
                             }
                         }
                     }

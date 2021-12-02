@@ -2,6 +2,8 @@ package com.depromeet.sloth.data.network.mypage
 
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.member.MemberInfoResponse
+import com.depromeet.sloth.data.network.member.MemberInfoState
 
 class MypageRepository {
     suspend fun fetchMemberInfo(accessToken: String): MypageState<MypageResponse> {
@@ -11,9 +13,13 @@ class MypageRepository {
         )
             .create(MypageService::class.java)
             .fetchMemberInfo()?.run {
-                return MypageState.Success(
-                    this.body() ?: MypageResponse()
-                )
+                return when(this.code()) {
+                    200 -> MypageState.Success(this.body() ?: MypageResponse())
+                    401 -> MypageState.Unauthorized
+                    403 -> MypageState.Forbidden
+                    404 -> MypageState.NotFound
+                    else -> MypageState.Error(Exception("Uncaught Exception"))
+                }
             } ?: return MypageState.Error(Exception("Retrofit Exception"))
     }
 

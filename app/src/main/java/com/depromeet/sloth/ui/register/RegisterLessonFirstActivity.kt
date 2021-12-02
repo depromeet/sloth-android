@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
@@ -23,6 +24,7 @@ import com.depromeet.sloth.databinding.ActivityRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import kotlin.math.ceil
 import java.util.*
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 
 
 class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
@@ -36,6 +38,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
     companion object {
         fun newIntent(activity: Activity) = Intent(activity, RegisterLessonFirstActivity::class.java)
     }
+    lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private var flag = 0
 
@@ -46,10 +49,21 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
     lateinit var siteArraySize: Number
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        resultLauncher = registerForActivityResult(
+            StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("resultLauncher", "Result_OK를 받아옴")
+                finish()
+            }
+        }
+
         initViews()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -207,7 +221,8 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                                 siteArraySize.toString()
                                                             )
 
-                                                            startActivity(
+
+                                                            resultLauncher.launch(
                                                                 RegisterLessonSecondActivity.newIntent(
                                                                     this@RegisterLessonFirstActivity,
                                                                     etRegisterLessonName.text.toString(),
@@ -217,6 +232,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                                     siteId as Int
                                                                 )
                                                             )
+
                                                             overridePendingTransition(
                                                                 R.anim.slide_right_enter,
                                                                 R.anim.slide_right_exit
