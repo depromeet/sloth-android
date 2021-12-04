@@ -4,17 +4,17 @@ import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.ServiceGenerator
 
 class LessonRepository {
-    suspend fun fetchLessonWeeklyList(
+    suspend fun fetchTodayLessonList(
         accessToken: String
-    ): LessonState<List<WeeklyLessonResponse>> {
+    ): LessonState<List<TodayLessonResponse>> {
         ServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
             .create(LessonService::class.java)
-            .fetchLessonWeeklyList()?.run {
+            .fetchTodayLessonList()?.run {
                 return when (this.code()) {
-                    200 -> LessonState.Success(this.body() ?: listOf())
+                    200 -> LessonState.Success(this.body() ?: listOf(TodayLessonResponse.EMPTY))
                     401 -> LessonState.Unauthorized
                     403 -> LessonState.Forbidden
                     404 -> LessonState.NotFound
@@ -23,7 +23,7 @@ class LessonRepository {
             } ?: return LessonState.Error(Exception("Retrofit Exception"))
     }
 
-    suspend fun fetchLessonAllList(
+    suspend fun fetchAllLessonList(
         accessToken: String
     ): LessonState<List<AllLessonResponse>> {
         ServiceGenerator.setBuilderOptions(
@@ -31,7 +31,7 @@ class LessonRepository {
             authToken = accessToken
         )
             .create(LessonService::class.java)
-            .fetchLessonAllList()?.run {
+            .fetchAllLessonList()?.run {
                 return when (this.code()) {
                     200 -> LessonState.Success(this.body() ?: listOf())
                     401 -> LessonState.Unauthorized

@@ -33,6 +33,7 @@ class HeaderAdapter(
     }
 
     enum class HeaderType(val title: String) {
+        NOTHING("아래 버튼을 눌러 강의를 등록해주세요"),
         FINISHED("오늘까지 완료한 강의"),
         NOT_FINISHED("오늘까지 들어야하는 강의"),
         DOING("진행중인 강의"),

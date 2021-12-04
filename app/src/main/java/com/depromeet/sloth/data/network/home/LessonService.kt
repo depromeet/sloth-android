@@ -5,8 +5,8 @@ import retrofit2.http.GET
 
 interface LessonService {
     @GET("api/lesson/doing")
-    suspend fun fetchLessonWeeklyList(): Response<List<WeeklyLessonResponse>>?
+    suspend fun fetchTodayLessonList(): Response<List<TodayLessonResponse>>?
 
     @GET("api/lesson/list")
-    suspend fun fetchLessonAllList(): Response<List<AllLessonResponse>>?
+    suspend fun fetchAllLessonList(): Response<List<AllLessonResponse>>?
 }

@@ -14,17 +14,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.home.AllLessonResponse
-import com.depromeet.sloth.data.network.home.WeeklyLessonResponse
+import com.depromeet.sloth.data.network.home.TodayLessonResponse
 
 class TodayLessonAdapter(
     private val bodyType: BodyType
 ) :
-    ListAdapter<WeeklyLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
+    ListAdapter<TodayLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
         TodayLessonDiffCallback
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayLessonViewHolder {
         val view = when(bodyType) {
+            BodyType.NOTHING -> LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_home_today_lesson_nothing, parent, false)
             BodyType.FINISHED -> LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_today_lesson_finished, parent, false)
             BodyType.NOT_FINISHED -> LayoutInflater.from(parent.context)
@@ -39,7 +40,9 @@ class TodayLessonAdapter(
         holder.onBind(lesson)
     }
 
-    inner class TodayLessonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TodayLessonViewHolder(
+        itemView: View
+    ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
         private val todayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
         private val todayLessonCategory = itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
@@ -50,21 +53,32 @@ class TodayLessonAdapter(
         private val todayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
 
-        fun onBind(allLesson: WeeklyLessonResponse) {
-            init(allLesson)
+        fun onBind(allLesson: TodayLessonResponse) {
 
-            todayLessonPlus.setOnClickListener {
-                updateProgress(true, allLesson.untilTodayNumber)
-                updateText(true, allLesson.untilTodayNumber)
-            }
 
-            todayLessonMinus.setOnClickListener {
-                updateProgress(false, allLesson.untilTodayNumber)
-                updateText(false, allLesson.untilTodayNumber)
+            when(bodyType) {
+                BodyType.NOTHING -> {
+
+                }
+                BodyType.FINISHED -> {
+                    init(allLesson)
+                }
+                BodyType.NOT_FINISHED -> {
+                    init(allLesson)
+                    todayLessonPlus.setOnClickListener {
+                        updateProgress(true, allLesson.untilTodayNumber)
+                        updateText(true, allLesson.untilTodayNumber)
+                    }
+
+                    todayLessonMinus.setOnClickListener {
+                        updateProgress(false, allLesson.untilTodayNumber)
+                        updateText(false, allLesson.untilTodayNumber)
+                    }
+                }
             }
         }
 
-        private fun init(allLesson: WeeklyLessonResponse) {
+        private fun init(allLesson: TodayLessonResponse) {
             val remainDay = allLesson.remainDay //D-day
             todayLessonCategory.text = allLesson.categoryName
             todayLessonName.text = allLesson.lessonName
@@ -118,30 +132,31 @@ class TodayLessonAdapter(
     }
 
     override fun onCurrentListChanged(
-        previousList: List<WeeklyLessonResponse?>,
-        currentList: List<WeeklyLessonResponse?>
+        previousList: List<TodayLessonResponse?>,
+        currentList: List<TodayLessonResponse?>
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
     }
 
     enum class BodyType {
+        NOTHING,
         FINISHED,
         NOT_FINISHED
     }
 }
 
-object TodayLessonDiffCallback : DiffUtil.ItemCallback<WeeklyLessonResponse>() {
+object TodayLessonDiffCallback : DiffUtil.ItemCallback<TodayLessonResponse>() {
     override fun areItemsTheSame(
-        oldItem: WeeklyLessonResponse,
-        newItem: WeeklyLessonResponse
+        oldItem: TodayLessonResponse,
+        newItem: TodayLessonResponse
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: WeeklyLessonResponse,
-        newItem: WeeklyLessonResponse
+        oldItem: TodayLessonResponse,
+        newItem: TodayLessonResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName
     }

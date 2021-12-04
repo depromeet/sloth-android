@@ -31,7 +31,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
 
         mainScope {
             preferenceManager.getAccessToken()?.run {
-                viewModel.fetchLessonAllList(
+                viewModel.fetchAllLessonList(
                     accessToken = this
                 ).let {
                     when (it) {

@@ -11,20 +11,20 @@ import kotlin.coroutines.CoroutineContext
 class LessonViewModel : BaseViewModel() {
     private val lessonRepository = LessonRepository()
 
-    suspend fun fetchLessonWeeklyList(
+    suspend fun fetchTodayLessonList(
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,
         start: CoroutineStart = CoroutineStart.DEFAULT
-    ): LessonState<List<WeeklyLessonResponse>> = viewModelScope.async(
+    ): LessonState<List<TodayLessonResponse>> = viewModelScope.async(
         context = context,
         start = start
     ) {
-        lessonRepository.fetchLessonWeeklyList(
+        lessonRepository.fetchTodayLessonList(
             accessToken = accessToken
         )
     }.await()
 
-    suspend fun fetchLessonAllList(
+    suspend fun fetchAllLessonList(
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,
         start: CoroutineStart = CoroutineStart.DEFAULT
@@ -32,7 +32,7 @@ class LessonViewModel : BaseViewModel() {
         context = context,
         start = start
     ) {
-        lessonRepository.fetchLessonAllList(
+        lessonRepository.fetchAllLessonList(
             accessToken = accessToken
         )
     }.await()
