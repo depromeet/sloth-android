@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_today_lesson_register"
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:background="@drawable/bg_home_today_item_rounded_white">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_today_lesson_plus"
+        android:id="@+id/iv_today_lesson_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_home_today_item_button_nothing_plus"
@@ -19,7 +18,7 @@
         app:layout_constraintVertical_bias="0.4" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_today_lesson_register_title"
+        android:id="@+id/tv_today_lesson_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="강의 등록하기"
@@ -29,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_today_lesson_plus"
+        app:layout_constraintTop_toBottomOf="@id/iv_today_lesson_register"
         app:layout_constraintVertical_bias="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

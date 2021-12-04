@@ -32,8 +32,4 @@ data class AllLessonResponse (
     var siteName: String = "",
     var startDate: String = "",
     var totalNumber: Int = 0
-) {
-    companion object {
-        val EMPTY = AllLessonResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)
-    }
-}
+)

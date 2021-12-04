@@ -1,6 +1,5 @@
 package com.depromeet.sloth.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,8 +9,6 @@ import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.TodayLessonResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
@@ -25,6 +22,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var lessonList = listOf<TodayLessonResponse>()
+
         mainScope {
             preferenceManager.getAccessToken()?.run {
                 viewModel.fetchTodayLessonList(
@@ -32,13 +31,15 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 ).let {
                     when (it) {
                         is LessonState.Success<List<TodayLessonResponse>> -> {
-                            updateLessonList(it.data)
+                            lessonList = it.data
+                            updateLessonList(lessonList)
                         }
                         is LessonState.Error -> {
                             Log.d("Error", "${it.exception}")
                         }
                         is LessonState.Unauthorized -> {
                             Log.d("Error", "Unauthorized")
+                            updateLessonList(lessonList)
                         }
                         is LessonState.NotFound -> {
                             Log.d("Error", "NotFound")
@@ -54,23 +55,11 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         //setTestData()
     }
 
-    private fun moveRegisterActivity() {
-        val intent = Intent(requireContext(), RegisterLessonFirstActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun moveDetailActivity(lesson: TodayLessonResponse) {
-        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lesson.lessonId.toString())
-        startActivity(intent)
-    }
-
     private fun updateLessonList(lessonList: List<TodayLessonResponse>) {
         when (lessonList.isEmpty()) {
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
-                val nothingLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
+                val nothingLessonAdapter = TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING)
                 val concatAdapter = ConcatAdapter(
                     nothingHeader,
                     nothingLessonAdapter
@@ -79,18 +68,11 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 nothingLessonAdapter.submitList(listOf(TodayLessonResponse.EMPTY))
                 binding.rvTodayLesson.adapter = concatAdapter
             }
-
             false -> {
                 val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
                 val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-                val notFinishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { lesson ->
-                        moveDetailActivity(lesson)
-                    }
-                val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { lesson ->
-                        moveDetailActivity(lesson)
-                    }
+                val notFinishedLessonAdapter = TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED)
+                val finishedLessonAdapter = TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED)
                 val concatAdapter = ConcatAdapter(
                     notFinishedHeader,
                     notFinishedLessonAdapter,
@@ -181,14 +163,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
         val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
         val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-        val notFinishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { lesson ->
-                moveDetailActivity(lesson)
-            }
-        val finishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { lesson ->
-                moveDetailActivity(lesson)
-            }
+        val notFinishedLessonAdapter = TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED)
+        val finishedLessonAdapter = TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED)
         val concatAdapter = ConcatAdapter(
             notFinishedHeader,
             notFinishedLessonAdapter,
