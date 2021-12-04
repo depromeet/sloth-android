@@ -10,6 +10,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.home.TodayLessonResponse
 
 class TodayLessonAdapter(
-    private val bodyType: BodyType
+    private val bodyType: BodyType,
+    val onClick: (TodayLessonResponse) -> Unit
 ) :
     ListAdapter<TodayLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
         TodayLessonDiffCallback
@@ -44,6 +46,7 @@ class TodayLessonAdapter(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
+        private val todayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
         private val todayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
         private val todayLessonCategory = itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
         private val todayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
@@ -52,28 +55,34 @@ class TodayLessonAdapter(
         private val todayLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_today_lesson_bar)
         private val todayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
+        private val registerClass = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
 
-        fun onBind(allLesson: TodayLessonResponse) {
-
-
+        fun onBind(lesson: TodayLessonResponse) {
             when(bodyType) {
                 BodyType.NOTHING -> {
+                    registerClass.setOnClickListener { onClick(lesson) }
+                }
 
-                }
                 BodyType.FINISHED -> {
-                    init(allLesson)
+                    init(lesson)
+
+                    todayLesson.setOnClickListener { onClick(lesson) }
                 }
+
                 BodyType.NOT_FINISHED -> {
-                    init(allLesson)
+                    init(lesson)
+
                     todayLessonPlus.setOnClickListener {
-                        updateProgress(true, allLesson.untilTodayNumber)
-                        updateText(true, allLesson.untilTodayNumber)
+                        updateProgress(true, lesson.untilTodayNumber)
+                        updateText(true, lesson.untilTodayNumber)
                     }
 
                     todayLessonMinus.setOnClickListener {
-                        updateProgress(false, allLesson.untilTodayNumber)
-                        updateText(false, allLesson.untilTodayNumber)
+                        updateProgress(false, lesson.untilTodayNumber)
+                        updateText(false, lesson.untilTodayNumber)
                     }
+
+                    todayLesson.setOnClickListener { onClick(lesson) }
                 }
             }
         }

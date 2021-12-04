@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -7,8 +8,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.AllLessonResponse
+import com.depromeet.sloth.data.network.home.TodayLessonResponse
 import com.depromeet.sloth.databinding.FragmentClassBinding
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,13 +40,12 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                     when (it) {
                         is LessonState.Success<List<AllLessonResponse>> -> {
                             lessonList = it.data
-                            //등록된 리스트를 불러온 후에 어댑터와 연결하는 작업 필요함
+                            updateLessonList(lessonList)
                         }
                         is LessonState.Error -> {
                             Log.d("Error", "${it.exception}")
                         }
                         is LessonState.Unauthorized -> {
-                            //정책 확인 필요
                             Log.d("Error", "Unauthorized")
                         }
                         is LessonState.NotFound -> {
@@ -57,9 +59,100 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
             }
         }
 
-        setTestData()
+        //setTestData()
+    }
 
+    private fun moveRegisterActivity() {
+        val intent = Intent(requireContext(), RegisterLessonFirstActivity::class.java)
+        startActivity(intent)
+    }
 
+    private fun moveDetailActivity(lesson: AllLessonResponse) {
+        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
+        intent.putExtra("lessonId", lesson.lessonId.toString())
+        startActivity(intent)
+    }
+
+    private fun updateLessonList(lessonList: List<AllLessonResponse>) {
+        when (lessonList.isEmpty()) {
+            true -> {
+                binding.ivClassRegister.visibility = View.VISIBLE
+                val nothingLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
+
+                nothingLessonAdapter.submitList(listOf(AllLessonResponse.EMPTY))
+                binding.rvClassLesson.adapter = nothingLessonAdapter
+            }
+
+            false -> {
+                binding.ivClassRegister.visibility = View.INVISIBLE
+
+                val doingHeader = HeaderAdapter(HeaderAdapter.HeaderType.DOING)
+                val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
+                val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
+
+                val doingLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.DOING) { lesson ->
+                    moveDetailActivity(lesson)
+                }
+                val planningLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PLANNING) { lesson ->
+                    moveDetailActivity(lesson)
+                }
+                val passedLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PASSED) { lesson ->
+                    moveDetailActivity(lesson)
+                }
+
+                val concatAdapter = ConcatAdapter(
+                    doingHeader,
+                    doingLessonAdapter,
+                    planningHeader,
+                    planningLessonAdapter,
+                    passedHeader,
+                    passedLessonAdapter
+                )
+
+                lessonList.let {
+                    doingLessonAdapter.submitList(
+                        lessonList.filter {
+                            val startDateString = it.startDate
+                            val endDateString = it.endDate
+                            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val startDate = dateFormat.parse(startDateString)
+                            val endDate = dateFormat.parse(endDateString)
+                            val todayDate = Calendar.getInstance()
+                            val startDiffTime = (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
+                            val endDiffTime = (endDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
+                            val progressRatio = it.currentProgressRate / it.goalProgressRate.toDouble()
+                            val inValidData = startDiffTime < 0.0 && endDiffTime >= 0.0 && progressRatio < 1.0
+                            inValidData
+                        }
+                    )
+
+                    planningLessonAdapter.submitList(
+                        lessonList.filter {
+                            val startDateString = it.startDate
+                            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val startDate = dateFormat.parse(startDateString)
+                            val todayDate = Calendar.getInstance()
+                            val endDiffTime = (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
+                            val inValidData = endDiffTime > 0.0
+                            inValidData
+                        }
+                    )
+
+                    passedLessonAdapter.submitList(
+                        lessonList.filter {
+                            val progressRatio = it.currentProgressRate / it.goalProgressRate
+                            val inValidData = (progressRatio == 1)
+                            inValidData
+                        }
+                    )
+                }
+
+                binding.rvClassLesson.let {
+                    it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+                    it.adapter = concatAdapter
+                }
+            }
+        }
     }
 
     private fun setTestData() {
@@ -140,9 +233,15 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
         val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
         val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
 
-        val doingLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.DOING)
-        val planningLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PLANNING)
-        val passedLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PASSED)
+        val doingLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.DOING) { lesson ->
+            moveDetailActivity(lesson)
+        }
+        val planningLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PLANNING) { lesson ->
+            moveDetailActivity(lesson)
+        }
+        val passedLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PASSED) { lesson ->
+            moveDetailActivity(lesson)
+        }
 
         val concatAdapter = ConcatAdapter(
             doingHeader,
