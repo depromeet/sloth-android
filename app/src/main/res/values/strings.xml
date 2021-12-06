@@ -37,7 +37,7 @@
     <string name="max_30">최대 30자 까지 입력 가능합니다.</string>
     <string name="lesson_message">각오 한마디(선택)</string>
 
-    <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다</font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부도 열심히 한다</font></string>
+    <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다 </font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부 열심히 한다</font></string>
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
     <string name="login_google">구글 아이디로 로그인</string>
     <string name="login_kakao">카카오 아이디로 로그인</string>
@@ -86,4 +86,6 @@
     <string name="home_today_title"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
+    <string name="start_sloth">나나공 시작하기</string>
+    <string name="ic_login_sloth">login_sloth_icon</string>
 </resources>
