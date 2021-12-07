@@ -3,16 +3,21 @@ package com.depromeet.sloth.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.home.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     override val viewModel: LoginViewModel = LoginViewModel()
+
+    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+
+    private lateinit var accessToken: String
 
     override fun getViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
@@ -26,6 +31,11 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        if(pm.getAccessToken() != null) {
+            Log.d("accessToken", pm.getAccessToken().toString())
+            nextActivity()
+        }
 
         findViewById<Button>(R.id.btn_login_start).setOnClickListener {
             openLoginBottomSheet()
@@ -91,5 +101,6 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
     private fun nextActivity() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

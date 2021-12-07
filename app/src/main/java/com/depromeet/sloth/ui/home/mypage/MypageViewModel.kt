@@ -1,10 +1,7 @@
 package com.depromeet.sloth.ui.home.mypage
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.network.login.LoginGoogleResponse
-import com.depromeet.sloth.data.network.login.LoginState
 import com.depromeet.sloth.data.network.mypage.MypageRepository
 import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState
@@ -43,10 +40,10 @@ class MypageViewModel: BaseViewModel() {
         )
     }.await()
 
-    suspend fun removeAuthToken(pm: PreferenceManager, accessToken: String, refreshToken: String) =
+    suspend fun removeAuthToken(pm: PreferenceManager) =
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                pm.removeAuthToken(accessToken, refreshToken)
+                pm.removeAuthToken()
             }
         }
 }

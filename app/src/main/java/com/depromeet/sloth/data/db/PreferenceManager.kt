@@ -68,9 +68,9 @@ class PreferenceManager(
      * 저장된 AccessToken, RefreshToken (인증 토큰) 삭제
      *
      */
-    fun removeAuthToken(accessToken: String, refreshToken: String) {
-        editor.remove(accessToken)
-        editor.remove(refreshToken)
+    fun removeAuthToken() {
+        editor.remove(ACCESS_TOKEN)
+        editor.remove(REFRESH_TOKEN)
         editor.apply()
     }
 }

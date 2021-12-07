@@ -129,10 +129,10 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
 
                     //finish
                     mainScope {
-                        viewModel.removeAuthToken(pm, accessToken, refreshToken)
+                        viewModel.removeAuthToken(pm)
+                        startActivity(LoginActivity.newIntent(requireActivity()))
                     }
                     Toast.makeText(requireContext(), "로그아웃 되었습니다", Toast.LENGTH_SHORT).show()
-                    startActivity(LoginActivity.newIntent(requireActivity()))
                 }
             }
             dlg.start()
