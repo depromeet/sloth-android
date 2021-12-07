@@ -1,11 +1,13 @@
 package com.depromeet.sloth.ui.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.home.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
@@ -14,6 +16,12 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     override fun getViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
+
+    companion object {
+        fun newIntent(activity: Activity) =
+            Intent(activity, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

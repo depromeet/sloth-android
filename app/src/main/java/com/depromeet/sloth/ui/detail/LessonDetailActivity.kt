@@ -55,7 +55,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             }
 
         private const val LESSON_ID = "lessonId"
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

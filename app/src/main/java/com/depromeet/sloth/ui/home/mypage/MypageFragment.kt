@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.home.mypage
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -14,12 +15,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.AppCompatButton
+import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageState
 import com.depromeet.sloth.databinding.FragmentMypageBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.home.HomeActivity
+import com.depromeet.sloth.ui.login.LoginActivity
 
 class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
 //    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
@@ -44,7 +46,6 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
         initViews()
 
         mainScope {
-
             binding.pbMypage.visibility = View.VISIBLE
 
             viewModel.fetchMemberInfo(accessToken).let {
@@ -72,11 +73,11 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
     override fun initViews() = with(binding) {
 
         ivMypageProfileImage.setOnClickListener {
-            //profile, nickname change
+            // nickname change
             val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
             updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            /*dialog radius 적용*/
+            // dialog radius 적용
             updateDialog.setContentView(R.layout.dialog_mypage_update_member_info)
 
             val nameEditText = updateDialog.findViewById<EditText>(R.id.et_mypage_dialog_profile_name)
@@ -106,12 +107,54 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                 else {
                     Toast.makeText(requireContext(), "현재 닉네임과 동일합니다.",Toast.LENGTH_SHORT).show()
                 }
-
                 updateDialog.dismiss()
             }
-
             updateDialog.show()
         }
+
+        clMypageContact.setOnClickListener {
+            sendEmail()
+        }
+
+        clMypageLogout.setOnClickListener {
+            val dlg = LogoutDialog(requireContext())
+            dlg.listener = object: LogoutDialog.LogoutDialogClickedListener {
+                override fun onLogoutClicked() {
+                    //logout
+
+                    //finish
+                    Toast.makeText(requireContext(), "로그아웃 되었습니다", Toast.LENGTH_SHORT).show()
+                    startActivity(LoginActivity.newIntent(requireActivity()))
+                }
+            }
+            dlg.start()
+        }
+
+        clMypageWithdraw.setOnClickListener {
+            val dlg = WithdrawDialog(requireContext())
+            dlg.listener = object: WithdrawDialog.WithdrawDialogClickedListener {
+                override fun onWithdrawClicked() {
+                    //withdraw
+
+                    //finish
+                    Toast.makeText(requireContext(), "회원탈퇴 되었습니다", Toast.LENGTH_SHORT).show()
+                    startActivity(LoginActivity.newIntent(requireActivity()))
+                }
+            }
+            dlg.start()
+        }
+    }
+
+    private fun sendEmail() {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
+            putExtra(Intent.EXTRA_TEXT,
+                String.format("---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
+                BuildConfig.VERSION_NAME, Build.VERSION.SDK_INT, Build.VERSION.RELEASE, Build.MODEL))
+            type = "message/rfc822"
+        }
+        startActivity(intent)
     }
 
 
