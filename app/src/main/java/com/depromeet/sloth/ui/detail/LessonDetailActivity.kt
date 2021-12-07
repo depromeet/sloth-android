@@ -75,13 +75,12 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
     override fun onResume() {
         super.onResume()
 
-        /*intent.apply {
+        intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
-            lessonModel = getParcelableExtra(LESSON_MODEL)
-        }*/
+        }
 
         /*test*/
-        lessonId = "19"
+        //lessonId = "6"
 
         mainScope {
             viewModel.fetchLessonDetailInfo(accessToken = accessToken, lessonId = lessonId).let {
