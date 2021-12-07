@@ -17,6 +17,7 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageState
 import com.depromeet.sloth.databinding.FragmentMypageBinding
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -24,13 +25,15 @@ import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 
 class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
-//    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: MypageViewModel = MypageViewModel()
 
     override fun getViewBinding(): FragmentMypageBinding = FragmentMypageBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
+
+    lateinit var refreshToken: String
 
     lateinit var memberName: String
 
@@ -40,8 +43,10 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         /*액티비티의 변수 사용*/
-        accessToken = (activity as? HomeActivity)?.accessToken ?: ""
-        //accessToken = preferenceManager.getAccessToken().toString()
+        //accessToken = (activity as? HomeActivity)?.accessToken ?: ""
+
+        accessToken = pm.getAccessToken().toString()
+        refreshToken = pm.getRefreshToken().toString()
 
         initViews()
 
@@ -123,6 +128,9 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                     //logout
 
                     //finish
+                    mainScope {
+                        viewModel.removeAuthToken(pm, accessToken, refreshToken)
+                    }
                     Toast.makeText(requireContext(), "로그아웃 되었습니다", Toast.LENGTH_SHORT).show()
                     startActivity(LoginActivity.newIntent(requireActivity()))
                 }
