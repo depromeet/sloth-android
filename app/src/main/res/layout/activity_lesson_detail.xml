@@ -471,7 +471,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="36dp"
                     android:background="@drawable/bg_detail_rounded_gray"
                     android:text="@string/remove"
                     android:textColor="@color/gray_500"

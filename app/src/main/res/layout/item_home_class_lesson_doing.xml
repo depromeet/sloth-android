@@ -153,7 +153,7 @@
         android:layout_marginTop="44dp"
         android:layout_marginEnd="20dp"
         android:max="10000"
-        android:progressDrawable="@drawable/pg_home_class_lesson"
+        android:progressDrawable="@drawable/bg_home_class_lesson"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

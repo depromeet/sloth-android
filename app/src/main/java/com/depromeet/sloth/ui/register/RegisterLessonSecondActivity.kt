@@ -32,7 +32,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
 
-class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
+class RegisterLessonSecondActivity :
+    BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
 
     override val viewModel: RegisterViewModel
         get() = RegisterViewModel()
@@ -40,7 +41,7 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
         ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
 
-    private val pm = PreferenceManager(this)
+    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
 
     private var flag = 0
 
@@ -67,6 +68,11 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
 
     lateinit var accessToken: String
 
+    /*
+    alertDays 는 일단은 null 로 세팅
+    message 는 선택사항
+     */
+
     private var alertDays: String? = null
     lateinit var categoryId: Number
     lateinit var endDate: String
@@ -75,14 +81,9 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     lateinit var siteId: Number
     lateinit var startDate: String
     lateinit var totalNumber: Number
-
     private var startDay: Long? = null
     private var endDay: Long? = null
 
-    /*
-    alertDays 는 일단은 null 로 세팅
-    message 는 선택사항
-     */
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +112,8 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
 
         pbRegisterLesson.progress = 50
 
-        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonSecondActivity, R.anim.slide_down)
+        val aniSlide =
+            AnimationUtils.loadAnimation(this@RegisterLessonSecondActivity, R.anim.slide_down)
 
         if (flag == 0) {
             lockButton(btnRegisterLesson)
@@ -141,118 +143,153 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
 
                     if (!tvRegisterEndLessonDate.isVisible) {
 
-                        startAnimation(aniSlide, tvRegisterEndLessonDate, tvRegisterEndLessonDateInfo)
+                        flag += 1
+                        fillProgressbar(flag, 50)
+
+                        startAnimation(
+                            aniSlide,
+                            tvRegisterEndLessonDate,
+                            tvRegisterEndLessonDateInfo
+                        )
                     }
-                }
 
-                if (flag < 1) {
-                    flag += 1
+                    if (flag == 1) {
+                        tvRegisterEndLessonDateInfo.setOnClickListener {
 
-                    fillProgressbar(flag, 50)
+                            val constraintsBuilder =
+                                CalendarConstraints.Builder()
+                                    .setValidator(DateValidatorPointForward.from(startDay!!))
 
-                    hideKeyboard()
-                }
+                            materialDateBuilder = MaterialDatePicker.Builder.datePicker()
+                                .setCalendarConstraints(constraintsBuilder.build())
 
-                if (flag == 1) {
-                    tvRegisterEndLessonDateInfo.setOnClickListener {
+                            materialDatePicker = materialDateBuilder.build()
 
-                        val constraintsBuilder =
-                            CalendarConstraints.Builder()
-                                .setValidator(DateValidatorPointForward.from(startDay!!))
+                            materialDatePicker.show(supportFragmentManager, "calendar")
 
-                        materialDateBuilder = MaterialDatePicker.Builder.datePicker()
-                            .setCalendarConstraints(constraintsBuilder.build())
+                            materialDatePicker.addOnPositiveButtonClickListener {
+                                val calendar =
+                                    Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
-                        materialDatePicker = materialDateBuilder.build()
+                                calendar.time = Date(it)
 
-                        materialDatePicker.show(supportFragmentManager, "calendar")
+                                val pickerDate = getPickerTime(calendar.time)
 
-                        materialDatePicker.addOnPositiveButtonClickListener {
-                            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                                binding.tvRegisterEndLessonDateInfo.text = pickerDate
 
-                            calendar.time = Date(it)
+                                endDay = calendar.timeInMillis
 
-                            val pickerDate = getPickerTime(calendar.time)
+                                endDate = pickerDate
 
-                            binding.tvRegisterEndLessonDateInfo.text = pickerDate
-
-                            endDay = calendar.timeInMillis
-
-                            endDate = pickerDate
-
-                            if (!tvRegisterLessonPrice.isVisible)
-                                startAnimation(aniSlide, tvRegisterLessonPrice, etRegisterLessonPriceInfo)
-
-                        }
-
-                        if (flag < 2) {
-
-                            flag += 1
-
-                            fillProgressbar(flag, 50)
-
-                            hideKeyboard()
-                        }
-
-                        if (flag == 2) {
-                            focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
-
-                            btnRegisterLesson.setOnClickListener {
-
-                                //price = priceEditText.text.toString().toInt()
-
-                                /*val df = DecimalFormat("#,###")
-                                val changedPriceFormat = df.format(price)
-
-                                priceEditText.setText("${changedPriceFormat}원")*/
-
-                                startAnimation(aniSlide, tvRegisterLessonMessage, etRegisterLessonMessageInfo)
-
-                                if (flag < 3) {
-
+                                if (!tvRegisterLessonPrice.isVisible) {
                                     flag += 1
-
                                     fillProgressbar(flag, 50)
 
-                                    hideKeyboard()
+                                    startAnimation(
+                                        aniSlide,
+                                        tvRegisterLessonPrice,
+                                        etRegisterLessonPriceInfo
+                                    )
                                 }
 
-                                if (flag == 3) {
+                                if (flag == 2) {
+                                    focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
+
                                     btnRegisterLesson.setOnClickListener {
 
-                                        message = etRegisterLessonMessageInfo.text.toString()
+                                        //price = priceEditText.text.toString().toInt()
 
+                                        /*val df = DecimalFormat("#,###")
+                                        val changedPriceFormat = df.format(price)
 
-                                        val lessonInfo = LessonModel(
-                                            alertDays = alertDays,
-                                            categoryId = categoryId.toInt(),
-                                            endDate = endDate,
-                                            lessonName = lessonName,
-                                            message = message,
-                                            price = etRegisterLessonPriceInfo.text.toString().toInt(),
-                                            siteId = siteId.toInt(),
-                                            startDate = startDate,
-                                            totalNumber = totalNumber.toInt()
+                                        priceEditText.setText("${changedPriceFormat}원")*/
+
+                                        startAnimation(
+                                            aniSlide,
+                                            tvRegisterLessonMessage,
+                                            etRegisterLessonMessageInfo
                                         )
 
-                                        Log.d("lessonInfo: ", "$lessonInfo")
+                                        if (flag < 3) {
 
-                                        mainScope {
-                                            viewModel.registerLesson(accessToken, lessonInfo).let {
-                                                when (it) {
-                                                    is RegisterState.Success -> {
-                                                        Log.d("Register Success", "${it.data}")
-                                                        Toast.makeText(this@RegisterLessonSecondActivity, "강의가 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                                            flag += 1
 
-                                                        setResult(RESULT_OK, Intent(this@RegisterLessonSecondActivity, RegisterLessonFirstActivity::class.java))
-                                                        if(!isFinishing) finish()
+                                            fillProgressbar(flag, 50)
+
+                                            hideKeyboard()
+                                        }
+
+                                        if (flag == 3) {
+                                            btnRegisterLesson.setOnClickListener {
+
+                                                if (startDay!! > endDay!!) {
+                                                    Toast.makeText(
+                                                        this@RegisterLessonSecondActivity,
+                                                        "강의 시작일은 강의 완료일 이전이어야 합니다.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                    return@setOnClickListener
+                                                }
+
+                                                message =
+                                                    etRegisterLessonMessageInfo.text.toString()
+
+                                                val lessonInfo = LessonModel(
+                                                    alertDays = alertDays,
+                                                    categoryId = categoryId.toInt(),
+                                                    endDate = endDate,
+                                                    lessonName = lessonName,
+                                                    message = message,
+                                                    price = etRegisterLessonPriceInfo.text.toString()
+                                                        .toInt(),
+                                                    siteId = siteId.toInt(),
+                                                    startDate = startDate,
+                                                    totalNumber = totalNumber.toInt()
+                                                )
+
+                                                Log.d("lessonInfo: ", "$lessonInfo")
+
+                                                mainScope {
+                                                    viewModel.registerLesson(
+                                                        accessToken,
+                                                        lessonInfo
+                                                    ).let {
+                                                        when (it) {
+                                                            is RegisterState.Success -> {
+                                                                Log.d(
+                                                                    "Register Success",
+                                                                    "${it.data}"
+                                                                )
+                                                                Toast.makeText(
+                                                                    this@RegisterLessonSecondActivity,
+                                                                    "강의가 등록되었습니다.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+
+                                                                setResult(
+                                                                    RESULT_OK,
+                                                                    Intent(
+                                                                        this@RegisterLessonSecondActivity,
+                                                                        RegisterLessonFirstActivity::class.java
+                                                                    )
+                                                                )
+                                                                if (!isFinishing) finish()
+                                                            }
+
+                                                            is RegisterState.Error -> {
+                                                                Log.d(
+                                                                    "Register Error",
+                                                                    "${it.exception}"
+                                                                )
+                                                                Toast.makeText(
+                                                                    this@RegisterLessonSecondActivity,
+                                                                    "강의 등록을 실패하였습니다.",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                            else -> Unit
+                                                        }
                                                     }
-
-                                                    is RegisterState.Error -> {
-                                                        Log.d("Register Error", "${it.exception}")
-                                                        Toast.makeText(this@RegisterLessonSecondActivity, "강의 등록을 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                                                    }
-                                                    else -> Unit
                                                 }
                                             }
                                         }

@@ -114,7 +114,7 @@
         android:layout_width="0dp"
         android:layout_height="8dp"
         android:max="10000"
-        android:progressDrawable="@drawable/pg_home_today_lesson"
+        android:progressDrawable="@drawable/bg_home_today_lesson"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
