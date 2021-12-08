@@ -64,6 +64,7 @@ class RegisterLessonSecondActivity :
         private const val TOTAL_NUMBER = "totalNumber"
         private const val CATEGORY_ID = "categoryId"
         private const val SITE_ID = "siteId"
+        private const val DAY = 86400000L
     }
 
     lateinit var accessToken: String
@@ -129,11 +130,11 @@ class RegisterLessonSecondActivity :
                 materialDatePicker.show(supportFragmentManager, "calendar")
 
                 materialDatePicker.addOnPositiveButtonClickListener {
-                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                    var calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
                     calendar.time = Date(it)
 
-                    val pickerDate = getPickerTime(calendar.time)
+                    var pickerDate = getPickerTime(calendar.time)
 
                     binding.tvRegisterStartLessonDateInfo.text = pickerDate
 
@@ -158,7 +159,7 @@ class RegisterLessonSecondActivity :
 
                             val constraintsBuilder =
                                 CalendarConstraints.Builder()
-                                    .setValidator(DateValidatorPointForward.from(startDay!!))
+                                    .setValidator(DateValidatorPointForward.from(startDay!! + DAY))
 
                             materialDateBuilder = MaterialDatePicker.Builder.datePicker()
                                 .setCalendarConstraints(constraintsBuilder.build())
@@ -168,12 +169,11 @@ class RegisterLessonSecondActivity :
                             materialDatePicker.show(supportFragmentManager, "calendar")
 
                             materialDatePicker.addOnPositiveButtonClickListener {
-                                val calendar =
-                                    Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                                calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
                                 calendar.time = Date(it)
 
-                                val pickerDate = getPickerTime(calendar.time)
+                                pickerDate = getPickerTime(calendar.time)
 
                                 binding.tvRegisterEndLessonDateInfo.text = pickerDate
 
@@ -222,10 +222,10 @@ class RegisterLessonSecondActivity :
                                         if (flag == 3) {
                                             btnRegisterLesson.setOnClickListener {
 
-                                                if (startDay!! > endDay!!) {
+                                                if (startDay!! >= endDay!!) {
                                                     Toast.makeText(
                                                         this@RegisterLessonSecondActivity,
-                                                        "강의 시작일은 강의 완료일 이전이어야 합니다.",
+                                                        "강의 시작일은 완강 목표일 이전이어야 합니다.",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     return@setOnClickListener
