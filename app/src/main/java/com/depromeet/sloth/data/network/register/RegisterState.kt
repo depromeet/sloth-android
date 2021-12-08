@@ -1,6 +1,5 @@
 package com.depromeet.sloth.data.network.register
 
-import com.depromeet.sloth.data.network.mypage.MypageState
 import java.lang.Exception
 
 sealed class RegisterState<out R> {

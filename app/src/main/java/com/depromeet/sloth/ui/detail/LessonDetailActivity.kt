@@ -32,6 +32,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var accessToken: String
 
+    lateinit var refreshToken: String
+
     lateinit var lessonId: String
 
     lateinit var totalNumber: String
@@ -65,6 +67,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         accessToken = pm.getAccessToken().toString()
 
+        refreshToken = pm.getRefreshToken().toString()
+
         categoryArray = resources.getStringArray(R.array.category_array)
 
         siteArray = resources.getStringArray(R.array.site_array)
@@ -91,9 +95,28 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                         initLessonInfo(it.data)
                     }
 
+                    is LessonDetailState.Unauthorized -> {
+                        viewModel.fetchLessonDetailInfo(accessToken = refreshToken, lessonId = lessonId).let { lessonDetailResponse ->
+                            when (lessonDetailResponse) {
+                                is LessonDetailState.Success -> {
+                                    Log.d("fetch Success", "${lessonDetailResponse.data}")
+
+                                    initLessonInfo(lessonDetailResponse.data)
+                                }
+
+                                is LessonDetailState.Error -> {
+                                    Log.d("fetch Error", "${lessonDetailResponse.exception}")
+                                }
+                                else -> Unit
+                            }
+                        }
+                    }
+
                     is LessonDetailState.Error -> {
                         Log.d("fetch Error", "${it.exception}")
                     }
+
+                    else ->  Unit
                 }
             }
         }
@@ -130,6 +153,22 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                     is LessonDetailState.Success<*> -> {
                         Log.d("Delete Success", "${it.data}")
                     }
+
+                    is LessonDetailState.Unauthorized -> {
+                        viewModel.deleteLesson(accessToken = refreshToken, lessonId = lessonId).let { deleteLessonResponse ->
+                            when (deleteLessonResponse) {
+                                is LessonDetailState.Success -> {
+                                    Log.d("Delete Success", "${deleteLessonResponse.data}")
+                                }
+
+                                is LessonDetailState.Error -> {
+                                    Log.d("Delete Error", "${deleteLessonResponse.exception}")
+                                }
+                                else -> Unit
+                            }
+                        }
+                    }
+
                     is LessonDetailState.Error -> {
                         Log.d("Delete Error", "${it.exception}")
                     }

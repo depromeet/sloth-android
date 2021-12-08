@@ -68,6 +68,7 @@ class RegisterLessonSecondActivity :
     }
 
     lateinit var accessToken: String
+    lateinit var refreshToken: String
 
     /*
     alertDays 는 일단은 null 로 세팅
@@ -90,6 +91,9 @@ class RegisterLessonSecondActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        accessToken = pm.getAccessToken().toString()
+        refreshToken = pm.getRefreshToken().toString()
+
         initViews()
     }
 
@@ -100,8 +104,6 @@ class RegisterLessonSecondActivity :
         tbRegisterLesson.setNavigationOnClickListener {
             onBackPressed()
         }
-
-        accessToken = pm.getAccessToken().toString()
 
         intent.apply {
             categoryId = getIntExtra(CATEGORY_ID, -1)
@@ -274,6 +276,50 @@ class RegisterLessonSecondActivity :
                                                                     )
                                                                 )
                                                                 if (!isFinishing) finish()
+                                                            }
+
+                                                            is RegisterState.Unauthorized -> {
+                                                                viewModel.registerLesson(
+                                                                    accessToken = refreshToken,
+                                                                    lessonInfo
+                                                                ).let { registerLessonResponse ->
+                                                                    when (registerLessonResponse) {
+                                                                        is RegisterState.Success -> {
+                                                                            Log.d(
+                                                                                "Register Success",
+                                                                                "${registerLessonResponse.data}"
+                                                                            )
+
+                                                                            Toast.makeText(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                "강의가 등록되었습니다.",
+                                                                                Toast.LENGTH_SHORT
+                                                                            ).show()
+
+                                                                            setResult(
+                                                                                RESULT_OK,
+                                                                                Intent(
+                                                                                    this@RegisterLessonSecondActivity,
+                                                                                    RegisterLessonFirstActivity::class.java
+                                                                                )
+                                                                            )
+                                                                            if (!isFinishing) finish()
+                                                                        }
+
+                                                                        is RegisterState.Error -> {
+                                                                            Log.d(
+                                                                                "Register Error",
+                                                                                "${registerLessonResponse.exception}"
+                                                                            )
+                                                                            Toast.makeText(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                "강의 등록을 실패하였습니다.",
+                                                                                Toast.LENGTH_SHORT
+                                                                            ).show()
+                                                                        }
+                                                                        else -> Unit
+                                                                    }
+                                                                }
                                                             }
 
                                                             is RegisterState.Error -> {

@@ -1,6 +1,5 @@
 package com.depromeet.sloth.data.network.detail
 
-import com.depromeet.sloth.data.network.home.LessonState
 import java.lang.Exception
 
 sealed class LessonDetailState<out R> {

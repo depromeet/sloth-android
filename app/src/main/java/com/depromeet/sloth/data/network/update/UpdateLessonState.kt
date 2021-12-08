@@ -1,6 +1,5 @@
 package com.depromeet.sloth.data.network.update
 
-import com.depromeet.sloth.data.network.register.RegisterState
 import java.lang.Exception
 
 sealed class UpdateLessonState<out R> {

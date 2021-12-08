@@ -1,8 +1,6 @@
 package com.depromeet.sloth.data.network.mypage
 
-import com.depromeet.sloth.data.network.member.MemberInfoState
 import java.lang.Exception
-
 
 sealed class MypageState<out R> {
     data class Success<out T>(val data: T): MypageState<T>()

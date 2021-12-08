@@ -18,10 +18,10 @@ import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState
 import com.depromeet.sloth.databinding.FragmentMypageBinding
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 
 class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
@@ -58,12 +58,26 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                     is MypageState.Success -> {
                         Log.d( "fetch Success", "${it.data}")
 
-                        binding.apply {
-                            memberName = it.data.memberName
-                            tvMypageProfileName.text = memberName
-                            tvMypageProfileEmail.text = it.data.email
+                        initMemberInfo(it.data)
+                    }
+
+                    is MypageState.Unauthorized -> {
+                        viewModel.fetchMemberInfo(accessToken = refreshToken).let { mypageResponse ->
+                            when (mypageResponse) {
+                                is MypageState.Success -> {
+                                    Log.d("fetch Success", "${mypageResponse.data}")
+
+                                    initMemberInfo(mypageResponse.data)
+                                }
+
+                                is MypageState.Error -> {
+                                    Log.d("fetch Error", "${mypageResponse.exception}")
+                                }
+                                else -> Unit
+                            }
                         }
                     }
+
 
                     is MypageState.Error -> {
                         Log.d("fetch error", "${it.exception}")
@@ -72,6 +86,14 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                 }
             }
             binding.pbMypage.visibility = View.GONE
+        }
+    }
+
+    private fun initMemberInfo(data: MypageResponse) {
+        binding.apply {
+            memberName = data.memberName
+            tvMypageProfileName.text = memberName
+            tvMypageProfileEmail.text = data.email
         }
     }
 
@@ -100,6 +122,21 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                             when (it) {
                                 is MypageState.Success -> {
                                     Log.d("Update Success", "${it.data}")
+                                }
+
+                                is MypageState.Unauthorized -> {
+                                    viewModel.updateMemberInfo(accessToken = refreshToken, updateMemberName).let { mypageState ->
+                                        when (mypageState) {
+                                            is MypageState.Success -> {
+                                                Log.d("Update Success", "${mypageState.data}")
+                                            }
+
+                                            is MypageState.Error -> {
+                                                Log.d("Update Error", "${mypageState.exception}")
+                                            }
+                                            else -> Unit
+                                        }
+                                    }
                                 }
 
                                 is MypageState.Error -> {

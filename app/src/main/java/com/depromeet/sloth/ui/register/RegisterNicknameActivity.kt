@@ -21,6 +21,7 @@ import com.depromeet.sloth.data.db.PreferenceManager
 import java.util.*
 
 
+// 현재 사용하지 않는 화면
 class RegisterNicknameActivity :
     BaseActivity<RegisterViewModel, ActivityRegisterNicknameBinding>() {
 
