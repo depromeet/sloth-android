@@ -63,7 +63,6 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         }
 
         initViews()
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -72,12 +71,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
         tbRegisterLesson.setNavigationOnClickListener { finish() }
 
-        /*val animation = AlphaAnimation(0f, 1f)
-        animation.duration = 500*/
-
         if (flag == 0) {
-            //lockButton(btnRegisterLesson)
-
             focusInputForm(etRegisterLessonName, btnRegisterLesson)
 
             btnRegisterLesson.setOnClickListener {
@@ -90,7 +84,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                 hideKeyboard()
 
                 if (flag == 1) {
-                    //lockButton(btnRegisterLesson)
+                    lockButton(btnRegisterLesson)
 
                     focusInputForm(etRegisterLessonCount, btnRegisterLesson)
 
@@ -286,12 +280,6 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
             this,
             R.drawable.bg_register_rounded_sloth
         )
-//        button.setBackgroundColor(
-//            resources.getColor(
-//                R.color.primary_500,
-//                theme
-//            )
-//        )
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -301,12 +289,6 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
             this,
             R.drawable.bg_register_rounded_gray
         )
-//        button.setBackgroundColor(
-//            resources.getColor(
-//                R.color.gray_300,
-//                theme
-//            )
-//        )
     }
 
     private fun focusInputForm(editText: EditText, button: AppCompatButton) {
