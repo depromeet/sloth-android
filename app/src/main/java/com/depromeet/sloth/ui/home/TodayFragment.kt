@@ -32,7 +32,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 ).let {
                     when (it) {
                         is LessonState.Success<List<TodayLessonResponse>> -> {
-                            updateLessonList(it.data)
+                            //updateLessonList(it.data)
                         }
                         is LessonState.Error -> {
                             Log.d("Error", "${it.exception}")
@@ -51,7 +51,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
             }
         }
 
-        //setTestData()
+        setTestData()
     }
 
     private fun moveRegisterActivity() {
@@ -70,7 +70,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
                 val concatAdapter = ConcatAdapter(
                     nothingHeader,
                     nothingLessonAdapter
@@ -84,11 +84,19 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
                 val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
                 val notFinishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { lesson ->
-                        moveDetailActivity(lesson)
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
+                        when (clickType) {
+                            TodayLessonAdapter.ClickType.CLICK_PLUS -> {
+                            }
+
+                            TodayLessonAdapter.ClickType.CLICK_MINUS -> {
+                            }
+
+                            TodayLessonAdapter.ClickType.CLICK_NORMAL -> { }
+                        }
                     }
                 val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { lesson ->
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { _, lesson ->
                         moveDetailActivity(lesson)
                     }
                 val concatAdapter = ConcatAdapter(
@@ -182,11 +190,23 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
         val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
         val notFinishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { lesson ->
-                moveDetailActivity(lesson)
+            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
+                when (clickType) {
+                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {
+
+                    }
+
+                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {
+
+                    }
+
+                    TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
+
+                    }
+                }
             }
         val finishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { lesson ->
+            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { _, lesson ->
                 moveDetailActivity(lesson)
             }
         val concatAdapter = ConcatAdapter(
