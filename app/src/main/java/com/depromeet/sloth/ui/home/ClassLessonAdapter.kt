@@ -91,7 +91,8 @@ class ClassLessonAdapter(
 
                 BodyType.DOING -> {
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
-                    classLessonCurrentNumber.text = (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
+                    classLessonCurrentNumber.text =
+                        (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
                     classLessonTotalNumber.text = lessonInfo.totalNumber.toString()
                     classLessonPercent.text = (100 - lessonInfo.currentProgressRate).toString()
                     classLessonGoal.text = (progressRate * 100).toInt().toString()
@@ -140,10 +141,12 @@ class ClassLessonAdapter(
                     classLessonName.text = lessonInfo.lessonName
                     classLessonPrice.text = lessonInfo.price.toString()
                     classLessonPassedCount.text = lessonInfo.totalNumber.toString()
-                    classLessonFail.visibility =
-                        if (lessonInfo.currentProgressRate / lessonInfo.goalProgressRate == 1) {
-                            View.INVISIBLE
-                        } else View.VISIBLE
+                    val progressRate = (lessonInfo.currentProgressRate / 100.0f)
+                    val isComplete =
+                        (ceil(progressRate * lessonInfo.totalNumber)).toInt() == lessonInfo.totalNumber
+                    classLessonFail.visibility = if (isComplete) {
+                        View.INVISIBLE
+                    } else View.VISIBLE
 
                     classLesson.setOnClickListener { onClick(lessonInfo) }
                 }
