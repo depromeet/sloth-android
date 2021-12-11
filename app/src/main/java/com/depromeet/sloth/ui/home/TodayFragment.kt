@@ -15,7 +15,7 @@ import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
         get() = LessonViewModel()
@@ -23,8 +23,15 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     override fun getViewBinding(): FragmentTodayBinding =
         FragmentTodayBinding.inflate(layoutInflater)
 
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        accessToken = pm.getAccessToken().toString()
+        refreshToken = pm.getRefreshToken().toString()
+
         initViews()
         fetchLessonList()
 
@@ -39,26 +46,40 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
-            preferenceManager.getAccessToken()?.run {
-                viewModel.fetchTodayLessonList(
-                    accessToken = this
-                ).let {
-                    when (it) {
-                        is LessonState.Success<List<LessonTodayResponse>> -> {
-                            setLessonList(it.data)
+            viewModel.fetchTodayLessonList(
+                accessToken = accessToken
+            ).let {
+                when (it) {
+                    is LessonState.Success<List<LessonTodayResponse>> -> {
+                        Log.d("fetch Success", "${it.data}")
+                        setLessonList(it.data)
+                    }
+                    is LessonState.Error -> {
+                        Log.d("Error", "${it.exception}")
+                    }
+                    is LessonState.Unauthorized -> {
+                        viewModel.fetchTodayLessonList(
+                            accessToken = refreshToken
+                        ).let { lessonTodayResponse ->
+                            when (lessonTodayResponse) {
+                                is LessonState.Success -> {
+                                    Log.d("fetch Success", "${lessonTodayResponse.data}")
+                                    setLessonList(lessonTodayResponse.data)
+                                }
+
+                                is LessonState.Error -> {
+                                    Log.d("Error", "${lessonTodayResponse.exception}")
+                                }
+
+                                else -> Unit
+                            }
                         }
-                        is LessonState.Error -> {
-                            Log.d("Error", "${it.exception}")
-                        }
-                        is LessonState.Unauthorized -> {
-                            Log.d("Error", "Unauthorized")
-                        }
-                        is LessonState.NotFound -> {
-                            Log.d("Error", "NotFound")
-                        }
-                        is LessonState.Forbidden -> {
-                            Log.d("Error", "Forbidden")
-                        }
+                    }
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
                     }
                 }
             }
@@ -95,20 +116,28 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->
-                    if(lesson.untilTodayFinished) lessonFinishedList.add(lesson)
+                    if (lesson.untilTodayFinished) lessonFinishedList.add(lesson)
                     else lessonNotFinishedList.add(lesson)
                 }
 
                 val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
-                var notFinishedLessonAdapter =
+                val notFinishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_PLUS.value, TodayLessonAdapter.BodyType.NOT_FINISHED)
+                                updateLessonCount(
+                                    lesson,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS.value,
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                )
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
-                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_MINUS.value, TodayLessonAdapter.BodyType.NOT_FINISHED)
+                                updateLessonCount(
+                                    lesson,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS.value,
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                )
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
@@ -120,11 +149,19 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lesson ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_PLUS.value, TodayLessonAdapter.BodyType.FINISHED)
+                                updateLessonCount(
+                                    lesson,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS.value,
+                                    TodayLessonAdapter.BodyType.FINISHED
+                                )
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
-                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_MINUS.value, TodayLessonAdapter.BodyType.FINISHED)
+                                updateLessonCount(
+                                    lesson,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS.value,
+                                    TodayLessonAdapter.BodyType.FINISHED
+                                )
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
@@ -138,14 +175,14 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     finishedLessonAdapter
                 )
 
-                if(lessonFinishedList.isEmpty()) {
+                if (lessonFinishedList.isEmpty()) {
                     concatAdapter.removeAdapter(finishedHeader)
                     concatAdapter.removeAdapter(finishedLessonAdapter)
                 } else {
                     finishedLessonAdapter.submitList(lessonFinishedList)
                 }
 
-                if(lessonNotFinishedList.isEmpty()) {
+                if (lessonNotFinishedList.isEmpty()) {
                     concatAdapter.removeAdapter(notFinishedHeader)
                     concatAdapter.removeAdapter(notFinishedLessonAdapter)
                 } else {
@@ -163,40 +200,69 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         bodyType: TodayLessonAdapter.BodyType
     ) {
         mainScope {
-            preferenceManager.getAccessToken()?.run {
-                viewModel.updateLessonCount(
-                    accessToken = this,
-                    count = count,
-                    lessonId = lesson.lessonId
-                ).let {
-                    when (it) {
-                        is LessonState.Success<LessonUpdateCountResponse> -> {
-                            Log.d("Complete", it.data.toString())
-                            when(bodyType) {
-                                TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                    if (it.data.presentNumber == lesson.untilTodayNumber) {
-                                        fetchLessonList()
-                                    }
-                                }
-                                TodayLessonAdapter.BodyType.FINISHED -> {
-                                    if (it.data.presentNumber < lesson.untilTodayNumber) {
-                                        fetchLessonList()
-                                    }
+            viewModel.updateLessonCount(
+                accessToken = accessToken,
+                count = count,
+                lessonId = lesson.lessonId
+            ).let {
+                when (it) {
+                    is LessonState.Success<LessonUpdateCountResponse> -> {
+                        Log.d("update Success", it.data.toString())
+                        when (bodyType) {
+                            TodayLessonAdapter.BodyType.NOT_FINISHED -> {
+                                if (it.data.presentNumber == lesson.untilTodayNumber) {
+                                    fetchLessonList()
                                 }
                             }
+                            TodayLessonAdapter.BodyType.FINISHED -> {
+                                if (it.data.presentNumber < lesson.untilTodayNumber) {
+                                    fetchLessonList()
+                                }
+                            }
+                            else -> Unit
                         }
-                        is LessonState.Error -> {
-                            Log.d("Error", "${it.exception}")
+                    }
+                    is LessonState.Error -> {
+                        Log.d("update Error", "${it.exception}")
+                    }
+                    is LessonState.Unauthorized -> {
+                        viewModel.updateLessonCount(
+                            accessToken = refreshToken,
+                            count = count,
+                            lessonId = lesson.lessonId
+                        ).let { lessonUpdateCountResponse ->
+                            when(lessonUpdateCountResponse) {
+                                is LessonState.Success -> {
+                                    when(bodyType) {
+                                        TodayLessonAdapter.BodyType.NOT_FINISHED -> {
+                                            if (lessonUpdateCountResponse.data.presentNumber == lesson.untilTodayNumber) {
+                                                fetchLessonList()
+                                            }
+                                            else {}
+                                        }
+                                        TodayLessonAdapter.BodyType.FINISHED -> {
+                                            if (lessonUpdateCountResponse.data.presentNumber < lesson.untilTodayNumber) {
+                                                fetchLessonList()
+                                            }
+
+                                            else {}
+                                        }
+                                        else -> Unit
+                                    }
+                                }
+
+                                is LessonState.Error -> {
+                                    Log.d("update Error", "${lessonUpdateCountResponse.exception}")
+                                }
+                                else -> Unit
+                            }
                         }
-                        is LessonState.Unauthorized -> {
-                            Log.d("Error", "Unauthorized")
-                        }
-                        is LessonState.NotFound -> {
-                            Log.d("Error", "NotFound")
-                        }
-                        is LessonState.Forbidden -> {
-                            Log.d("Error", "Forbidden")
-                        }
+                    }
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
                     }
                 }
             }

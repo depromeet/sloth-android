@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
         get() = LessonViewModel()
@@ -26,8 +26,15 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
     override fun getViewBinding(): FragmentClassBinding =
         FragmentClassBinding.inflate(layoutInflater)
 
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        accessToken = pm.getAccessToken().toString()
+        refreshToken = pm.getRefreshToken().toString()
+
         initViews()
 
         //setTestData()
@@ -41,26 +48,34 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
-            preferenceManager.getAccessToken()?.run {
-                viewModel.fetchAllLessonList(
-                    accessToken = this
-                ).let {
-                    when (it) {
-                        is LessonState.Success<List<LessonInfoResponse>> -> {
-                            setLessonList(it.data)
+            viewModel.fetchAllLessonList(accessToken = accessToken).let {
+                when (it) {
+                    is LessonState.Success<List<LessonInfoResponse>> -> {
+                        Log.d("fetch Success", "${it.data}")
+                        setLessonList(it.data)
+                    }
+                    is LessonState.Error -> {
+                        Log.d("fetch Error", "${it.exception}")
+                    }
+                    is LessonState.Unauthorized -> {
+                        viewModel.fetchAllLessonList(accessToken = refreshToken).let { lessonInfoResponse ->
+                            when(lessonInfoResponse) {
+                                is LessonState.Success -> {
+                                    Log.d("fetch Success", "${lessonInfoResponse.data}")
+                                    setLessonList(lessonInfoResponse.data)
+                                }
+                                is LessonState.Error -> {
+                                    Log.d("fetch Error", "${lessonInfoResponse.exception}")
+                                }
+                                else -> Unit
+                            }
                         }
-                        is LessonState.Error -> {
-                            Log.d("Error", "${it.exception}")
-                        }
-                        is LessonState.Unauthorized -> {
-                            Log.d("Error", "Unauthorized")
-                        }
-                        is LessonState.NotFound -> {
-                            Log.d("Error", "NotFound")
-                        }
-                        is LessonState.Forbidden -> {
-                            Log.d("Error", "Forbidden")
-                        }
+                    }
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
                     }
                 }
             }
@@ -105,7 +120,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 val lessonPlanningList = mutableListOf<LessonInfoResponse>()
                 val lessonPassedList = mutableListOf<LessonInfoResponse>()
                 lessonInfoList.forEach { lesson ->
-                    when(getLessonType(lesson)) {
+                    when (getLessonType(lesson)) {
                         ClassLessonAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
                         ClassLessonAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
                         else -> lessonDoingList.add(lesson)
@@ -136,21 +151,21 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                     passedLessonAdapter
                 )
 
-                if(lessonDoingList.isEmpty()) {
+                if (lessonDoingList.isEmpty()) {
                     concatAdapter.removeAdapter(doingHeader)
                     concatAdapter.removeAdapter(doingLessonAdapter)
                 } else {
                     doingLessonAdapter.submitList(lessonDoingList)
                 }
 
-                if(lessonPlanningList.isEmpty()) {
+                if (lessonPlanningList.isEmpty()) {
                     concatAdapter.removeAdapter(planningHeader)
                     concatAdapter.removeAdapter(planningLessonAdapter)
                 } else {
                     planningLessonAdapter.submitList(lessonPlanningList)
                 }
 
-                if(lessonPassedList.isEmpty()) {
+                if (lessonPassedList.isEmpty()) {
                     concatAdapter.removeAdapter(passedHeader)
                     concatAdapter.removeAdapter(passedLessonAdapter)
                 } else {
@@ -158,41 +173,6 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 }
 
                 binding.rvClassLesson.adapter = concatAdapter
-            }
-        }
-    }
-
-    private fun updateLessonCount(
-        lesson: LessonTodayResponse
-    ) {
-        mainScope {
-            preferenceManager.getAccessToken()?.run {
-                viewModel.updateLessonCount(
-                    accessToken = this,
-                    count = 1,
-                    lessonId = lesson.lessonId
-                ).let {
-                    when (it) {
-                        is LessonState.Success<LessonUpdateCountResponse> -> {
-                            Log.d("Complete", it.data.toString())
-                            if (it.data.presentNumber == lesson.untilTodayNumber) {
-                                fetchLessonList()
-                            }
-                        }
-                        is LessonState.Error -> {
-                            Log.d("Error", "${it.exception}")
-                        }
-                        is LessonState.Unauthorized -> {
-                            Log.d("Error", "Unauthorized")
-                        }
-                        is LessonState.NotFound -> {
-                            Log.d("Error", "NotFound")
-                        }
-                        is LessonState.Forbidden -> {
-                            Log.d("Error", "Forbidden")
-                        }
-                    }
-                }
             }
         }
     }
