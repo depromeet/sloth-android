@@ -2,7 +2,6 @@ package com.depromeet.sloth.ui.home
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,13 +15,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.home.TodayLessonResponse
+import com.depromeet.sloth.data.network.home.LessonTodayResponse
 
 class TodayLessonAdapter(
     private val bodyType: BodyType,
-    val onClick: (ClickType, TodayLessonResponse) -> Unit
+    val onClick: (ClickType, LessonTodayResponse) -> Unit
 ) :
-    ListAdapter<TodayLessonResponse, TodayLessonAdapter.TodayLessonViewHolder>(
+    ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(
         TodayLessonDiffCallback
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayLessonViewHolder {
@@ -61,53 +60,63 @@ class TodayLessonAdapter(
         private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
         private val registerClass = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
 
-        fun onBind(lesson: TodayLessonResponse) {
+        fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    registerClass.setOnClickListener { onClick(ClickType.CLICK_NORMAL, lesson) }
+                    registerClass.setOnClickListener { onClick(ClickType.CLICK_NORMAL, lessonToday) }
                 }
 
                 BodyType.FINISHED -> {
-                    init(lesson)
-
-                    todayLesson.setOnClickListener { onClick(ClickType.CLICK_NORMAL, lesson) }
-                }
-
-                BodyType.NOT_FINISHED -> {
-                    init(lesson)
+                    init(lessonToday)
 
                     todayLessonPlus.setOnClickListener {
-                        updateLessonCountOnServer(true, lesson)
-                        updateProgress(true, lesson.untilTodayNumber)
-                        updateText(true, lesson.untilTodayNumber)
+                        updateLessonCountOnServer(true, lessonToday)
+                        updateProgress(true, lessonToday.untilTodayNumber)
+                        updateText(true, lessonToday.untilTodayNumber)
                     }
 
                     todayLessonMinus.setOnClickListener {
-                        updateLessonCountOnServer(false, lesson)
-                        updateProgress(false, lesson.untilTodayNumber)
-                        updateText(false, lesson.untilTodayNumber)
+                        updateLessonCountOnServer(false, lessonToday)
+                        updateProgress(false, lessonToday.untilTodayNumber)
+                        updateText(false, lessonToday.untilTodayNumber)
+                    }
+                }
+
+                BodyType.NOT_FINISHED -> {
+                    init(lessonToday)
+
+                    todayLessonPlus.setOnClickListener {
+                        updateLessonCountOnServer(true, lessonToday)
+                        updateProgress(true, lessonToday.untilTodayNumber)
+                        updateText(true, lessonToday.untilTodayNumber)
+                    }
+
+                    todayLessonMinus.setOnClickListener {
+                        updateLessonCountOnServer(false, lessonToday)
+                        updateProgress(false, lessonToday.untilTodayNumber)
+                        updateText(false, lessonToday.untilTodayNumber)
                     }
                 }
             }
         }
 
-        private fun init(allLesson: TodayLessonResponse) {
-            val remainDay = allLesson.remainDay //D-day
-            todayLessonCategory.text = allLesson.categoryName
-            todayLessonName.text = allLesson.lessonName
-            todayLessonCurrentNum.text = allLesson.presentNumber.toString()
-            todayLessonTotalNum.text = allLesson.untilTodayNumber.toString()
+        private fun init(allLessonToday: LessonTodayResponse) {
+            val remainDay = allLessonToday.remainDay //D-day
+            todayLessonCategory.text = allLessonToday.categoryName
+            todayLessonName.text = allLessonToday.lessonName
+            todayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
+            todayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
             "D-$remainDay".also { todayLessonRemain.text = it }
             todayLessonBar.let {
-                nowProgress = allLesson.presentNumber
-                it.max = allLesson.untilTodayNumber * 1000
-                it.progress = allLesson.presentNumber * 1000
+                nowProgress = allLessonToday.presentNumber
+                it.max = allLessonToday.untilTodayNumber * 1000
+                it.progress = allLessonToday.presentNumber * 1000
             }
 
-            if (allLesson.untilTodayFinished) {
+            if (allLessonToday.untilTodayFinished) {
                 todayLessonRemain.setTextColor(Color.WHITE)
             } else {
-                when (allLesson.remainDay) {
+                when (allLessonToday.remainDay) {
                     in 0 until 10 -> todayLessonRemain.setTextColor(Color.RED)
                     else -> todayLessonRemain.setTextColor(Color.BLACK)
                 }
@@ -145,21 +154,23 @@ class TodayLessonAdapter(
             }.start()
         }
 
-        private fun updateLessonCountOnServer(isUp: Boolean, lesson: TodayLessonResponse) {
-            if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lesson.untilTodayNumber) && isUp)) return
+        private fun updateLessonCountOnServer(isUp: Boolean, lessonToday: LessonTodayResponse) {
+            if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lessonToday.untilTodayNumber) && isUp)) return
 
             if (isUp) {
-                onClick(ClickType.CLICK_PLUS, lesson)
+                currentList[bindingAdapterPosition].presentNumber++
+                onClick(ClickType.CLICK_PLUS, lessonToday)
             } else {
-                onClick(ClickType.CLICK_MINUS, lesson)
+                currentList[bindingAdapterPosition].presentNumber--
+                onClick(ClickType.CLICK_MINUS, lessonToday)
             }
         }
 
     }
 
     override fun onCurrentListChanged(
-        previousList: List<TodayLessonResponse?>,
-        currentList: List<TodayLessonResponse?>
+        previousList: List<LessonTodayResponse?>,
+        currentList: List<LessonTodayResponse?>
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
@@ -171,24 +182,24 @@ class TodayLessonAdapter(
         NOT_FINISHED
     }
 
-    enum class ClickType {
-        CLICK_PLUS,
-        CLICK_MINUS,
-        CLICK_NORMAL
+    enum class ClickType(val value: Int) {
+        CLICK_PLUS(1),
+        CLICK_MINUS(-1),
+        CLICK_NORMAL(0)
     }
 }
 
-object TodayLessonDiffCallback : DiffUtil.ItemCallback<TodayLessonResponse>() {
+object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonTodayResponse>() {
     override fun areItemsTheSame(
-        oldItem: TodayLessonResponse,
-        newItem: TodayLessonResponse
+        oldItem: LessonTodayResponse,
+        newItem: LessonTodayResponse
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: TodayLessonResponse,
-        newItem: TodayLessonResponse
+        oldItem: LessonTodayResponse,
+        newItem: LessonTodayResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName
     }

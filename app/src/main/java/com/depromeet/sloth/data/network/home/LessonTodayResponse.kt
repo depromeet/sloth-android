@@ -13,7 +13,7 @@ package com.depromeet.sloth.data.network.home
  *   "untilTodayNumber": 0
  */
 
-data class TodayLessonResponse (
+data class LessonTodayResponse (
     var categoryName: String,
     var lessonId: Int,
     var lessonName: String,
@@ -24,6 +24,6 @@ data class TodayLessonResponse (
     var untilTodayNumber: Int
 ) {
     companion object {
-        val EMPTY = TodayLessonResponse("", 0, "", 0, 0, "", false, 0)
+        val EMPTY = LessonTodayResponse("", 0, "", 0, 0, "", false, 0)
     }
 }

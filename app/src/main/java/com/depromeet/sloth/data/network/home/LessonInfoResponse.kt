@@ -18,7 +18,7 @@ package com.depromeet.sloth.data.network.home
  *   "totalNumber": 0
  */
 
-data class AllLessonResponse (
+data class LessonInfoResponse (
     var categoryName: String = "",
     var currentProgressRate: Int = 0,
     var endDate: String = "",
@@ -34,6 +34,6 @@ data class AllLessonResponse (
     var totalNumber: Int = 0
 ) {
     companion object {
-        val EMPTY = AllLessonResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)
+        val EMPTY = LessonInfoResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)
     }
 }

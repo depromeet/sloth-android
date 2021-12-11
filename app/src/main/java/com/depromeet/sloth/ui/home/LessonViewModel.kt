@@ -15,7 +15,7 @@ class LessonViewModel : BaseViewModel() {
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,
         start: CoroutineStart = CoroutineStart.DEFAULT
-    ): LessonState<List<TodayLessonResponse>> = viewModelScope.async(
+    ): LessonState<List<LessonTodayResponse>> = viewModelScope.async(
         context = context,
         start = start
     ) {
@@ -28,12 +28,29 @@ class LessonViewModel : BaseViewModel() {
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,
         start: CoroutineStart = CoroutineStart.DEFAULT
-    ): LessonState<List<AllLessonResponse>> = viewModelScope.async(
+    ): LessonState<List<LessonInfoResponse>> = viewModelScope.async(
         context = context,
         start = start
     ) {
         lessonRepository.fetchAllLessonList(
             accessToken = accessToken
+        )
+    }.await()
+
+    suspend fun updateLessonCount(
+        accessToken: String,
+        count: Int,
+        lessonId: Int,
+        context: CoroutineContext = Dispatchers.IO,
+        start: CoroutineStart = CoroutineStart.DEFAULT
+    ): LessonState<LessonUpdateCountResponse> = viewModelScope.async(
+        context = context,
+        start = start
+    ) {
+        lessonRepository.updateLessonCount(
+            accessToken = accessToken,
+            count = count,
+            lessonId = lessonId
         )
     }.await()
 }

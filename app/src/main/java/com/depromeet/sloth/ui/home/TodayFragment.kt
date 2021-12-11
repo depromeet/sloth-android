@@ -7,7 +7,8 @@ import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
-import com.depromeet.sloth.data.network.home.TodayLessonResponse
+import com.depromeet.sloth.data.network.home.LessonTodayResponse
+import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
@@ -24,15 +25,27 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
+        fetchLessonList()
 
+        //setTestData()
+    }
+
+    override fun initViews() {
+        super.initViews()
+
+        binding.rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+    }
+
+    private fun fetchLessonList() {
         mainScope {
             preferenceManager.getAccessToken()?.run {
                 viewModel.fetchTodayLessonList(
                     accessToken = this
                 ).let {
                     when (it) {
-                        is LessonState.Success<List<TodayLessonResponse>> -> {
-                            //updateLessonList(it.data)
+                        is LessonState.Success<List<LessonTodayResponse>> -> {
+                            setLessonList(it.data)
                         }
                         is LessonState.Error -> {
                             Log.d("Error", "${it.exception}")
@@ -50,8 +63,6 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 }
             }
         }
-
-        setTestData()
     }
 
     private fun moveRegisterActivity() {
@@ -59,14 +70,14 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         startActivity(intent)
     }
 
-    private fun moveDetailActivity(lesson: TodayLessonResponse) {
+    private fun moveDetailActivity(lessonToday: LessonTodayResponse) {
         val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lesson.lessonId.toString())
+        intent.putExtra("lessonId", lessonToday.lessonId.toString())
         startActivity(intent)
     }
 
-    private fun updateLessonList(lessonList: List<TodayLessonResponse>) {
-        when (lessonList.isEmpty()) {
+    private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
+        when (lessonTodayList.isEmpty()) {
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
@@ -76,28 +87,49 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     nothingLessonAdapter
                 )
 
-                nothingLessonAdapter.submitList(listOf(TodayLessonResponse.EMPTY))
+                nothingLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
                 binding.rvTodayLesson.adapter = concatAdapter
             }
 
             false -> {
+                val lessonFinishedList = mutableListOf<LessonTodayResponse>()
+                val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
+                lessonTodayList.forEach { lesson ->
+                    if(lesson.untilTodayFinished) lessonFinishedList.add(lesson)
+                    else lessonNotFinishedList.add(lesson)
+                }
+
                 val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
-                val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-                val notFinishedLessonAdapter =
+                var notFinishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
+                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_PLUS.value, TodayLessonAdapter.BodyType.NOT_FINISHED)
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
+                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_MINUS.value, TodayLessonAdapter.BodyType.NOT_FINISHED)
                             }
 
-                            TodayLessonAdapter.ClickType.CLICK_NORMAL -> { }
+                            TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
+                            }
                         }
                     }
+                val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
                 val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { _, lesson ->
-                        moveDetailActivity(lesson)
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lesson ->
+                        when (clickType) {
+                            TodayLessonAdapter.ClickType.CLICK_PLUS -> {
+                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_PLUS.value, TodayLessonAdapter.BodyType.FINISHED)
+                            }
+
+                            TodayLessonAdapter.ClickType.CLICK_MINUS -> {
+                                updateLessonCount(lesson, TodayLessonAdapter.ClickType.CLICK_MINUS.value, TodayLessonAdapter.BodyType.FINISHED)
+                            }
+
+                            TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
+                            }
+                        }
                     }
                 val concatAdapter = ConcatAdapter(
                     notFinishedHeader,
@@ -106,26 +138,74 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     finishedLessonAdapter
                 )
 
-                lessonList.let {
-                    finishedLessonAdapter.submitList(
-                        lessonList.filter { it.untilTodayFinished }
-                    )
-                    notFinishedLessonAdapter.submitList(
-                        lessonList.filter { it.untilTodayFinished.not() }
-                    )
+                if(lessonFinishedList.isEmpty()) {
+                    concatAdapter.removeAdapter(finishedHeader)
+                    concatAdapter.removeAdapter(finishedLessonAdapter)
+                } else {
+                    finishedLessonAdapter.submitList(lessonFinishedList)
                 }
 
-                binding.rvTodayLesson.let {
-                    it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-                    it.adapter = concatAdapter
+                if(lessonNotFinishedList.isEmpty()) {
+                    concatAdapter.removeAdapter(notFinishedHeader)
+                    concatAdapter.removeAdapter(notFinishedLessonAdapter)
+                } else {
+                    notFinishedLessonAdapter.submitList(lessonNotFinishedList)
+                }
+
+                binding.rvTodayLesson.adapter = concatAdapter
+            }
+        }
+    }
+
+    private fun updateLessonCount(
+        lesson: LessonTodayResponse,
+        count: Int,
+        bodyType: TodayLessonAdapter.BodyType
+    ) {
+        mainScope {
+            preferenceManager.getAccessToken()?.run {
+                viewModel.updateLessonCount(
+                    accessToken = this,
+                    count = count,
+                    lessonId = lesson.lessonId
+                ).let {
+                    when (it) {
+                        is LessonState.Success<LessonUpdateCountResponse> -> {
+                            Log.d("Complete", it.data.toString())
+                            when(bodyType) {
+                                TodayLessonAdapter.BodyType.NOT_FINISHED -> {
+                                    if (it.data.presentNumber == lesson.untilTodayNumber) {
+                                        fetchLessonList()
+                                    }
+                                }
+                                TodayLessonAdapter.BodyType.FINISHED -> {
+                                    if (it.data.presentNumber < lesson.untilTodayNumber) {
+                                        fetchLessonList()
+                                    }
+                                }
+                            }
+                        }
+                        is LessonState.Error -> {
+                            Log.d("Error", "${it.exception}")
+                        }
+                        is LessonState.Unauthorized -> {
+                            Log.d("Error", "Unauthorized")
+                        }
+                        is LessonState.NotFound -> {
+                            Log.d("Error", "NotFound")
+                        }
+                        is LessonState.Forbidden -> {
+                            Log.d("Error", "Forbidden")
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun setTestData() {
-        val dummyList = listOf<TodayLessonResponse>(
-            TodayLessonResponse(
+        val dummyList = listOf<LessonTodayResponse>(
+            LessonTodayResponse(
                 categoryName = "개발",
                 lessonId = 1,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
@@ -135,7 +215,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 untilTodayFinished = false,
                 untilTodayNumber = 8
             ),
-            TodayLessonResponse(
+            LessonTodayResponse(
                 categoryName = "디자인",
                 lessonId = 2,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
@@ -145,7 +225,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 untilTodayFinished = true,
                 untilTodayNumber = 5
             ),
-            TodayLessonResponse(
+            LessonTodayResponse(
                 categoryName = "기획",
                 lessonId = 3,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
@@ -155,7 +235,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 untilTodayFinished = false,
                 untilTodayNumber = 6
             ),
-            TodayLessonResponse(
+            LessonTodayResponse(
                 categoryName = "개발",
                 lessonId = 4,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
@@ -165,7 +245,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 untilTodayFinished = true,
                 untilTodayNumber = 6
             ),
-            TodayLessonResponse(
+            LessonTodayResponse(
                 categoryName = "디자인",
                 lessonId = 5,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
@@ -175,7 +255,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                 untilTodayFinished = false,
                 untilTodayNumber = 4
             ),
-            TodayLessonResponse(
+            LessonTodayResponse(
                 categoryName = "기획",
                 lessonId = 6,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
