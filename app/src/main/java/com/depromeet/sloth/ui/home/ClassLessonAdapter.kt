@@ -64,6 +64,8 @@ class ClassLessonAdapter(
             itemView.findViewById<TextView>(R.id.tv_class_lesson_category)
         private val classLessonName = itemView.findViewById<TextView>(R.id.tv_class_lesson_name)
         private val classLessonPrice = itemView.findViewById<TextView>(R.id.tv_class_lesson_price)
+        private val classLessonCurrentLine =
+            itemView.findViewById<View>(R.id.vw_class_lesson_current_line)
         private val classLessonGoalLine =
             itemView.findViewById<View>(R.id.vw_class_lesson_goal_line)
         private val classLessonGoal = itemView.findViewById<TextView>(R.id.tv_class_lesson_goal)
@@ -100,11 +102,13 @@ class ClassLessonAdapter(
                     classLessonName.text = lessonInfo.lessonName
                     classLessonPrice.text = lessonInfo.price.toString()
 
-                    val set = ConstraintSet()
+                    var set = ConstraintSet()
                     set.clone(classLesson)
-                    set.setHorizontalBias(classLessonGoalLine.id, progressRate)
+                    set.setHorizontalBias(classLessonCurrentLine.id, progressRate)
+                    set.setHorizontalBias(classLessonGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
                     set.applyTo(classLesson)
                     classLessonGoalLine.bringToFront()
+                    classLessonCurrentLine.bringToFront()
 
                     val animation = ObjectAnimator.ofInt(
                         classLessonBar,
@@ -123,6 +127,7 @@ class ClassLessonAdapter(
                         duration = 500
                         interpolator = DecelerateInterpolator()
                     }.start()
+
 
                     classLesson.setOnClickListener { onClick(lessonInfo) }
                 }

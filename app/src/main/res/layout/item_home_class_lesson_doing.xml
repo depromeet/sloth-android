@@ -101,6 +101,16 @@
         app:layout_constraintStart_toStartOf="@id/vw_class_lesson_goal_line" />
 
     <View
+        android:id="@+id/vw_class_lesson_current_line"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/pb_class_lesson_bar"
+        app:layout_constraintEnd_toEndOf="@id/pb_class_lesson_bar"
+        app:layout_constraintStart_toStartOf="@id/pb_class_lesson_bar"
+        app:layout_constraintTop_toTopOf="@id/pb_class_lesson_bar"/>
+
+    <View
         android:id="@+id/vw_class_lesson_goal_line"
         android:layout_width="1dp"
         android:layout_height="22dp"
@@ -117,7 +127,7 @@
         android:layout_marginEnd="4dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/pb_class_lesson_bar"
-        app:layout_constraintEnd_toEndOf="@id/vw_class_lesson_goal_line"
+        app:layout_constraintEnd_toEndOf="@id/vw_class_lesson_current_line"
         app:layout_constraintTop_toTopOf="@id/pb_class_lesson_bar">
 
         <androidx.appcompat.widget.AppCompatTextView
