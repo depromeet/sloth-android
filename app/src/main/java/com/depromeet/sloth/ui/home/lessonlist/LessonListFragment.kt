@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui.home.lessonlist
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,16 +8,18 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.LessonInfoResponse
-import com.depromeet.sloth.data.network.home.LessonTodayResponse
-import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentClassBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
+import com.depromeet.sloth.ui.home.today.HeaderAdapter
+import com.depromeet.sloth.ui.home.LessonItemDecoration
+import com.depromeet.sloth.ui.home.LessonListAdapter
+import com.depromeet.sloth.ui.home.LessonViewModel
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
+class LessonListFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
@@ -107,7 +109,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
             true -> {
                 binding.ivClassRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
-                    ClassLessonAdapter(ClassLessonAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
+                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
 
                 nothingLessonAdapter.submitList(listOf(LessonInfoResponse.EMPTY))
                 binding.rvClassLesson.adapter = nothingLessonAdapter
@@ -121,8 +123,8 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 val lessonPassedList = mutableListOf<LessonInfoResponse>()
                 lessonInfoList.forEach { lesson ->
                     when (getLessonType(lesson)) {
-                        ClassLessonAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
-                        ClassLessonAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
+                        LessonListAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
+                        LessonListAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
                         else -> lessonDoingList.add(lesson)
                     }
                 }
@@ -131,15 +133,15 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
                 val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
                 val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
                 val doingLessonAdapter =
-                    ClassLessonAdapter(ClassLessonAdapter.BodyType.DOING) { lesson ->
+                    LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
                         moveDetailActivity(lesson)
                     }
                 val planningLessonAdapter =
-                    ClassLessonAdapter(ClassLessonAdapter.BodyType.PLANNING) { lesson ->
+                    LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
                         moveDetailActivity(lesson)
                     }
                 val passedLessonAdapter =
-                    ClassLessonAdapter(ClassLessonAdapter.BodyType.PASSED) { lesson ->
+                    LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
                         moveDetailActivity(lesson)
                     }
                 val concatAdapter = ConcatAdapter(
@@ -179,7 +181,7 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
 
     private fun getLessonType(
         lessonInfo: LessonInfoResponse
-    ): ClassLessonAdapter.BodyType {
+    ): LessonListAdapter.BodyType {
         val startDateString = lessonInfo.startDate
         val endDateString = lessonInfo.endDate
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -190,9 +192,9 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
         val isPlanning = (todayDate.time.time - startDate.time) < 0L
 
         return when {
-            isPassed -> ClassLessonAdapter.BodyType.PASSED
-            isPlanning -> ClassLessonAdapter.BodyType.PLANNING
-            else -> ClassLessonAdapter.BodyType.DOING
+            isPassed -> LessonListAdapter.BodyType.PASSED
+            isPlanning -> LessonListAdapter.BodyType.PLANNING
+            else -> LessonListAdapter.BodyType.DOING
         }
     }
 
@@ -274,14 +276,14 @@ class ClassFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
         val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
         val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
 
-        val doingLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.DOING) { lesson ->
+        val doingLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
             moveDetailActivity(lesson)
         }
         val planningLessonAdapter =
-            ClassLessonAdapter(ClassLessonAdapter.BodyType.PLANNING) { lesson ->
+            LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
                 moveDetailActivity(lesson)
             }
-        val passedLessonAdapter = ClassLessonAdapter(ClassLessonAdapter.BodyType.PASSED) { lesson ->
+        val passedLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
             moveDetailActivity(lesson)
         }
 

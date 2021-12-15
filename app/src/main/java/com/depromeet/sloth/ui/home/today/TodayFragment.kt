@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui.home.today
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,9 @@ import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
+import com.depromeet.sloth.ui.home.LessonItemDecoration
+import com.depromeet.sloth.ui.home.LessonViewModel
+import com.depromeet.sloth.ui.home.TodayLessonAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {

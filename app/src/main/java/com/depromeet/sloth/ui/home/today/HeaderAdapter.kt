@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui.home.today
 
 import android.view.LayoutInflater
 import android.view.View

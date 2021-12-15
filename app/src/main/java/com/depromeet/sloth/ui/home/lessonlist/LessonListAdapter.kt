@@ -18,16 +18,16 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.home.LessonInfoResponse
 import kotlin.math.ceil
 
-class ClassLessonAdapter(
+class LessonListAdapter(
     private val bodyType: BodyType,
     val onClick: (LessonInfoResponse) -> Unit
-) : ListAdapter<LessonInfoResponse, ClassLessonAdapter.ClassLessonViewHolder>(
-    ClassLessonDiffCallback
+) : ListAdapter<LessonInfoResponse, LessonListAdapter.LessonListViewHolder>(
+    LessonListDiffCallback
 ) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ClassLessonViewHolder {
+    ): LessonListViewHolder {
         val view = when (bodyType) {
             BodyType.NOTHING -> LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_class_lesson_nothing, parent, false)
@@ -39,10 +39,10 @@ class ClassLessonAdapter(
                 .inflate(R.layout.item_home_class_lesson_passed, parent, false)
         }
 
-        return ClassLessonViewHolder(bodyType, view)
+        return LessonListViewHolder(bodyType, view)
     }
 
-    override fun onBindViewHolder(holder: ClassLessonViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LessonListViewHolder, position: Int) {
         val lesson = getItem(position)
         holder.onBind(lesson)
     }
@@ -55,7 +55,7 @@ class ClassLessonAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ClassLessonViewHolder(
+    inner class LessonListViewHolder(
         private val bodyType: BodyType,
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
@@ -102,7 +102,7 @@ class ClassLessonAdapter(
                     classLessonName.text = lessonInfo.lessonName
                     classLessonPrice.text = lessonInfo.price.toString()
 
-                    var set = ConstraintSet()
+                    val set = ConstraintSet()
                     set.clone(classLesson)
                     set.setHorizontalBias(classLessonCurrentLine.id, progressRate)
                     set.setHorizontalBias(classLessonGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
@@ -167,7 +167,7 @@ class ClassLessonAdapter(
     }
 }
 
-object ClassLessonDiffCallback : DiffUtil.ItemCallback<LessonInfoResponse>() {
+object LessonListDiffCallback : DiffUtil.ItemCallback<LessonInfoResponse>() {
     override fun areItemsTheSame(
         oldItem: LessonInfoResponse,
         newItem: LessonInfoResponse
