@@ -57,7 +57,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
             StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                Log.d("resultLauncher", "Result_OK를 받아옴")
+                Log.d("resultLauncher", "RegisterLessonFirstActivity 도 종료")
                 finish()
             }
         }
@@ -208,21 +208,21 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                                 siteId.toString()
                                                             )
 
-                                                            siteArraySize =
-                                                                resources.getStringArray(R.array.site_array).size - 1
-                                                            Log.d(
-                                                                "siteArraySize: ",
-                                                                siteArraySize.toString()
-                                                            )
+//                                                            siteArraySize =
+//                                                                resources.getStringArray(R.array.site_array).size - 1
+//                                                            Log.d(
+//                                                                "siteArraySize: ",
+//                                                                siteArraySize.toString()
+//                                                            )
 
 
                                                             resultLauncher.launch(
                                                                 RegisterLessonSecondActivity.newIntent(
                                                                     this@RegisterLessonFirstActivity,
                                                                     etRegisterLessonName.text.toString(),
-                                                                    etRegisterLessonCount.text.toString()
-                                                                        .toInt(),
-                                                                    categoryId as Int + siteArraySize as Int,
+                                                                    etRegisterLessonCount.text.toString().toInt(),
+                                                                    //categoryId as Int + siteArraySize as Int,
+                                                                    categoryId as Int,
                                                                     siteId as Int
                                                                 )
                                                             )

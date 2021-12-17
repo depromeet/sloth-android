@@ -35,7 +35,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
-    lateinit var siteArraySize: Number
+    //lateinit var siteArraySize: Number
 
     lateinit var lessonModel: LessonModel
     lateinit var lessonId: String
@@ -64,7 +64,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
             lessonModel = getParcelableExtra(LESSON_MODEL)!!
         }
 
-        siteArraySize = resources.getStringArray(R.array.site_array).size - 1
+        //siteArraySize = resources.getStringArray(R.array.site_array).size - 1
 
         initViews()
     }
@@ -82,7 +82,8 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         btnUpdateLesson.setOnClickListener {
             mainScope {
                 val updateLessonModel = UpdateLessonModel(
-                    categoryId = spnUpdateLessonCategory.selectedItemPosition + siteArraySize as Int,
+                    //categoryId = spnUpdateLessonCategory.selectedItemPosition + siteArraySize as Int,
+                    categoryId = spnUpdateLessonCategory.selectedItemPosition,
                     lessonName = etUpdateLessonName.text.toString(),
                     siteId = spnUpdateLessonSite.selectedItemPosition,
                     totalNumber = etUpdateLessonCount.text.toString().toInt()
