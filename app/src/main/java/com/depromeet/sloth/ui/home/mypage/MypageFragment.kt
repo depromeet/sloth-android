@@ -122,6 +122,8 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                             when (it) {
                                 is MypageState.Success -> {
                                     Log.d("Update Success", "${it.data}")
+                                    updateViews(updateMemberName)
+
                                     Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
                                 }
 
@@ -130,6 +132,8 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                                         when (mypageState) {
                                             is MypageState.Success -> {
                                                 Log.d("Update Success", "${mypageState.data}")
+                                                updateViews(updateMemberName)
+
                                                 Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
                                             }
 
@@ -197,6 +201,10 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
             }
             dlg.start()
         }
+    }
+
+    private fun updateViews(updateMemberName: String) {
+        binding.tvMypageProfileName.text = updateMemberName
     }
 
     private fun sendEmail() {
