@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.home.LessonInfoResponse
+import java.text.DecimalFormat
 import kotlin.math.ceil
 
 class LessonListAdapter(
@@ -54,6 +55,12 @@ class LessonListAdapter(
     ) {
         super.onCurrentListChanged(previousList, currentList)
         notifyDataSetChanged()
+    }
+
+    private fun changeDecimalFormat(data: Int): String {
+        val df = DecimalFormat("#,###")
+
+        return df.format(data)
     }
 
     inner class LessonListViewHolder(
@@ -107,7 +114,7 @@ class LessonListAdapter(
                     lessonListCategory.text = lessonInfo.categoryName
                     lessonListSite.text = lessonInfo.siteName
                     lessonListName.text = lessonInfo.lessonName
-                    lessonListPrice.text = lessonInfo.price.toString()
+                    lessonListPrice.text = changeDecimalFormat(lessonInfo.price)
 
                     val set = ConstraintSet()
                     set.clone(lessonList)
@@ -143,8 +150,8 @@ class LessonListAdapter(
                     lessonListCategory.text = lessonInfo.categoryName
                     lessonListSite.text = lessonInfo.siteName
                     lessonListName.text = lessonInfo.lessonName
-                    lessonListPrice.text = lessonInfo.price.toString()
-                    lessonListPlanningDate.text = lessonInfo.startDate.split(" ")[0]
+                    lessonListPrice.text = changeDecimalFormat(lessonInfo.price)
+                    lessonListPlanningDate.text = lessonInfo.startDate.replace("-", ".")
 
                     lessonList.setOnClickListener { onClick(lessonInfo) }
                 }
@@ -153,7 +160,7 @@ class LessonListAdapter(
                     lessonListCategory.text = lessonInfo.categoryName
                     lessonListSite.text = lessonInfo.siteName
                     lessonListName.text = lessonInfo.lessonName
-                    lessonListPrice.text = lessonInfo.price.toString()
+                    lessonListPrice.text = changeDecimalFormat(lessonInfo.price)
                     lessonListPassedCount.text = lessonInfo.totalNumber.toString()
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
                     val isComplete =

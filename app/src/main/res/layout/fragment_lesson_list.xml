@@ -14,7 +14,7 @@
             android:layout_height="26dp"
             android:layout_marginEnd="24dp"
             android:visibility="invisible"
-            android:background="@drawable/ic_home_class_register"
+            android:background="@drawable/ic_home_lesson_list_register"
             app:layout_constraintBottom_toBottomOf="@id/iv_lesson_list_alarm"
             app:layout_constraintEnd_toStartOf="@id/iv_lesson_list_alarm"
             app:layout_constraintTop_toTopOf="@id/iv_lesson_list_alarm" />
@@ -25,7 +25,7 @@
             android:layout_height="26dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_home_class_alarm"
+            android:background="@drawable/ic_home_lesson_list_alarm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
