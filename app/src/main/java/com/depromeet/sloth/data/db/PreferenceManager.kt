@@ -33,7 +33,6 @@ class PreferenceManager(
         editor.apply()
     }
 
-
     /**
      * accessToken, refreshToken (인증 토큰) 저장
      *

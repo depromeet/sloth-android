@@ -1,11 +1,10 @@
 package com.depromeet.sloth.ui.home
 
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.*
 import com.depromeet.sloth.ui.base.BaseViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class LessonViewModel : BaseViewModel() {
@@ -53,4 +52,11 @@ class LessonViewModel : BaseViewModel() {
             lessonId = lessonId
         )
     }.await()
+
+    suspend fun removeAuthToken(pm: PreferenceManager) =
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                pm.removeAuthToken()
+            }
+        }
 }

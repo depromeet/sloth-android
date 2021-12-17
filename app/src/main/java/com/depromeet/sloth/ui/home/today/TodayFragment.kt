@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
@@ -13,11 +12,7 @@ import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.home.LessonItemDecoration
-import com.depromeet.sloth.ui.home.LessonViewModel
-import com.depromeet.sloth.ui.home.TodayLessonAdapter
-import com.depromeet.sloth.ui.home.WaitDialog
-import com.depromeet.sloth.ui.home.mypage.LogoutDialog
+import com.depromeet.sloth.ui.home.*
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
@@ -66,7 +61,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                         setLessonList(it.data)
                     }
                     is LessonState.Error -> {
-                        Log.d("Error", "${it.exception}")
+                        Log.d("fetch Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
                         viewModel.fetchTodayLessonList(
@@ -78,8 +73,25 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                     setLessonList(lessonTodayResponse.data)
                                 }
 
+                                is LessonState.Forbidden -> {
+                                    // refresh 토큰이 존재하지 않을 경우 예외 처리
+                                    val dlg = ForbiddenDialog(requireContext())
+                                    dlg.listener = object: ForbiddenDialog.ForbiddenDialogClickedListener {
+                                        override fun onConfirmClicked() {
+                                            //logout
+
+                                            //finish
+                                            mainScope {
+                                                viewModel.removeAuthToken(pm)
+                                                startActivity(LoginActivity.newIntent(requireActivity()))
+                                            }
+                                        }
+                                    }
+                                    dlg.start()
+                                }
+
                                 is LessonState.Error -> {
-                                    Log.d("Error", "${lessonTodayResponse.exception}")
+                                    Log.d("fetch Error", "${lessonTodayResponse.exception}")
                                 }
 
                                 else -> Unit
@@ -237,6 +249,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                         Log.d("update Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
+                        Log.i("Unauthorized", "refreshToken used")
                         viewModel.updateLessonCount(
                             accessToken = refreshToken,
                             count = count,
