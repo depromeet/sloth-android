@@ -122,6 +122,7 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                             when (it) {
                                 is MypageState.Success -> {
                                     Log.d("Update Success", "${it.data}")
+                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
                                 }
 
                                 is MypageState.Unauthorized -> {
@@ -129,10 +130,12 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                                         when (mypageState) {
                                             is MypageState.Success -> {
                                                 Log.d("Update Success", "${mypageState.data}")
+                                                Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
                                             }
 
                                             is MypageState.Error -> {
                                                 Log.d("Update Error", "${mypageState.exception}")
+                                                Toast.makeText(requireContext(), "닉네임이 변경 실패하였습니다.",Toast.LENGTH_SHORT).show()
                                             }
                                             else -> Unit
                                         }
@@ -141,6 +144,7 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
 
                                 is MypageState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
+                                    Toast.makeText(requireContext(), "닉네임이 변경 실패하였습니다.",Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
