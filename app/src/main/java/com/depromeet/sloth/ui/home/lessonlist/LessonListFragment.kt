@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.LessonInfoResponse
-import com.depromeet.sloth.databinding.FragmentClassBinding
+import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.home.today.HeaderAdapter
@@ -19,14 +19,14 @@ import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LessonListFragment : BaseFragment<LessonViewModel, FragmentClassBinding>() {
+class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
         get() = LessonViewModel()
 
-    override fun getViewBinding(): FragmentClassBinding =
-        FragmentClassBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentLessonListBinding =
+        FragmentLessonListBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
     lateinit var refreshToken: String
