@@ -27,7 +27,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "SLOTH_BASE_URL", DEBUG_BASE_URL)
+            //buildConfigField("String", "SLOTH_BASE_URL", RELEASE_BASE_URL)
+            buildConfigField("String", "SLOTH_BASE_URL", RELEASE_BASE_URL)
         }
 
         release {
