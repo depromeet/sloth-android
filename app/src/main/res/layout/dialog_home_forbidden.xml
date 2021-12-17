@@ -12,7 +12,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="27dp"
-        android:src="@drawable/ic_sloth_logo"
+        android:src="@mipmap/ic_sloth_logo"
         android:contentDescription="@string/caution"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
