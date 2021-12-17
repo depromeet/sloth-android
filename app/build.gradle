@@ -120,4 +120,7 @@ dependencies {
 
     //Jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    //Circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

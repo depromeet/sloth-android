@@ -95,4 +95,5 @@
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
     <string name="right_arrow">right arrow</string>
+    <string name="dialog_wait_message">아직 준비중인 기능입니다</string>
 </resources>

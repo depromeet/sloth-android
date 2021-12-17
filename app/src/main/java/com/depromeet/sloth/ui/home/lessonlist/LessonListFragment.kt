@@ -15,6 +15,7 @@ import com.depromeet.sloth.ui.home.today.HeaderAdapter
 import com.depromeet.sloth.ui.home.LessonItemDecoration
 import com.depromeet.sloth.ui.home.LessonListAdapter
 import com.depromeet.sloth.ui.home.LessonViewModel
+import com.depromeet.sloth.ui.home.WaitDialog
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,11 +86,17 @@ class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBindi
     }
 
     override fun initViews() {
-        super.initViews()
+        with(binding) {
+            rvLessonList.addItemDecoration(LessonItemDecoration(requireContext(), 16))
 
-        binding.rvClassLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-        binding.ivClassRegister.setOnClickListener {
-            startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
+            ivLessonListRegister.setOnClickListener {
+                startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
+            }
+            ivLessonListAlarm.setOnClickListener {
+                val dlg = WaitDialog(requireContext())
+                dlg.start()
+            }
+
         }
     }
 
@@ -107,16 +114,16 @@ class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBindi
     private fun setLessonList(lessonInfoList: List<LessonInfoResponse>) {
         when (lessonInfoList.isEmpty()) {
             true -> {
-                binding.ivClassRegister.visibility = View.INVISIBLE
+                binding.ivLessonListRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
 
                 nothingLessonAdapter.submitList(listOf(LessonInfoResponse.EMPTY))
-                binding.rvClassLesson.adapter = nothingLessonAdapter
+                binding.rvLessonList.adapter = nothingLessonAdapter
             }
 
             false -> {
-                binding.ivClassRegister.visibility = View.VISIBLE
+                binding.ivLessonListRegister.visibility = View.VISIBLE
 
                 val lessonDoingList = mutableListOf<LessonInfoResponse>()
                 val lessonPlanningList = mutableListOf<LessonInfoResponse>()
@@ -174,7 +181,7 @@ class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBindi
                     passedLessonAdapter.submitList(lessonPassedList)
                 }
 
-                binding.rvClassLesson.adapter = concatAdapter
+                binding.rvLessonList.adapter = concatAdapter
             }
         }
     }
@@ -338,7 +345,7 @@ class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBindi
             )
         }
 
-        binding.rvClassLesson.let {
+        binding.rvLessonList.let {
             it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             it.adapter = concatAdapter
         }

@@ -271,7 +271,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         val monthOfDate = changeDate(date[1])
         val dayOfDate = changeDate(date[2])
 
-        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
+        return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
     }
 
     private fun changeDate(data: String): String {

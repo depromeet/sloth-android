@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
@@ -15,6 +16,9 @@ import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.home.LessonItemDecoration
 import com.depromeet.sloth.ui.home.LessonViewModel
 import com.depromeet.sloth.ui.home.TodayLessonAdapter
+import com.depromeet.sloth.ui.home.WaitDialog
+import com.depromeet.sloth.ui.home.mypage.LogoutDialog
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
@@ -42,9 +46,13 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     }
 
     override fun initViews() {
-        super.initViews()
-
-        binding.rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+        with(binding) {
+            rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            ivTodayAlarm.setOnClickListener {
+                val dlg = WaitDialog(requireContext())
+                dlg.start()
+            }
+        }
     }
 
     private fun fetchLessonList() {

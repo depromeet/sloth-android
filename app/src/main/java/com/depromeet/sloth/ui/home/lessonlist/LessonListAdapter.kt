@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.home
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +61,7 @@ class LessonListAdapter(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         private val lessonList = itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list)
+        private val lessonListRemain = itemView.findViewById<TextView>(R.id.tv_lesson_list_remain)
         private val lessonListCategory =
             itemView.findViewById<TextView>(R.id.tv_lesson_list_category)
         private val lessonListSite =
@@ -87,6 +89,7 @@ class LessonListAdapter(
         private val lessonListFail = itemView.findViewById<ImageView>(R.id.iv_lesson_list_fail)
         private val registerLesson = itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
 
+        @SuppressLint("SetTextI18n")
         fun onBind(lessonInfo: LessonInfoResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
@@ -100,6 +103,7 @@ class LessonListAdapter(
                     lessonListTotalNumber.text = lessonInfo.totalNumber.toString()
                     lessonListPercent.text = (100 - lessonInfo.currentProgressRate).toString()
                     lessonListGoal.text = (progressRate * 100).toInt().toString()
+                    lessonListRemain.text = "D-${lessonInfo.remainDay}"
                     lessonListCategory.text = lessonInfo.categoryName
                     lessonListSite.text = lessonInfo.siteName
                     lessonListName.text = lessonInfo.lessonName
