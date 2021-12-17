@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_class_lesson_sloth"
+        android:id="@+id/iv_lesson_list_sloth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_home_sloth"
@@ -16,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_class_lesson_register"
+        android:id="@+id/tv_lesson_list_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -26,11 +27,12 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_class_lesson_sloth"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintTop_toBottomOf="@id/iv_lesson_list_sloth"
+        app:layout_constraintVertical_bias="0.3"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_class_lesson_register"
+        android:id="@+id/btn_lesson_list_register"
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginTop="36dp"
@@ -40,6 +42,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_class_lesson_register" />
+        app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_register"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

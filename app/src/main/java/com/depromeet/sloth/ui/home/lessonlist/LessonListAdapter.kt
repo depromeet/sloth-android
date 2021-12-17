@@ -30,13 +30,13 @@ class LessonListAdapter(
     ): LessonListViewHolder {
         val view = when (bodyType) {
             BodyType.NOTHING -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_class_lesson_nothing, parent, false)
+                .inflate(R.layout.item_home_lesson_list_nothing, parent, false)
             BodyType.DOING -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_class_lesson_doing, parent, false)
+                .inflate(R.layout.item_home_lesson_list_doing, parent, false)
             BodyType.PLANNING -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_class_lesson_planning, parent, false)
+                .inflate(R.layout.item_home_lesson_list_planning, parent, false)
             BodyType.PASSED -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_class_lesson_passed, parent, false)
+                .inflate(R.layout.item_home_lesson_list_passed, parent, false)
         }
 
         return LessonListViewHolder(bodyType, view)
@@ -59,69 +59,72 @@ class LessonListAdapter(
         private val bodyType: BodyType,
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
-        private val classLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_class_lesson)
-        private val classLessonCategory =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_category)
-        private val classLessonName = itemView.findViewById<TextView>(R.id.tv_class_lesson_name)
-        private val classLessonPrice = itemView.findViewById<TextView>(R.id.tv_class_lesson_price)
-        private val classLessonCurrentLine =
-            itemView.findViewById<View>(R.id.vw_class_lesson_current_line)
-        private val classLessonGoalLine =
-            itemView.findViewById<View>(R.id.vw_class_lesson_goal_line)
-        private val classLessonGoal = itemView.findViewById<TextView>(R.id.tv_class_lesson_goal)
-        private val classLessonGoalGroup =
-            itemView.findViewById<ConstraintLayout>(R.id.cl_class_goal_group)
-        private val classLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_class_lesson_bar)
-        private val classLessonPercent =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_percent)
-        private val classLessonCurrentNumber =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_current_number)
-        private val classLessonTotalNumber =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_total_number)
-        private val classLessonPlanningDate =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_planning_date)
-        private val classLessonPassedCount =
-            itemView.findViewById<TextView>(R.id.tv_class_lesson_total_count)
-        private val classLessonFail = itemView.findViewById<ImageView>(R.id.iv_class_lesson_fail)
-        private val registerClass = itemView.findViewById<TextView>(R.id.btn_class_lesson_register)
+        private val lessonList = itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list)
+        private val lessonListCategory =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_category)
+        private val lessonListSite =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_site)
+        private val lessonListName = itemView.findViewById<TextView>(R.id.tv_lesson_list_name)
+        private val lessonListPrice = itemView.findViewById<TextView>(R.id.tv_lesson_list_price)
+        private val lessonListCurrentLine =
+            itemView.findViewById<View>(R.id.vw_lesson_list_current_line)
+        private val lessonListGoalLine =
+            itemView.findViewById<View>(R.id.vw_lesson_list_goal_line)
+        private val lessonListGoal = itemView.findViewById<TextView>(R.id.tv_lesson_list_goal)
+        private val lessonListGoalGroup =
+            itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list_goal_group)
+        private val lessonListBar = itemView.findViewById<ProgressBar>(R.id.pb_lesson_list_bar)
+        private val lessonListPercent =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_percent)
+        private val lessonListCurrentNumber =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_current_number)
+        private val lessonListTotalNumber =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_total_number)
+        private val lessonListPlanningDate =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_planning_date)
+        private val lessonListPassedCount =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_total_count)
+        private val lessonListFail = itemView.findViewById<ImageView>(R.id.iv_lesson_list_fail)
+        private val registerLesson = itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
 
         fun onBind(lessonInfo: LessonInfoResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    registerClass.setOnClickListener { onClick(lessonInfo) }
+                    registerLesson.setOnClickListener { onClick(lessonInfo) }
                 }
 
                 BodyType.DOING -> {
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
-                    classLessonCurrentNumber.text =
+                    lessonListCurrentNumber.text =
                         (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
-                    classLessonTotalNumber.text = lessonInfo.totalNumber.toString()
-                    classLessonPercent.text = (100 - lessonInfo.currentProgressRate).toString()
-                    classLessonGoal.text = (progressRate * 100).toInt().toString()
-                    classLessonCategory.text = lessonInfo.categoryName
-                    classLessonName.text = lessonInfo.lessonName
-                    classLessonPrice.text = lessonInfo.price.toString()
+                    lessonListTotalNumber.text = lessonInfo.totalNumber.toString()
+                    lessonListPercent.text = (100 - lessonInfo.currentProgressRate).toString()
+                    lessonListGoal.text = (progressRate * 100).toInt().toString()
+                    lessonListCategory.text = lessonInfo.categoryName
+                    lessonListSite.text = lessonInfo.siteName
+                    lessonListName.text = lessonInfo.lessonName
+                    lessonListPrice.text = lessonInfo.price.toString()
 
                     val set = ConstraintSet()
-                    set.clone(classLesson)
-                    set.setHorizontalBias(classLessonCurrentLine.id, progressRate)
-                    set.setHorizontalBias(classLessonGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
-                    set.applyTo(classLesson)
-                    classLessonGoalLine.bringToFront()
-                    classLessonCurrentLine.bringToFront()
+                    set.clone(lessonList)
+                    set.setHorizontalBias(lessonListCurrentLine.id, progressRate)
+                    set.setHorizontalBias(lessonListGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
+                    set.applyTo(lessonList)
+                    lessonListGoalLine.bringToFront()
+                    lessonListCurrentLine.bringToFront()
 
                     val animation = ObjectAnimator.ofInt(
-                        classLessonBar,
+                        lessonListBar,
                         "progress",
-                        classLessonBar.progress,
+                        lessonListBar.progress,
                         (progressRate * 10000).toInt()
                     )
 
                     animation.apply {
                         addListener(
                             onEnd = {
-                                classLessonGoalGroup.visibility = View.VISIBLE
-                                classLessonGoalGroup.bringToFront()
+                                lessonListGoalGroup.visibility = View.VISIBLE
+                                lessonListGoalGroup.bringToFront()
                             }
                         )
                         duration = 500
@@ -129,31 +132,33 @@ class LessonListAdapter(
                     }.start()
 
 
-                    classLesson.setOnClickListener { onClick(lessonInfo) }
+                    lessonList.setOnClickListener { onClick(lessonInfo) }
                 }
 
                 BodyType.PLANNING -> {
-                    classLessonCategory.text = lessonInfo.categoryName
-                    classLessonName.text = lessonInfo.lessonName
-                    classLessonPrice.text = lessonInfo.price.toString()
-                    classLessonPlanningDate.text = lessonInfo.startDate.split(" ")[0]
+                    lessonListCategory.text = lessonInfo.categoryName
+                    lessonListSite.text = lessonInfo.siteName
+                    lessonListName.text = lessonInfo.lessonName
+                    lessonListPrice.text = lessonInfo.price.toString()
+                    lessonListPlanningDate.text = lessonInfo.startDate.split(" ")[0]
 
-                    classLesson.setOnClickListener { onClick(lessonInfo) }
+                    lessonList.setOnClickListener { onClick(lessonInfo) }
                 }
 
                 BodyType.PASSED -> {
-                    classLessonCategory.text = lessonInfo.categoryName
-                    classLessonName.text = lessonInfo.lessonName
-                    classLessonPrice.text = lessonInfo.price.toString()
-                    classLessonPassedCount.text = lessonInfo.totalNumber.toString()
+                    lessonListCategory.text = lessonInfo.categoryName
+                    lessonListSite.text = lessonInfo.siteName
+                    lessonListName.text = lessonInfo.lessonName
+                    lessonListPrice.text = lessonInfo.price.toString()
+                    lessonListPassedCount.text = lessonInfo.totalNumber.toString()
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
                     val isComplete =
                         (ceil(progressRate * lessonInfo.totalNumber)).toInt() == lessonInfo.totalNumber
-                    classLessonFail.visibility = if (isComplete) {
+                    lessonListFail.visibility = if (isComplete) {
                         View.INVISIBLE
                     } else View.VISIBLE
 
-                    classLesson.setOnClickListener { onClick(lessonInfo) }
+                    lessonList.setOnClickListener { onClick(lessonInfo) }
                 }
             }
         }

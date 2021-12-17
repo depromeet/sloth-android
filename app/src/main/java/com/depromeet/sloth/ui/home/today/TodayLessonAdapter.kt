@@ -50,6 +50,8 @@ class TodayLessonAdapter(
         private val todayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
         private val todayLessonCategory =
             itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
+        private val todayLessonSite =
+            itemView.findViewById<TextView>(R.id.tv_today_lesson_site)
         private val todayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
         private val todayLessonCurrentNum =
             itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
@@ -103,6 +105,7 @@ class TodayLessonAdapter(
         private fun init(allLessonToday: LessonTodayResponse) {
             val remainDay = allLessonToday.remainDay //D-day
             todayLessonCategory.text = allLessonToday.categoryName
+            todayLessonSite.text = allLessonToday.siteName
             todayLessonName.text = allLessonToday.lessonName
             todayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
             todayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()

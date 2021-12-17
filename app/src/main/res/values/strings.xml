@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sloth</string>
+    <string name="app_name">나나공</string>
     <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
 
     <string name="category">카테고리</string>
@@ -67,8 +67,6 @@
     <string name="waste_money">현재 내가 날린 돈</string>
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
-    <string name="develop">개발</string>
-    <string name="inflearn">인프런</string>
     <string name="lesson_progress">강의 진행률</string>
     <string name="lesson_goal_date">목표 완강일:</string>
     <string name="lesson_present_number">내가 들은 강의:</string>
