@@ -49,14 +49,6 @@ class LessonListAdapter(
         holder.onBind(lesson)
     }
 
-    override fun onCurrentListChanged(
-        previousList: List<LessonInfoResponse?>,
-        currentList: List<LessonInfoResponse?>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-        notifyDataSetChanged()
-    }
-
     private fun changeDecimalFormat(data: Int): String {
         val df = DecimalFormat("#,###")
 

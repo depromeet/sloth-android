@@ -168,15 +168,6 @@ class TodayLessonAdapter(
                 onClick(ClickType.CLICK_MINUS, lessonToday)
             }
         }
-
-    }
-
-    override fun onCurrentListChanged(
-        previousList: List<LessonTodayResponse?>,
-        currentList: List<LessonTodayResponse?>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-        notifyDataSetChanged()
     }
 
     enum class BodyType {
