@@ -2,16 +2,12 @@ package com.depromeet.sloth.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.ui.home.lessonlist.LessonListFragment
 import com.depromeet.sloth.ui.home.mypage.MypageFragment
 import com.depromeet.sloth.ui.home.today.TodayFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
 
