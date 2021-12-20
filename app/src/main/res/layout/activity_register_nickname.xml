@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/shape_edit_text_border"
+        android:background="@drawable/bg_register_rounded_edit_text_gray"
         android:hint="@string/nickname_hint"
         android:inputType="text"
         android:paddingHorizontal="18dp"

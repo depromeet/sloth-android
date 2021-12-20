@@ -72,6 +72,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         tbRegisterLesson.setNavigationOnClickListener { finish() }
 
         if (flag == 0) {
+            lockButton(btnRegisterLesson)
             focusInputForm(etRegisterLessonName, btnRegisterLesson)
 
             btnRegisterLesson.setOnClickListener {
@@ -81,11 +82,10 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
                 fillProgressbar(flag, 0)
 
-                hideKeyboard()
+                clearFocus(etRegisterLessonName)
 
                 if (flag == 1) {
                     lockButton(btnRegisterLesson)
-
                     focusInputForm(etRegisterLessonCount, btnRegisterLesson)
 
                     btnRegisterLesson.setOnClickListener {
@@ -99,7 +99,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
                         fillProgressbar(flag, 0)
 
-                        hideKeyboard()
+                        clearFocus(etRegisterLessonCount)
 
                         if (flag == 2) {
                             lockButton(btnRegisterLesson)
@@ -189,39 +189,11 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                         }
 
                                                         btnRegisterLesson.setOnClickListener {
-                                                            Log.d(
-                                                                "LessonName: ",
-                                                                etRegisterLessonName.text.toString()
-                                                            )
-
-                                                            Log.d(
-                                                                "totalNumber: ",
-                                                                //totalNumber.toString()
-                                                                etRegisterLessonCount.text.toString()
-                                                            )
-                                                            Log.d(
-                                                                "categoryId: ",
-                                                                categoryId.toString()
-                                                            )
-                                                            Log.d(
-                                                                "siteId: ",
-                                                                siteId.toString()
-                                                            )
-
-//                                                            siteArraySize =
-//                                                                resources.getStringArray(R.array.site_array).size - 1
-//                                                            Log.d(
-//                                                                "siteArraySize: ",
-//                                                                siteArraySize.toString()
-//                                                            )
-
-
                                                             resultLauncher.launch(
                                                                 RegisterLessonSecondActivity.newIntent(
                                                                     this@RegisterLessonFirstActivity,
                                                                     etRegisterLessonName.text.toString(),
                                                                     etRegisterLessonCount.text.toString().toInt(),
-                                                                    //categoryId as Int + siteArraySize as Int,
                                                                     categoryId as Int,
                                                                     siteId as Int
                                                                 )
@@ -238,9 +210,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                 }
                                         }
                                     }
-
                                 }
-
                                 override fun onNothingSelected(p0: AdapterView<*>?) {}
                             }
                         }
@@ -278,7 +248,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         button.isEnabled = true
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_register_rounded_sloth
+            R.drawable.bg_register_rounded_button_sloth
         )
     }
 
@@ -287,7 +257,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         button.isEnabled = false
         button.background = AppCompatResources.getDrawable(
             this,
-            R.drawable.bg_register_rounded_gray
+            R.drawable.bg_register_rounded_button_gray
         )
     }
 
@@ -310,6 +280,16 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                 }
             }
         })
+
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if(gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            }
+            else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+
+        }
     }
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {
@@ -318,5 +298,10 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
         view.visibility = View.VISIBLE
         view.startAnimation(animation)
+    }
+
+    private fun clearFocus(editText: EditText) {
+        editText.clearFocus()
+        hideKeyboard()
     }
 }

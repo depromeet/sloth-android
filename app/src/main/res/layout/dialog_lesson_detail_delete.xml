@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_delete_rounded_grey"
+        android:background="@drawable/bg_delete_rounded_gray"
         android:text="@string/cancel"
         android:textColor="@color/gray_500"
         android:textSize="16sp"

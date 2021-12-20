@@ -110,7 +110,6 @@ class RegisterLessonSecondActivity :
             lessonName = getStringExtra(LESSON_NAME).toString()
             siteId = getIntExtra(SITE_ID, -1)
             totalNumber = getIntExtra(TOTAL_NUMBER, 0)
-
         }
 
         pbRegisterLesson.progress = 50
@@ -218,10 +217,12 @@ class RegisterLessonSecondActivity :
 
                                             fillProgressbar(flag, 50)
 
-                                            hideKeyboard()
+                                            clearFocus(etRegisterLessonPriceInfo)
                                         }
 
                                         if (flag == 3) {
+                                            focusInputFormOptional(etRegisterLessonMessageInfo)
+
                                             btnRegisterLesson.setOnClickListener {
 
                                                 if (startDay!! >= endDay!!) {
@@ -410,6 +411,26 @@ class RegisterLessonSecondActivity :
                 }
             }
         })
+
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if(gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            }
+            else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+    }
+
+    private fun focusInputFormOptional(editText: EditText) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if(gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            }
+            else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
     }
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {
@@ -428,5 +449,10 @@ class RegisterLessonSecondActivity :
     private fun getPickerTime(date: Date): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
         return formatter.format(date)
+    }
+
+    private fun clearFocus(editText: EditText) {
+        editText.clearFocus()
+        hideKeyboard()
     }
 }

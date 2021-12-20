@@ -25,12 +25,12 @@
         <activity
             android:name=".ui.register.RegisterLessonFirstActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".ui.register.RegisterLessonSecondActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".ui.detail.LessonDetailActivity"
