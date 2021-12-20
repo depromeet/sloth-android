@@ -31,9 +31,9 @@ class LessonItemDecoration(
     ) {
         super.getItemOffsets(outRect, view, parent, state)
 
-        val startIndex = 0
-        val endIndex = parent.itemDecorationCount - 1
-        val position = parent.getChildAdapterPosition(view)
+//        val startIndex = 0
+//        val endIndex = parent.itemDecorationCount - 1
+//        val position = parent.getChildAdapterPosition(view)
 
         outRect.bottom = fullDp
 

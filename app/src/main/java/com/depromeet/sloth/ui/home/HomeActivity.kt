@@ -2,8 +2,12 @@ package com.depromeet.sloth.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.ui.home.lessonlist.LessonListFragment
 import com.depromeet.sloth.ui.home.mypage.MypageFragment
 import com.depromeet.sloth.ui.home.today.TodayFragment
@@ -12,11 +16,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class HomeActivity : AppCompatActivity() {
 
     private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+
+    lateinit var binding: ActivityHomeBinding
     lateinit var accessToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         accessToken = pm.getAccessToken().toString()
 
@@ -26,8 +33,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initNavigationEvent() {
-        val navigationView = findViewById<BottomNavigationView>(R.id.navigation_bottom)
-        navigationView.run {
+        binding.navigationView.run {
             setOnItemSelectedListener {
                 when (it.itemId) {
                     R.id.menu_today -> changeFragment(TodayFragment::class.java.name)

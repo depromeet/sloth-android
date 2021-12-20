@@ -3,7 +3,7 @@
     <style name="Theme.Sloth" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primary_500</item>
+        <item name="colorPrimary">@color/sloth</item>
         <item name="colorPrimaryVariant">@color/primary_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->

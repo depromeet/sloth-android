@@ -17,15 +17,14 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     private val pm: PreferenceManager by lazy { PreferenceManager(this) }
 
-    private lateinit var accessToken: String
-
     override fun getViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
 
     companion object {
         fun newIntent(activity: Activity) =
             Intent(activity, LoginActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
