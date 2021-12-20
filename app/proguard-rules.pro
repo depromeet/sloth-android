@@ -26,7 +26,6 @@
 
 # 앱 배포시, 코드 축소, 난독화, 최적화를 하는 경우, 구글 SDK를 난독화 제외
 -keep class com.google.android.gms.** { *; }
--keep class com.google.firebase.** { *; }
 
 # retrofit 사용시 json을 생성/파싱을 위한 class들에 대해 난독화 제외
 -keep class com.depromeet.sloth.data.network.** { *; }
