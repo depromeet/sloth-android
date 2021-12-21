@@ -15,15 +15,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_sloth_policy"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/sloth_policy"
-            android:textColor="@color/gray_600"
-            android:textSize="16sp" />
+        <EditText
+            android:id="@+id/et_sloth_policy_address_bar"
+            android:layout_width="280dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_sloth_policy_address_bar"
+            android:imeOptions="actionDone"
+            android:inputType="textUri"
+            android:paddingHorizontal="16dp"
+            android:selectAllOnFocus="true"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <WebView
@@ -34,5 +39,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/pb_sloth_policy_content_loading"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tb_sloth_policy"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
