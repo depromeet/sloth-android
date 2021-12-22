@@ -31,6 +31,8 @@ class SlothPolicyWebViewActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initViews() = with(binding) {
+        tbSlothPolicy.setNavigationOnClickListener { finish() }
+
         wvWebView.apply {
             webViewClient = WebViewClient()
             webChromeClient = WebChromeClient()

@@ -47,9 +47,6 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
     lateinit var categoryId: Number
     lateinit var siteId: Number
 
-    lateinit var siteArraySize: Number
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
