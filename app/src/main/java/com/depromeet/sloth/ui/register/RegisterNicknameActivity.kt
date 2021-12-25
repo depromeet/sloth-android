@@ -17,7 +17,7 @@ import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberInfoState
 import com.depromeet.sloth.data.network.register.RegisterState
 
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import java.util.*
 
 

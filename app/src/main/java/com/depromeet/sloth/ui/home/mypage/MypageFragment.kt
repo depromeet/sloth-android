@@ -17,7 +17,7 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState
 import com.depromeet.sloth.databinding.FragmentMypageBinding

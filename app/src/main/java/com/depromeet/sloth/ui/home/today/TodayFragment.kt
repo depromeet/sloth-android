@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.LessonTodayResponse
 import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse

@@ -1,7 +1,7 @@
 package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 import com.depromeet.sloth.data.network.login.LoginRepository
 import com.depromeet.sloth.data.network.login.LoginSlothResponse

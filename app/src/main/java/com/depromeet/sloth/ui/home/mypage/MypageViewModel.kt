@@ -1,7 +1,7 @@
 package com.depromeet.sloth.ui.home.mypage
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageRepository
 import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState

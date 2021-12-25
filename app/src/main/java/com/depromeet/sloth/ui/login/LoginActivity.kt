@@ -7,7 +7,7 @@ import android.util.Log
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.home.HomeActivity
 

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.db
+package com.depromeet.sloth.data
 
 import android.content.Context
 import android.content.SharedPreferences

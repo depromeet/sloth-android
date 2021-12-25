@@ -20,7 +20,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.data.network.register.RegisterState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding

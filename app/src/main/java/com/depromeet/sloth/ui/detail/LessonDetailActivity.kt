@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
+import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.data.network.register.RegisterLessonRequest
