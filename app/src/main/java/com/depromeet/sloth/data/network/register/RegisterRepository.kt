@@ -1,14 +1,12 @@
 package com.depromeet.sloth.data.network.register
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.ServiceGenerator
-import com.depromeet.sloth.data.network.member.MemberInfoState
 
 class RegisterRepository {
     suspend fun registerLesson(
         accessToken: String,
-        lessonModel: LessonModel
+        registerLessonRequest: RegisterLessonRequest
     ): RegisterState<RegisterLessonResponse> {
         ServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
@@ -17,15 +15,15 @@ class RegisterRepository {
             .create(RegisterService::class.java)
             .registerLesson(
                 RegisterLessonRequest(
-                    alertDays = lessonModel.alertDays,
-                    categoryId = lessonModel.categoryId,
-                    endDate = lessonModel.endDate,
-                    lessonName = lessonModel.lessonName,
-                    message = lessonModel.message,
-                    price = lessonModel.price,
-                    siteId = lessonModel.siteId,
-                    startDate = lessonModel.startDate,
-                    totalNumber = lessonModel.totalNumber
+                    alertDays = registerLessonRequest.alertDays,
+                    categoryId = registerLessonRequest.categoryId,
+                    endDate = registerLessonRequest.endDate,
+                    lessonName = registerLessonRequest.lessonName,
+                    message = registerLessonRequest.message,
+                    price = registerLessonRequest.price,
+                    siteId = registerLessonRequest.siteId,
+                    startDate = registerLessonRequest.startDate,
+                    totalNumber = registerLessonRequest.totalNumber
                 )
             )?.run {
                 return when(this.code()) {

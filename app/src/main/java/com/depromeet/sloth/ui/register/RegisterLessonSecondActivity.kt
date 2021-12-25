@@ -21,7 +21,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.model.LessonModel
+import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.data.network.register.RegisterState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -237,25 +237,24 @@ class RegisterLessonSecondActivity :
                                                 message =
                                                     etRegisterLessonMessageInfo.text.toString()
 
-                                                val lessonInfo = LessonModel(
+                                                val registerLessonRequest = RegisterLessonRequest(
                                                     alertDays = alertDays,
                                                     categoryId = categoryId.toInt(),
                                                     endDate = endDate,
                                                     lessonName = lessonName,
                                                     message = message,
-                                                    price = etRegisterLessonPriceInfo.text.toString()
-                                                        .toInt(),
+                                                    price = etRegisterLessonPriceInfo.text.toString().toInt(),
                                                     siteId = siteId.toInt(),
                                                     startDate = startDate,
                                                     totalNumber = totalNumber.toInt()
                                                 )
 
-                                                Log.d("lessonInfo: ", "$lessonInfo")
+                                                Log.d("lesson: ", "$registerLessonRequest")
 
                                                 mainScope {
                                                     viewModel.registerLesson(
                                                         accessToken,
-                                                        lessonInfo
+                                                        registerLessonRequest
                                                     ).let {
                                                         when (it) {
                                                             is RegisterState.Success -> {
@@ -282,7 +281,7 @@ class RegisterLessonSecondActivity :
                                                             is RegisterState.Unauthorized -> {
                                                                 viewModel.registerLesson(
                                                                     accessToken = refreshToken,
-                                                                    lessonInfo
+                                                                    registerLessonRequest
                                                                 ).let { registerLessonResponse ->
                                                                     when (registerLessonResponse) {
                                                                         is RegisterState.Success -> {

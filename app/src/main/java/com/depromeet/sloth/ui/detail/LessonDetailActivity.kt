@@ -12,9 +12,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.model.LessonModel
 import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
+import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
@@ -44,7 +44,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var endDateInfo: String
 
-    lateinit var lessonModel: LessonModel
+    lateinit var lesson: RegisterLessonRequest
 
     lateinit var categoryArray: Array<String>
 
@@ -129,7 +129,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
 
         tvDetailUpdateLesson.setOnClickListener {
-            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lessonModel))
+            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lesson))
         }
 
         btnDetailDeleteLesson.setOnClickListener {
@@ -182,7 +182,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         binding.apply {
 
-            lessonModel = LessonModel(
+            lesson = RegisterLessonRequest(
                 alertDays = data.alertDays,
                 categoryId = categoryArray.indexOf(data.categoryName),
                 endDate = data.endDate.toString(),

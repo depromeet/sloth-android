@@ -1,24 +1,27 @@
 package com.depromeet.sloth.data.network.register
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-class RegisterLessonRequest (
+@Parcelize
+data class RegisterLessonRequest (
     @SerializedName("alertDays")
-    private val alertDays: String?,
+    val alertDays: String?,
     @SerializedName("categoryId")
-    private val categoryId: Int,
+    val categoryId: Int,
     @SerializedName("endDate")
-    private val endDate: String,
+    val endDate: String,
     @SerializedName("lessonName")
-    private val lessonName: String,
+    val lessonName: String,
     @SerializedName("message")
-    private val message: String?,
+    val message: String?,
     @SerializedName("price")
-    private val price: Int,
+    val price: Int,
     @SerializedName("siteId")
-    private val siteId: Int,
+    val siteId: Int,
     @SerializedName("startDate")
-    private val startDate: String,
+    val startDate: String,
     @SerializedName("totalNumber")
-    private val totalNumber: Int
-)
+    val totalNumber: Int
+): Parcelable
