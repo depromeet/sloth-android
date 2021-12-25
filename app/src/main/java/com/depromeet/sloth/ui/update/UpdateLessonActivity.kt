@@ -15,9 +15,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.model.LessonModel
-import com.depromeet.sloth.data.model.UpdateLessonModel
-import com.depromeet.sloth.data.network.detail.LessonDetailState
+import com.depromeet.sloth.data.network.register.RegisterLessonRequest
+import com.depromeet.sloth.data.network.update.UpdateLessonRequest
 import com.depromeet.sloth.data.network.update.UpdateLessonState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -37,20 +36,19 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
     //lateinit var siteArraySize: Number
 
-    lateinit var lessonModel: LessonModel
+    lateinit var lesson: RegisterLessonRequest
     lateinit var lessonId: String
     lateinit var startDate: ArrayList<String>
     lateinit var endDate: ArrayList<String>
 
     companion object {
-        fun newIntent(activity: Activity,lessonId: String, lessonModel: LessonModel) = Intent(activity, UpdateLessonActivity::class.java).apply {
+        fun newIntent(activity: Activity,lessonId: String, lesson: RegisterLessonRequest) = Intent(activity, UpdateLessonActivity::class.java).apply {
             putExtra(LESSON_ID, lessonId)
-            putExtra(LESSON_MODEL, lessonModel)
+            putExtra(LESSON, lesson)
         }
 
         private const val LESSON_ID = "lessonId"
-        private const val LESSON_MODEL = "lessonModel"
-
+        private const val LESSON = "lesson"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +59,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
         intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
-            lessonModel = getParcelableExtra(LESSON_MODEL)!!
+            lesson = getParcelableExtra(LESSON)!!
         }
 
         //siteArraySize = resources.getStringArray(R.array.site_array).size - 1
@@ -77,11 +75,11 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         focusSpinnerForm(spnUpdateLessonCategory, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
 
-        initLessonInfo(lessonModel)
+        initLessonInfo(lesson)
 
         btnUpdateLesson.setOnClickListener {
             mainScope {
-                val updateLessonModel = UpdateLessonModel(
+                val updateLessonRequest = UpdateLessonRequest(
                     //categoryId = spnUpdateLessonCategory.selectedItemPosition + siteArraySize as Int,
                     categoryId = spnUpdateLessonCategory.selectedItemPosition,
                     lessonName = etUpdateLessonName.text.toString(),
@@ -89,7 +87,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                     totalNumber = etUpdateLessonCount.text.toString().toInt()
                 )
 
-                viewModel.updateLessonInfo(accessToken = accessToken, lessonId = lessonId, updateLessonModel = updateLessonModel).let {
+                viewModel.updateLessonInfo(accessToken = accessToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let {
                     when(it) {
                         is UpdateLessonState.Success -> {
                             Log.d("Update Success", "${it.data}")
@@ -98,7 +96,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                         }
 
                         is UpdateLessonState.Unauthorized -> {
-                            viewModel.updateLessonInfo(accessToken = refreshToken, lessonId = lessonId, updateLessonModel = updateLessonModel).let { updateLessonResponse ->
+                            viewModel.updateLessonInfo(accessToken = refreshToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let { updateLessonResponse ->
                                 when (updateLessonResponse) {
                                     is UpdateLessonState.Success -> {
                                         Log.d("Update Success", "${updateLessonResponse.data}")
@@ -127,21 +125,21 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initLessonInfo(lessonModel: LessonModel?) = with(binding) {
-        etUpdateLessonName.setText(lessonModel!!.lessonName)
-        etUpdateLessonCount.setText(lessonModel.totalNumber.toString())
+    private fun initLessonInfo(lesson: RegisterLessonRequest?) = with(binding) {
+        etUpdateLessonName.setText(lesson!!.lessonName)
+        etUpdateLessonCount.setText(lesson.totalNumber.toString())
 
-        spnUpdateLessonCategory.setSelection(lessonModel.categoryId)
-        spnUpdateLessonSite.setSelection(lessonModel.siteId)
+        spnUpdateLessonCategory.setSelection(lesson.categoryId)
+        spnUpdateLessonSite.setSelection(lesson.siteId)
 
-        tvUpdateStartLessonDate.text = changeDateFormat(lessonModel.startDate)
-        tvUpdateEndLessonDate.text = changeDateFormat(lessonModel.endDate)
+        tvUpdateStartLessonDate.text = changeDateFormat(lesson.startDate)
+        tvUpdateEndLessonDate.text = changeDateFormat(lesson.endDate)
 
         val df = DecimalFormat("#,###")
-        val changedPriceFormat = df.format(lessonModel.price)
+        val changedPriceFormat = df.format(lesson.price)
 
         tvUpdateLessonPriceInfo.text = "${changedPriceFormat}원"
-        tvUpdateLessonMessageInfo.text = lessonModel.message
+        tvUpdateLessonMessageInfo.text = lesson.message
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

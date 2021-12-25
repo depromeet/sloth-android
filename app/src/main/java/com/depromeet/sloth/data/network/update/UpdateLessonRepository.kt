@@ -1,13 +1,14 @@
 package com.depromeet.sloth.data.network.update
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.model.UpdateLessonModel
 import com.depromeet.sloth.data.network.ServiceGenerator
-import com.depromeet.sloth.data.network.register.RegisterLessonResponse
-import com.depromeet.sloth.data.network.register.RegisterState
 
 class UpdateLessonRepository {
-    suspend fun updateLessonInfo(accessToken: String, lessonId: String, updateLessonModel: UpdateLessonModel): UpdateLessonState<UpdateLessonResponse> {
+    suspend fun updateLessonInfo(
+        accessToken: String,
+        lessonId: String,
+        updateLessonRequest: UpdateLessonRequest
+    ): UpdateLessonState<UpdateLessonResponse> {
         ServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
@@ -16,10 +17,10 @@ class UpdateLessonRepository {
             .updateLessonInfo(
                 lessonId,
                 UpdateLessonRequest(
-                    categoryId = updateLessonModel.categoryId,
-                    lessonName = updateLessonModel.lessonName,
-                    siteId = updateLessonModel.siteId,
-                    totalNumber = updateLessonModel.totalNumber
+                    categoryId = updateLessonRequest.categoryId,
+                    lessonName = updateLessonRequest.lessonName,
+                    siteId = updateLessonRequest.siteId,
+                    totalNumber = updateLessonRequest.totalNumber
                 )
             )?.run {
                     return when(this.code()) {

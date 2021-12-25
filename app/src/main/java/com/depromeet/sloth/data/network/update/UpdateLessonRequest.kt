@@ -2,14 +2,14 @@ package com.depromeet.sloth.data.network.update
 
 import com.google.gson.annotations.SerializedName
 
-class UpdateLessonRequest (
+data class UpdateLessonRequest (
     @SerializedName("categoryId")
-    private val categoryId: Int,
+    val categoryId: Int,
     @SerializedName("lessonName")
-    private val lessonName: String,
+    val lessonName: String,
     @SerializedName("siteId")
-    private val siteId: Int,
+    val siteId: Int,
     @SerializedName("totalNumber")
-    private val totalNumber: Int,
+    val totalNumber: Int,
 )
 
