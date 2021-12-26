@@ -1,13 +1,13 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityHomeBinding
-import com.depromeet.sloth.ui.home.lessonlist.LessonListFragment
-import com.depromeet.sloth.ui.home.mypage.MypageFragment
-import com.depromeet.sloth.ui.home.today.TodayFragment
+import com.depromeet.sloth.ui.list.LessonListFragment
+import com.depromeet.sloth.ui.manage.ManageFragment
+import com.depromeet.sloth.ui.today.TodayFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
                     R.id.menu_class -> changeFragment(LessonListFragment::class.java.name)
-                    R.id.menu_mypage -> changeFragment(MypageFragment::class.java.name)
+                    R.id.menu_mypage -> changeFragment(ManageFragment::class.java.name)
                 }
 
                 true

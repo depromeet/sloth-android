@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui
 
 import android.app.Dialog
 import android.content.Context
@@ -7,15 +7,15 @@ import android.graphics.drawable.ColorDrawable
 import android.view.Window
 import android.widget.Button
 import com.depromeet.sloth.R
+import com.depromeet.sloth.ui.detail.LessonDeleteDialog
 
-class ForbiddenDialog(context: Context) {
-    lateinit var listener: ForbiddenDialogClickedListener
+class WaitDialog(context: Context) {
     lateinit var btnConfirm: Button
 
     private val dlg = Dialog(context)
 
-    interface ForbiddenDialogClickedListener {
-        fun onConfirmClicked()
+    interface WithdrawDialogClickedListener {
+        fun onWithdrawClicked()
     }
 
     fun start() {
@@ -23,14 +23,10 @@ class ForbiddenDialog(context: Context) {
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
         /*커스텀 다이얼로그 radius 적용*/
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        /*영역 외 클릭시 창이 사라지지 않도록*/
-        dlg.setCancelable(false)
-        dlg.setContentView(R.layout.dialog_home_forbidden)
-
+        dlg.setContentView(R.layout.dialog_home_wait)
 
         btnConfirm = dlg.findViewById(R.id.btn_confirm)
         btnConfirm.setOnClickListener {
-            listener.onConfirmClicked()
             dlg.dismiss()
         }
         dlg.show()

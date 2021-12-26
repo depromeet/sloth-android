@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home.lessonlist
+package com.depromeet.sloth.ui.list
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,26 +8,26 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.home.LessonState
 import com.depromeet.sloth.data.network.home.LessonInfoResponse
-import com.depromeet.sloth.databinding.FragmentLessonListBinding
+import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.home.today.HeaderAdapter
-import com.depromeet.sloth.ui.home.LessonItemDecoration
+import com.depromeet.sloth.ui.today.HeaderAdapter
+import com.depromeet.sloth.ui.LessonItemDecoration
 import com.depromeet.sloth.ui.home.LessonListAdapter
-import com.depromeet.sloth.ui.home.LessonViewModel
-import com.depromeet.sloth.ui.home.WaitDialog
+import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.WaitDialog
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LessonListFragment : BaseFragment<LessonViewModel, FragmentLessonListBinding>() {
+class LessonListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
         get() = LessonViewModel()
 
-    override fun getViewBinding(): FragmentLessonListBinding =
-        FragmentLessonListBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentListBinding =
+        FragmentListBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
     lateinit var refreshToken: String

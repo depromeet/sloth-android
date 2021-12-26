@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home.mypage
+package com.depromeet.sloth.ui.manage
 
 import android.app.Dialog
 import android.content.Context
@@ -7,18 +7,17 @@ import android.graphics.drawable.ColorDrawable
 import android.view.Window
 import android.widget.Button
 import com.depromeet.sloth.R
-import com.depromeet.sloth.ui.detail.LessonDeleteDialog
 
-class WithdrawDialog(context: Context) {
+class LogoutDialog(context: Context) {
 
-    lateinit var listener: WithdrawDialogClickedListener
-    lateinit var btnWithdraw: Button
+    lateinit var listener: LogoutDialogClickedListener
+    lateinit var btnLogout: Button
     lateinit var btnCancel: Button
 
     private val dlg = Dialog(context)
 
-    interface WithdrawDialogClickedListener {
-        fun onWithdrawClicked()
+    interface LogoutDialogClickedListener {
+        fun onLogoutClicked()
     }
 
     fun start() {
@@ -26,15 +25,15 @@ class WithdrawDialog(context: Context) {
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
         /*커스텀 다이얼로그 radius 적용*/
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dlg.setContentView(R.layout.dialog_mypage_withdraw)
+        dlg.setContentView(R.layout.dialog_mypage_logout)
 
-        btnWithdraw = dlg.findViewById(R.id.btn_withdraw)
-        btnWithdraw.setOnClickListener {
-            listener.onWithdrawClicked()
+        btnLogout = dlg.findViewById(R.id.btn_logout)
+        btnLogout.setOnClickListener {
+            listener.onLogoutClicked()
             dlg.dismiss()
         }
 
-        btnCancel = dlg.findViewById(R.id.btn_withdraw_cancel)
+        btnCancel = dlg.findViewById(R.id.btn_logout_cancel)
         btnCancel.setOnClickListener {
             dlg.dismiss()
         }

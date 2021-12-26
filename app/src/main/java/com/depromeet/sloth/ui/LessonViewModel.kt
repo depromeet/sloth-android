@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager

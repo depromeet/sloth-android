@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home.mypage
+package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
@@ -9,7 +9,7 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class MypageViewModel: BaseViewModel() {
+class ManageViewModel: BaseViewModel() {
     private val mypageRepository = MypageRepository()
 
     suspend fun fetchMemberInfo(

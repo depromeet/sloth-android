@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui
 
 import android.content.Context
 import android.graphics.Rect

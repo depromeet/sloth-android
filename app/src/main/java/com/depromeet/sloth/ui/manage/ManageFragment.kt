@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home.mypage
+package com.depromeet.sloth.ui.manage
 
 import android.app.Dialog
 import android.content.Intent
@@ -20,16 +20,16 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState
-import com.depromeet.sloth.databinding.FragmentMypageBinding
+import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
 
-class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
+class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
-    override val viewModel: MypageViewModel = MypageViewModel()
+    override val viewModel: ManageViewModel = ManageViewModel()
 
-    override fun getViewBinding(): FragmentMypageBinding = FragmentMypageBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentManageBinding = FragmentManageBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
 
@@ -124,7 +124,7 @@ class MypageFragment: BaseFragment<MypageViewModel, FragmentMypageBinding>() {
                                     Log.d("Update Success", "${it.data}")
                                     updateViews(updateMemberName)
 
-                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
                                 }
 
                                 is MypageState.Unauthorized -> {
