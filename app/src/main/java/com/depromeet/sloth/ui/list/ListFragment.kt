@@ -13,14 +13,13 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.today.HeaderAdapter
 import com.depromeet.sloth.ui.LessonItemDecoration
-import com.depromeet.sloth.ui.home.LessonListAdapter
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.WaitDialog
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LessonListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
+class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: LessonViewModel
