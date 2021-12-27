@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.depromeet.sloth.ui.list.LessonListFragment
+import com.depromeet.sloth.ui.list.ListFragment
 import com.depromeet.sloth.ui.manage.ManageFragment
 import com.depromeet.sloth.ui.today.TodayFragment
 
@@ -12,8 +12,8 @@ class SlothFragmentFactory : FragmentFactory() {
             TodayFragment::class.java.name -> {
                 return TodayFragment()
             }
-            LessonListFragment::class.java.name -> {
-                return LessonListFragment()
+            ListFragment::class.java.name -> {
+                return ListFragment()
             }
             ManageFragment::class.java.name -> {
                 return ManageFragment()

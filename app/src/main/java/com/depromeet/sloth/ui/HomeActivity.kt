@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityHomeBinding
-import com.depromeet.sloth.ui.list.LessonListFragment
+import com.depromeet.sloth.ui.list.ListFragment
 import com.depromeet.sloth.ui.manage.ManageFragment
 import com.depromeet.sloth.ui.today.TodayFragment
 
@@ -33,7 +33,7 @@ class HomeActivity : AppCompatActivity() {
             setOnItemSelectedListener {
                 when (it.itemId) {
                     R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
-                    R.id.menu_class -> changeFragment(LessonListFragment::class.java.name)
+                    R.id.menu_class -> changeFragment(ListFragment::class.java.name)
                     R.id.menu_mypage -> changeFragment(ManageFragment::class.java.name)
                 }
 

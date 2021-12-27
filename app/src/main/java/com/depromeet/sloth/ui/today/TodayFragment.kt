@@ -16,7 +16,6 @@ import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.WaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.home.*
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
