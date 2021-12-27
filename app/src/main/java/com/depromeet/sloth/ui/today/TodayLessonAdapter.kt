@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui.today
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
@@ -20,11 +20,11 @@ import com.depromeet.sloth.data.network.home.LessonTodayResponse
 class TodayLessonAdapter(
     private val bodyType: BodyType,
     val onClick: (ClickType, LessonTodayResponse) -> Unit
-) :
-    ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(
-        TodayLessonDiffCallback
-    ) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayLessonViewHolder {
+) : ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(TodayLessonDiffCallback) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TodayLessonViewHolder {
         val view = when (bodyType) {
             BodyType.NOTHING -> LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_today_lesson_nothing, parent, false)
@@ -37,7 +37,10 @@ class TodayLessonAdapter(
         return TodayLessonViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: TodayLessonViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: TodayLessonViewHolder,
+        position: Int
+    ) {
         val lesson = getItem(position)
         holder.onBind(lesson)
     }
@@ -65,7 +68,12 @@ class TodayLessonAdapter(
         fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    registerClass.setOnClickListener { onClick(ClickType.CLICK_NORMAL, lessonToday) }
+                    registerClass.setOnClickListener {
+                        onClick(
+                            ClickType.CLICK_NORMAL,
+                            lessonToday
+                        )
+                    }
                 }
 
                 BodyType.FINISHED -> {
@@ -188,13 +196,15 @@ object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonTodayResponse>() {
         oldItem: LessonTodayResponse,
         newItem: LessonTodayResponse
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.lessonId == newItem.lessonId
     }
 
     override fun areContentsTheSame(
         oldItem: LessonTodayResponse,
         newItem: LessonTodayResponse
     ): Boolean {
-        return oldItem.categoryName == newItem.categoryName
+        return oldItem.categoryName == newItem.categoryName &&
+                oldItem.lessonName == newItem.lessonName &&
+                oldItem.siteName == newItem.siteName
     }
 }

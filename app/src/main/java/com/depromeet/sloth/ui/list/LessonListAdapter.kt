@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.home
+package com.depromeet.sloth.ui.list
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -23,9 +23,7 @@ import kotlin.math.ceil
 class LessonListAdapter(
     private val bodyType: BodyType,
     val onClick: (LessonInfoResponse) -> Unit
-) : ListAdapter<LessonInfoResponse, LessonListAdapter.LessonListViewHolder>(
-    LessonListDiffCallback
-) {
+) : ListAdapter<LessonInfoResponse, LessonListAdapter.LessonListViewHolder>(LessonListDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -44,7 +42,10 @@ class LessonListAdapter(
         return LessonListViewHolder(bodyType, view)
     }
 
-    override fun onBindViewHolder(holder: LessonListViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: LessonListViewHolder,
+        position: Int
+    ) {
         val lesson = getItem(position)
         holder.onBind(lesson)
     }
@@ -111,7 +112,10 @@ class LessonListAdapter(
                     val set = ConstraintSet()
                     set.clone(lessonList)
                     set.setHorizontalBias(lessonListCurrentLine.id, progressRate)
-                    set.setHorizontalBias(lessonListGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
+                    set.setHorizontalBias(
+                        lessonListGoalLine.id,
+                        lessonInfo.goalProgressRate / 100.0f
+                    )
                     set.applyTo(lessonList)
                     lessonListGoalLine.bringToFront()
                     lessonListCurrentLine.bringToFront()
@@ -180,13 +184,17 @@ object LessonListDiffCallback : DiffUtil.ItemCallback<LessonInfoResponse>() {
         oldItem: LessonInfoResponse,
         newItem: LessonInfoResponse
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.lessonId == newItem.lessonId
     }
 
     override fun areContentsTheSame(
         oldItem: LessonInfoResponse,
         newItem: LessonInfoResponse
     ): Boolean {
-        return oldItem.categoryName == newItem.categoryName
+        return oldItem.categoryName == newItem.categoryName &&
+                oldItem.lessonName == newItem.lessonName &&
+                oldItem.startDate == newItem.startDate &&
+                oldItem.endDate == newItem.endDate &&
+                oldItem.siteName == newItem.siteName
     }
 }
