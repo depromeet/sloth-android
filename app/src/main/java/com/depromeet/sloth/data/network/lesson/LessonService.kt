@@ -21,4 +21,7 @@ interface LessonService {
 
     @POST("api/lesson")
     suspend fun registerLesson(@Body request: LessonRegisterRequest): Response<LessonRegisterResponse>?
+
+    @PATCH("api/lesson/{lessonId}")
+    suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateInfoRequest): Response<LessonUpdateInfoResponse>?
 }

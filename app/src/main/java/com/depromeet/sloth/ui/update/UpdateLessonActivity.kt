@@ -16,8 +16,8 @@ import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
-import com.depromeet.sloth.data.network.update.UpdateLessonRequest
-import com.depromeet.sloth.data.network.update.UpdateLessonState
+import com.depromeet.sloth.data.network.lesson.LessonUpdateInfoRequest
+import com.depromeet.sloth.data.network.lesson.LessonUpdateState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import java.text.DecimalFormat
@@ -79,7 +79,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
         btnUpdateLesson.setOnClickListener {
             mainScope {
-                val updateLessonRequest = UpdateLessonRequest(
+                val updateLessonRequest = LessonUpdateInfoRequest(
                     //categoryId = spnUpdateLessonCategory.selectedItemPosition + siteArraySize as Int,
                     categoryId = spnUpdateLessonCategory.selectedItemPosition,
                     lessonName = etUpdateLessonName.text.toString(),
@@ -87,24 +87,24 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                     totalNumber = etUpdateLessonCount.text.toString().toInt()
                 )
 
-                viewModel.updateLessonInfo(accessToken = accessToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let {
+                viewModel.updateLesson(accessToken = accessToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let {
                     when(it) {
-                        is UpdateLessonState.Success -> {
+                        is LessonUpdateState.Success -> {
                             Log.d("Update Success", "${it.data}")
                             Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
                             finish()
                         }
 
-                        is UpdateLessonState.Unauthorized -> {
-                            viewModel.updateLessonInfo(accessToken = refreshToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let { updateLessonResponse ->
+                        is LessonUpdateState.Unauthorized -> {
+                            viewModel.updateLesson(accessToken = refreshToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let { updateLessonResponse ->
                                 when (updateLessonResponse) {
-                                    is UpdateLessonState.Success -> {
+                                    is LessonUpdateState.Success -> {
                                         Log.d("Update Success", "${updateLessonResponse.data}")
                                         Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
                                         finish()
                                     }
 
-                                    is UpdateLessonState.Error -> {
+                                    is LessonUpdateState.Error -> {
                                         Log.d("Delete Error", "${updateLessonResponse.exception}")
                                         Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정을 실패하였습니다.", Toast.LENGTH_SHORT).show()
                                     }
@@ -113,7 +113,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                             }
                         }
 
-                        is UpdateLessonState.Error -> {
+                        is LessonUpdateState.Error -> {
                             Log.d("Update Error", "${it.exception}")
                             Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정을 실패하였습니다.", Toast.LENGTH_SHORT).show()
                         }

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.update
+package com.depromeet.sloth.data.network.lesson
 
 /**
  *   LoginGoogleResponse
@@ -10,7 +10,7 @@ package com.depromeet.sloth.data.network.update
  *  "totalNumber": 0
  */
 
-data class UpdateLessonResponse (
+data class LessonUpdateInfoResponse (
     var categoryId: Int = 0,
     var lessonId: Int = 0,
     var lessonName: String = "",

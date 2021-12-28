@@ -1,19 +1,19 @@
 package com.depromeet.sloth.ui.update
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.update.UpdateLessonRepository
-import com.depromeet.sloth.data.network.update.UpdateLessonRequest
+import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.network.lesson.LessonUpdateInfoRequest
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 
 class UpdateLessonViewModel : BaseViewModel() {
-    private val updateLessonRepository = UpdateLessonRepository()
+    private val lessonRepository = LessonRepository()
 
-    suspend fun updateLessonInfo(
+    suspend fun updateLesson(
         accessToken: String,
         lessonId: String,
-        updateLessonRequest: UpdateLessonRequest
+        updateLessonRequest: LessonUpdateInfoRequest
     ) = viewModelScope.async {
-        updateLessonRepository.updateLessonInfo(accessToken, lessonId, updateLessonRequest)
+        lessonRepository.updateLesson(accessToken, lessonId, updateLessonRequest)
     }.await()
 }
