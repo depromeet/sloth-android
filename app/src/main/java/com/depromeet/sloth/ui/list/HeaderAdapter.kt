@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.lesson
+package com.depromeet.sloth.ui.list
 
 import android.view.LayoutInflater
 import android.view.View

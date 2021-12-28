@@ -5,9 +5,9 @@ import android.os.Bundle
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityHomeBinding
-import com.depromeet.sloth.ui.lesson.ListFragment
+import com.depromeet.sloth.ui.list.ListFragment
 import com.depromeet.sloth.ui.manage.ManageFragment
-import com.depromeet.sloth.ui.lesson.TodayFragment
+import com.depromeet.sloth.ui.list.TodayFragment
 
 class HomeActivity : AppCompatActivity() {
 
