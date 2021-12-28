@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.home
+package com.depromeet.sloth.data.network.list
 
 import com.google.gson.annotations.SerializedName
 

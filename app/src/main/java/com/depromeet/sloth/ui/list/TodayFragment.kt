@@ -6,9 +6,9 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.home.LessonState
-import com.depromeet.sloth.data.network.home.LessonTodayResponse
-import com.depromeet.sloth.data.network.home.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.list.LessonState
+import com.depromeet.sloth.data.network.list.LessonTodayResponse
+import com.depromeet.sloth.data.network.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.ForbiddenDialog
 import com.depromeet.sloth.ui.LessonItemDecoration

@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.home.LessonState
-import com.depromeet.sloth.data.network.home.LessonInfoResponse
+import com.depromeet.sloth.data.network.list.LessonState
+import com.depromeet.sloth.data.network.list.LessonInfoResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity

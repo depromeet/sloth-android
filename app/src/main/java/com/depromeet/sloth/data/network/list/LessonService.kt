@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.home
+package com.depromeet.sloth.data.network.list
 
 import retrofit2.Response
 import retrofit2.http.Body

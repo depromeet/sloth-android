@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.home.*
+import com.depromeet.sloth.data.network.list.*
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
