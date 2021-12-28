@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.member.MemberState
-import com.depromeet.sloth.data.network.member.UpdateMemberInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import java.util.*
 
 
@@ -36,7 +36,7 @@ class RegisterNicknameActivity :
 
     lateinit var memberName: String
 
-    lateinit var updateMemberInfoRequest: UpdateMemberInfoRequest
+    lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
 
     override fun initViews() = with(binding) {
         tbRegisterNickname.setNavigationOnClickListener { finish() }
@@ -73,11 +73,11 @@ class RegisterNicknameActivity :
 
                     /*기존의 닉네임과 비교*/
                     if(nickname != memberName) {
-                        updateMemberInfoRequest = UpdateMemberInfoRequest(
+                        memberUpdateInfoRequest = MemberUpdateInfoRequest(
                             memberName = nickname
                         )
 
-                        viewModel.updateMemberInfo(accessToken, updateMemberInfoRequest).let {
+                        viewModel.updateMemberInfo(accessToken, memberUpdateInfoRequest).let {
                             when (it) {
                                 is MemberState.Success -> {
                                     Log.d("Register Success", "${it.data}")

@@ -20,7 +20,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberState
-import com.depromeet.sloth.data.network.member.UpdateMemberInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
@@ -42,7 +42,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
     lateinit var memberName: String
 
-    lateinit var updateMemberInfoRequest: UpdateMemberInfoRequest
+    lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,12 +120,12 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
             focusInputForm(nameEditText, updateButton)
 
             updateButton.setOnClickListener {
-                updateMemberInfoRequest = UpdateMemberInfoRequest(
+                memberUpdateInfoRequest = MemberUpdateInfoRequest(
                     memberName = nameEditText.text.toString()
                 )
                 if (nameEditText.text.toString() != memberName) {
                     mainScope {
-                        viewModel.updateMemberInfo(accessToken, updateMemberInfoRequest).let {
+                        viewModel.updateMemberInfo(accessToken, memberUpdateInfoRequest).let {
                             when (it) {
                                 is MemberState.Success -> {
                                     Log.d("Update Success", "${it.data}")
@@ -139,7 +139,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
                                 is MemberState.Unauthorized -> {
                                     viewModel.updateMemberInfo(accessToken = refreshToken,
-                                        updateMemberInfoRequest).let { memberState ->
+                                        memberUpdateInfoRequest).let { memberState ->
                                         when (memberState) {
                                             is MemberState.Success -> {
                                                 Log.d("Update Success", "${memberState.data}")

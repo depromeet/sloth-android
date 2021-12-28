@@ -23,20 +23,20 @@ class MemberRepository {
 
     suspend fun updateMemberInfo(
         accessToken: String,
-        updateMemberInfoRequest: UpdateMemberInfoRequest
-    ): MemberState<UpdateMemberInfoResponse> {
+        memberUpdateInfoRequest: MemberUpdateInfoRequest
+    ): MemberState<MemberUpdateInfoResponse> {
         ServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
             .create(MemberService::class.java)
             .updateMemberInfo(
-                UpdateMemberInfoRequest(
-                    memberName = updateMemberInfoRequest.memberName
+                MemberUpdateInfoRequest(
+                    memberName = memberUpdateInfoRequest.memberName
                 )
             )?.run {
                 return when(this.code()) {
-                    200 -> MemberState.Success(this.body() ?: UpdateMemberInfoResponse() )
+                    200 -> MemberState.Success(this.body() ?: MemberUpdateInfoResponse() )
                     401 -> MemberState.Unauthorized
                     403 -> MemberState.Forbidden
                     404 -> MemberState.NotFound

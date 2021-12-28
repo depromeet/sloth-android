@@ -19,11 +19,11 @@ class ManageViewModel : BaseViewModel() {
 
     suspend fun updateMemberInfo(
         accessToken: String,
-        updateMemberInfoRequest: UpdateMemberInfoRequest,
-    ): MemberState<UpdateMemberInfoResponse> = viewModelScope.async {
+        memberUpdateInfoRequest: MemberUpdateInfoRequest,
+    ): MemberState<MemberUpdateInfoResponse> = viewModelScope.async {
         memberRepository.updateMemberInfo(
             accessToken = accessToken,
-            updateMemberInfoRequest = updateMemberInfoRequest
+            memberUpdateInfoRequest = memberUpdateInfoRequest
         )
     }.await()
 

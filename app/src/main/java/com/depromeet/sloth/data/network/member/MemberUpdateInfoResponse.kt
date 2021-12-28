@@ -8,6 +8,6 @@ package com.depromeet.sloth.data.network.member
  * email: "String
  */
 
-data class UpdateMemberInfoResponse(
+data class MemberUpdateInfoResponse(
     var memberName: String = ""
 )

@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.register
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.data.network.member.UpdateMemberInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.data.network.register.RegisterRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
@@ -18,9 +18,9 @@ class RegisterViewModel: BaseViewModel() {
 
     suspend fun updateMemberInfo(
         accessToken: String,
-        updateMemberInfoRequest: UpdateMemberInfoRequest
+        memberUpdateInfoRequest: MemberUpdateInfoRequest
     ) = viewModelScope.async {
-        memberRepository.updateMemberInfo(accessToken, updateMemberInfoRequest)
+        memberRepository.updateMemberInfo(accessToken, memberUpdateInfoRequest)
     }.await()
 
     suspend fun registerLesson(
