@@ -18,4 +18,7 @@ interface LessonService {
 
     @DELETE("api/lesson/{lessonId}")
     suspend fun deleteLesson(@Path("lessonId") lessonId: String): Response<LessonDeleteResponse>?
+
+    @POST("api/lesson")
+    suspend fun registerLesson(@Body request: LessonRegisterRequest): Response<LessonRegisterResponse>?
 }

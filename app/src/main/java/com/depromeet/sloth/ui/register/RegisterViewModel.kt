@@ -3,13 +3,13 @@ package com.depromeet.sloth.ui.register
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
-import com.depromeet.sloth.data.network.register.RegisterLessonRequest
-import com.depromeet.sloth.data.network.register.RegisterRepository
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.async
 
 class RegisterViewModel: BaseViewModel() {
-    private val registerRepository = RegisterRepository()
+    private val lessonRepository = LessonRepository()
     private val memberRepository = MemberRepository()
 
     suspend fun fetchMemberInfo(accessToken: String) = viewModelScope.async {
@@ -25,8 +25,8 @@ class RegisterViewModel: BaseViewModel() {
 
     suspend fun registerLesson(
         accessToken: String,
-        registerLessonRequest: RegisterLessonRequest
+        request: LessonRegisterRequest
     ) = viewModelScope.async {
-        registerRepository.registerLesson(accessToken, registerLessonRequest)
+        lessonRepository.registerLesson(accessToken, request)
     }.await()
 }

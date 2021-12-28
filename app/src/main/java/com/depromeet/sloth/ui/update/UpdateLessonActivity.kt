@@ -15,7 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.register.RegisterLessonRequest
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.network.update.UpdateLessonRequest
 import com.depromeet.sloth.data.network.update.UpdateLessonState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
@@ -36,13 +36,13 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
 
     //lateinit var siteArraySize: Number
 
-    lateinit var lesson: RegisterLessonRequest
+    lateinit var lesson: LessonRegisterRequest
     lateinit var lessonId: String
     lateinit var startDate: ArrayList<String>
     lateinit var endDate: ArrayList<String>
 
     companion object {
-        fun newIntent(activity: Activity,lessonId: String, lesson: RegisterLessonRequest) = Intent(activity, UpdateLessonActivity::class.java).apply {
+        fun newIntent(activity: Activity,lessonId: String, lesson: LessonRegisterRequest) = Intent(activity, UpdateLessonActivity::class.java).apply {
             putExtra(LESSON_ID, lessonId)
             putExtra(LESSON, lesson)
         }
@@ -125,7 +125,7 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initLessonInfo(lesson: RegisterLessonRequest?) = with(binding) {
+    private fun initLessonInfo(lesson: LessonRegisterRequest?) = with(binding) {
         etUpdateLessonName.setText(lesson!!.lessonName)
         etUpdateLessonCount.setText(lesson.totalNumber.toString())
 

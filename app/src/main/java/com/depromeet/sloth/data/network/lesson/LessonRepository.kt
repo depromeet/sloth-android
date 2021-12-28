@@ -119,4 +119,36 @@ class LessonRepository {
                 }
             } ?: return LessonState.Error(Exception("Retrofit Exception"))
     }
+
+    suspend fun registerLesson(
+        accessToken: String,
+        request: LessonRegisterRequest
+    ): LessonState<LessonRegisterResponse> {
+        ServiceGenerator.setBuilderOptions(
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
+            authToken = accessToken
+        )
+            .create(LessonService::class.java)
+            .registerLesson(
+                LessonRegisterRequest(
+                    alertDays = request.alertDays,
+                    categoryId = request.categoryId,
+                    endDate = request.endDate,
+                    lessonName = request.lessonName,
+                    message = request.message,
+                    price = request.price,
+                    siteId = request.siteId,
+                    startDate = request.startDate,
+                    totalNumber = request.totalNumber
+                )
+            )?.run {
+                return when(this.code()) {
+                    200 -> LessonState.Success(this.body() ?: LessonRegisterResponse())
+                    401 -> LessonState.Unauthorized
+                    403 -> LessonState.Forbidden
+                    404 -> LessonState.NotFound
+                    else -> LessonState.Error(java.lang.Exception("Uncaught Exception"))
+                }
+            } ?: return LessonState.Error(Exception("Register Exception"))
+    }
 }

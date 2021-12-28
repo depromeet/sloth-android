@@ -14,7 +14,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.register.RegisterLessonRequest
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
@@ -46,7 +46,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var endDateInfo: String
 
-    lateinit var lesson: RegisterLessonRequest
+    lateinit var lesson: LessonRegisterRequest
 
     lateinit var categoryArray: Array<String>
 
@@ -183,7 +183,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         binding.apply {
 
-            lesson = RegisterLessonRequest(
+            lesson = LessonRegisterRequest(
                 alertDays = data.alertDays,
                 categoryId = categoryArray.indexOf(data.categoryName),
                 endDate = data.endDate.toString(),

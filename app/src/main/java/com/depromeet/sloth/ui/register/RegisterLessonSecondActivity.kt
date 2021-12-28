@@ -21,8 +21,8 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.register.RegisterLessonRequest
-import com.depromeet.sloth.data.network.register.RegisterState
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.google.android.material.datepicker.CalendarConstraints
@@ -237,7 +237,7 @@ class RegisterLessonSecondActivity :
                                                 message =
                                                     etRegisterLessonMessageInfo.text.toString()
 
-                                                val registerLessonRequest = RegisterLessonRequest(
+                                                val request = LessonRegisterRequest(
                                                     alertDays = alertDays,
                                                     categoryId = categoryId.toInt(),
                                                     endDate = endDate,
@@ -249,15 +249,15 @@ class RegisterLessonSecondActivity :
                                                     totalNumber = totalNumber.toInt()
                                                 )
 
-                                                Log.d("lesson: ", "$registerLessonRequest")
+                                                Log.d("lesson: ", "$request")
 
                                                 mainScope {
                                                     viewModel.registerLesson(
                                                         accessToken,
-                                                        registerLessonRequest
+                                                        request
                                                     ).let {
                                                         when (it) {
-                                                            is RegisterState.Success -> {
+                                                            is LessonState.Success -> {
                                                                 Log.d(
                                                                     "Register Success",
                                                                     "${it.data}"
@@ -278,13 +278,13 @@ class RegisterLessonSecondActivity :
                                                                 if (!isFinishing) finish()
                                                             }
 
-                                                            is RegisterState.Unauthorized -> {
+                                                            is LessonState.Unauthorized -> {
                                                                 viewModel.registerLesson(
                                                                     accessToken = refreshToken,
-                                                                    registerLessonRequest
+                                                                    request
                                                                 ).let { registerLessonResponse ->
                                                                     when (registerLessonResponse) {
-                                                                        is RegisterState.Success -> {
+                                                                        is LessonState.Success -> {
                                                                             Log.d(
                                                                                 "Register Success",
                                                                                 "${registerLessonResponse.data}"
@@ -306,7 +306,7 @@ class RegisterLessonSecondActivity :
                                                                             if (!isFinishing) finish()
                                                                         }
 
-                                                                        is RegisterState.Error -> {
+                                                                        is LessonState.Error -> {
                                                                             Log.d(
                                                                                 "Register Error",
                                                                                 "${registerLessonResponse.exception}"
@@ -322,7 +322,7 @@ class RegisterLessonSecondActivity :
                                                                 }
                                                             }
 
-                                                            is RegisterState.Error -> {
+                                                            is LessonState.Error -> {
                                                                 Log.d(
                                                                     "Register Error",
                                                                     "${it.exception}"

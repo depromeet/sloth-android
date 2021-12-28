@@ -1,11 +1,11 @@
-package com.depromeet.sloth.data.network.register
+package com.depromeet.sloth.data.network.lesson
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class RegisterLessonRequest (
+data class LessonRegisterRequest (
     @SerializedName("alertDays")
     val alertDays: String?,
     @SerializedName("categoryId")
