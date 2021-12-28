@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.list
+package com.depromeet.sloth.data.network.lesson
 
 /**
  *   AllLessonResponse
@@ -18,7 +18,7 @@ package com.depromeet.sloth.data.network.list
  *   "totalNumber": 0
  */
 
-data class LessonInfoResponse (
+data class LessonAllResponse (
     var categoryName: String = "",
     var currentProgressRate: Int = 0,
     var endDate: String = "",
@@ -34,6 +34,6 @@ data class LessonInfoResponse (
     var totalNumber: Int = 0
 ) {
     companion object {
-        val EMPTY = LessonInfoResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)
+        val EMPTY = LessonAllResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)
     }
 }

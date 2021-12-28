@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.list.LessonState
-import com.depromeet.sloth.data.network.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.list.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
+import com.depromeet.sloth.data.network.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment

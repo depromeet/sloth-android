@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.list.*
+import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -27,7 +27,7 @@ class LessonViewModel : BaseViewModel() {
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,
         start: CoroutineStart = CoroutineStart.DEFAULT
-    ): LessonState<List<LessonInfoResponse>> = viewModelScope.async(
+    ): LessonState<List<LessonAllResponse>> = viewModelScope.async(
         context = context,
         start = start
     ) {

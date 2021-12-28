@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.list.LessonState
-import com.depromeet.sloth.data.network.list.LessonInfoResponse
+import com.depromeet.sloth.data.network.lesson.LessonAllResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -51,7 +51,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         mainScope {
             viewModel.fetchAllLessonList(accessToken = accessToken).let {
                 when (it) {
-                    is LessonState.Success<List<LessonInfoResponse>> -> {
+                    is LessonState.Success<List<LessonAllResponse>> -> {
                         Log.d("fetch Success", "${it.data}")
                         setLessonList(it.data)
                     }
@@ -102,30 +102,30 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         startActivity(intent)
     }
 
-    private fun moveDetailActivity(lessonInfo: LessonInfoResponse) {
+    private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
         val intent = Intent(requireContext(), LessonDetailActivity::class.java)
         intent.putExtra("lessonId", lessonInfo.lessonId.toString())
         startActivity(intent)
     }
 
-    private fun setLessonList(lessonInfoList: List<LessonInfoResponse>) {
-        when (lessonInfoList.isEmpty()) {
+    private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
+        when (lessonInfo.isEmpty()) {
             true -> {
                 binding.ivLessonListRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
 
-                nothingLessonAdapter.submitList(listOf(LessonInfoResponse.EMPTY))
+                nothingLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
                 binding.rvLessonList.adapter = nothingLessonAdapter
             }
 
             false -> {
                 binding.ivLessonListRegister.visibility = View.VISIBLE
 
-                val lessonDoingList = mutableListOf<LessonInfoResponse>()
-                val lessonPlanningList = mutableListOf<LessonInfoResponse>()
-                val lessonPassedList = mutableListOf<LessonInfoResponse>()
-                lessonInfoList.forEach { lesson ->
+                val lessonDoingList = mutableListOf<LessonAllResponse>()
+                val lessonPlanningList = mutableListOf<LessonAllResponse>()
+                val lessonPassedList = mutableListOf<LessonAllResponse>()
+                lessonInfo.forEach { lesson ->
                     when (getLessonType(lesson)) {
                         LessonListAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
                         LessonListAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
@@ -184,7 +184,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     }
 
     private fun getLessonType(
-        lessonInfo: LessonInfoResponse
+        lessonInfo: LessonAllResponse
     ): LessonListAdapter.BodyType {
         val startDateString = lessonInfo.startDate
         val endDateString = lessonInfo.endDate
@@ -203,8 +203,8 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     }
 
     private fun setTestData() {
-        val dummyList = listOf<LessonInfoResponse>(
-            LessonInfoResponse(
+        val dummyList = listOf<LessonAllResponse>(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nScala 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 8,
@@ -214,7 +214,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2021-08-19 10:12:14",
                 endDate = "2021-11-24 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nKotlin 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 0,
@@ -224,7 +224,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2021-12-22 10:12:14",
                 endDate = "2022-11-11 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nC++ 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 0,
@@ -234,7 +234,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2022-01-12 10:12:14",
                 endDate = "2022-11-24 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nPython 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 6,
@@ -244,7 +244,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2021-11-10 10:12:14",
                 endDate = "2021-12-24 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nGolang 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 8,
@@ -254,7 +254,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2021-09-19 10:12:14",
                 endDate = "2021-10-22 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nRuby 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 4,
@@ -264,7 +264,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startDate = "2021-11-15 10:12:14",
                 endDate = "2021-11-30 10:12:14"
             ),
-            LessonInfoResponse(
+            LessonAllResponse(
                 lessonName = "프로그래밍 시작하기 : \nJava 고급 (Inflearn Original)",
                 categoryName = "기획",
                 currentProgressRate = 1,

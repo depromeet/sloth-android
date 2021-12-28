@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.list
+package com.depromeet.sloth.data.network.lesson
 
 /**
  *   TodayLessonResponse

@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.list.LessonInfoResponse
+import com.depromeet.sloth.data.network.lesson.LessonAllResponse
 import java.text.DecimalFormat
 import kotlin.math.ceil
 
 class LessonListAdapter(
     private val bodyType: BodyType,
-    val onClick: (LessonInfoResponse) -> Unit
-) : ListAdapter<LessonInfoResponse, LessonListAdapter.LessonListViewHolder>(LessonListDiffCallback) {
+    val onClick: (LessonAllResponse) -> Unit
+) : ListAdapter<LessonAllResponse, LessonListAdapter.LessonListViewHolder>(LessonListDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -90,7 +90,7 @@ class LessonListAdapter(
         private val registerLesson = itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
 
         @SuppressLint("SetTextI18n")
-        fun onBind(lessonInfo: LessonInfoResponse) {
+        fun onBind(lessonInfo: LessonAllResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
                     registerLesson.setOnClickListener { onClick(lessonInfo) }
@@ -179,17 +179,17 @@ class LessonListAdapter(
     }
 }
 
-object LessonListDiffCallback : DiffUtil.ItemCallback<LessonInfoResponse>() {
+object LessonListDiffCallback : DiffUtil.ItemCallback<LessonAllResponse>() {
     override fun areItemsTheSame(
-        oldItem: LessonInfoResponse,
-        newItem: LessonInfoResponse
+        oldItem: LessonAllResponse,
+        newItem: LessonAllResponse
     ): Boolean {
         return oldItem.lessonId == newItem.lessonId
     }
 
     override fun areContentsTheSame(
-        oldItem: LessonInfoResponse,
-        newItem: LessonInfoResponse
+        oldItem: LessonAllResponse,
+        newItem: LessonAllResponse
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName &&
                 oldItem.lessonName == newItem.lessonName &&
