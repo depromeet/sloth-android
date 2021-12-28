@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.today
+package com.depromeet.sloth.ui.lesson
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
@@ -20,7 +20,9 @@ import com.depromeet.sloth.data.network.home.LessonTodayResponse
 class TodayLessonAdapter(
     private val bodyType: BodyType,
     val onClick: (ClickType, LessonTodayResponse) -> Unit
-) : ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(TodayLessonDiffCallback) {
+) : ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(
+    TodayLessonDiffCallback
+) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

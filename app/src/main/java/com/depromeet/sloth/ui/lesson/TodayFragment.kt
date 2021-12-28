@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.today
+package com.depromeet.sloth.ui.lesson
 
 import android.content.Intent
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.list
+package com.depromeet.sloth.ui.lesson
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +11,6 @@ import com.depromeet.sloth.data.network.home.LessonInfoResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.today.HeaderAdapter
 import com.depromeet.sloth.ui.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.WaitDialog
