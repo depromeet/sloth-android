@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.detail
+package com.depromeet.sloth.data.network.lesson
 
 import android.os.Build
 import androidx.annotation.RequiresApi

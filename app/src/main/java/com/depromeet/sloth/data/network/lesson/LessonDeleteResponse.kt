@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.detail
+package com.depromeet.sloth.data.network.lesson
 
 /**
  * DeleteLessonResponse
@@ -7,7 +7,7 @@ package com.depromeet.sloth.data.network.detail
  * "message" : "string"
  */
 
-data class DeleteLessonResponse(
+data class LessonDeleteResponse(
     var code: String = "",
     var message: String =""
 )

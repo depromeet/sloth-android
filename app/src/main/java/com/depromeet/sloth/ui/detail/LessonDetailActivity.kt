@@ -12,8 +12,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.detail.LessonDetailResponse
-import com.depromeet.sloth.data.network.detail.LessonDetailState
+import com.depromeet.sloth.data.network.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.DialogState
@@ -89,24 +89,24 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         //lessonId = "6"
 
         mainScope {
-            viewModel.fetchLessonDetailInfo(accessToken = accessToken, lessonId = lessonId).let {
+            viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
-                    is LessonDetailState.Success -> {
+                    is LessonState.Success -> {
                         Log.d("fetch Success", "${it.data}")
 
                         initLessonInfo(it.data)
                     }
 
-                    is LessonDetailState.Unauthorized -> {
-                        viewModel.fetchLessonDetailInfo(accessToken = refreshToken, lessonId = lessonId).let { lessonDetailResponse ->
+                    is LessonState.Unauthorized -> {
+                        viewModel.fetchLessonDetail(accessToken = refreshToken, lessonId = lessonId).let { lessonDetailResponse ->
                             when (lessonDetailResponse) {
-                                is LessonDetailState.Success -> {
+                                is LessonState.Success -> {
                                     Log.d("fetch Success", "${lessonDetailResponse.data}")
 
                                     initLessonInfo(lessonDetailResponse.data)
                                 }
 
-                                is LessonDetailState.Error -> {
+                                is LessonState.Error -> {
                                     Log.d("fetch Error", "${lessonDetailResponse.exception}")
                                 }
                                 else -> Unit
@@ -114,7 +114,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                         }
                     }
 
-                    is LessonDetailState.Error -> {
+                    is LessonState.Error -> {
                         Log.d("fetch Error", "${it.exception}")
                     }
 
@@ -151,18 +151,18 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         mainScope {
             viewModel.deleteLesson(accessToken = accessToken, lessonId = lessonId).let {
                 when(it) {
-                    is LessonDetailState.Success<*> -> {
+                    is LessonState.Success<*> -> {
                         Log.d("Delete Success", "${it.data}")
                     }
 
-                    is LessonDetailState.Unauthorized -> {
+                    is LessonState.Unauthorized -> {
                         viewModel.deleteLesson(accessToken = refreshToken, lessonId = lessonId).let { deleteLessonResponse ->
                             when (deleteLessonResponse) {
-                                is LessonDetailState.Success -> {
+                                is LessonState.Success -> {
                                     Log.d("Delete Success", "${deleteLessonResponse.data}")
                                 }
 
-                                is LessonDetailState.Error -> {
+                                is LessonState.Error -> {
                                     Log.d("Delete Error", "${deleteLessonResponse.exception}")
                                 }
                                 else -> Unit
@@ -170,7 +170,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                         }
                     }
 
-                    is LessonDetailState.Error -> {
+                    is LessonState.Error -> {
                         Log.d("Delete Error", "${it.exception}")
                     }
                 }
