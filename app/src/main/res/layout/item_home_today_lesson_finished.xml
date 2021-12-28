@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_today_lesson"
     android:layout_width="match_parent"
     android:layout_height="180dp"
@@ -17,7 +18,8 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/tv_today_lesson_category"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_today_lesson_category"
@@ -30,7 +32,22 @@
         android:text="개발"
         android:textColor="#208442"
         app:layout_constraintStart_toEndOf="@id/tv_today_lesson_remain"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_today_lesson_site"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_home_today_item_rounded_category_sloth"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="인프런"
+        android:textColor="#208442"
+        app:layout_constraintStart_toEndOf="@id/tv_today_lesson_category"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_today_lesson_name"
@@ -41,7 +58,8 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@id/tv_today_lesson_remain"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_remain" />
+        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_remain"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_today_lesson_minus"
@@ -67,7 +85,8 @@
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
         app:layout_constraintEnd_toStartOf="@id/btn_divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btn_divider"
@@ -81,7 +100,8 @@
         app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_today_lesson_total_num"
@@ -94,7 +114,8 @@
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
         app:layout_constraintStart_toEndOf="@id/btn_divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
+        tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_today_lesson_plus"

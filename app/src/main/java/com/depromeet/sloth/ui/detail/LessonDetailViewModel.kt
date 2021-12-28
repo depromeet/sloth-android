@@ -3,19 +3,21 @@ package com.depromeet.sloth.ui.detail
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.detail.LessonDetailRepository
+import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 class LessonDetailViewModel: BaseViewModel() {
-    private val lessonDetailRepository = LessonDetailRepository()
+    private val lessonRepository = LessonRepository()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun fetchLessonDetailInfo(accessToken: String, lessonId: String) = viewModelScope.async {
-        lessonDetailRepository.fetchLessonDetailInfo(accessToken, lessonId)
-    }.await()
+    suspend fun fetchLessonDetail(accessToken: String, lessonId: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.fetchLessonDetail(accessToken, lessonId)
+        }
 
-    suspend fun deleteLesson(accessToken: String, lessonId: String) = viewModelScope.async {
-        lessonDetailRepository.deleteLesson(accessToken, lessonId)
-    }.await()
+    suspend fun deleteLesson(accessToken: String, lessonId: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.deleteLesson(accessToken, lessonId)
+        }
 }

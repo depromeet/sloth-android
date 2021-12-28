@@ -1,14 +1,14 @@
 package com.depromeet.sloth.data.network.login
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 
 class LoginRepository {
     suspend fun fetchSlothAuthInfo(
         accessToken: String,
         socialType: String
     ): LoginState<LoginSlothResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -28,7 +28,7 @@ class LoginRepository {
     suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): LoginState<LoginGoogleResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.GOOGLE_BASE_URL
         )
             .create(LoginService::class.java)

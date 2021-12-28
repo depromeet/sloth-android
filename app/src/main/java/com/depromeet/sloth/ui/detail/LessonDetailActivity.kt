@@ -11,11 +11,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.model.LessonModel
-import com.depromeet.sloth.data.network.detail.LessonDetailResponse
-import com.depromeet.sloth.data.network.detail.LessonDetailState
+import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import java.text.DecimalFormat
@@ -44,7 +46,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     lateinit var endDateInfo: String
 
-    lateinit var lessonModel: LessonModel
+    lateinit var lesson: LessonRegisterRequest
 
     lateinit var categoryArray: Array<String>
 
@@ -87,24 +89,24 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         //lessonId = "6"
 
         mainScope {
-            viewModel.fetchLessonDetailInfo(accessToken = accessToken, lessonId = lessonId).let {
+            viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
-                    is LessonDetailState.Success -> {
+                    is LessonState.Success -> {
                         Log.d("fetch Success", "${it.data}")
 
                         initLessonInfo(it.data)
                     }
 
-                    is LessonDetailState.Unauthorized -> {
-                        viewModel.fetchLessonDetailInfo(accessToken = refreshToken, lessonId = lessonId).let { lessonDetailResponse ->
+                    is LessonState.Unauthorized -> {
+                        viewModel.fetchLessonDetail(accessToken = refreshToken, lessonId = lessonId).let { lessonDetailResponse ->
                             when (lessonDetailResponse) {
-                                is LessonDetailState.Success -> {
+                                is LessonState.Success -> {
                                     Log.d("fetch Success", "${lessonDetailResponse.data}")
 
                                     initLessonInfo(lessonDetailResponse.data)
                                 }
 
-                                is LessonDetailState.Error -> {
+                                is LessonState.Error -> {
                                     Log.d("fetch Error", "${lessonDetailResponse.exception}")
                                 }
                                 else -> Unit
@@ -112,7 +114,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                         }
                     }
 
-                    is LessonDetailState.Error -> {
+                    is LessonState.Error -> {
                         Log.d("fetch Error", "${it.exception}")
                     }
 
@@ -129,39 +131,38 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
 
         tvDetailUpdateLesson.setOnClickListener {
-            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lessonModel))
+            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lesson))
         }
 
         btnDetailDeleteLesson.setOnClickListener {
-            val dlg = LessonDeleteDialog(this@LessonDetailActivity)
-            dlg.listener = object: LessonDeleteDialog.LessonDeleteDialogClickedListener {
-                override fun onDeleteClicked() {
+            val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
+            dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                override fun onItemClicked() {
                     deleteLesson(accessToken, lessonId)
                     Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish() /*화면 종료*/
+                    finish()
                 }
             }
             dlg.start()
         }
-
     }
 
     private fun deleteLesson(accessToken: String, lessonId: String) {
         mainScope {
             viewModel.deleteLesson(accessToken = accessToken, lessonId = lessonId).let {
                 when(it) {
-                    is LessonDetailState.Success<*> -> {
+                    is LessonState.Success<*> -> {
                         Log.d("Delete Success", "${it.data}")
                     }
 
-                    is LessonDetailState.Unauthorized -> {
+                    is LessonState.Unauthorized -> {
                         viewModel.deleteLesson(accessToken = refreshToken, lessonId = lessonId).let { deleteLessonResponse ->
                             when (deleteLessonResponse) {
-                                is LessonDetailState.Success -> {
+                                is LessonState.Success -> {
                                     Log.d("Delete Success", "${deleteLessonResponse.data}")
                                 }
 
-                                is LessonDetailState.Error -> {
+                                is LessonState.Error -> {
                                     Log.d("Delete Error", "${deleteLessonResponse.exception}")
                                 }
                                 else -> Unit
@@ -169,7 +170,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                         }
                     }
 
-                    is LessonDetailState.Error -> {
+                    is LessonState.Error -> {
                         Log.d("Delete Error", "${it.exception}")
                     }
                 }
@@ -182,7 +183,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         binding.apply {
 
-            lessonModel = LessonModel(
+            lesson = LessonRegisterRequest(
                 alertDays = data.alertDays,
                 categoryId = categoryArray.indexOf(data.categoryName),
                 endDate = data.endDate.toString(),
@@ -271,7 +272,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         val monthOfDate = changeDate(date[1])
         val dayOfDate = changeDate(date[2])
 
-        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
+        return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
     }
 
     private fun changeDate(data: String): String {

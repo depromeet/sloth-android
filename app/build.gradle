@@ -6,6 +6,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdk 31
 
@@ -13,8 +17,8 @@ android {
         applicationId "com.depromeet.sloth"
         minSdk 24
         targetSdk 31
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 6
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -25,15 +29,26 @@ android {
         buildConfigField("String", "GOOGLE_BASE_URL", GOOGLE_BASE_URL)
     }
 
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['STORE_FILE'])
+            storePassword keystoreProperties['STORE_PASSWORD']
+            keyAlias keystoreProperties['KEY_ALIAS']
+            keyPassword keystoreProperties['KEY_PASSWORD']
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "SLOTH_BASE_URL", DEBUG_BASE_URL)
         }
 
         release {
+            debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "SLOTH_BASE_URL", RELEASE_BASE_URL)
+            signingConfig signingConfigs.release
         }
     }
 
@@ -110,14 +125,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
 
-    //Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.4.2')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-auth:21.0.1'
-
     //ProgressView
     implementation "com.github.skydoves:progressview:1.1.2"
 
     //Jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    //Circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

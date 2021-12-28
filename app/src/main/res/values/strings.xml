@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sloth</string>
+    <string name="app_name">나나공</string>
     <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
 
     <string name="category">카테고리</string>
@@ -67,8 +67,6 @@
     <string name="waste_money">현재 내가 날린 돈</string>
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
-    <string name="develop">개발</string>
-    <string name="inflearn">인프런</string>
     <string name="lesson_progress">강의 진행률</string>
     <string name="lesson_goal_date">목표 완강일:</string>
     <string name="lesson_present_number">내가 들은 강의:</string>
@@ -77,7 +75,7 @@
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
-    <string name="delete_dialog_message">정말 강의를 삭제하시겠어요?</string>
+    <string name="delete_lesson_dialog_message">정말 강의를 삭제하시겠어요?</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
@@ -97,4 +95,8 @@
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
     <string name="right_arrow">right arrow</string>
+    <string name="wait_dialog_message">아직 준비중인 기능입니다</string>
+    <string name="dialog_default_message">안내 메세지</string>
+    <string name="forbidden_dialog_message">\t로그아웃 되었습니다\n 다시 로그인 해주세요</string>
+    <string name="privacy">개인정보 처리방침</string>
 </resources>

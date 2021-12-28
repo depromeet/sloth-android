@@ -1,15 +1,16 @@
 package com.depromeet.sloth.data.network.member
 
+
 /**
- * MemberInfoResponse
+ *  MypageResponse
  *
- * memberId: Int,
- * memberName: "String",
- * email: "String
+ *  "email": "string",
+ *  "memberId": 0,
+ *  "memberName": "string"
  */
 
-data class MemberInfoResponse(
+data class MemberInfoResponse (
+    var email: String = "",
     var memberId: Int = 0,
-    var memberName: String = "",
-    var email: String = ""
+    var memberName: String = ""
 )

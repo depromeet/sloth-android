@@ -20,9 +20,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.db.PreferenceManager
-import com.depromeet.sloth.data.model.LessonModel
-import com.depromeet.sloth.data.network.register.RegisterState
+import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.google.android.material.datepicker.CalendarConstraints
@@ -110,7 +110,6 @@ class RegisterLessonSecondActivity :
             lessonName = getStringExtra(LESSON_NAME).toString()
             siteId = getIntExtra(SITE_ID, -1)
             totalNumber = getIntExtra(TOTAL_NUMBER, 0)
-
         }
 
         pbRegisterLesson.progress = 50
@@ -218,10 +217,12 @@ class RegisterLessonSecondActivity :
 
                                             fillProgressbar(flag, 50)
 
-                                            hideKeyboard()
+                                            clearFocus(etRegisterLessonPriceInfo)
                                         }
 
                                         if (flag == 3) {
+                                            focusInputFormOptional(etRegisterLessonMessageInfo)
+
                                             btnRegisterLesson.setOnClickListener {
 
                                                 if (startDay!! >= endDay!!) {
@@ -236,28 +237,27 @@ class RegisterLessonSecondActivity :
                                                 message =
                                                     etRegisterLessonMessageInfo.text.toString()
 
-                                                val lessonInfo = LessonModel(
+                                                val request = LessonRegisterRequest(
                                                     alertDays = alertDays,
                                                     categoryId = categoryId.toInt(),
                                                     endDate = endDate,
                                                     lessonName = lessonName,
                                                     message = message,
-                                                    price = etRegisterLessonPriceInfo.text.toString()
-                                                        .toInt(),
+                                                    price = etRegisterLessonPriceInfo.text.toString().toInt(),
                                                     siteId = siteId.toInt(),
                                                     startDate = startDate,
                                                     totalNumber = totalNumber.toInt()
                                                 )
 
-                                                Log.d("lessonInfo: ", "$lessonInfo")
+                                                Log.d("lesson: ", "$request")
 
                                                 mainScope {
                                                     viewModel.registerLesson(
                                                         accessToken,
-                                                        lessonInfo
+                                                        request
                                                     ).let {
                                                         when (it) {
-                                                            is RegisterState.Success -> {
+                                                            is LessonState.Success -> {
                                                                 Log.d(
                                                                     "Register Success",
                                                                     "${it.data}"
@@ -278,13 +278,13 @@ class RegisterLessonSecondActivity :
                                                                 if (!isFinishing) finish()
                                                             }
 
-                                                            is RegisterState.Unauthorized -> {
+                                                            is LessonState.Unauthorized -> {
                                                                 viewModel.registerLesson(
                                                                     accessToken = refreshToken,
-                                                                    lessonInfo
+                                                                    request
                                                                 ).let { registerLessonResponse ->
                                                                     when (registerLessonResponse) {
-                                                                        is RegisterState.Success -> {
+                                                                        is LessonState.Success -> {
                                                                             Log.d(
                                                                                 "Register Success",
                                                                                 "${registerLessonResponse.data}"
@@ -306,7 +306,7 @@ class RegisterLessonSecondActivity :
                                                                             if (!isFinishing) finish()
                                                                         }
 
-                                                                        is RegisterState.Error -> {
+                                                                        is LessonState.Error -> {
                                                                             Log.d(
                                                                                 "Register Error",
                                                                                 "${registerLessonResponse.exception}"
@@ -322,7 +322,7 @@ class RegisterLessonSecondActivity :
                                                                 }
                                                             }
 
-                                                            is RegisterState.Error -> {
+                                                            is LessonState.Error -> {
                                                                 Log.d(
                                                                     "Register Error",
                                                                     "${it.exception}"
@@ -410,6 +410,26 @@ class RegisterLessonSecondActivity :
                 }
             }
         })
+
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if(gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            }
+            else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+    }
+
+    private fun focusInputFormOptional(editText: EditText) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if(gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            }
+            else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
     }
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {
@@ -428,5 +448,10 @@ class RegisterLessonSecondActivity :
     private fun getPickerTime(date: Date): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
         return formatter.format(date)
+    }
+
+    private fun clearFocus(editText: EditText) {
+        editText.clearFocus()
+        hideKeyboard()
     }
 }
