@@ -139,6 +139,8 @@
             app:layout_constraintTop_toBottomOf="@id/cl_mypage_logout"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="1dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:background="@color/white">
 
             <TextView

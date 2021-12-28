@@ -9,11 +9,11 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.list.LessonState
 import com.depromeet.sloth.data.network.list.LessonInfoResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
-import com.depromeet.sloth.ui.WaitDialog
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -91,10 +91,9 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                 startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
             }
             ivLessonListAlarm.setOnClickListener {
-                val dlg = WaitDialog(requireContext())
+                val dlg = SlothDialog(requireContext(),DialogState.WAIT)
                 dlg.start()
             }
-
         }
     }
 

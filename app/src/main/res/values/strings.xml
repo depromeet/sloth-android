@@ -75,7 +75,7 @@
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
-    <string name="delete_dialog_message">정말 강의를 삭제하시겠어요?</string>
+    <string name="delete_lesson_dialog_message">정말 강의를 삭제하시겠어요?</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
@@ -96,4 +96,6 @@
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
     <string name="right_arrow">right arrow</string>
     <string name="wait_dialog_message">아직 준비중인 기능입니다</string>
+    <string name="dialog_default_message">안내 메세지</string>
+    <string name="forbidden_dialog_message">\t로그아웃 되었습니다\n 다시 로그인 해주세요</string>
 </resources>

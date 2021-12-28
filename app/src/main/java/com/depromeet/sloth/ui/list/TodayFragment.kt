@@ -4,16 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.list.LessonState
 import com.depromeet.sloth.data.network.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
-import com.depromeet.sloth.ui.ForbiddenDialog
-import com.depromeet.sloth.ui.LessonItemDecoration
-import com.depromeet.sloth.ui.LessonViewModel
-import com.depromeet.sloth.ui.WaitDialog
+import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
@@ -47,7 +45,13 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         with(binding) {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             ivTodayAlarm.setOnClickListener {
-                val dlg = WaitDialog(requireContext())
+//                val dlg = WaitDialog(requireContext())
+                val dlg = SlothDialog(requireContext(), DialogState.WAIT)
+                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                    override fun onItemClicked() {
+
+                    }
+                }
                 dlg.start()
             }
         }
@@ -78,9 +82,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
                                 is LessonState.Forbidden -> {
                                     // refresh 토큰이 존재하지 않을 경우 예외 처리
-                                    val dlg = ForbiddenDialog(requireContext())
-                                    dlg.listener = object: ForbiddenDialog.ForbiddenDialogClickedListener {
-                                        override fun onConfirmClicked() {
+                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                        override fun onItemClicked() {
                                             //logout
 
                                             //finish

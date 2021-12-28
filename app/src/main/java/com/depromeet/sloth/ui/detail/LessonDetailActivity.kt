@@ -16,6 +16,8 @@ import com.depromeet.sloth.data.network.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.detail.LessonDetailState
 import com.depromeet.sloth.data.network.register.RegisterLessonRequest
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import java.text.DecimalFormat
@@ -133,17 +135,16 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         }
 
         btnDetailDeleteLesson.setOnClickListener {
-            val dlg = LessonDeleteDialog(this@LessonDetailActivity)
-            dlg.listener = object: LessonDeleteDialog.LessonDeleteDialogClickedListener {
-                override fun onDeleteClicked() {
+            val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
+            dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                override fun onItemClicked() {
                     deleteLesson(accessToken, lessonId)
                     Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish() /*화면 종료*/
+                    finish()
                 }
             }
             dlg.start()
         }
-
     }
 
     private fun deleteLesson(accessToken: String, lessonId: String) {

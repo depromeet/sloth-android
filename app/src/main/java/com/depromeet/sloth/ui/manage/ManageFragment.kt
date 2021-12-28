@@ -21,15 +21,18 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.mypage.MypageResponse
 import com.depromeet.sloth.data.network.mypage.MypageState
 import com.depromeet.sloth.databinding.FragmentManageBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
 
-class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
+class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     override val viewModel: ManageViewModel = ManageViewModel()
 
-    override fun getViewBinding(): FragmentManageBinding = FragmentManageBinding.inflate(layoutInflater)
+    override fun getViewBinding(): FragmentManageBinding =
+        FragmentManageBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
 
@@ -54,28 +57,29 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
             binding.pbMypage.visibility = View.VISIBLE
 
             viewModel.fetchMemberInfo(accessToken).let {
-                when(it) {
+                when (it) {
                     is MypageState.Success -> {
-                        Log.d( "fetch Success", "${it.data}")
+                        Log.d("fetch Success", "${it.data}")
 
                         initMemberInfo(it.data)
                     }
 
                     is MypageState.Unauthorized -> {
-                        viewModel.fetchMemberInfo(accessToken = refreshToken).let { mypageResponse ->
-                            when (mypageResponse) {
-                                is MypageState.Success -> {
-                                    Log.d("fetch Success", "${mypageResponse.data}")
+                        viewModel.fetchMemberInfo(accessToken = refreshToken)
+                            .let { mypageResponse ->
+                                when (mypageResponse) {
+                                    is MypageState.Success -> {
+                                        Log.d("fetch Success", "${mypageResponse.data}")
 
-                                    initMemberInfo(mypageResponse.data)
-                                }
+                                        initMemberInfo(mypageResponse.data)
+                                    }
 
-                                is MypageState.Error -> {
-                                    Log.d("fetch Error", "${mypageResponse.exception}")
+                                    is MypageState.Error -> {
+                                        Log.d("fetch Error", "${mypageResponse.exception}")
+                                    }
+                                    else -> Unit
                                 }
-                                else -> Unit
                             }
-                        }
                     }
 
 
@@ -107,8 +111,10 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
             // dialog radius 적용
             updateDialog.setContentView(R.layout.dialog_mypage_update_member_info)
 
-            val nameEditText = updateDialog.findViewById<EditText>(R.id.et_mypage_dialog_profile_name)
-            val updateButton = updateDialog.findViewById<AppCompatButton>(R.id.btn_mypage_dialog_update_member_info)
+            val nameEditText =
+                updateDialog.findViewById<EditText>(R.id.et_mypage_dialog_profile_name)
+            val updateButton =
+                updateDialog.findViewById<AppCompatButton>(R.id.btn_mypage_dialog_update_member_info)
 
             nameEditText.hint = memberName
 
@@ -116,7 +122,7 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
             updateButton.setOnClickListener {
                 updateMemberName = nameEditText.text.toString()
-                if(updateMemberName != memberName) {
+                if (updateMemberName != memberName) {
                     mainScope {
                         viewModel.updateMemberInfo(accessToken, updateMemberName).let {
                             when (it) {
@@ -124,22 +130,29 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
                                     Log.d("Update Success", "${it.data}")
                                     updateViews(updateMemberName)
 
-                                    Toast.makeText(requireContext(), "닉네임이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(),
+                                        "닉네임이 변경되었습니다.",
+                                        Toast.LENGTH_SHORT).show()
                                 }
 
                                 is MypageState.Unauthorized -> {
-                                    viewModel.updateMemberInfo(accessToken = refreshToken, updateMemberName).let { mypageState ->
+                                    viewModel.updateMemberInfo(accessToken = refreshToken,
+                                        updateMemberName).let { mypageState ->
                                         when (mypageState) {
                                             is MypageState.Success -> {
                                                 Log.d("Update Success", "${mypageState.data}")
                                                 updateViews(updateMemberName)
 
-                                                Toast.makeText(requireContext(), "닉네임이 변경되었습니다.",Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(requireContext(),
+                                                    "닉네임이 변경되었습니다.",
+                                                    Toast.LENGTH_SHORT).show()
                                             }
 
                                             is MypageState.Error -> {
                                                 Log.d("Update Error", "${mypageState.exception}")
-                                                Toast.makeText(requireContext(), "닉네임이 변경 실패하였습니다.",Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(requireContext(),
+                                                    "닉네임이 변경 실패하였습니다.",
+                                                    Toast.LENGTH_SHORT).show()
                                             }
                                             else -> Unit
                                         }
@@ -148,14 +161,15 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
                                 is MypageState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
-                                    Toast.makeText(requireContext(), "닉네임이 변경 실패하였습니다.",Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(),
+                                        "닉네임이 변경 실패하였습니다.",
+                                        Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
                     }
-                }
-                else {
-                    Toast.makeText(requireContext(), "현재 닉네임과 동일합니다.",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "현재 닉네임과 동일합니다.", Toast.LENGTH_SHORT).show()
                 }
                 updateDialog.dismiss()
             }
@@ -167,14 +181,13 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
         }
 
         clMypageLogout.setOnClickListener {
-            val dlg = LogoutDialog(requireContext())
-            dlg.listener = object: LogoutDialog.LogoutDialogClickedListener {
-                override fun onLogoutClicked() {
-                    //logout
-
-                    //finish
+            val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
+            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                override fun onItemClicked() {
                     mainScope {
+                        // logout
                         viewModel.removeAuthToken(pm)
+                        // finish
                         startActivity(LoginActivity.newIntent(requireActivity()))
                     }
                 }
@@ -183,9 +196,9 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
         }
 
         clMypageWithdraw.setOnClickListener {
-            val dlg = WithdrawDialog(requireContext())
-            dlg.listener = object: WithdrawDialog.WithdrawDialogClickedListener {
-                override fun onWithdrawClicked() {
+            val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)
+            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                override fun onItemClicked() {
                     //withdraw
 
                     //finish
@@ -211,7 +224,10 @@ class ManageFragment: BaseFragment<ManageViewModel, FragmentManageBinding>() {
             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
             putExtra(Intent.EXTRA_TEXT,
                 String.format("---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
-                BuildConfig.VERSION_NAME, Build.VERSION.SDK_INT, Build.VERSION.RELEASE, Build.MODEL))
+                    BuildConfig.VERSION_NAME,
+                    Build.VERSION.SDK_INT,
+                    Build.VERSION.RELEASE,
+                    Build.MODEL))
             type = "message/rfc822"
         }
         startActivity(intent)
