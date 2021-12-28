@@ -3,7 +3,7 @@ package com.depromeet.sloth.data.network.lesson
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 
 /**
  * @author 최철훈
@@ -15,7 +15,7 @@ class LessonRepository {
         accessToken: String,
         lessonId: String
     ): LessonState<LessonDeleteResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -36,7 +36,7 @@ class LessonRepository {
     suspend fun fetchTodayLessonList(
         accessToken: String
     ): LessonState<List<LessonTodayResponse>> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -55,7 +55,7 @@ class LessonRepository {
     suspend fun fetchAllLessonList(
         accessToken: String
     ): LessonState<List<LessonAllResponse>> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -76,7 +76,7 @@ class LessonRepository {
         count: Int,
         lessonId: Int
     ): LessonState<LessonUpdateCountResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -102,7 +102,7 @@ class LessonRepository {
         accessToken: String,
         lessonId: String
     ): LessonState<LessonDetailResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -124,7 +124,7 @@ class LessonRepository {
         accessToken: String,
         request: LessonRegisterRequest
     ): LessonState<LessonRegisterResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -157,7 +157,7 @@ class LessonRepository {
         lessonId: String,
         updateLessonRequest: LessonUpdateInfoRequest
     ): LessonUpdateState<LessonUpdateInfoResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )

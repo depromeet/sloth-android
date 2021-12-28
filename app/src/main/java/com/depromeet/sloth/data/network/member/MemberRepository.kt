@@ -1,11 +1,11 @@
 package com.depromeet.sloth.data.network.member
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 
 class MemberRepository {
     suspend fun fetchMemberInfo(accessToken: String): MemberState<MemberInfoResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )
@@ -25,7 +25,7 @@ class MemberRepository {
         accessToken: String,
         memberUpdateInfoRequest: MemberUpdateInfoRequest
     ): MemberState<MemberUpdateInfoResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = BuildConfig.SLOTH_BASE_URL,
             authToken = accessToken
         )

@@ -1,11 +1,11 @@
 package com.depromeet.sloth.data.network.health
 
-import com.depromeet.sloth.data.network.ServiceGenerator
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import java.lang.Exception
 
 class HealthRepository {
     suspend fun getHealth(): HealthState<HealthResponse> {
-        ServiceGenerator.setBuilderOptions(
+        RetrofitServiceGenerator.setBuilderOptions(
             targetUrl = "Input your test url",
             authToken = "Input your test token"
         )

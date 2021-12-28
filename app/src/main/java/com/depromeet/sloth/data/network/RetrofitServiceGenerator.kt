@@ -7,7 +7,7 @@ import com.depromeet.sloth.BuildConfig
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 
-object ServiceGenerator {
+object RetrofitServiceGenerator {
     private const val timeoutRead = 30
     private const val timeoutConnect = 30
 
