@@ -6,18 +6,15 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.member.MemberInfoResponse
-import com.depromeet.sloth.data.network.member.MemberInfoState
-import com.depromeet.sloth.data.network.register.RegisterState
-
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.member.MemberState
+import com.depromeet.sloth.data.network.member.UpdateMemberInfoRequest
 import java.util.*
 
 
@@ -35,10 +32,11 @@ class RegisterNicknameActivity :
     override fun getViewBinding(): ActivityRegisterNicknameBinding =
         ActivityRegisterNicknameBinding.inflate(layoutInflater)
 
-
     lateinit var memberId: String
 
     lateinit var memberName: String
+
+    lateinit var updateMemberInfoRequest: UpdateMemberInfoRequest
 
     override fun initViews() = with(binding) {
         tbRegisterNickname.setNavigationOnClickListener { finish() }
@@ -58,7 +56,7 @@ class RegisterNicknameActivity :
                      */
                     viewModel.fetchMemberInfo(accessToken).let {
                         when (it) {
-                            is MemberInfoState.Success<MemberInfoResponse> -> {
+                            is MemberState.Success<com.depromeet.sloth.data.network.member.MemberInfoResponse> -> {
                                 Log.d("Success", "${it.data}")
 
                                 memberName = it.data.memberName
@@ -66,7 +64,7 @@ class RegisterNicknameActivity :
 
                                 Log.d("memberId", memberId)
                             }
-                            is MemberInfoState.Error ->
+                            is MemberState.Error ->
                                 Log.d("Error", "${it.exception}")
 
                             else -> Unit
@@ -75,13 +73,17 @@ class RegisterNicknameActivity :
 
                     /*기존의 닉네임과 비교*/
                     if(nickname != memberName) {
-                        viewModel.registerNickname(accessToken, nickname).let {
+                        updateMemberInfoRequest = UpdateMemberInfoRequest(
+                            memberName = nickname
+                        )
+
+                        viewModel.updateMemberInfo(accessToken, updateMemberInfoRequest).let {
                             when (it) {
-                                is RegisterState.Success -> {
+                                is MemberState.Success -> {
                                     Log.d("Register Success", "${it.data}")
                                 }
 
-                                is RegisterState.Error ->
+                                is MemberState.Error ->
                                     Log.d("Register Error", "${it.exception}")
                                 else -> Unit
                             }
@@ -91,12 +93,6 @@ class RegisterNicknameActivity :
                         Toast.makeText(this@RegisterNicknameActivity, "현재 닉네임과 동일합니다.",Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                /*
-                startActivity(RegisterLesson1Activity.newIntent(this@RegisterNicknameActivity))
-                overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
-                finish()
-                */
             }
         }
     }
@@ -140,5 +136,4 @@ class RegisterNicknameActivity :
             }
         })
     }
-
 }

@@ -35,24 +35,4 @@ class RegisterRepository {
                 }
             } ?: return RegisterState.Error(Exception("Register Exception"))
     }
-
-    suspend fun registerNickname(
-        accessToken: String,
-        nickname: String
-    ): RegisterState<Int> {
-        ServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.SLOTH_BASE_URL,
-            authToken = accessToken
-        )
-            .create(RegisterService::class.java)
-            .registerNickname(
-                RegisterNicknameRequest(
-                    memberName = nickname
-                )
-            )?.run {
-                return RegisterState.Success(
-                    0
-                )
-            } ?: return RegisterState.Error(Exception("Register Exception"))
-    }
 }

@@ -14,10 +14,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/bg_mypage_dialog_border">
+        android:background="@drawable/bg_manage_dialog_border">
 
         <ImageView
-            android:id="@+id/iv_mypage_dialog_profile_image"
+            android:id="@+id/iv_manage_dialog_profile_image"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="40dp"
@@ -28,7 +28,7 @@
             android:contentDescription="@string/profile_image"/>
 
         <EditText
-            android:id="@+id/et_mypage_dialog_profile_name"
+            android:id="@+id/et_manage_dialog_profile_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -40,10 +40,10 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_mypage_dialog_profile_image" />
+            app:layout_constraintTop_toBottomOf="@id/iv_manage_dialog_profile_image" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_mypage_dialog_update_member_info"
+            android:id="@+id/btn_manage_dialog_update_member_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -57,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_mypage_dialog_profile_name" />
+            app:layout_constraintTop_toBottomOf="@id/et_manage_dialog_profile_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

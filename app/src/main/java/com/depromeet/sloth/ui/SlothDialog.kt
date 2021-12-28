@@ -16,24 +16,9 @@ import com.depromeet.sloth.R
 
 class SlothDialog(private val context: Context, val state: DialogState) {
 
-    lateinit var logoutClickedListener: LogoutClickedListener
-    lateinit var withdrawClickedListener: WithdrawClickedListener
-    lateinit var deleteLessonListener: DeleteLessonClickedListener
     lateinit var onItemClickListener: OnItemClickedListener
 
     private val dlg = Dialog(context)
-
-    interface LogoutClickedListener {
-        fun onLogoutClicked()
-    }
-
-    interface WithdrawClickedListener {
-        fun onWithdrawClicked()
-    }
-
-    interface DeleteLessonClickedListener {
-        fun onDeleteLessonClicked()
-    }
 
     interface OnItemClickedListener {
         fun onItemClicked()
@@ -63,6 +48,7 @@ class SlothDialog(private val context: Context, val state: DialogState) {
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
+                    dlg.dismiss()
                 }
             }
 
@@ -71,6 +57,7 @@ class SlothDialog(private val context: Context, val state: DialogState) {
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
+                    dlg.dismiss()
                 }
             }
 
@@ -79,6 +66,7 @@ class SlothDialog(private val context: Context, val state: DialogState) {
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
+                    dlg.dismiss()
                 }
 
             }
@@ -88,6 +76,7 @@ class SlothDialog(private val context: Context, val state: DialogState) {
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
+                    dlg.dismiss()
                 }
             }
 

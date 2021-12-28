@@ -18,13 +18,15 @@ import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.mypage.MypageResponse
-import com.depromeet.sloth.data.network.mypage.MypageState
+import com.depromeet.sloth.data.network.member.MemberInfoResponse
+import com.depromeet.sloth.data.network.member.MemberState
+import com.depromeet.sloth.data.network.member.UpdateMemberInfoRequest
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
+import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 
 class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
@@ -40,13 +42,10 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
     lateinit var memberName: String
 
-    lateinit var updateMemberName: String
+    lateinit var updateMemberInfoRequest: UpdateMemberInfoRequest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        /*액티비티의 변수 사용*/
-        //accessToken = (activity as? HomeActivity)?.accessToken ?: ""
 
         accessToken = pm.getAccessToken().toString()
         refreshToken = pm.getRefreshToken().toString()
@@ -54,28 +53,28 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
         initViews()
 
         mainScope {
-            binding.pbMypage.visibility = View.VISIBLE
+            binding.pbManage.visibility = View.VISIBLE
 
             viewModel.fetchMemberInfo(accessToken).let {
                 when (it) {
-                    is MypageState.Success -> {
+                    is MemberState.Success -> {
                         Log.d("fetch Success", "${it.data}")
 
                         initMemberInfo(it.data)
                     }
 
-                    is MypageState.Unauthorized -> {
+                    is MemberState.Unauthorized -> {
                         viewModel.fetchMemberInfo(accessToken = refreshToken)
-                            .let { mypageResponse ->
-                                when (mypageResponse) {
-                                    is MypageState.Success -> {
-                                        Log.d("fetch Success", "${mypageResponse.data}")
+                            .let { memberResponse ->
+                                when (memberResponse) {
+                                    is MemberState.Success -> {
+                                        Log.d("fetch Success", "${memberResponse.data}")
 
-                                        initMemberInfo(mypageResponse.data)
+                                        initMemberInfo(memberResponse.data)
                                     }
 
-                                    is MypageState.Error -> {
-                                        Log.d("fetch Error", "${mypageResponse.exception}")
+                                    is MemberState.Error -> {
+                                        Log.d("fetch Error", "${memberResponse.exception}")
                                     }
                                     else -> Unit
                                 }
@@ -83,73 +82,77 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                     }
 
 
-                    is MypageState.Error -> {
+                    is MemberState.Error -> {
                         Log.d("fetch error", "${it.exception}")
                     }
                     else -> Unit
                 }
             }
-            binding.pbMypage.visibility = View.GONE
+            binding.pbManage.visibility = View.GONE
         }
     }
 
-    private fun initMemberInfo(data: MypageResponse) {
+    private fun initMemberInfo(data: MemberInfoResponse) {
         binding.apply {
             memberName = data.memberName
-            tvMypageProfileName.text = memberName
-            tvMypageProfileEmail.text = data.email
+            tvManageProfileName.text = memberName
+            tvManageProfileEmail.text = data.email
         }
     }
 
     override fun initViews() = with(binding) {
 
-        ivMypageProfileImage.setOnClickListener {
+        ivManageProfileImage.setOnClickListener {
             // nickname change
             val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
             updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             // dialog radius 적용
-            updateDialog.setContentView(R.layout.dialog_mypage_update_member_info)
+            updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
 
             val nameEditText =
-                updateDialog.findViewById<EditText>(R.id.et_mypage_dialog_profile_name)
+                updateDialog.findViewById<EditText>(R.id.et_manage_dialog_profile_name)
             val updateButton =
-                updateDialog.findViewById<AppCompatButton>(R.id.btn_mypage_dialog_update_member_info)
+                updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
             nameEditText.hint = memberName
 
             focusInputForm(nameEditText, updateButton)
 
             updateButton.setOnClickListener {
-                updateMemberName = nameEditText.text.toString()
-                if (updateMemberName != memberName) {
+                updateMemberInfoRequest = UpdateMemberInfoRequest(
+                    memberName = nameEditText.text.toString()
+                )
+                if (nameEditText.text.toString() != memberName) {
                     mainScope {
-                        viewModel.updateMemberInfo(accessToken, updateMemberName).let {
+                        viewModel.updateMemberInfo(accessToken, updateMemberInfoRequest).let {
                             when (it) {
-                                is MypageState.Success -> {
+                                is MemberState.Success -> {
                                     Log.d("Update Success", "${it.data}")
-                                    updateViews(updateMemberName)
+
+                                    updateViews(it.data.memberName)
 
                                     Toast.makeText(requireContext(),
                                         "닉네임이 변경되었습니다.",
                                         Toast.LENGTH_SHORT).show()
                                 }
 
-                                is MypageState.Unauthorized -> {
+                                is MemberState.Unauthorized -> {
                                     viewModel.updateMemberInfo(accessToken = refreshToken,
-                                        updateMemberName).let { mypageState ->
-                                        when (mypageState) {
-                                            is MypageState.Success -> {
-                                                Log.d("Update Success", "${mypageState.data}")
-                                                updateViews(updateMemberName)
+                                        updateMemberInfoRequest).let { memberState ->
+                                        when (memberState) {
+                                            is MemberState.Success -> {
+                                                Log.d("Update Success", "${memberState.data}")
+
+                                                updateViews(memberState.data.memberName)
 
                                                 Toast.makeText(requireContext(),
                                                     "닉네임이 변경되었습니다.",
                                                     Toast.LENGTH_SHORT).show()
                                             }
 
-                                            is MypageState.Error -> {
-                                                Log.d("Update Error", "${mypageState.exception}")
+                                            is MemberState.Error -> {
+                                                Log.d("Update Error", "${memberState.exception}")
                                                 Toast.makeText(requireContext(),
                                                     "닉네임이 변경 실패하였습니다.",
                                                     Toast.LENGTH_SHORT).show()
@@ -159,7 +162,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                                     }
                                 }
 
-                                is MypageState.Error -> {
+                                is MemberState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
                                     Toast.makeText(requireContext(),
                                         "닉네임이 변경 실패하였습니다.",
@@ -176,11 +179,17 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
             updateDialog.show()
         }
 
-        clMypageContact.setOnClickListener {
+        clManageContact.setOnClickListener {
             sendEmail()
         }
 
-        clMypageLogout.setOnClickListener {
+        clManagePrivacy.setOnClickListener {
+            startActivity(
+                SlothPolicyWebViewActivity.newIntent(requireContext())
+            )
+        }
+
+        clManageLogout.setOnClickListener {
             val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
@@ -195,7 +204,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
             dlg.start()
         }
 
-        clMypageWithdraw.setOnClickListener {
+        clManageWithdraw.setOnClickListener {
             val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
@@ -215,7 +224,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
     }
 
     private fun updateViews(updateMemberName: String) {
-        binding.tvMypageProfileName.text = updateMemberName
+        binding.tvManageProfileName.text = updateMemberName
     }
 
     private fun sendEmail() {

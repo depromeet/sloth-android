@@ -9,7 +9,4 @@ import retrofit2.http.Path
 interface RegisterService {
     @POST("api/lesson")
     suspend fun registerLesson(@Body request: RegisterLessonRequest): Response<RegisterLessonResponse>?
-
-    @PATCH("api/member/")
-    suspend fun registerNickname(@Body request: RegisterNicknameRequest): Int?
 }
