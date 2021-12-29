@@ -50,8 +50,8 @@ class PreferenceManager(
      *
      * @return
      */
-    fun getAccessToken(): String? {
-        return prefs.getString(ACCESS_TOKEN, null)
+    fun getAccessToken(): String {
+        return prefs.getString(ACCESS_TOKEN, "") ?: ""
     }
 
     /**
@@ -59,8 +59,8 @@ class PreferenceManager(
      *
      * @return
      */
-    fun getRefreshToken(): String? {
-        return prefs.getString(REFRESH_TOKEN, null)
+    fun getRefreshToken(): String {
+        return prefs.getString(REFRESH_TOKEN, "") ?: ""
     }
 
     /**
