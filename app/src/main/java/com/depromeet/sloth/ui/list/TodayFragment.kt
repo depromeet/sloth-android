@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
@@ -45,7 +46,6 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         with(binding) {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             ivTodayAlarm.setOnClickListener {
-//                val dlg = WaitDialog(requireContext())
                 val dlg = SlothDialog(requireContext(), DialogState.WAIT)
                 dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                     override fun onItemClicked() {
@@ -130,6 +130,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
+                // 임시, Observable 한 형태로 변환해야
+                binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
@@ -143,6 +146,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
             }
 
             false -> {
+                // 임시, Observable 한 형태로 변환해야
+                binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->
@@ -219,6 +225,10 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     notFinishedLessonAdapter.submitList(lessonNotFinishedList)
                 }
 
+                //임시, observable 한 형태로 변환해야
+                if (lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty()) {
+                    binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_win)
+                }
                 binding.rvTodayLesson.adapter = concatAdapter
             }
         }

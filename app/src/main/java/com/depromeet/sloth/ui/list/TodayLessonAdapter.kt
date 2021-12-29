@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.list
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View

@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#F5F5F5"
     android:fitsSystemWindows="true">
 
@@ -35,22 +36,22 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_today_sloth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="186dp"
+            android:layout_height="183dp"
             android:src="@drawable/ic_home_sloth"
             app:layout_constraintEnd_toStartOf="@id/gl_end"
             app:layout_constraintTop_toBottomOf="@id/iv_today_alarm" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_today_title_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/home_today_title"
+            tools:text="@string/home_today_title_lose"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/iv_today_sloth"
             app:layout_constraintEnd_toStartOf="@id/iv_today_sloth"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/gl_start"
             app:layout_constraintTop_toTopOf="@id/iv_today_sloth"
             app:layout_constraintVertical_bias="0.35" />
