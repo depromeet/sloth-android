@@ -67,9 +67,9 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         initViews()
 
-        accessToken = pm.getAccessToken().toString()
+        accessToken = pm.getAccessToken()
 
-        refreshToken = pm.getRefreshToken().toString()
+        refreshToken = pm.getRefreshToken()
 
         categoryArray = resources.getStringArray(R.array.category_array)
 
@@ -139,8 +139,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
                     deleteLesson(accessToken, lessonId)
-                    Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish()
                 }
             }
             dlg.start()
@@ -153,6 +151,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                 when(it) {
                     is LessonState.Success<*> -> {
                         Log.d("Delete Success", "${it.data}")
+                        Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
                     }
 
                     is LessonState.Unauthorized -> {
@@ -160,6 +160,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                             when (deleteLessonResponse) {
                                 is LessonState.Success -> {
                                     Log.d("Delete Success", "${deleteLessonResponse.data}")
+                                    Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                    finish()
                                 }
 
                                 is LessonState.Error -> {
