@@ -6,12 +6,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.Window
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
-import com.bumptech.glide.Glide
 import com.depromeet.sloth.R
 
 class SlothDialog(private val context: Context, val state: DialogState) {

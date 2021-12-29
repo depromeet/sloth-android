@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui.list
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,7 @@ import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.LessonItemDecoration
+import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
@@ -183,6 +184,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun getLessonType(
         lessonInfo: LessonAllResponse
     ): LessonListAdapter.BodyType {
@@ -202,6 +204,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun setTestData() {
         val dummyList = listOf<LessonAllResponse>(
             LessonAllResponse(
