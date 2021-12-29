@@ -24,4 +24,10 @@ interface LessonService {
 
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateInfoRequest): Response<LessonUpdateInfoResponse>?
+
+    @GET("api/lesson/category")
+    suspend fun fetchLessonCategoryList(): Response<List<LessonCategoryResponse>>?
+
+    @GET("api/lesson/site")
+    suspend fun fetchLessonSiteList(): Response<List<LessonSiteResponse>>?
 }
