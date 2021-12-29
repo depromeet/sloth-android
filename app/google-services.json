@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "328671196053",
+    "project_id": "nanagong-336615",
+    "storage_bucket": "nanagong-336615.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328671196053:android:afbea7becb3b254f7dbc9c",
+        "android_client_info": {
+          "package_name": "com.depromeet.sloth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_sxMOM9vfjiELrjfey-tJVU16c3cV1U4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
