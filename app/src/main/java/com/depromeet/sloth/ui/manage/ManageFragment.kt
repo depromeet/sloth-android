@@ -73,6 +73,38 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                                         initMemberInfo(memberResponse.data)
                                     }
 
+                                    is MemberState.Unauthorized -> {
+                                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(requireActivity()))
+                                                }
+                                            }
+                                        }
+                                        dlg.start()
+                                    }
+
+                                    is MemberState.Forbidden -> {
+                                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(requireActivity()))
+                                                }
+                                            }
+                                        }
+                                        dlg.start()
+                                    }
+
                                     is MemberState.Error -> {
                                         Log.d("fetch Error", "${memberResponse.exception}")
                                     }

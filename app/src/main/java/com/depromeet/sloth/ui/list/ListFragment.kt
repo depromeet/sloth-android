@@ -15,6 +15,7 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,6 +67,39 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                                     Log.d("fetch Success", "${lessonInfoResponse.data}")
                                     setLessonList(lessonInfoResponse.data)
                                 }
+
+                                is LessonState.Unauthorized -> {
+                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                        override fun onItemClicked() {
+                                            //logout
+
+                                            //finish
+                                            mainScope {
+                                                viewModel.removeAuthToken(pm)
+                                                startActivity(LoginActivity.newIntent(requireActivity()))
+                                            }
+                                        }
+                                    }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Forbidden -> {
+                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                        override fun onItemClicked() {
+                                            //logout
+
+                                            //finish
+                                            mainScope {
+                                                viewModel.removeAuthToken(pm)
+                                                startActivity(LoginActivity.newIntent(requireActivity()))
+                                            }
+                                        }
+                                    }
+                                    dlg.start()
+                                }
+
                                 is LessonState.Error -> {
                                     Log.d("fetch Error", "${lessonInfoResponse.exception}")
                                 }

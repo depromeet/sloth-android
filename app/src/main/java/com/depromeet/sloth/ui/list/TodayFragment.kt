@@ -47,11 +47,6 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             ivTodayAlarm.setOnClickListener {
                 val dlg = SlothDialog(requireContext(), DialogState.WAIT)
-                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                    override fun onItemClicked() {
-
-                    }
-                }
                 dlg.start()
             }
         }
@@ -78,6 +73,22 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                 is LessonState.Success -> {
                                     Log.d("fetch Success", "${lessonTodayResponse.data}")
                                     setLessonList(lessonTodayResponse.data)
+                                }
+
+                                is LessonState.Unauthorized -> {
+                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                                        override fun onItemClicked() {
+                                            //logout
+
+                                            //finish
+                                            mainScope {
+                                                viewModel.removeAuthToken(pm)
+                                                startActivity(LoginActivity.newIntent(requireActivity()))
+                                            }
+                                        }
+                                    }
+                                    dlg.start()
                                 }
 
                                 is LessonState.Forbidden -> {
