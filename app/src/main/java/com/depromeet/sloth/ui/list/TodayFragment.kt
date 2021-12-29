@@ -20,6 +20,8 @@ import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
 
     override val viewModel: LessonViewModel
         get() = LessonViewModel()
@@ -27,14 +29,10 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     override fun getViewBinding(): FragmentTodayBinding =
         FragmentTodayBinding.inflate(layoutInflater)
 
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         initViews()
         fetchLessonList()
@@ -54,73 +52,76 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
-            viewModel.fetchTodayLessonList(
-                accessToken = accessToken
-            ).let {
+            viewModel.fetchTodayLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonTodayResponse>> -> {
                         Log.d("fetch Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
-                    }
                     is LessonState.Unauthorized -> {
-                        viewModel.fetchTodayLessonList(
-                            accessToken = refreshToken
-                        ).let { lessonTodayResponse ->
-                            when (lessonTodayResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonTodayResponse.data}")
-                                    setLessonList(lessonTodayResponse.data)
-                                }
-
-                                is LessonState.Unauthorized -> {
-                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            //logout
-
-                                            //finish
-                                            mainScope {
-                                                viewModel.removeAuthToken(pm)
-                                                startActivity(LoginActivity.newIntent(requireActivity()))
-                                            }
-                                        }
+                        viewModel.fetchTodayLessonList(accessToken = refreshToken)
+                            .let { lessonTodayResponse ->
+                                when (lessonTodayResponse) {
+                                    is LessonState.Success -> {
+                                        Log.d("fetch Success", "${lessonTodayResponse.data}")
+                                        setLessonList(lessonTodayResponse.data)
                                     }
-                                    dlg.start()
-                                }
+                                    is LessonState.Unauthorized -> {
+                                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                        dlg.onItemClickListener =
+                                            object : SlothDialog.OnItemClickedListener {
+                                                override fun onItemClicked() {
+                                                    //logout
 
-                                is LessonState.Forbidden -> {
-                                    // refresh 토큰이 존재하지 않을 경우 예외 처리
-                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            //logout
-
-                                            //finish
-                                            mainScope {
-                                                viewModel.removeAuthToken(pm)
-                                                startActivity(LoginActivity.newIntent(requireActivity()))
+                                                    //finish
+                                                    mainScope {
+                                                        viewModel.removeAuthToken(pm)
+                                                        startActivity(
+                                                            LoginActivity.newIntent(
+                                                                requireActivity()
+                                                            )
+                                                        )
+                                                    }
+                                                }
                                             }
-                                        }
+                                        dlg.start()
                                     }
-                                    dlg.start()
-                                }
+                                    is LessonState.Forbidden -> {
+                                        // refresh 토큰이 존재하지 않을 경우 예외 처리
+                                        val dlg =
+                                            SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                                        dlg.onItemClickListener =
+                                            object : SlothDialog.OnItemClickedListener {
+                                                override fun onItemClicked() {
+                                                    //logout
 
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonTodayResponse.exception}")
+                                                    //finish
+                                                    mainScope {
+                                                        viewModel.removeAuthToken(pm)
+                                                        startActivity(LoginActivity.newIntent(
+                                                                requireActivity()
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        dlg.start()
+                                    }
+                                    is LessonState.Error -> {
+                                        Log.d("fetch Error", "${lessonTodayResponse.exception}")
+                                    }
+                                    else -> Unit
                                 }
-
-                                else -> Unit
                             }
-                        }
                     }
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
                     }
                     is LessonState.Forbidden -> {
                         Log.d("Error", "Forbidden")
+                    }
+                    is LessonState.Error -> {
+                        Log.d("fetch Error", "${it.exception}")
                     }
                 }
             }
@@ -141,9 +142,6 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
-                // 임시, Observable 한 형태로 변환해야
-                binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
-
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
@@ -151,15 +149,15 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     nothingHeader,
                     nothingLessonAdapter
                 )
-
                 nothingLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
-                binding.rvTodayLesson.adapter = concatAdapter
+
+                binding.apply {
+                    rvTodayLesson.adapter = concatAdapter
+                    tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+                }
             }
 
             false -> {
-                // 임시, Observable 한 형태로 변환해야
-                binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
-
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->
@@ -236,11 +234,16 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     notFinishedLessonAdapter.submitList(lessonNotFinishedList)
                 }
 
-                //임시, observable 한 형태로 변환해야
-                if (lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty()) {
-                    binding.tvTodayTitleMessage.text = getString(R.string.home_today_title_win)
+                binding.apply {
+                    rvTodayLesson.adapter = concatAdapter
+                    when {
+                        lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> tvTodayTitleMessage.text =
+                            getString(R.string.home_today_title_win)
+                        lessonFinishedList.isEmpty() && lessonNotFinishedList.isNotEmpty() -> tvTodayTitleMessage.text =
+                            getString(R.string.home_today_title_not_start)
+                        else -> tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+                    }
                 }
-                binding.rvTodayLesson.adapter = concatAdapter
             }
         }
     }
@@ -261,20 +264,13 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                         Log.d("update Success", it.data.toString())
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber) {
-                                    fetchLessonList()
-                                }
+                                if (it.data.presentNumber == lesson.untilTodayNumber) fetchLessonList()
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (it.data.presentNumber < lesson.untilTodayNumber) {
-                                    fetchLessonList()
-                                }
+                                if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList()
                             }
                             else -> Unit
                         }
-                    }
-                    is LessonState.Error -> {
-                        Log.d("update Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
                         Log.i("Unauthorized", "refreshToken used")
@@ -283,21 +279,20 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                             count = count,
                             lessonId = lesson.lessonId
                         ).let { lessonUpdateCountResponse ->
-                            when(lessonUpdateCountResponse) {
+                            when (lessonUpdateCountResponse) {
                                 is LessonState.Success -> {
-                                    when(bodyType) {
+                                    when (bodyType) {
                                         TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                             if (lessonUpdateCountResponse.data.presentNumber == lesson.untilTodayNumber) {
                                                 fetchLessonList()
+                                            } else {
                                             }
-                                            else {}
                                         }
                                         TodayLessonAdapter.BodyType.FINISHED -> {
                                             if (lessonUpdateCountResponse.data.presentNumber < lesson.untilTodayNumber) {
                                                 fetchLessonList()
+                                            } else {
                                             }
-
-                                            else {}
                                         }
                                         else -> Unit
                                     }
@@ -315,6 +310,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     }
                     is LessonState.Forbidden -> {
                         Log.d("Error", "Forbidden")
+                    }
+                    is LessonState.Error -> {
+                        Log.d("update Error", "${it.exception}")
                     }
                 }
             }
