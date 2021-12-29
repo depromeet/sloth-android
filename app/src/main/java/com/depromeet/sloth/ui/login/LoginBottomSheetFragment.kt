@@ -51,7 +51,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLoginBottomBinding.inflate(inflater, container, false)
         binding = _binding!!
 
@@ -117,11 +117,17 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
                                 loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                loginListener.onSuccess()
+                                if(it.data.isNewMember) {
+                                    loginListener.onNewMemberLoginSuccess()
+                                }
+                                else {
+                                    loginListener.onRegisteredMemberLoginSuccess()
+                                }
+
                             }
                             is LoginState.Error -> {
                                 Log.d("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
-                                loginListener.onError()
+                                loginListener.onLoginError()
                             }
                         }
                     }
@@ -148,11 +154,16 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
                                 loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                loginListener.onSuccess()
+                                if(it.data.isNewMember) {
+                                    loginListener.onNewMemberLoginSuccess()
+                                }
+                                else {
+                                    loginListener.onRegisteredMemberLoginSuccess()
+                                }
                             }
                             is LoginState.Error -> {
                                 Log.d("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
-                                loginListener.onError()
+                                loginListener.onLoginError()
                             }
                         }
                     }
@@ -182,7 +193,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
 
                             is LoginState.Error -> {
                                 Log.d("Error", "${it.exception}")
-                                loginListener.onError()
+                                loginListener.onLoginError()
                             }
                         }
                     }
@@ -192,11 +203,16 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("Success", "${it.data}")
                                 loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                loginListener.onSuccess()
+                                if(it.data.isNewMember) {
+                                    loginListener.onNewMemberLoginSuccess()
+                                }
+                                else {
+                                    loginListener.onRegisteredMemberLoginSuccess()
+                                }
                             }
                             is LoginState.Error -> {
                                 Log.d("Error", "${it.exception}")
-                                loginListener.onError()
+                                loginListener.onLoginError()
                             }
                         }
                     }

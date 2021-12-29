@@ -47,12 +47,16 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
     private fun openLoginBottomSheet() {
         loginBottomSheet?.run {
             val loginListener = object : LoginListener {
-                override fun onSuccess() {
+                override fun onRegisteredMemberLoginSuccess() {
+                    nextActivity()
+                }
+
+                override fun onNewMemberLoginSuccess() {
                     closeLoginBottomSheet()
                     openRegisterBottomSheet()
                 }
 
-                override fun onError() {
+                override fun onLoginError() {
                     closeLoginBottomSheet()
                 }
             }
@@ -70,7 +74,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             val registerListener = object : RegisterListener {
                 override fun onAgree() {
                     closeRegisterBottomSheet()
-                    //닉네임 등록화면 또는 홈화면으로 넝머가는 로직
+                    //홈화면으로 넝어가는 로직
                     nextActivity()
                 }
 

@@ -13,5 +13,6 @@ data class LoginSlothResponse(
     var accessToken: String = "",
     var accessTokenExpireTime: String = "",
     var refreshToken: String = "",
-    var refreshTokenExpireTime: String = ""
+    var refreshTokenExpireTime: String = "",
+    var isNewMember: Boolean = false
 )

@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.login
 
 interface LoginListener {
-    fun onSuccess()
-    fun onError()
+    fun onRegisteredMemberLoginSuccess()
+    fun onNewMemberLoginSuccess()
+    fun onLoginError()
 }
