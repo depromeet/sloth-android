@@ -91,8 +91,8 @@ class RegisterLessonSecondActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         initViews()
     }
@@ -237,24 +237,20 @@ class RegisterLessonSecondActivity :
                                                 message =
                                                     etRegisterLessonMessageInfo.text.toString()
 
-                                                val request = LessonRegisterRequest(
-                                                    alertDays = alertDays,
-                                                    categoryId = categoryId.toInt(),
-                                                    endDate = endDate,
-                                                    lessonName = lessonName,
-                                                    message = message,
-                                                    price = etRegisterLessonPriceInfo.text.toString().toInt(),
-                                                    siteId = siteId.toInt(),
-                                                    startDate = startDate,
-                                                    totalNumber = totalNumber.toInt()
-                                                )
-
-                                                Log.d("lesson: ", "$request")
-
                                                 mainScope {
                                                     viewModel.registerLesson(
                                                         accessToken,
-                                                        request
+                                                        LessonRegisterRequest(
+                                                            alertDays = alertDays,
+                                                            categoryId = categoryId.toInt(),
+                                                            endDate = endDate,
+                                                            lessonName = lessonName,
+                                                            message = message,
+                                                            price = etRegisterLessonPriceInfo.text.toString().toInt(),
+                                                            siteId = siteId.toInt(),
+                                                            startDate = startDate,
+                                                            totalNumber = totalNumber.toInt()
+                                                        )
                                                     ).let {
                                                         when (it) {
                                                             is LessonState.Success -> {
@@ -281,7 +277,17 @@ class RegisterLessonSecondActivity :
                                                             is LessonState.Unauthorized -> {
                                                                 viewModel.registerLesson(
                                                                     accessToken = refreshToken,
-                                                                    request
+                                                                    LessonRegisterRequest(
+                                                                        alertDays = alertDays,
+                                                                        categoryId = categoryId.toInt(),
+                                                                        endDate = endDate,
+                                                                        lessonName = lessonName,
+                                                                        message = message,
+                                                                        price = etRegisterLessonPriceInfo.text.toString().toInt(),
+                                                                        siteId = siteId.toInt(),
+                                                                        startDate = startDate,
+                                                                        totalNumber = totalNumber.toInt()
+                                                                    )
                                                                 ).let { registerLessonResponse ->
                                                                     when (registerLessonResponse) {
                                                                         is LessonState.Success -> {

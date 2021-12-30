@@ -40,6 +40,12 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         //setTestData()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        fetchLessonList()
+    }
+
     override fun initViews() {
         with(binding) {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))

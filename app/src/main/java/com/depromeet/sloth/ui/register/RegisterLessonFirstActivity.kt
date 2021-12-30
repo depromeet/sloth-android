@@ -25,9 +25,19 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import kotlin.math.ceil
 import java.util.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.network.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.ui.login.LoginActivity
 
 
-class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
+class RegisterLessonFirstActivity :
+    BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
+
+    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
 
     override val viewModel: RegisterViewModel
         get() = RegisterViewModel()
@@ -36,37 +46,219 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         ActivityRegisterLessonFirstBinding.inflate(layoutInflater)
 
     companion object {
-        fun newIntent(activity: Activity) = Intent(activity, RegisterLessonFirstActivity::class.java)
+        fun newIntent(activity: Activity) =
+            Intent(activity, RegisterLessonFirstActivity::class.java)
     }
+
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private var flag = 0
+
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+
+    private var lessonCategoryList = mutableListOf<String>()
+    private var lessonSiteList = mutableListOf<String>()
+
+    lateinit var categoryAdapter: ArrayAdapter<String>
+    lateinit var siteAdapter: ArrayAdapter<String>
 
     private var currentSiteId: Int? = null
 
     lateinit var categoryId: Number
     lateinit var siteId: Number
 
+    lateinit var lessonCount: Number
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         resultLauncher = registerForActivityResult(
             StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                Log.d("resultLauncher", "RegisterLessonFirstActivity 도 종료")
                 finish()
             }
         }
 
-        initViews()
+        // 카테고리 사이트 API 호출 후
+        mainScope {
+            initLessonCategory()
+            initLessonSite()
+        }
+    }
+
+    private suspend fun initLessonCategory() {
+        viewModel.fetchLessonCategoryList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success<List<LessonCategoryResponse>> -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonCategoryList(it.data)
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+
+                is LessonState.Unauthorized -> {
+                    viewModel.fetchLessonCategoryList(accessToken = refreshToken)
+                        .let { lessonCategoryResponse ->
+                            when (lessonCategoryResponse) {
+                                is LessonState.Success -> {
+                                    Log.d("fetch Success", "${lessonCategoryResponse.data}")
+                                    setLessonCategoryList(lessonCategoryResponse.data)
+                                }
+
+                                is LessonState.Unauthorized -> {
+                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Forbidden -> {
+                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Error -> {
+                                    Log.d("fetch Error", "${lessonCategoryResponse.exception}")
+                                }
+                                else -> Unit
+                            }
+                        }
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+
+            }
+        }
+    }
+
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+        lessonCategoryList.add(0, "인강 카테고리를 선택해주세요.")
+        Log.d("lessonCategoryList", "$lessonCategoryList")
+    }
+
+    private suspend fun initLessonSite() {
+        viewModel.fetchLessonSiteList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonSiteList(it.data)
+
+                    initViews()
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+
+                is LessonState.Unauthorized -> {
+                    viewModel.fetchLessonSiteList(accessToken = refreshToken)
+                        .let { lessonSiteResponse ->
+                            when (lessonSiteResponse) {
+                                is LessonState.Success -> {
+                                    Log.d("fetch Success", "${lessonSiteResponse.data}")
+                                    setLessonSiteList(lessonSiteResponse.data)
+
+                                    initViews()
+                                }
+
+                                is LessonState.Unauthorized -> {
+                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Forbidden -> {
+                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Error -> {
+                                    Log.d("fetch Error", "${lessonSiteResponse.exception}")
+                                }
+                                else -> Unit
+                            }
+                        }
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+            }
+        }
+    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+        lessonSiteList = data.map { it.siteName }.toMutableList()
+        lessonSiteList.add(0, "강의 사이트를 선택해주세요.")
+        Log.d("lessonSiteList", "$lessonSiteList")
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun initViews() = with(binding) {
-        val aniSlide = AnimationUtils.loadAnimation(this@RegisterLessonFirstActivity, R.anim.slide_down)
+        // 애니메이션 삭제 될 수 있음
+        val aniSlide =
+            AnimationUtils.loadAnimation(this@RegisterLessonFirstActivity, R.anim.slide_down)
 
         tbRegisterLesson.setNavigationOnClickListener { finish() }
+
+        initSpinner()
 
         if (flag == 0) {
             lockButton(btnRegisterLesson)
@@ -87,7 +279,9 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
 
                     btnRegisterLesson.setOnClickListener {
 
-                        startAnimation(aniSlide, tvRegisterLessonCategory, spnRegisterLessonCategory)
+                        startAnimation(aniSlide,
+                            tvRegisterLessonCategory,
+                            spnRegisterLessonCategory)
 
                         /*첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음*/
                         spnRegisterLessonCategory.setSelection(0, false)
@@ -107,13 +301,15 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                     p0: AdapterView<*>?,
                                     p1: View?,
                                     p2: Int,
-                                    p3: Long
+                                    p3: Long,
                                 ) {
                                     categoryId = spnRegisterLessonCategory.selectedItemPosition
 
                                     if (!tvRegisterLessonSite.isVisible) {
 
-                                        startAnimation(aniSlide, tvRegisterLessonSite, spnRegisterLessonSite)
+                                        startAnimation(aniSlide,
+                                            tvRegisterLessonSite,
+                                            spnRegisterLessonSite)
                                     }
 
                                     /* 강의 사이트 스피너에서 다시 돌아왔을 경우 progressbar 가 계속 차오르는 경우의 대한 예외 처리*/
@@ -147,7 +343,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                         p0: AdapterView<*>?,
                                                         p1: View?,
                                                         p2: Int,
-                                                        p3: Long
+                                                        p3: Long,
                                                     ) {
                                                         if (currentSiteId != null) {
                                                             if (currentSiteId != spnRegisterLessonSite.selectedItemPosition) {
@@ -190,7 +386,8 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                                                 RegisterLessonSecondActivity.newIntent(
                                                                     this@RegisterLessonFirstActivity,
                                                                     etRegisterLessonName.text.toString(),
-                                                                    etRegisterLessonCount.text.toString().toInt(),
+                                                                    etRegisterLessonCount.text.toString()
+                                                                        .toInt(),
                                                                     categoryId as Int,
                                                                     siteId as Int
                                                                 )
@@ -208,6 +405,7 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                                         }
                                     }
                                 }
+
                                 override fun onNothingSelected(p0: AdapterView<*>?) {}
                             }
                         }
@@ -216,6 +414,20 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
                 return@setOnClickListener
             }
         }
+    }
+
+    private fun initSpinner() {
+        categoryAdapter = ArrayAdapter<String>(this@RegisterLessonFirstActivity,
+            android.R.layout.simple_list_item_1,
+            lessonCategoryList)
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnRegisterLessonCategory.adapter = categoryAdapter
+
+        siteAdapter = ArrayAdapter<String>(this@RegisterLessonFirstActivity,
+            android.R.layout.simple_list_item_1,
+            lessonSiteList)
+        siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnRegisterLessonSite.adapter = siteAdapter
     }
 
     private fun fillProgressbar(count: Int, default: Int) {
@@ -279,10 +491,9 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
-            if(gainFocus) {
+            if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            }
-            else {
+            } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
 

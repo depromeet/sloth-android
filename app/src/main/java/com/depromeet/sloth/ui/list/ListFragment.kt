@@ -35,8 +35,8 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         initViews()
 
