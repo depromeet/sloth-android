@@ -84,7 +84,6 @@ class RegisterLessonFirstActivity :
             }
         }
 
-        // 카테고리 사이트 API 호출 후
         mainScope {
             initLessonCategory()
             initLessonSite()
@@ -283,7 +282,7 @@ class RegisterLessonFirstActivity :
                             tvRegisterLessonCategory,
                             spnRegisterLessonCategory)
 
-                        /*첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음*/
+                        // 첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음
                         spnRegisterLessonCategory.setSelection(0, false)
 
                         flag += 1
@@ -312,7 +311,7 @@ class RegisterLessonFirstActivity :
                                             spnRegisterLessonSite)
                                     }
 
-                                    /* 강의 사이트 스피너에서 다시 돌아왔을 경우 progressbar 가 계속 차오르는 경우의 대한 예외 처리*/
+                                    // 강의 사이트 스피너에서 다시 돌아왔을 경우 progressbar 가 계속 차오르는 경우의 대한 예외 처리
                                     if (flag < 3) {
 
                                         flag += 1
@@ -329,7 +328,7 @@ class RegisterLessonFirstActivity :
                                             unlockButton(btnRegisterLesson)
                                         }
                                     } else {
-                                        /*첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음*/
+                                        // 첫번째 값을 디폴트 값으로 하여 바로 선택이 되는 것을 막음
                                         spnRegisterLessonSite.setSelection(0, false)
                                     }
 
@@ -499,6 +498,36 @@ class RegisterLessonFirstActivity :
 
         }
     }
+
+    private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        editText.addTextChangedListener(object : TextWatcher {
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable.isNullOrEmpty()) {
+                    lockButton(button)
+                } else {
+                    unlockButton(button)
+                }
+            }
+        })
+
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+    }
+
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {
         textView.visibility = View.VISIBLE

@@ -35,7 +35,6 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         refreshToken = pm.getRefreshToken()
 
         initViews()
-        fetchLessonList()
 
         //setTestData()
     }

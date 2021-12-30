@@ -142,6 +142,7 @@
                 android:background="@drawable/bg_register_rounded_edit_text_gray"
                 android:hint="@string/enter_lesson_count"
                 android:inputType="number"
+                android:maxLength="3"
                 android:paddingHorizontal="18dp"
                 android:imeOptions="actionDone"
                 android:visibility="gone"

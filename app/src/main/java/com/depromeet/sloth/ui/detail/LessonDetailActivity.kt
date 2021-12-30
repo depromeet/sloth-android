@@ -19,6 +19,7 @@ import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import java.text.DecimalFormat
 
@@ -105,6 +106,45 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
                                     initLessonInfo(lessonDetailResponse.data)
                                 }
+
+                                is LessonState.Unauthorized -> {
+                                    val dlg = SlothDialog(this@LessonDetailActivity, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(
+                                                        LoginActivity.newIntent(
+                                                            this@LessonDetailActivity
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
+                                is LessonState.Forbidden -> {
+                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                                    dlg.onItemClickListener =
+                                        object : SlothDialog.OnItemClickedListener {
+                                            override fun onItemClicked() {
+                                                //logout
+
+                                                //finish
+                                                mainScope {
+                                                    viewModel.removeAuthToken(pm)
+                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
+                                                }
+                                            }
+                                        }
+                                    dlg.start()
+                                }
+
 
                                 is LessonState.Error -> {
                                     Log.d("fetch Error", "${lessonDetailResponse.exception}")

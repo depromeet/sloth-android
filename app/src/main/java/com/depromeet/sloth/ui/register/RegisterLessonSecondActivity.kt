@@ -24,7 +24,10 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -52,7 +55,7 @@ class RegisterLessonSecondActivity :
             lessonName: String,
             totalNumber: Int,
             categoryId: Int,
-            siteId: Int
+            siteId: Int,
         ) = Intent(activity, RegisterLessonSecondActivity::class.java).apply {
             putExtra(LESSON_NAME, lessonName)
             putExtra(TOTAL_NUMBER, totalNumber)
@@ -246,7 +249,8 @@ class RegisterLessonSecondActivity :
                                                             endDate = endDate,
                                                             lessonName = lessonName,
                                                             message = message,
-                                                            price = etRegisterLessonPriceInfo.text.toString().toInt(),
+                                                            price = etRegisterLessonPriceInfo.text.toString()
+                                                                .toInt(),
                                                             siteId = siteId.toInt(),
                                                             startDate = startDate,
                                                             totalNumber = totalNumber.toInt()
@@ -283,7 +287,8 @@ class RegisterLessonSecondActivity :
                                                                         endDate = endDate,
                                                                         lessonName = lessonName,
                                                                         message = message,
-                                                                        price = etRegisterLessonPriceInfo.text.toString().toInt(),
+                                                                        price = etRegisterLessonPriceInfo.text.toString()
+                                                                            .toInt(),
                                                                         siteId = siteId.toInt(),
                                                                         startDate = startDate,
                                                                         totalNumber = totalNumber.toInt()
@@ -310,6 +315,52 @@ class RegisterLessonSecondActivity :
                                                                                 )
                                                                             )
                                                                             if (!isFinishing) finish()
+                                                                        }
+
+                                                                        is LessonState.Unauthorized -> {
+                                                                            val dlg = SlothDialog(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                DialogState.FORBIDDEN)
+                                                                            dlg.onItemClickListener =
+                                                                                object :
+                                                                                    SlothDialog.OnItemClickedListener {
+                                                                                    override fun onItemClicked() {
+                                                                                        //logout
+
+                                                                                        //finish
+                                                                                        mainScope {
+                                                                                            viewModel.removeAuthToken(
+                                                                                                pm)
+                                                                                            startActivity(
+                                                                                                LoginActivity.newIntent(
+                                                                                                    this@RegisterLessonSecondActivity))
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            dlg.start()
+                                                                        }
+
+                                                                        is LessonState.Forbidden -> {
+                                                                            val dlg = SlothDialog(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                DialogState.FORBIDDEN)
+                                                                            dlg.onItemClickListener =
+                                                                                object :
+                                                                                    SlothDialog.OnItemClickedListener {
+                                                                                    override fun onItemClicked() {
+                                                                                        //logout
+
+                                                                                        //finish
+                                                                                        mainScope {
+                                                                                            viewModel.removeAuthToken(
+                                                                                                pm)
+                                                                                            startActivity(
+                                                                                                LoginActivity.newIntent(
+                                                                                                    this@RegisterLessonSecondActivity))
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            dlg.start()
                                                                         }
 
                                                                         is LessonState.Error -> {
@@ -418,10 +469,9 @@ class RegisterLessonSecondActivity :
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
-            if(gainFocus) {
+            if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            }
-            else {
+            } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
@@ -429,10 +479,38 @@ class RegisterLessonSecondActivity :
 
     private fun focusInputFormOptional(editText: EditText) {
         editText.setOnFocusChangeListener { _, gainFocus ->
-            if(gainFocus) {
+            if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
-            else {
+        }
+    }
+
+    private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        editText.addTextChangedListener(object : TextWatcher {
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable.isNullOrEmpty()) {
+                    lockButton(button)
+                } else {
+                    unlockButton(button)
+                }
+            }
+        })
+
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
