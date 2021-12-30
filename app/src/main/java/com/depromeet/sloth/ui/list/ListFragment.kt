@@ -138,9 +138,9 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     }
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
-        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lessonInfo.lessonId.toString())
-        startActivity(intent)
+        startActivity(
+            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString(), lessonInfo.price)
+        )
     }
 
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
