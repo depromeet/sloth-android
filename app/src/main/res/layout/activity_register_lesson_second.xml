@@ -119,6 +119,7 @@
                 android:maxLength="7"
                 android:paddingHorizontal="18dp"
                 android:visibility="gone"
+                android:imeOptions="actionDone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"

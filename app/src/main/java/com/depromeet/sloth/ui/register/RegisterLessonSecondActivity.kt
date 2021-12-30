@@ -197,7 +197,7 @@ class RegisterLessonSecondActivity :
                                 }
 
                                 if (flag == 2) {
-                                    focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
+                                    validateInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
 
                                     btnRegisterLesson.setOnClickListener {
 
@@ -234,6 +234,7 @@ class RegisterLessonSecondActivity :
                                                         "강의 시작일은 완강 목표일 이전이어야 합니다.",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
+
                                                     return@setOnClickListener
                                                 }
 
@@ -488,7 +489,20 @@ class RegisterLessonSecondActivity :
     }
 
     private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                if (editText.text.toString().isNotEmpty() && editText.text.toString()[0] == '0') {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                } else {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                }
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+
         editText.addTextChangedListener(object : TextWatcher {
+
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
@@ -502,18 +516,16 @@ class RegisterLessonSecondActivity :
                 if (editable.isNullOrEmpty()) {
                     lockButton(button)
                 } else {
-                    unlockButton(button)
+                    if (editable[0] == '0') {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        lockButton(button)
+                    } else {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        unlockButton(button)
+                    }
                 }
             }
         })
-
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
     }
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {

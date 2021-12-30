@@ -157,7 +157,6 @@ class RegisterLessonFirstActivity :
                 is LessonState.Forbidden -> {
                     Log.d("Error", "Forbidden")
                 }
-
             }
         }
     }
@@ -270,11 +269,12 @@ class RegisterLessonFirstActivity :
 
                 fillProgressbar(flag, 0)
 
-                clearFocus(etRegisterLessonName)
+                editTextClearFocus(etRegisterLessonName)
 
                 if (flag == 1) {
                     lockButton(btnRegisterLesson)
-                    focusInputForm(etRegisterLessonCount, btnRegisterLesson)
+                    //focusInputForm(etRegisterLessonCount, btnRegisterLesson)
+                    validateInputForm(etRegisterLessonCount, btnRegisterLesson)
 
                     btnRegisterLesson.setOnClickListener {
 
@@ -289,7 +289,7 @@ class RegisterLessonFirstActivity :
 
                         fillProgressbar(flag, 0)
 
-                        clearFocus(etRegisterLessonCount)
+                        editTextClearFocus(etRegisterLessonCount)
 
                         if (flag == 2) {
                             lockButton(btnRegisterLesson)
@@ -317,14 +317,15 @@ class RegisterLessonFirstActivity :
                                         flag += 1
 
                                         fillProgressbar(flag, 0)
-
-                                        hideKeyboard()
                                     }
 
                                     if (currentSiteId != null) {
                                         spnRegisterLessonSite.setSelection(currentSiteId!!)
 
-                                        if (categoryId != 0 && siteId != 0) {
+                                        if (categoryId != 0 && siteId != 0 && etRegisterLessonName.text.toString()
+                                                .isNotEmpty() && etRegisterLessonCount.text.toString()
+                                                .isNotEmpty() && etRegisterLessonCount.text.toString()[0] != '0'
+                                        ) {
                                             unlockButton(btnRegisterLesson)
                                         }
                                     } else {
@@ -369,13 +370,15 @@ class RegisterLessonFirstActivity :
 
                                                             fillProgressbar(flag, 0)
 
-                                                            hideKeyboard()
                                                         }
                                                         if (siteId == 0) {
                                                             lockButton(btnRegisterLesson)
                                                         }
 
-                                                        if (categoryId != 0 && siteId != 0) {
+                                                        if (categoryId != 0 && siteId != 0 && etRegisterLessonName.text.toString()
+                                                                .isNotEmpty() && etRegisterLessonCount.text.toString()
+                                                                .isNotEmpty() && etRegisterLessonCount.text.toString()[0] != '0'
+                                                        ) {
                                                             currentSiteId = siteId.toInt()
                                                             unlockButton(btnRegisterLesson)
                                                         }
@@ -473,6 +476,7 @@ class RegisterLessonFirstActivity :
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
@@ -484,7 +488,12 @@ class RegisterLessonFirstActivity :
                 if (editable.isNullOrEmpty()) {
                     lockButton(button)
                 } else {
-                    unlockButton(button)
+                    if(binding.etRegisterLessonCount.text.toString().isNotEmpty() && binding.etRegisterLessonCount.text.toString()[0] == '0'){
+                        lockButton(button)
+                    }
+                    else {
+                        unlockButton(button)
+                    }
                 }
             }
         })
@@ -499,7 +508,20 @@ class RegisterLessonFirstActivity :
         }
     }
 
+
     private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                if (editText.text.toString().isNotEmpty() && editText.text.toString()[0] == '0') {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                } else {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                }
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
@@ -514,18 +536,16 @@ class RegisterLessonFirstActivity :
                 if (editable.isNullOrEmpty()) {
                     lockButton(button)
                 } else {
-                    unlockButton(button)
+                    if (editable[0] == '0') {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        lockButton(button)
+                    } else {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        unlockButton(button)
+                    }
                 }
             }
         })
-
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
     }
 
 
@@ -537,7 +557,7 @@ class RegisterLessonFirstActivity :
         view.startAnimation(animation)
     }
 
-    private fun clearFocus(editText: EditText) {
+    private fun editTextClearFocus(editText: EditText) {
         editText.clearFocus()
         hideKeyboard()
     }
