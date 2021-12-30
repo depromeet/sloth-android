@@ -34,10 +34,14 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
         accessToken = pm.getAccessToken()
         refreshToken = pm.getRefreshToken()
 
+        //setTestData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         initViews()
         fetchLessonList()
-
-        //setTestData()
     }
 
     override fun initViews() {

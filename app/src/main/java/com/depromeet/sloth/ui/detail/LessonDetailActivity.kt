@@ -129,7 +129,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
     override fun initViews() = with(binding) {
         tbDetailLesson.setNavigationOnClickListener { finish() }
 
-
         tvDetailUpdateLesson.setOnClickListener {
             startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lesson))
         }
@@ -139,8 +138,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
                     deleteLesson(accessToken, lessonId)
-                    Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish()
                 }
             }
             dlg.start()
@@ -153,6 +150,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                 when(it) {
                     is LessonState.Success<*> -> {
                         Log.d("Delete Success", "${it.data}")
+                        Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        finish()
                     }
 
                     is LessonState.Unauthorized -> {
