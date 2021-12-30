@@ -35,8 +35,8 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         initViews()
 
@@ -138,9 +138,9 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     }
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
-        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lessonInfo.lessonId.toString())
-        startActivity(intent)
+        startActivity(
+            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString(), lessonInfo.price)
+        )
     }
 
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {

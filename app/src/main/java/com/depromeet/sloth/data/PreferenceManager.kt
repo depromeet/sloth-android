@@ -12,7 +12,7 @@ class PreferenceManager(
 
     companion object {
         const val PREFERENCES_NAME = "Sloth-pref"
-        private const val DEFAULT_VALUE_STRING = ""
+        private const val DEFAULT_STRING_VALUE = ""
         const val ACCESS_TOKEN = "accessToken"
         const val REFRESH_TOKEN = "refreshToken"
     }
@@ -51,7 +51,7 @@ class PreferenceManager(
      * @return
      */
     fun getAccessToken(): String {
-        return prefs.getString(ACCESS_TOKEN, "") ?: ""
+        return prefs.getString(ACCESS_TOKEN, DEFAULT_STRING_VALUE) ?: DEFAULT_STRING_VALUE
     }
 
     /**
@@ -60,7 +60,7 @@ class PreferenceManager(
      * @return
      */
     fun getRefreshToken(): String {
-        return prefs.getString(REFRESH_TOKEN, "") ?: ""
+        return prefs.getString(REFRESH_TOKEN, DEFAULT_STRING_VALUE) ?: DEFAULT_STRING_VALUE
     }
 
     /**

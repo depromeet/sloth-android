@@ -180,4 +180,42 @@ class LessonRepository {
                 }
             } ?: return LessonUpdateState.Error(Exception("Retrofit Exception"))
     }
+
+    suspend fun fetchLessonCategoryList(
+        accessToken: String,
+    ): LessonState<List<LessonCategoryResponse>> {
+        RetrofitServiceGenerator.setBuilderOptions(
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
+            authToken = accessToken
+        )
+            .create(LessonService::class.java)
+            .fetchLessonCategoryList()?.run {
+                return when(this.code()) {
+                    200 -> LessonState.Success(this.body() ?: listOf())
+                    401 -> LessonState.Unauthorized
+                    403 -> LessonState.Forbidden
+                    404 -> LessonState.NotFound
+                    else -> LessonState.Error(Exception("Uncaught Exception"))
+                }
+            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+    }
+
+    suspend fun fetchLessonSiteList(
+        accessToken: String,
+    ): LessonState<List<LessonSiteResponse>> {
+        RetrofitServiceGenerator.setBuilderOptions(
+            targetUrl = BuildConfig.SLOTH_BASE_URL,
+            authToken = accessToken
+        )
+            .create(LessonService::class.java)
+            .fetchLessonSiteList()?.run {
+                return when(this.code()) {
+                    200 -> LessonState.Success(this.body() ?: listOf())
+                    401 -> LessonState.Unauthorized
+                    403 -> LessonState.Forbidden
+                    404 -> LessonState.NotFound
+                    else -> LessonState.Error(Exception("Uncaught Exception"))
+                }
+            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+    }
 }

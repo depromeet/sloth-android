@@ -24,7 +24,10 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonSecondBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -52,7 +55,7 @@ class RegisterLessonSecondActivity :
             lessonName: String,
             totalNumber: Int,
             categoryId: Int,
-            siteId: Int
+            siteId: Int,
         ) = Intent(activity, RegisterLessonSecondActivity::class.java).apply {
             putExtra(LESSON_NAME, lessonName)
             putExtra(TOTAL_NUMBER, totalNumber)
@@ -91,8 +94,8 @@ class RegisterLessonSecondActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = pm.getAccessToken()
+        refreshToken = pm.getRefreshToken()
 
         initViews()
     }
@@ -194,7 +197,7 @@ class RegisterLessonSecondActivity :
                                 }
 
                                 if (flag == 2) {
-                                    focusInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
+                                    validateInputForm(etRegisterLessonPriceInfo, btnRegisterLesson)
 
                                     btnRegisterLesson.setOnClickListener {
 
@@ -231,30 +234,28 @@ class RegisterLessonSecondActivity :
                                                         "강의 시작일은 완강 목표일 이전이어야 합니다.",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
+
                                                     return@setOnClickListener
                                                 }
 
                                                 message =
                                                     etRegisterLessonMessageInfo.text.toString()
 
-                                                val request = LessonRegisterRequest(
-                                                    alertDays = alertDays,
-                                                    categoryId = categoryId.toInt(),
-                                                    endDate = endDate,
-                                                    lessonName = lessonName,
-                                                    message = message,
-                                                    price = etRegisterLessonPriceInfo.text.toString().toInt(),
-                                                    siteId = siteId.toInt(),
-                                                    startDate = startDate,
-                                                    totalNumber = totalNumber.toInt()
-                                                )
-
-                                                Log.d("lesson: ", "$request")
-
                                                 mainScope {
                                                     viewModel.registerLesson(
                                                         accessToken,
-                                                        request
+                                                        LessonRegisterRequest(
+                                                            alertDays = alertDays,
+                                                            categoryId = categoryId.toInt(),
+                                                            endDate = endDate,
+                                                            lessonName = lessonName,
+                                                            message = message,
+                                                            price = etRegisterLessonPriceInfo.text.toString()
+                                                                .toInt(),
+                                                            siteId = siteId.toInt(),
+                                                            startDate = startDate,
+                                                            totalNumber = totalNumber.toInt()
+                                                        )
                                                     ).let {
                                                         when (it) {
                                                             is LessonState.Success -> {
@@ -281,7 +282,18 @@ class RegisterLessonSecondActivity :
                                                             is LessonState.Unauthorized -> {
                                                                 viewModel.registerLesson(
                                                                     accessToken = refreshToken,
-                                                                    request
+                                                                    LessonRegisterRequest(
+                                                                        alertDays = alertDays,
+                                                                        categoryId = categoryId.toInt(),
+                                                                        endDate = endDate,
+                                                                        lessonName = lessonName,
+                                                                        message = message,
+                                                                        price = etRegisterLessonPriceInfo.text.toString()
+                                                                            .toInt(),
+                                                                        siteId = siteId.toInt(),
+                                                                        startDate = startDate,
+                                                                        totalNumber = totalNumber.toInt()
+                                                                    )
                                                                 ).let { registerLessonResponse ->
                                                                     when (registerLessonResponse) {
                                                                         is LessonState.Success -> {
@@ -304,6 +316,52 @@ class RegisterLessonSecondActivity :
                                                                                 )
                                                                             )
                                                                             if (!isFinishing) finish()
+                                                                        }
+
+                                                                        is LessonState.Unauthorized -> {
+                                                                            val dlg = SlothDialog(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                DialogState.FORBIDDEN)
+                                                                            dlg.onItemClickListener =
+                                                                                object :
+                                                                                    SlothDialog.OnItemClickedListener {
+                                                                                    override fun onItemClicked() {
+                                                                                        //logout
+
+                                                                                        //finish
+                                                                                        mainScope {
+                                                                                            viewModel.removeAuthToken(
+                                                                                                pm)
+                                                                                            startActivity(
+                                                                                                LoginActivity.newIntent(
+                                                                                                    this@RegisterLessonSecondActivity))
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            dlg.start()
+                                                                        }
+
+                                                                        is LessonState.Forbidden -> {
+                                                                            val dlg = SlothDialog(
+                                                                                this@RegisterLessonSecondActivity,
+                                                                                DialogState.FORBIDDEN)
+                                                                            dlg.onItemClickListener =
+                                                                                object :
+                                                                                    SlothDialog.OnItemClickedListener {
+                                                                                    override fun onItemClicked() {
+                                                                                        //logout
+
+                                                                                        //finish
+                                                                                        mainScope {
+                                                                                            viewModel.removeAuthToken(
+                                                                                                pm)
+                                                                                            startActivity(
+                                                                                                LoginActivity.newIntent(
+                                                                                                    this@RegisterLessonSecondActivity))
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            dlg.start()
                                                                         }
 
                                                                         is LessonState.Error -> {
@@ -412,10 +470,9 @@ class RegisterLessonSecondActivity :
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
-            if(gainFocus) {
+            if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            }
-            else {
+            } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
@@ -423,13 +480,52 @@ class RegisterLessonSecondActivity :
 
     private fun focusInputFormOptional(editText: EditText) {
         editText.setOnFocusChangeListener { _, gainFocus ->
-            if(gainFocus) {
+            if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            }
-            else {
+            } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
+    }
+
+    private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                if (editText.text.toString().isNotEmpty() && editText.text.toString()[0] == '0') {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                } else {
+                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                }
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+
+        editText.addTextChangedListener(object : TextWatcher {
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable.isNullOrEmpty()) {
+                    lockButton(button)
+                } else {
+                    if (editable[0] == '0') {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        lockButton(button)
+                    } else {
+                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        unlockButton(button)
+                    }
+                }
+            }
+        })
     }
 
     private fun startAnimation(animation: Animation, textView: TextView, view: View) {

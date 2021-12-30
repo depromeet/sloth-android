@@ -102,4 +102,5 @@
     <string name="dialog_default_message">안내 메세지</string>
     <string name="forbidden_dialog_message">다시 로그인 해주세요</string>
     <string name="privacy">개인정보 처리방침</string>
+    <string name="lesson_close">마감</string>
 </resources>

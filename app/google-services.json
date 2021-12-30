@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "278267007036",
-    "project_id": "sloth-android-1633815432816",
-    "storage_bucket": "sloth-android-1633815432816.appspot.com"
+    "project_number": "328671196053",
+    "project_id": "nanagong-336615",
+    "storage_bucket": "nanagong-336615.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:278267007036:android:b3eb7021097bb41374b339",
+        "mobilesdk_app_id": "1:328671196053:android:afbea7becb3b254f7dbc9c",
         "android_client_info": {
           "package_name": "com.depromeet.sloth"
         }
       },
       "oauth_client": [
         {
-          "client_id": "278267007036-m0mqtgs0lqe3ks15jjua04ao31p3580g.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.depromeet.sloth",
-            "certificate_hash": "c7ef690eac5a3cef2b30aa9e0005a6fda15c9116"
-          }
-        },
-        {
-          "client_id": "278267007036-3drvbjabiaenme8oe5d7gkmuqmageug2.apps.googleusercontent.com",
+          "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD747zPScGlDTm9Xyl1JS5GMBx4EuCKKqc"
+          "current_key": "AIzaSyB_sxMOM9vfjiELrjfey-tJVU16c3cV1U4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "278267007036-3drvbjabiaenme8oe5d7gkmuqmageug2.apps.googleusercontent.com",
+              "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
