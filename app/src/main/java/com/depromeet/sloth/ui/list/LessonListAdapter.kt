@@ -103,7 +103,7 @@ class LessonListAdapter(
                     lessonListTotalNumber.text = lessonInfo.totalNumber.toString()
                     lessonListPercent.text = (100 - lessonInfo.currentProgressRate).toString()
                     lessonListGoal.text = (progressRate * 100).toInt().toString()
-                    lessonListRemain.text = "D-${lessonInfo.remainDay}"
+                    lessonListRemain.text = if (lessonInfo.remainDay == 0) "D-Day" else "D-${lessonInfo.remainDay}"
                     lessonListCategory.text = lessonInfo.categoryName
                     lessonListSite.text = lessonInfo.siteName
                     lessonListName.text = lessonInfo.lessonName

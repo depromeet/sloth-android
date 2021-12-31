@@ -285,14 +285,19 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
             // 남은 날짜
             tvDetailLessonRemainDay.text =
-                if (data.remainDay <= 0) {
+                if (data.remainDay < 0) {
                     "D+${(data.remainDay)*-1}"
                 } else {
-                    "D-${(data.remainDay)}"
+                    if( data.remainDay == 0) {
+                        getString(R.string.d_day)
+                    }
+                    else {
+                        "D-${(data.remainDay)}"
+                    }
                 }
 
             // 마감 임박
-            if (data.remainDay in 1..10) {
+            if (data.remainDay in 0..10) {
                 tvDetailLessonWarning.visibility = View.VISIBLE
                 tvDetailLessonWarning.text = getString(R.string.lesson_warning)
                 tvDetailLessonRemainDay.setTextColor(ContextCompat.getColor(this@LessonDetailActivity,
@@ -300,7 +305,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             }
 
             // 마감
-            if (data.remainDay <= 0) {
+            if (data.remainDay < 0) {
                 tvDetailLessonWarning.visibility = View.VISIBLE
                 tvDetailLessonWarning.background = AppCompatResources.getDrawable(this@LessonDetailActivity, R.drawable.bg_rounded_chip_black)
                 tvDetailLessonWarning.text = getString(R.string.lesson_close)

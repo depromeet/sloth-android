@@ -51,7 +51,7 @@
     <string name="profile_email">xxx@gmail.com</string>
     <string name="member_name">이름</string>
     <string name="profile_image">profileImage</string>
-    <string name="d_day">D-19</string>
+    <string name="d_remain_day">D-19</string>
     <string name="update">수정</string>
     <string name="lesson_info">강의 정보</string>
     <string name="lesson_price_info">250,000원</string>
@@ -103,4 +103,5 @@
     <string name="forbidden_dialog_message">다시 로그인 해주세요</string>
     <string name="privacy">개인정보 처리방침</string>
     <string name="lesson_close">마감</string>
+    <string name="d_day">D-Day</string>
 </resources>
