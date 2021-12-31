@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.list
 
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -52,26 +51,21 @@ class TodayLessonAdapter(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
-        private val todayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
-        private val todayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
-        private val todayLessonCategory =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
-        private val todayLessonSite =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_site)
-        private val todayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
-        private val todayLessonCurrentNum =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
-        private val todayLessonTotalNum =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
-        private val todayLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_today_lesson_bar)
-        private val todayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
-        private val todayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
-        private val registerClass = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
+        private val tvTodayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
+        private val tvTodayLessonCategory = itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
+        private val tvTodayLessonSite = itemView.findViewById<TextView>(R.id.tv_today_lesson_site)
+        private val tvTodayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
+        private val tvTodayLessonCurrentNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
+        private val tvTodayLessonTotalNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
+        private val pbTodayLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_today_lesson_bar)
+        private val btnTodayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
+        private val btnTodayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
+        private val clTodayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
 
         fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    registerClass.setOnClickListener {
+                    clTodayLesson.setOnClickListener {
                         onClick(
                             ClickType.CLICK_NORMAL,
                             lessonToday
@@ -82,13 +76,13 @@ class TodayLessonAdapter(
                 BodyType.FINISHED -> {
                     init(lessonToday)
 
-                    todayLessonPlus.setOnClickListener {
+                    btnTodayLessonPlus.setOnClickListener {
                         updateLessonCountOnServer(true, lessonToday)
                         updateProgress(true, lessonToday.untilTodayNumber)
                         updateText(true, lessonToday.untilTodayNumber)
                     }
 
-                    todayLessonMinus.setOnClickListener {
+                    btnTodayLessonMinus.setOnClickListener {
                         updateLessonCountOnServer(false, lessonToday)
                         updateProgress(false, lessonToday.untilTodayNumber)
                         updateText(false, lessonToday.untilTodayNumber)
@@ -98,13 +92,13 @@ class TodayLessonAdapter(
                 BodyType.NOT_FINISHED -> {
                     init(lessonToday)
 
-                    todayLessonPlus.setOnClickListener {
+                    btnTodayLessonPlus.setOnClickListener {
                         updateLessonCountOnServer(true, lessonToday)
                         updateProgress(true, lessonToday.untilTodayNumber)
                         updateText(true, lessonToday.untilTodayNumber)
                     }
 
-                    todayLessonMinus.setOnClickListener {
+                    btnTodayLessonMinus.setOnClickListener {
                         updateLessonCountOnServer(false, lessonToday)
                         updateProgress(false, lessonToday.untilTodayNumber)
                         updateText(false, lessonToday.untilTodayNumber)
@@ -115,24 +109,24 @@ class TodayLessonAdapter(
 
         private fun init(allLessonToday: LessonTodayResponse) {
             val remainDay = allLessonToday.remainDay //D-day
-            todayLessonCategory.text = allLessonToday.categoryName
-            todayLessonSite.text = allLessonToday.siteName
-            todayLessonName.text = allLessonToday.lessonName
-            todayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
-            todayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
-            "D-$remainDay".also { todayLessonRemain.text = it }
-            todayLessonBar.let {
+            tvTodayLessonCategory.text = allLessonToday.categoryName
+            tvTodayLessonSite.text = allLessonToday.siteName
+            tvTodayLessonName.text = allLessonToday.lessonName
+            tvTodayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
+            tvTodayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
+            "D-$remainDay".also { tvTodayLessonRemain.text = it }
+            pbTodayLessonBar.let {
                 nowProgress = allLessonToday.presentNumber
                 it.max = allLessonToday.untilTodayNumber * 1000
                 it.progress = allLessonToday.presentNumber * 1000
             }
 
             if (allLessonToday.untilTodayFinished) {
-                todayLessonRemain.setTextColor(Color.WHITE)
+                tvTodayLessonRemain.setTextColor(Color.WHITE)
             } else {
                 when (allLessonToday.remainDay) {
-                    in 0 until 10 -> todayLessonRemain.setTextColor(Color.RED)
-                    else -> todayLessonRemain.setTextColor(Color.BLACK)
+                    in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
+                    else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
                 }
             }
         }
@@ -140,7 +134,7 @@ class TodayLessonAdapter(
         private fun updateText(isUp: Boolean, totalNum: Int) {
             if (((nowProgress < 0) && isUp.not()) || ((nowProgress > totalNum) && isUp)) return
 
-            todayLessonCurrentNum.text = nowProgress.toString()
+            tvTodayLessonCurrentNum.text = nowProgress.toString()
         }
 
         private fun updateProgress(isUp: Boolean, totalNum: Int) {
@@ -154,9 +148,9 @@ class TodayLessonAdapter(
             }
 
             val animation = ObjectAnimator.ofInt(
-                todayLessonBar,
+                pbTodayLessonBar,
                 "progress",
-                todayLessonBar.progress, nowProgress * 1000
+                pbTodayLessonBar.progress, nowProgress * 1000
             )
 
             animation.apply {
