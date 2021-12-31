@@ -119,7 +119,7 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/d_day" />
+                    tools:text="@string/d_remain_day" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_detail_lesson_warning"
@@ -454,15 +454,18 @@
 
                 <TextView
                     android:id="@+id/tv_detail_lesson_message_info"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="200dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/lesson_message_info"
+                    android:gravity="end"
                     android:textColor="@color/gray_600"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
+                    app:layout_constraintStart_toEndOf="@+id/tv_detail_lesson_message"
+                    app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"
+                    tools:text="@string/lesson_message_info" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_detail_delete_lesson"

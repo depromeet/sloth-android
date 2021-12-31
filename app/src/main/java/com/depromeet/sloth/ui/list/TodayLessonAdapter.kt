@@ -19,13 +19,13 @@ import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
 
 class TodayLessonAdapter(
     private val bodyType: BodyType,
-    val onClick: (ClickType, LessonTodayResponse) -> Unit
+    val onClick: (ClickType, LessonTodayResponse) -> Unit,
 ) : ListAdapter<LessonTodayResponse, TodayLessonAdapter.TodayLessonViewHolder>(
     TodayLessonDiffCallback
 ) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): TodayLessonViewHolder {
         val view = when (bodyType) {
             BodyType.NOTHING -> LayoutInflater.from(parent.context)
@@ -41,14 +41,14 @@ class TodayLessonAdapter(
 
     override fun onBindViewHolder(
         holder: TodayLessonViewHolder,
-        position: Int
+        position: Int,
     ) {
         val lesson = getItem(position)
         holder.onBind(lesson)
     }
 
     inner class TodayLessonViewHolder(
-        itemView: View
+        itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
         private val tvTodayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
@@ -191,14 +191,14 @@ class TodayLessonAdapter(
 object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonTodayResponse>() {
     override fun areItemsTheSame(
         oldItem: LessonTodayResponse,
-        newItem: LessonTodayResponse
+        newItem: LessonTodayResponse,
     ): Boolean {
         return oldItem.lessonId == newItem.lessonId
     }
 
     override fun areContentsTheSame(
         oldItem: LessonTodayResponse,
-        newItem: LessonTodayResponse
+        newItem: LessonTodayResponse,
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName &&
                 oldItem.lessonName == newItem.lessonName &&
