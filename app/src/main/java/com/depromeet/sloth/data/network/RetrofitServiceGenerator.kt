@@ -25,9 +25,17 @@ object RetrofitServiceGenerator {
         }.build()
     }
 
-    fun build(accessToken: String? = null): Retrofit {
+    fun build(
+        accessToken: String? = null,
+        isGoogleLogin: Boolean = false
+    ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.SLOTH_BASE_URL)
+            .baseUrl(
+                when(isGoogleLogin) {
+                    true -> BuildConfig.GOOGLE_BASE_URL
+                    false -> BuildConfig.SLOTH_BASE_URL
+                }
+            )
             .addConverterFactory(GsonConverterFactory.create())
             .client(setClient(accessToken))
             .build()

@@ -20,7 +20,7 @@ class LoginRepository {
     suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): LoginState<LoginGoogleResponse> {
-        RetrofitServiceGenerator.build()
+        RetrofitServiceGenerator.build(isGoogleLogin = true)
             .create(LoginService::class.java)
             .fetchGoogleAuthInfo(
                 LoginGoogleRequest(
