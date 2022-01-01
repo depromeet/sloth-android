@@ -29,17 +29,18 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 
-class ManageFragmentt : BaseFragment<ManageViewModel, FragmentManageBinding>() {
+class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
     private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
     lateinit var accessToken: String
     lateinit var refreshToken: String
     lateinit var memberName: String
     lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
 
-    override val viewModel: ManageViewModel = ManageViewModel(preferenceManager)
-
     override fun getViewBinding(): FragmentManageBinding =
         FragmentManageBinding.inflate(layoutInflater)
+
+    override val viewModel: ManageViewModel
+        get() = ManageViewModel(preferenceManager)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,7 +62,7 @@ class ManageFragmentt : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                     }
                     is MemberState.Unauthorized -> {
                         val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                             override fun onItemClicked() {
                                 preferenceManager.removeAuthToken()
                                 startActivity(LoginActivity.newIntent(requireActivity()))
@@ -119,9 +120,11 @@ class ManageFragmentt : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
                                     updateViews(it.data.memberName)
 
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "닉네임이 변경되었습니다.",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                                 is MemberState.Unauthorized -> {
@@ -130,9 +133,11 @@ class ManageFragmentt : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
                                 is MemberState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "닉네임이 변경 실패하였습니다.",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
@@ -187,12 +192,16 @@ class ManageFragmentt : BaseFragment<ManageViewModel, FragmentManageBinding>() {
         val intent = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
-            putExtra(Intent.EXTRA_TEXT,
-                String.format("---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
+            putExtra(
+                Intent.EXTRA_TEXT,
+                String.format(
+                    "---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
                     BuildConfig.VERSION_NAME,
                     Build.VERSION.SDK_INT,
                     Build.VERSION.RELEASE,
-                    Build.MODEL))
+                    Build.MODEL
+                )
+            )
             type = "message/rfc822"
         }
         startActivity(intent)
