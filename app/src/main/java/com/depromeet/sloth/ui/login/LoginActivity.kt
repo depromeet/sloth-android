@@ -3,7 +3,6 @@ package com.depromeet.sloth.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import android.widget.Button
 import com.depromeet.sloth.R
@@ -12,10 +11,12 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.HomeActivity
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
+    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+
+    private var loginBottomSheet: LoginBottomSheetFragment? = null
+    private var registerBottomSheet: RegisterBottomSheetFragment? = null
 
     override val viewModel: LoginViewModel = LoginViewModel()
-
-    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
 
     override fun getViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
@@ -31,23 +32,30 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if(pm.getAccessToken() != null) {
-            Log.d("accessToken", pm.getAccessToken().toString())
+        if(pm.getAccessToken().isNotEmpty() && pm.getRefreshToken().isNotEmpty()) {
             nextActivity()
-        }
-
-        findViewById<Button>(R.id.btn_login_start).setOnClickListener {
-            openLoginBottomSheet()
+        } else {
+            findViewById<Button>(R.id.btn_login_start).setOnClickListener {
+                openLoginBottomSheet()
+            }
         }
     }
 
-    private var loginBottomSheet: LoginBottomSheetFragment? = null
-    private var registerBottomSheet: RegisterBottomSheetFragment? = null
+    override fun onDestroy() {
+        super.onDestroy()
+        closeLoginBottomSheet()
+        closeRegisterBottomSheet()
+    }
 
     private fun openLoginBottomSheet() {
         loginBottomSheet?.run {
             val loginListener = object : LoginListener {
-                override fun onSuccess() {
+                override fun onSuccessWithRegisteredMember() {
+                    closeLoginBottomSheet()
+                    nextActivity()
+                }
+
+                override fun onSuccessWithNewMember() {
                     closeLoginBottomSheet()
                     openRegisterBottomSheet()
                 }
@@ -70,7 +78,6 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
             val registerListener = object : RegisterListener {
                 override fun onAgree() {
                     closeRegisterBottomSheet()
-                    //닉네임 등록화면 또는 홈화면으로 넝머가는 로직
                     nextActivity()
                 }
 

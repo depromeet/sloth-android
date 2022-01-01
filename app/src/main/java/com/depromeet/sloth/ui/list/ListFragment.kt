@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui.list
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,29 +13,28 @@ import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.LessonItemDecoration
+import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
-    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
-
-    override val viewModel: LessonViewModel
-        get() = LessonViewModel()
-
-    override fun getViewBinding(): FragmentListBinding =
-        FragmentListBinding.inflate(layoutInflater)
-
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
+    override val viewModel: LessonViewModel
+        get() = LessonViewModel(preferenceManager)
+
+    override fun getViewBinding(): FragmentListBinding =
+        FragmentListBinding.inflate(layoutInflater)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
 
@@ -52,25 +52,27 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
             viewModel.fetchAllLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonAllResponse>> -> {
-                        Log.d("fetch Success", "${it.data}")
+                        Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
-                        viewModel.fetchAllLessonList(accessToken = refreshToken).let { lessonInfoResponse ->
-                            when(lessonInfoResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonInfoResponse.data}")
-                                    setLessonList(lessonInfoResponse.data)
+                        Log.d("Error", "${it.exception}")
+                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                //logout
+
+                                //finish
+                                mainScope {
+                                    viewModel.removeAuthToken(preferenceManager)
+                                    startActivity(LoginActivity.newIntent(requireActivity()))
                                 }
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonInfoResponse.exception}")
-                                }
-                                else -> Unit
                             }
                         }
+                        dlg.start()
                     }
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
@@ -103,9 +105,9 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
     }
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
-        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lessonInfo.lessonId.toString())
-        startActivity(intent)
+        startActivity(
+            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString(), lessonInfo.price)
+        )
     }
 
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
@@ -183,6 +185,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun getLessonType(
         lessonInfo: LessonAllResponse
     ): LessonListAdapter.BodyType {
@@ -192,7 +195,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         val startDate = dateFormat.parse(startDateString)
         val todayDate = Calendar.getInstance()
         val endDate = dateFormat.parse(endDateString)
-        val isPassed = (endDate.time - todayDate.time.time) < 0L
+        val isPassed = (endDate.time - todayDate.time.time + 86400000L) < 0L
         val isPlanning = (todayDate.time.time - startDate.time) < 0L
 
         return when {
@@ -202,6 +205,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun setTestData() {
         val dummyList = listOf<LessonAllResponse>(
             LessonAllResponse(

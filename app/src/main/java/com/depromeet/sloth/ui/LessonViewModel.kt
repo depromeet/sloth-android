@@ -7,8 +7,10 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class LessonViewModel : BaseViewModel() {
-    private val lessonRepository = LessonRepository()
+class LessonViewModel(
+    preferenceManager: PreferenceManager
+) : BaseViewModel() {
+    private val lessonRepository = LessonRepository(preferenceManager)
 
     suspend fun fetchTodayLessonList(
         accessToken: String,

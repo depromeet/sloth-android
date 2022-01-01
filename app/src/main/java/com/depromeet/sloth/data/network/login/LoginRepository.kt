@@ -8,29 +8,19 @@ class LoginRepository {
         accessToken: String,
         socialType: String
     ): LoginState<LoginSlothResponse> {
-        RetrofitServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.SLOTH_BASE_URL,
-            authToken = accessToken
-        )
+        RetrofitServiceGenerator.build(accessToken)
             .create(LoginService::class.java)
-            .fetchSlothAuthInfo(
-                LoginSlothRequest(
-                    socialType = socialType
-                )
-            )?.run {
+            .fetchSlothAuthInfo(LoginSlothRequest(socialType))?.run {
                 return LoginState.Success(
                     this.body() ?: LoginSlothResponse()
                 )
-
             } ?: return LoginState.Error(Exception("Login Exception"))
     }
 
     suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): LoginState<LoginGoogleResponse> {
-        RetrofitServiceGenerator.setBuilderOptions(
-            targetUrl = BuildConfig.GOOGLE_BASE_URL
-        )
+        RetrofitServiceGenerator.build(isGoogleLogin = true)
             .create(LoginService::class.java)
             .fetchGoogleAuthInfo(
                 LoginGoogleRequest(

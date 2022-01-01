@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:text="강의 등록하기"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

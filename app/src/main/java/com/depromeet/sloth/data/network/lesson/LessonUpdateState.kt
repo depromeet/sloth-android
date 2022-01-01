@@ -9,8 +9,8 @@ import java.lang.Exception
 
 sealed class LessonUpdateState<out R> {
     data class Success<out T>(val data: T) : LessonUpdateState<T>()
+    data class Unauthorized(val exception: Exception) : LessonUpdateState<Nothing>()
     data class Error(val exception: Exception) : LessonUpdateState<Nothing>()
     object NoContent : LessonUpdateState<Nothing>()
-    object Unauthorized : LessonUpdateState<Nothing>()
     object Forbidden : LessonUpdateState<Nothing>()
 }

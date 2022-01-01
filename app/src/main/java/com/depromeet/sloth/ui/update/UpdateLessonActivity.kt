@@ -15,21 +15,21 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
-import com.depromeet.sloth.data.network.lesson.LessonUpdateInfoRequest
-import com.depromeet.sloth.data.network.lesson.LessonUpdateState
+import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.login.LoginActivity
 import java.text.DecimalFormat
 
 class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateLessonBinding>() {
+    private val preferenceManager = PreferenceManager(this)
 
-    override val viewModel: UpdateLessonViewModel = UpdateLessonViewModel()
+    override val viewModel: UpdateLessonViewModel = UpdateLessonViewModel(preferenceManager)
 
-    override fun getViewBinding(): ActivityUpdateLessonBinding
-        = ActivityUpdateLessonBinding.inflate(layoutInflater)
-
-    private val pm = PreferenceManager(this)
+    override fun getViewBinding(): ActivityUpdateLessonBinding =
+        ActivityUpdateLessonBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
     lateinit var refreshToken: String
@@ -41,11 +41,18 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     lateinit var startDate: ArrayList<String>
     lateinit var endDate: ArrayList<String>
 
+    private var lessonCategoryList = mutableListOf<String>()
+    private var lessonSiteList = mutableListOf<String>()
+
+    lateinit var categoryAdapter: ArrayAdapter<String>
+    lateinit var siteAdapter: ArrayAdapter<String>
+
     companion object {
-        fun newIntent(activity: Activity,lessonId: String, lesson: LessonRegisterRequest) = Intent(activity, UpdateLessonActivity::class.java).apply {
-            putExtra(LESSON_ID, lessonId)
-            putExtra(LESSON, lesson)
-        }
+        fun newIntent(activity: Activity, lessonId: String, lesson: LessonRegisterRequest) =
+            Intent(activity, UpdateLessonActivity::class.java).apply {
+                putExtra(LESSON_ID, lessonId)
+                putExtra(LESSON, lesson)
+            }
 
         private const val LESSON_ID = "lessonId"
         private const val LESSON = "lesson"
@@ -54,21 +61,108 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
             lesson = getParcelableExtra(LESSON)!!
         }
 
-        //siteArraySize = resources.getStringArray(R.array.site_array).size - 1
+        mainScope {
+            initLessonCategory()
+            initLessonSite()
+        }
+    }
 
-        initViews()
+    private suspend fun initLessonCategory() {
+        viewModel.fetchLessonCategoryList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success<List<LessonCategoryResponse>> -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonCategoryList(it.data)
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+
+                is LessonState.Unauthorized -> {
+                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@UpdateLessonActivity))
+                            }
+                        }
+                    dlg.start()
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+
+            }
+        }
+    }
+
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+        lessonCategoryList.add(0, "인강 카테고리를 선택해주세요.")
+        Log.d("lessonCategoryList", "$lessonCategoryList")
+    }
+
+    private suspend fun initLessonSite() {
+        viewModel.fetchLessonSiteList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonSiteList(it.data)
+
+                    initViews()
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+
+                is LessonState.Unauthorized -> {
+                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                //logout
+
+                                //finish
+                                mainScope {
+                                    viewModel.removeAuthToken(preferenceManager)
+                                    startActivity(LoginActivity.newIntent(this@UpdateLessonActivity))
+                                }
+                            }
+                        }
+                    dlg.start()
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+            }
+        }
+    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+        lessonSiteList = data.map { it.siteName }.toMutableList()
+        lessonSiteList.add(0, "강의 사이트를 선택해주세요.")
+        Log.d("lessonSiteList", "$lessonSiteList")
     }
 
     override fun initViews() = with(binding) {
         tbUpdateLesson.setNavigationOnClickListener { finish() }
+
+        initSpinner()
 
         focusInputForm(etUpdateLessonName, btnUpdateLesson)
         focusInputForm(etUpdateLessonCount, btnUpdateLesson)
@@ -80,48 +174,75 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         btnUpdateLesson.setOnClickListener {
             mainScope {
                 val updateLessonRequest = LessonUpdateInfoRequest(
-                    //categoryId = spnUpdateLessonCategory.selectedItemPosition + siteArraySize as Int,
                     categoryId = spnUpdateLessonCategory.selectedItemPosition,
                     lessonName = etUpdateLessonName.text.toString(),
                     siteId = spnUpdateLessonSite.selectedItemPosition,
                     totalNumber = etUpdateLessonCount.text.toString().toInt()
                 )
 
-                viewModel.updateLesson(accessToken = accessToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let {
-                    when(it) {
+                viewModel.updateLesson(
+                    accessToken = accessToken,
+                    lessonId = lessonId,
+                    updateLessonRequest = updateLessonRequest
+                ).let {
+                    when (it) {
                         is LessonUpdateState.Success -> {
                             Log.d("Update Success", "${it.data}")
-                            Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@UpdateLessonActivity,
+                                "강의 정보가 수정되었습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
-
                         is LessonUpdateState.Unauthorized -> {
-                            viewModel.updateLesson(accessToken = refreshToken, lessonId = lessonId, updateLessonRequest = updateLessonRequest).let { updateLessonResponse ->
-                                when (updateLessonResponse) {
-                                    is LessonUpdateState.Success -> {
-                                        Log.d("Update Success", "${updateLessonResponse.data}")
-                                        Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
-                                        finish()
-                                    }
-
-                                    is LessonUpdateState.Error -> {
-                                        Log.d("Delete Error", "${updateLessonResponse.exception}")
-                                        Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정을 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                                    }
-                                    else -> Unit
+                            Log.d("Update Error", "${it.exception}")
+                            val dlg = SlothDialog(this@UpdateLessonActivity, DialogState.FORBIDDEN)
+                            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                                override fun onItemClicked() {
+                                    preferenceManager.removeAuthToken()
+                                    startActivity(LoginActivity.newIntent(this@UpdateLessonActivity))
                                 }
                             }
+                            dlg.start()
                         }
-
                         is LessonUpdateState.Error -> {
                             Log.d("Update Error", "${it.exception}")
-                            Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정을 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@UpdateLessonActivity,
+                                "강의 정보가 수정을 실패하였습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is LessonUpdateState.NoContent -> {
+                            Log.d("Update Error", "NoContent")
+                        }
+                        is LessonUpdateState.Forbidden -> {
+                            Log.d("Update Error", "Forbidden")
                         }
                     }
                 }
             }
 
         }
+    }
+
+    private fun initSpinner() {
+        categoryAdapter = ArrayAdapter<String>(
+            this@UpdateLessonActivity,
+            android.R.layout.simple_list_item_1,
+            lessonCategoryList
+        )
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnUpdateLessonCategory.adapter = categoryAdapter
+
+        siteAdapter = ArrayAdapter<String>(
+            this@UpdateLessonActivity,
+            android.R.layout.simple_list_item_1,
+            lessonSiteList
+        )
+        siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnUpdateLessonSite.adapter = siteAdapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -185,10 +306,9 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val spinnerId = spinner.selectedItemPosition
-                if(spinnerId == 0) {
+                if (spinnerId == 0) {
                     lockButton(button)
-                }
-                else {
+                } else {
                     unlockButton(button)
                 }
             }

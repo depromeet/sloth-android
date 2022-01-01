@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:text="@string/update_lesson"
             android:textColor="@color/gray_600"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.core.widget.NestedScrollView
@@ -48,7 +48,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_name"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,9 +61,9 @@
                 android:background="@drawable/bg_register_rounded_edit_text_gray"
                 android:hint="@string/lesson_name"
                 android:inputType="text"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="16dp"
                 android:textColorHint="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 android:textColor="@color/gray_600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/lesson_count"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/et_update_lesson_name" />
 
@@ -90,9 +90,10 @@
                 android:background="@drawable/bg_register_rounded_edit_text_gray"
                 android:hint="@string/lesson_count"
                 android:inputType="number"
+                android:maxLength="3"
                 android:textColorHint="@color/gray_500"
-                android:paddingHorizontal="12dp"
-                android:textSize="16sp"
+                android:paddingHorizontal="18dp"
+                android:textSize="16dp"
                 android:textColor="@color/gray_500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +107,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_category"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/et_update_lesson_count" />
 
@@ -118,7 +119,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/bg_register_rounded_spinner_grey"
                 android:entries="@array/category_array"
-                android:paddingHorizontal="6dp"
                 android:spinnerMode="dropdown"
                 android:textColor="@color/gray_500"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +133,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_site"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spn_update_lesson_category" />
 
@@ -145,7 +145,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/bg_register_rounded_spinner_grey"
                 android:entries="@array/site_array"
-                android:paddingHorizontal="6dp"
                 android:spinnerMode="dropdown"
                 android:textColor="@color/gray_500"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -160,7 +159,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_start"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spn_update_lesson_site" />
 
@@ -174,7 +173,7 @@
                 android:padding="16dp"
                 android:paddingHorizontal="12dp"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson" />
@@ -187,7 +186,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_end"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson_date" />
 
@@ -201,7 +200,7 @@
                 android:padding="16dp"
                 android:paddingHorizontal="12dp"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson" />
@@ -214,7 +213,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_price"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson_date" />
 
@@ -229,7 +228,7 @@
                 android:paddingHorizontal="12dp"
                 android:text="@string/lesson_price"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price" />
@@ -242,7 +241,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:text="@string/lesson_message"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price_info" />
 
@@ -258,7 +257,7 @@
                 android:paddingHorizontal="12dp"
                 android:text="@string/lesson_message"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message" />

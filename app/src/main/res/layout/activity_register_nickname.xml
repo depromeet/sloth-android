@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:text="@string/register_account_info"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -36,7 +36,7 @@
         android:layout_marginStart="16dp"
         android:text="@string/welcome"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tb_register_nickname" />
@@ -49,7 +49,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/nickname"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_guide" />
 
@@ -64,7 +64,7 @@
         android:hint="@string/nickname_hint"
         android:inputType="text"
         android:paddingHorizontal="18dp"
-        android:textSize="18sp"
+        android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_nickname" />

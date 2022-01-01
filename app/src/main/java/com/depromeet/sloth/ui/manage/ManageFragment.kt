@@ -21,6 +21,7 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.member.MemberInfoResponse
 import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
@@ -29,26 +30,23 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 
 class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
-    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
-
-    override val viewModel: ManageViewModel = ManageViewModel()
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+    lateinit var memberName: String
+    lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
 
     override fun getViewBinding(): FragmentManageBinding =
         FragmentManageBinding.inflate(layoutInflater)
 
-    lateinit var accessToken: String
-
-    lateinit var refreshToken: String
-
-    lateinit var memberName: String
-
-    lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
+    override val viewModel: ManageViewModel
+        get() = ManageViewModel(preferenceManager)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
 
@@ -57,31 +55,21 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
             viewModel.fetchMemberInfo(accessToken).let {
                 when (it) {
-                    is MemberState.Success -> {
+                    is MemberState.Success<MemberInfoResponse> -> {
                         Log.d("fetch Success", "${it.data}")
 
                         initMemberInfo(it.data)
                     }
-
                     is MemberState.Unauthorized -> {
-                        viewModel.fetchMemberInfo(accessToken = refreshToken)
-                            .let { memberResponse ->
-                                when (memberResponse) {
-                                    is MemberState.Success -> {
-                                        Log.d("fetch Success", "${memberResponse.data}")
-
-                                        initMemberInfo(memberResponse.data)
-                                    }
-
-                                    is MemberState.Error -> {
-                                        Log.d("fetch Error", "${memberResponse.exception}")
-                                    }
-                                    else -> Unit
-                                }
+                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(requireActivity()))
                             }
+                        }
+                        dlg.start()
                     }
-
-
                     is MemberState.Error -> {
                         Log.d("fetch error", "${it.exception}")
                     }
@@ -127,46 +115,29 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                     mainScope {
                         viewModel.updateMemberInfo(accessToken, memberUpdateInfoRequest).let {
                             when (it) {
-                                is MemberState.Success -> {
+                                is MemberState.Success<MemberUpdateInfoResponse> -> {
                                     Log.d("Update Success", "${it.data}")
 
                                     updateViews(it.data.memberName)
 
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "닉네임이 변경되었습니다.",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                                 is MemberState.Unauthorized -> {
-                                    viewModel.updateMemberInfo(accessToken = refreshToken,
-                                        memberUpdateInfoRequest).let { memberState ->
-                                        when (memberState) {
-                                            is MemberState.Success -> {
-                                                Log.d("Update Success", "${memberState.data}")
-
-                                                updateViews(memberState.data.memberName)
-
-                                                Toast.makeText(requireContext(),
-                                                    "닉네임이 변경되었습니다.",
-                                                    Toast.LENGTH_SHORT).show()
-                                            }
-
-                                            is MemberState.Error -> {
-                                                Log.d("Update Error", "${memberState.exception}")
-                                                Toast.makeText(requireContext(),
-                                                    "닉네임이 변경 실패하였습니다.",
-                                                    Toast.LENGTH_SHORT).show()
-                                            }
-                                            else -> Unit
-                                        }
-                                    }
+                                    Log.d("Update Error", "${it.exception}")
                                 }
 
                                 is MemberState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "닉네임이 변경 실패하였습니다.",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
@@ -193,12 +164,8 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
             val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    mainScope {
-                        // logout
-                        viewModel.removeAuthToken(pm)
-                        // finish
-                        startActivity(LoginActivity.newIntent(requireActivity()))
-                    }
+                    preferenceManager.removeAuthToken()
+                    startActivity(LoginActivity.newIntent(requireActivity()))
                 }
             }
             dlg.start()
@@ -208,13 +175,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
             val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    //withdraw
-
-                    //finish
-                    mainScope {
-                        viewModel.removeAuthToken(pm)
-                        startActivity(LoginActivity.newIntent(requireActivity()))
-                    }
+                    preferenceManager.removeAuthToken()
                     Toast.makeText(requireContext(), "회원탈퇴 되었습니다", Toast.LENGTH_SHORT).show()
                     startActivity(LoginActivity.newIntent(requireActivity()))
                 }
@@ -231,12 +192,16 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
         val intent = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
-            putExtra(Intent.EXTRA_TEXT,
-                String.format("---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
+            putExtra(
+                Intent.EXTRA_TEXT,
+                String.format(
+                    "---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n",
                     BuildConfig.VERSION_NAME,
                     Build.VERSION.SDK_INT,
                     Build.VERSION.RELEASE,
-                    Build.MODEL))
+                    Build.MODEL
+                )
+            )
             type = "message/rfc822"
         }
         startActivity(intent)

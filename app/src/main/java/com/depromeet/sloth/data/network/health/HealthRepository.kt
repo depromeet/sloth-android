@@ -5,15 +5,12 @@ import java.lang.Exception
 
 class HealthRepository {
     suspend fun getHealth(): HealthState<HealthResponse> {
-        RetrofitServiceGenerator.setBuilderOptions(
-            targetUrl = "Input your test url",
-            authToken = "Input your test token"
-        )
+        RetrofitServiceGenerator.build("Input your test token")
             .create(HealthService::class.java)
             .fetchHealth()?.run {
-            return HealthState.Success(
-                this.body() ?: HealthResponse()
-            )
-        } ?: return HealthState.Error(Exception("Retrofit Exception"))
+                return HealthState.Success(
+                    this.body() ?: HealthResponse()
+                )
+            } ?: return HealthState.Error(Exception("Retrofit Exception"))
     }
 }

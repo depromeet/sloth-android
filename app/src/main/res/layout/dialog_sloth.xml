@@ -24,7 +24,7 @@
         android:layout_marginTop="20dp"
         android:text="@string/dialog_default_message"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         android:background="@drawable/bg_delete_rounded_gray"
         android:text="@string/cancel"
         android:textColor="@color/gray_500"
-        android:textSize="16sp"
+        android:textSize="16dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_dialog_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -51,7 +51,7 @@
         android:background="@drawable/bg_delete_rounded_caution"
         android:text="@string/check"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="16dp"
         app:layout_constraintStart_toEndOf="@+id/btn_dialog_cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

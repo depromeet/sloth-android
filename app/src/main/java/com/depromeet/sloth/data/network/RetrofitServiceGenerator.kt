@@ -11,34 +11,33 @@ object RetrofitServiceGenerator {
     private const val timeoutRead = 30
     private const val timeoutConnect = 30
 
-    private lateinit var retrofit: Retrofit
-    private val builder: Retrofit.Builder = Retrofit.Builder()
-
-    fun setBuilderOptions(
-        targetUrl: String,
-        authToken: String? = null
-    ): Retrofit {
+    private fun setClient(authToken: String? = null): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
-        val authInterceptor = AuthenticationInterceptor(authToken)
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            if (BuildConfig.DEBUG) {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-        }
-
-        httpClient.apply {
-            addInterceptor(authInterceptor)
-            addInterceptor(loggingInterceptor)
+        return httpClient.apply {
+            addInterceptor(AuthenticationInterceptor(authToken))
+            addInterceptor(HttpLoggingInterceptor().apply {
+                if (BuildConfig.DEBUG) {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            })
             connectTimeout(timeoutConnect.toLong(), TimeUnit.SECONDS)
             readTimeout(timeoutRead.toLong(), TimeUnit.SECONDS)
-        }
+        }.build()
+    }
 
-        retrofit = builder
-            .baseUrl(targetUrl)
+    fun build(
+        accessToken: String? = null,
+        isGoogleLogin: Boolean = false
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(
+                when(isGoogleLogin) {
+                    true -> BuildConfig.GOOGLE_BASE_URL
+                    false -> BuildConfig.SLOTH_BASE_URL
+                }
+            )
             .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient.build())
+            .client(setClient(accessToken))
             .build()
-
-        return retrofit
     }
 }

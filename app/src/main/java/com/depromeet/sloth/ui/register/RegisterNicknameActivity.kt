@@ -19,15 +19,13 @@ import java.util.*
 
 
 // 현재 사용하지 않는 화면
-class RegisterNicknameActivity :
-    BaseActivity<RegisterViewModel, ActivityRegisterNicknameBinding>() {
-
-    private val pm: PreferenceManager = PreferenceManager(this)
+class RegisterNicknameActivity : BaseActivity<RegisterViewModel, ActivityRegisterNicknameBinding>() {
+    private val preferenceManager: PreferenceManager = PreferenceManager(this)
 
     lateinit var accessToken: String
 
     override val viewModel: RegisterViewModel
-        get() = RegisterViewModel()
+        get() = RegisterViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityRegisterNicknameBinding =
         ActivityRegisterNicknameBinding.inflate(layoutInflater)
@@ -41,7 +39,7 @@ class RegisterNicknameActivity :
     override fun initViews() = with(binding) {
         tbRegisterNickname.setNavigationOnClickListener { finish() }
 
-        accessToken = pm.getAccessToken().toString()
+        accessToken = preferenceManager.getAccessToken().toString()
 
         focusInputForm(etRegisterNickname, btnRegisterNickname)
 

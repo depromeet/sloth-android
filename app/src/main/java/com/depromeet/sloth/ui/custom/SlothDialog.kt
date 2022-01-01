@@ -6,15 +6,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.Window
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
-import com.bumptech.glide.Glide
 import com.depromeet.sloth.R
 
-class SlothDialog(private val context: Context, val state: DialogState) {
+class SlothDialog(private val context: Context, private val state: DialogState) {
 
     lateinit var onItemClickListener: OnItemClickedListener
 
@@ -25,9 +23,9 @@ class SlothDialog(private val context: Context, val state: DialogState) {
     }
 
     fun start() {
-        /*타이틀바 제거*/
+        // 타이틀바 제거
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        /*커스텀 다이얼로그 radius 적용*/
+        // 커스텀 다이얼로그 radius 적용
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dlg.setContentView(R.layout.dialog_sloth)
 

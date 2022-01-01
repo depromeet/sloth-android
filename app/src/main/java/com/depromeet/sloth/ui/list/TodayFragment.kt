@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
@@ -12,45 +13,43 @@ import com.depromeet.sloth.data.network.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 
 class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
-    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
 
     override val viewModel: LessonViewModel
-        get() = LessonViewModel()
+        get() = LessonViewModel(preferenceManager)
 
     override fun getViewBinding(): FragmentTodayBinding =
         FragmentTodayBinding.inflate(layoutInflater)
 
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        accessToken = pm.getAccessToken().toString()
-        refreshToken = pm.getRefreshToken().toString()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
-        fetchLessonList()
 
         //setTestData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        fetchLessonList()
     }
 
     override fun initViews() {
         with(binding) {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
             ivTodayAlarm.setOnClickListener {
-//                val dlg = WaitDialog(requireContext())
                 val dlg = SlothDialog(requireContext(), DialogState.WAIT)
-                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                    override fun onItemClicked() {
-
-                    }
-                }
                 dlg.start()
             }
         }
@@ -58,57 +57,31 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
-            viewModel.fetchTodayLessonList(
-                accessToken = accessToken
-            ).let {
+            viewModel.fetchTodayLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonTodayResponse>> -> {
-                        Log.d("fetch Success", "${it.data}")
+                        Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
-                    }
                     is LessonState.Unauthorized -> {
-                        viewModel.fetchTodayLessonList(
-                            accessToken = refreshToken
-                        ).let { lessonTodayResponse ->
-                            when (lessonTodayResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonTodayResponse.data}")
-                                    setLessonList(lessonTodayResponse.data)
-                                }
-
-                                is LessonState.Forbidden -> {
-                                    // refresh 토큰이 존재하지 않을 경우 예외 처리
-                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            //logout
-
-                                            //finish
-                                            mainScope {
-                                                viewModel.removeAuthToken(pm)
-                                                startActivity(LoginActivity.newIntent(requireActivity()))
-                                            }
-                                        }
-                                    }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonTodayResponse.exception}")
-                                }
-
-                                else -> Unit
+                        Log.d("Error", "${it.exception}")
+                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(requireActivity()))
                             }
                         }
+                        dlg.start()
                     }
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
                     }
                     is LessonState.Forbidden -> {
                         Log.d("Error", "Forbidden")
+                    }
+                    is LessonState.Error -> {
+                        Log.d("Error", "${it.exception}")
                     }
                 }
             }
@@ -136,9 +109,12 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     nothingHeader,
                     nothingLessonAdapter
                 )
-
                 nothingLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
-                binding.rvTodayLesson.adapter = concatAdapter
+
+                binding.apply {
+                    rvTodayLesson.adapter = concatAdapter
+                    tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+                }
             }
 
             false -> {
@@ -218,7 +194,16 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     notFinishedLessonAdapter.submitList(lessonNotFinishedList)
                 }
 
-                binding.rvTodayLesson.adapter = concatAdapter
+                binding.apply {
+                    rvTodayLesson.adapter = concatAdapter
+                    when {
+                        lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> tvTodayTitleMessage.text =
+                            getString(R.string.home_today_title_win)
+                        lessonFinishedList.isEmpty() && lessonNotFinishedList.isNotEmpty() -> tvTodayTitleMessage.text =
+                            getString(R.string.home_today_title_not_start)
+                        else -> tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+                    }
+                }
             }
         }
     }
@@ -239,20 +224,13 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                         Log.d("update Success", it.data.toString())
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber) {
-                                    fetchLessonList()
-                                }
+                                if (it.data.presentNumber == lesson.untilTodayNumber) fetchLessonList()
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (it.data.presentNumber < lesson.untilTodayNumber) {
-                                    fetchLessonList()
-                                }
+                                if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList()
                             }
                             else -> Unit
                         }
-                    }
-                    is LessonState.Error -> {
-                        Log.d("update Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
                         Log.i("Unauthorized", "refreshToken used")
@@ -261,21 +239,20 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                             count = count,
                             lessonId = lesson.lessonId
                         ).let { lessonUpdateCountResponse ->
-                            when(lessonUpdateCountResponse) {
+                            when (lessonUpdateCountResponse) {
                                 is LessonState.Success -> {
-                                    when(bodyType) {
+                                    when (bodyType) {
                                         TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                             if (lessonUpdateCountResponse.data.presentNumber == lesson.untilTodayNumber) {
                                                 fetchLessonList()
+                                            } else {
                                             }
-                                            else {}
                                         }
                                         TodayLessonAdapter.BodyType.FINISHED -> {
                                             if (lessonUpdateCountResponse.data.presentNumber < lesson.untilTodayNumber) {
                                                 fetchLessonList()
+                                            } else {
                                             }
-
-                                            else {}
                                         }
                                         else -> Unit
                                     }
@@ -293,6 +270,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     }
                     is LessonState.Forbidden -> {
                         Log.d("Error", "Forbidden")
+                    }
+                    is LessonState.Error -> {
+                        Log.d("update Error", "${it.exception}")
                     }
                 }
             }

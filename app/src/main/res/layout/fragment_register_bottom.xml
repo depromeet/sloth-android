@@ -13,7 +13,7 @@
         android:lineSpacingExtra="5sp"
         android:paddingTop="36dp"
         android:text="@string/register_title"
-        android:textSize="24sp"
+        android:textSize="24dp"
         android:textStyle="bold"
         android:translationY="-2.4sp"
         app:layout_constraintBottom_toTopOf="@id/tv_login_policy_sloth"
