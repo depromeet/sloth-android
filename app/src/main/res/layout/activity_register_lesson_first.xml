@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:text="@string/register_new_lesson"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
@@ -41,7 +41,7 @@
         android:layout_marginBottom="16dp"
         android:text="@string/setup_lecture"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/sv_register_lesson"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/lesson_site"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

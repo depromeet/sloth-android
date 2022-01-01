@@ -36,8 +36,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_today_sloth"
-            android:layout_width="186dp"
-            android:layout_height="183dp"
+            android:layout_width="160dp"
+            android:layout_height="163dp"
             android:src="@drawable/ic_home_sloth"
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             tools:text="@string/home_today_title_lose"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="24dp"
             android:textStyle="bold"
             android:layout_marginStart="2dp"
             app:layout_constraintBottom_toBottomOf="@id/iv_today_sloth"

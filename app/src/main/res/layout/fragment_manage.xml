@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/profile_name"
             android:textColor="#363636"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
             android:layout_marginTop="4dp"
             android:text="@string/profile_email"
             android:textColor="#80000000"
-            android:textSize="14sp"
+            android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_manage_profile_name" />
@@ -80,7 +80,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/contact"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/privacy"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -146,7 +146,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/logout"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -181,7 +181,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/withdraw"
                 android:textColor="@color/gray_500"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

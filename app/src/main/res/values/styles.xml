@@ -11,6 +11,6 @@
     </style>
 
     <style name="ChipTextStyle">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">18dp</item>
     </style>
 </resources>

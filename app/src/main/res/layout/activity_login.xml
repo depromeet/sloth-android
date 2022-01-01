@@ -18,9 +18,9 @@
         android:lineSpacingExtra="6sp"
         android:maxLines="2"
         android:text="@string/title_main"
-        android:textSize="28sp"
-        android:translationY="-2.8sp"
+        android:textSize="28dp"
         android:textStyle="bold"
+        android:translationY="-2.8sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginTop="44dp" />
@@ -34,22 +34,22 @@
         android:gravity="top"
         android:lineSpacingExtra="3sp"
         android:text="@string/title_sub"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:translationY="-1.4sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_login_title_main" />
 
     <ImageView
-        android:layout_width="308dp"
-        android:layout_height="210dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.85"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/ic_login_sloth"
         android:contentDescription="@string/ic_login_sloth"
-        app:layout_constraintVertical_bias="0.622" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.622"
+        app:layout_constraintWidth_percent="0.85" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login_start"
@@ -60,7 +60,7 @@
         android:lineSpacingExtra="3sp"
         android:text="@string/start_sloth"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:translationY="-1.6sp"
         app:layout_constraintBottom_toBottomOf="parent" />

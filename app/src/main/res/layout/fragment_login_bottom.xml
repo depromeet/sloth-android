@@ -21,7 +21,7 @@
             android:lineSpacingExtra="4sp"
             android:text="로그인 방법 선택"
             android:textColor="#222222"
-            android:textSize="18sp"
+            android:textSize="18dp"
             android:textStyle="bold"
             android:translationY="-1.8sp"
             app:layout_constraintEnd_toEndOf="parent"

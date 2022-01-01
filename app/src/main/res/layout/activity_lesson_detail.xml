@@ -25,7 +25,7 @@
             android:layout_marginEnd="16dp"
             android:text="@string/update"
             android:textColor="@color/gray_600"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:textColor="#2B2B2B"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tv_detail_lesson_lose_money"
                     app:layout_constraintTop_toTopOf="parent"
@@ -81,7 +81,7 @@
                     android:layout_marginEnd="76dp"
                     android:text="@string/waste_money"
                     android:textColor="@color/gray_500"
-                    android:textSize="13sp"
+                    android:textSize="13dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_summary" />
 
@@ -93,7 +93,7 @@
                     android:layout_marginEnd="72dp"
                     android:text="@string/waste_money_info"
                     android:textColor="@color/primary_500"
-                    android:textSize="24sp"
+                    android:textSize="24dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tv_detail_lesson_lose_money"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_lose_money" />
@@ -115,7 +115,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="40dp"
                     android:textColor="@color/gray_600"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -132,7 +132,7 @@
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="4dp"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="12dp"
                     android:visibility="gone"
                     app:layout_constraintStart_toEndOf="@id/tv_detail_lesson_remain_day"
                     app:layout_constraintTop_toTopOf="parent"
@@ -146,7 +146,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/gray_600"
-                    android:textSize="24sp"
+                    android:textSize="24dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_remain_day"
@@ -164,7 +164,7 @@
                     android:paddingVertical="4dp"
                     android:text="개발"
                     android:textColor="@color/gray_600"
-                    android:textSize="12sp"
+                    android:textSize="12dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_name"
                     tools:ignore="HardcodedText" />
@@ -181,7 +181,7 @@
                     android:paddingVertical="4dp"
                     android:text="인프런"
                     android:textColor="@color/gray_600"
-                    android:textSize="12sp"
+                    android:textSize="12dp"
                     app:layout_constraintStart_toEndOf="@id/tv_detail_lesson_category"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_name"
                     tools:ignore="HardcodedText" />
@@ -210,7 +210,7 @@
                             android:layout_marginTop="20dp"
                             android:text="@string/lesson_progress"
                             android:textColor="@color/gray_600"
-                            android:textSize="16sp"
+                            android:textSize="16dp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -229,7 +229,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/lesson_goal_date"
                                 android:textColor="@color/gray_500"
-                                android:textSize="14sp"
+                                android:textSize="14dp"
                                 app:layout_constraintEnd_toStartOf="@id/tv_detail_lesson_end_date_info"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -260,7 +260,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/lesson_present_number"
                                 android:textColor="@color/gray_500"
-                                android:textSize="14sp"
+                                android:textSize="14dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintEnd_toStartOf="@id/tv_detail_lesson_present_number_info"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -270,7 +270,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/gray_600"
-                                android:textSize="14sp"
+                                android:textSize="14dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:text="@string/lesson_present_number_info" />
@@ -287,7 +287,7 @@
                             android:layout_marginTop="82dp"
                             android:text="@string/lesson_current_progress"
                             android:textColor="@color/gray_500"
-                            android:textSize="12sp"
+                            android:textSize="12dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -323,7 +323,7 @@
                             android:layout_marginTop="109dp"
                             android:text="@string/lesson_goal_progress"
                             android:textColor="@color/gray_500"
-                            android:textSize="12sp"
+                            android:textSize="12dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -363,7 +363,7 @@
                     android:layout_marginTop="40dp"
                     android:text="@string/lesson_info"
                     android:textColor="@color/gray_600"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
@@ -376,7 +376,7 @@
                     android:layout_marginTop="92dp"
                     android:text="@string/lesson_count"
                     android:textColor="@color/gray_500"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
@@ -387,7 +387,7 @@
                     android:layout_marginTop="92dp"
                     android:layout_marginEnd="16dp"
                     android:textColor="@color/gray_600"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"
                     tools:text="@string/lesson_count_info" />
@@ -400,7 +400,7 @@
                     android:layout_marginTop="128dp"
                     android:text="@string/lesson_period"
                     android:textColor="@color/gray_500"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
@@ -411,7 +411,7 @@
                     android:layout_marginTop="128dp"
                     android:layout_marginEnd="16dp"
                     android:textColor="@color/gray_600"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"
                     tools:text="@string/lesson_period_date_info" />
@@ -424,7 +424,7 @@
                     android:layout_marginTop="164dp"
                     android:text="@string/lesson_price"
                     android:textColor="@color/gray_500"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
@@ -435,7 +435,7 @@
                     android:layout_marginTop="164dp"
                     android:layout_marginEnd="16dp"
                     android:textColor="@color/gray_600"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"
                     tools:text="@string/lesson_price_info" />
@@ -448,7 +448,7 @@
                     android:layout_marginTop="200dp"
                     android:text="@string/lesson_message"
                     android:textColor="@color/gray_500"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress" />
 
@@ -461,7 +461,7 @@
                     android:layout_marginEnd="16dp"
                     android:gravity="end"
                     android:textColor="@color/gray_600"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_detail_lesson_message"
                     app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"

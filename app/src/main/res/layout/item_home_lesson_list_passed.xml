@@ -18,7 +18,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:text="개발"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
@@ -33,7 +33,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:text="인프런"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="12dp"
         app:layout_constraintStart_toEndOf="@id/tv_lesson_list_category"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
@@ -45,7 +45,7 @@
         android:layout_marginTop="8dp"
         android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
         app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_category"
         tools:ignore="HardcodedText" />
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="강의 개수"
-        android:textSize="12sp"
+        android:textSize="12dp"
         app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
         app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
         tools:ignore="HardcodedText" />
@@ -69,7 +69,7 @@
         android:layout_marginTop="16dp"
         android:text="50"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="12dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/tv_lesson_list_total_count_start"
         app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
@@ -82,7 +82,7 @@
         android:layout_marginTop="16dp"
         android:text="강"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="12dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/tv_lesson_list_total_count"
         app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"

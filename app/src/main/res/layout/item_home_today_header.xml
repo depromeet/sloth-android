@@ -13,6 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textColor="#565656"
-        android:textSize="18sp"/>
+        android:textSize="18dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
