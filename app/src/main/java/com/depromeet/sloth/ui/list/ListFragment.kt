@@ -195,7 +195,7 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
         val startDate = dateFormat.parse(startDateString)
         val todayDate = Calendar.getInstance()
         val endDate = dateFormat.parse(endDateString)
-        val isPassed = (endDate.time - todayDate.time.time) < 0L
+        val isPassed = (endDate.time - todayDate.time.time + 86400000L) < 0L
         val isPlanning = (todayDate.time.time - startDate.time) < 0L
 
         return when {
