@@ -324,16 +324,8 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                                                                 object :
                                                                                     SlothDialog.OnItemClickedListener {
                                                                                     override fun onItemClicked() {
-                                                                                        //logout
-
-                                                                                        //finish
-                                                                                        mainScope {
-                                                                                            viewModel.removeAuthToken(
-                                                                                                preferenceManager)
-                                                                                            startActivity(
-                                                                                                LoginActivity.newIntent(
-                                                                                                    this@RegisterLessonSecondActivity))
-                                                                                        }
+                                                                                        preferenceManager.removeAuthToken()
+                                                                                        startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
                                                                                     }
                                                                                 }
                                                                             dlg.start()
@@ -347,11 +339,8 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                                                                 object :
                                                                                     SlothDialog.OnItemClickedListener {
                                                                                     override fun onItemClicked() {
-                                                                                        //logout
-
-                                                                                        //finish
-                                                                                        mainScope { viewModel.removeAuthToken(preferenceManager)
-                                                                                            startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity)) }
+                                                                                        preferenceManager.removeAuthToken()
+                                                                                        startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
                                                                                     }
                                                                                 }
                                                                             dlg.start()

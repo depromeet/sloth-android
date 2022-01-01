@@ -108,17 +108,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                                         dlg.onItemClickListener =
                                             object : SlothDialog.OnItemClickedListener {
                                                 override fun onItemClicked() {
-                                                    //logout
-
-                                                    //finish
-                                                    mainScope {
-                                                        viewModel.removeAuthToken(preferenceManager)
-                                                        startActivity(
-                                                            LoginActivity.newIntent(
-                                                                this@LessonDetailActivity
-                                                            )
-                                                        )
-                                                    }
+                                                    preferenceManager.removeAuthToken()
+                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
                                                 }
                                             }
                                         dlg.start()
@@ -129,13 +120,8 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                                         dlg.onItemClickListener =
                                             object : SlothDialog.OnItemClickedListener {
                                                 override fun onItemClicked() {
-                                                    //logout
-
-                                                    //finish
-                                                    mainScope {
-                                                        viewModel.removeAuthToken(preferenceManager)
-                                                        startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
-                                                    }
+                                                    preferenceManager.removeAuthToken()
+                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
                                                 }
                                             }
                                         dlg.start()

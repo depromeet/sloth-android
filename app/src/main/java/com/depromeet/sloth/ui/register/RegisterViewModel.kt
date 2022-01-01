@@ -7,9 +7,6 @@ import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.ui.base.BaseViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RegisterViewModel(
@@ -18,9 +15,10 @@ class RegisterViewModel(
     private val lessonRepository = LessonRepository(preferenceManager)
     private val memberRepository = MemberRepository(preferenceManager)
 
-    suspend fun fetchMemberInfo(accessToken: String) = viewModelScope.async {
-        memberRepository.fetchMemberInfo(accessToken)
-    }.await()
+    suspend fun fetchMemberInfo(accessToken: String) =
+        withContext(viewModelScope.coroutineContext) {
+            memberRepository.fetchMemberInfo(accessToken)
+        }
 
     suspend fun updateMemberInfo(
         accessToken: String,
@@ -45,12 +43,4 @@ class RegisterViewModel(
         withContext(viewModelScope.coroutineContext) {
             lessonRepository.fetchLessonSiteList(accessToken)
         }
-
-    suspend fun removeAuthToken(pm: PreferenceManager) =
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                pm.removeAuthToken()
-            }
-        }
-
 }
