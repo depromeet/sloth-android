@@ -21,22 +21,20 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
-    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
-
-    override val viewModel: LessonViewModel
-        get() = LessonViewModel()
-
-    override fun getViewBinding(): FragmentListBinding =
-        FragmentListBinding.inflate(layoutInflater)
-
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
+    override val viewModel: LessonViewModel
+        get() = LessonViewModel(preferenceManager)
+
+    override fun getViewBinding(): FragmentListBinding =
+        FragmentListBinding.inflate(layoutInflater)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accessToken = pm.getAccessToken()
-        refreshToken = pm.getRefreshToken()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
 
@@ -54,58 +52,27 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
             viewModel.fetchAllLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonAllResponse>> -> {
-                        Log.d("fetch Success", "${it.data}")
+                        Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
                     is LessonState.Unauthorized -> {
-                        viewModel.fetchAllLessonList(accessToken = refreshToken).let { lessonInfoResponse ->
-                            when(lessonInfoResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonInfoResponse.data}")
-                                    setLessonList(lessonInfoResponse.data)
+                        Log.d("Error", "${it.exception}")
+                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                //logout
+
+                                //finish
+                                mainScope {
+                                    viewModel.removeAuthToken(preferenceManager)
+                                    startActivity(LoginActivity.newIntent(requireActivity()))
                                 }
-
-                                is LessonState.Unauthorized -> {
-                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            //logout
-
-                                            //finish
-                                            mainScope {
-                                                viewModel.removeAuthToken(pm)
-                                                startActivity(LoginActivity.newIntent(requireActivity()))
-                                            }
-                                        }
-                                    }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Forbidden -> {
-                                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            //logout
-
-                                            //finish
-                                            mainScope {
-                                                viewModel.removeAuthToken(pm)
-                                                startActivity(LoginActivity.newIntent(requireActivity()))
-                                            }
-                                        }
-                                    }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonInfoResponse.exception}")
-                                }
-                                else -> Unit
                             }
                         }
+                        dlg.start()
                     }
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")

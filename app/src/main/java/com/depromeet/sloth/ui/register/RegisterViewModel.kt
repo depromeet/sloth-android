@@ -2,19 +2,21 @@ package com.depromeet.sloth.ui.register
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RegisterViewModel: BaseViewModel() {
-    private val lessonRepository = LessonRepository()
-    private val memberRepository = MemberRepository()
+class RegisterViewModel(
+    preferenceManager: PreferenceManager
+): BaseViewModel() {
+    private val lessonRepository = LessonRepository(preferenceManager)
+    private val memberRepository = MemberRepository(preferenceManager)
 
     suspend fun fetchMemberInfo(accessToken: String) = viewModelScope.async {
         memberRepository.fetchMemberInfo(accessToken)
@@ -23,24 +25,26 @@ class RegisterViewModel: BaseViewModel() {
     suspend fun updateMemberInfo(
         accessToken: String,
         memberUpdateInfoRequest: MemberUpdateInfoRequest
-    ) = viewModelScope.async {
+    ) = withContext(viewModelScope.coroutineContext) {
         memberRepository.updateMemberInfo(accessToken, memberUpdateInfoRequest)
-    }.await()
+    }
 
     suspend fun registerLesson(
         accessToken: String,
         request: LessonRegisterRequest
-    ) = viewModelScope.async {
+    ) = withContext(viewModelScope.coroutineContext) {
         lessonRepository.registerLesson(accessToken, request)
-    }.await()
+    }
 
-    suspend fun fetchLessonCategoryList(accessToken: String) = viewModelScope.async {
-        lessonRepository.fetchLessonCategoryList(accessToken)
-    }.await()
+    suspend fun fetchLessonCategoryList(accessToken: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.fetchLessonCategoryList(accessToken)
+        }
 
-    suspend fun fetchLessonSiteList(accessToken: String) = viewModelScope.async {
-        lessonRepository.fetchLessonSiteList(accessToken)
-    }.await()
+    suspend fun fetchLessonSiteList(accessToken: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.fetchLessonSiteList(accessToken)
+        }
 
     suspend fun removeAuthToken(pm: PreferenceManager) =
         viewModelScope.launch {

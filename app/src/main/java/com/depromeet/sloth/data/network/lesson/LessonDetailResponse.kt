@@ -28,7 +28,7 @@ import java.time.LocalDateTime
  */
 
 
-data class LessonDetailResponse @RequiresApi(Build.VERSION_CODES.O) constructor(
+data class LessonDetailResponse (
     var alertDays: String? = "",
     var categoryName: String = "",
     var currentProgressRate: Int = 0,

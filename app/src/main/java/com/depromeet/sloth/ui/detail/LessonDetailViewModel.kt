@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LessonDetailViewModel: BaseViewModel() {
-    private val lessonRepository = LessonRepository()
+class LessonDetailViewModel(
+    preferenceManager: PreferenceManager
+) : BaseViewModel() {
+    private val lessonRepository = LessonRepository(preferenceManager)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchLessonDetail(accessToken: String, lessonId: String) =
         withContext(viewModelScope.coroutineContext) {
             lessonRepository.fetchLessonDetail(accessToken, lessonId)
@@ -24,10 +25,9 @@ class LessonDetailViewModel: BaseViewModel() {
             lessonRepository.deleteLesson(accessToken, lessonId)
         }
 
-    suspend fun removeAuthToken(pm: PreferenceManager) =
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                pm.removeAuthToken()
-            }
+    suspend fun removeAuthToken(pm: PreferenceManager) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            pm.removeAuthToken()
         }
+    }
 }

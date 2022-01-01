@@ -9,12 +9,11 @@ import android.content.SharedPreferences
 class PreferenceManager(
     private val context: Context
 ) {
-
     companion object {
-        const val PREFERENCES_NAME = "Sloth-pref"
+        private const val PREFERENCES_NAME = "Sloth-pref"
         private const val DEFAULT_STRING_VALUE = ""
-        const val ACCESS_TOKEN = "accessToken"
-        const val REFRESH_TOKEN = "refreshToken"
+        private const val ACCESS_TOKEN = "accessToken"
+        private const val REFRESH_TOKEN = "refreshToken"
     }
 
     private fun getPreferences(context: Context): SharedPreferences {
@@ -30,6 +29,11 @@ class PreferenceManager(
      */
     fun clear() {
         editor.clear()
+        editor.apply()
+    }
+
+    fun updateAccessToken(accessToken: String) {
+        editor.putString(ACCESS_TOKEN, accessToken)
         editor.apply()
     }
 

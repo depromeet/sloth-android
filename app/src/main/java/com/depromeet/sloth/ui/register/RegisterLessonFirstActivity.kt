@@ -23,7 +23,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import kotlin.math.ceil
-import java.util.*
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonCategoryResponse
@@ -34,13 +33,11 @@ import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.login.LoginActivity
 
 
-class RegisterLessonFirstActivity :
-    BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
-
-    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(this) }
 
     override val viewModel: RegisterViewModel
-        get() = RegisterViewModel()
+        get() = RegisterViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityRegisterLessonFirstBinding =
         ActivityRegisterLessonFirstBinding.inflate(layoutInflater)
@@ -73,8 +70,8 @@ class RegisterLessonFirstActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accessToken = pm.getAccessToken()
-        refreshToken = pm.getRefreshToken()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         resultLauncher = registerForActivityResult(
             StartActivityForResult()
@@ -100,56 +97,16 @@ class RegisterLessonFirstActivity :
                 is LessonState.Error -> {
                     Log.d("fetch Error", "${it.exception}")
                 }
-
                 is LessonState.Unauthorized -> {
-                    viewModel.fetchLessonCategoryList(accessToken = refreshToken)
-                        .let { lessonCategoryResponse ->
-                            when (lessonCategoryResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonCategoryResponse.data}")
-                                    setLessonCategoryList(lessonCategoryResponse.data)
-                                }
-
-                                is LessonState.Unauthorized -> {
-                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener =
-                                        object : SlothDialog.OnItemClickedListener {
-                                            override fun onItemClicked() {
-                                                //logout
-
-                                                //finish
-                                                mainScope {
-                                                    viewModel.removeAuthToken(pm)
-                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
-                                                }
-                                            }
-                                        }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Forbidden -> {
-                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener =
-                                        object : SlothDialog.OnItemClickedListener {
-                                            override fun onItemClicked() {
-                                                //logout
-
-                                                //finish
-                                                mainScope {
-                                                    viewModel.removeAuthToken(pm)
-                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
-                                                }
-                                            }
-                                        }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonCategoryResponse.exception}")
-                                }
-                                else -> Unit
+                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
                             }
                         }
+                    dlg.start()
                 }
                 is LessonState.NotFound -> {
                     Log.d("Error", "NotFound")
@@ -181,56 +138,15 @@ class RegisterLessonFirstActivity :
                 }
 
                 is LessonState.Unauthorized -> {
-                    viewModel.fetchLessonSiteList(accessToken = refreshToken)
-                        .let { lessonSiteResponse ->
-                            when (lessonSiteResponse) {
-                                is LessonState.Success -> {
-                                    Log.d("fetch Success", "${lessonSiteResponse.data}")
-                                    setLessonSiteList(lessonSiteResponse.data)
-
-                                    initViews()
-                                }
-
-                                is LessonState.Unauthorized -> {
-                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener =
-                                        object : SlothDialog.OnItemClickedListener {
-                                            override fun onItemClicked() {
-                                                //logout
-
-                                                //finish
-                                                mainScope {
-                                                    viewModel.removeAuthToken(pm)
-                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
-                                                }
-                                            }
-                                        }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Forbidden -> {
-                                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                    dlg.onItemClickListener =
-                                        object : SlothDialog.OnItemClickedListener {
-                                            override fun onItemClicked() {
-                                                //logout
-
-                                                //finish
-                                                mainScope {
-                                                    viewModel.removeAuthToken(pm)
-                                                    startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
-                                                }
-                                            }
-                                        }
-                                    dlg.start()
-                                }
-
-                                is LessonState.Error -> {
-                                    Log.d("fetch Error", "${lessonSiteResponse.exception}")
-                                }
-                                else -> Unit
+                    val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@RegisterLessonFirstActivity))
                             }
                         }
+                    dlg.start()
                 }
                 is LessonState.NotFound -> {
                     Log.d("Error", "NotFound")

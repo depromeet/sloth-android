@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.detail
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -15,8 +14,8 @@ import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
@@ -26,35 +25,23 @@ import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import java.text.DecimalFormat
 
 class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonDetailBinding>() {
+    private val preferenceManager = PreferenceManager(this)
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+    lateinit var lessonId: String
+    lateinit var lessonPrice: Number
+    lateinit var totalNumber: String
+    lateinit var presentNumber: String
+    lateinit var startDateInfo: String
+    lateinit var endDateInfo: String
+    lateinit var lesson: LessonRegisterRequest
+    lateinit var categoryArray: Array<String>
+    lateinit var siteArray: Array<String>
 
-    override val viewModel: LessonDetailViewModel = LessonDetailViewModel()
+    override val viewModel: LessonDetailViewModel = LessonDetailViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityLessonDetailBinding =
         ActivityLessonDetailBinding.inflate(layoutInflater)
-
-    private val pm = PreferenceManager(this)
-
-    lateinit var accessToken: String
-
-    lateinit var refreshToken: String
-
-    lateinit var lessonId: String
-
-    lateinit var lessonPrice: Number
-
-    lateinit var totalNumber: String
-
-    lateinit var presentNumber: String
-
-    lateinit var startDateInfo: String
-
-    lateinit var endDateInfo: String
-
-    lateinit var lesson: LessonRegisterRequest
-
-    lateinit var categoryArray: Array<String>
-
-    lateinit var siteArray: Array<String>
 
     companion object {
         fun newIntent(context: Context, lessonId: String, lessonPrice: Int) =
@@ -73,9 +60,9 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
         initViews()
 
-        accessToken = pm.getAccessToken()
+        accessToken = preferenceManager.getAccessToken()
 
-        refreshToken = pm.getRefreshToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         categoryArray = resources.getStringArray(R.array.category_array)
 
@@ -83,7 +70,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
 
@@ -98,7 +84,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         mainScope {
             viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
-                    is LessonState.Success -> {
+                    is LessonState.Success<LessonDetailResponse> -> {
                         Log.d("fetch Success", "${it.data}")
 
                         initLessonInfo(it.data)
@@ -115,8 +101,10 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
                                     }
 
                                     is LessonState.Unauthorized -> {
-                                        val dlg = SlothDialog(this@LessonDetailActivity,
-                                            DialogState.FORBIDDEN)
+                                        val dlg = SlothDialog(
+                                            this@LessonDetailActivity,
+                                            DialogState.FORBIDDEN
+                                        )
                                         dlg.onItemClickListener =
                                             object : SlothDialog.OnItemClickedListener {
                                                 override fun onItemClicked() {
@@ -124,7 +112,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
                                                     //finish
                                                     mainScope {
-                                                        viewModel.removeAuthToken(pm)
+                                                        viewModel.removeAuthToken(preferenceManager)
                                                         startActivity(
                                                             LoginActivity.newIntent(
                                                                 this@LessonDetailActivity
@@ -145,7 +133,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
                                                     //finish
                                                     mainScope {
-                                                        viewModel.removeAuthToken(pm)
+                                                        viewModel.removeAuthToken(preferenceManager)
                                                         startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
                                                     }
                                                 }
@@ -178,9 +166,13 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
         tbDetailLesson.setNavigationOnClickListener { finish() }
 
         tvDetailUpdateLesson.setOnClickListener {
-            startActivity(UpdateLessonActivity.newIntent(this@LessonDetailActivity,
-                lessonId,
-                lesson))
+            startActivity(
+                UpdateLessonActivity.newIntent(
+                    this@LessonDetailActivity,
+                    lessonId,
+                    lesson
+                )
+            )
         }
 
         btnDetailDeleteLesson.setOnClickListener {
@@ -199,33 +191,22 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             viewModel.deleteLesson(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
                     is LessonState.Success<*> -> {
-                        Log.d("Delete Success", "${it.data}")
+                        Log.d("Success", "${it.data}")
                         Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                         finish()
                     }
-
                     is LessonState.Unauthorized -> {
-                        viewModel.deleteLesson(accessToken = refreshToken, lessonId = lessonId)
-                            .let { deleteLessonResponse ->
-                                when (deleteLessonResponse) {
-                                    is LessonState.Success -> {
-                                        Log.d("Delete Success", "${deleteLessonResponse.data}")
-                                        Toast.makeText(this@LessonDetailActivity,
-                                            "강의가 삭제되었습니다.",
-                                            Toast.LENGTH_SHORT).show()
-                                        finish()
-                                    }
-
-                                    is LessonState.Error -> {
-                                        Log.d("Delete Error", "${deleteLessonResponse.exception}")
-                                    }
-                                    else -> Unit
-                                }
-                            }
+                        Log.d("Error", "${it.exception}")
                     }
 
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
+                    }
                     is LessonState.Error -> {
-                        Log.d("Delete Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
                 }
             }
@@ -255,14 +236,14 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
             // 목표 진행율
             pbDetailGoalLessonProgress.labelText =
-                if (data.goalProgressRate > 100 ) {
+                if (data.goalProgressRate > 100) {
                     "100%"
                 } else {
                     "${data.goalProgressRate}%"
                 }
 
             pbDetailGoalLessonProgress.progress =
-                if (data.goalProgressRate > 100 ) {
+                if (data.goalProgressRate > 100) {
                     100F
                 } else {
                     data.goalProgressRate.toFloat()
@@ -277,7 +258,7 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
 
             // 현재 내가 날린 돈
             tvDetailLessonLoseMoneyInfo.text =
-                if(data.wastePrice > lessonPrice as Int) {
+                if (data.wastePrice > lessonPrice as Int) {
                     changeDecimalFormat(lessonPrice as Int)
                 } else {
                     changeDecimalFormat(data.wastePrice)
@@ -286,12 +267,11 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             // 남은 날짜
             tvDetailLessonRemainDay.text =
                 if (data.remainDay < 0) {
-                    "D+${(data.remainDay)*-1}"
+                    "D+${(data.remainDay) * -1}"
                 } else {
-                    if( data.remainDay == 0) {
+                    if (data.remainDay == 0) {
                         getString(R.string.d_day)
-                    }
-                    else {
+                    } else {
                         "D-${(data.remainDay)}"
                     }
                 }
@@ -300,14 +280,21 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
             if (data.remainDay in 0..10) {
                 tvDetailLessonWarning.visibility = View.VISIBLE
                 tvDetailLessonWarning.text = getString(R.string.lesson_warning)
-                tvDetailLessonRemainDay.setTextColor(ContextCompat.getColor(this@LessonDetailActivity,
-                    R.color.error))
+                tvDetailLessonRemainDay.setTextColor(
+                    ContextCompat.getColor(
+                        this@LessonDetailActivity,
+                        R.color.error
+                    )
+                )
             }
 
             // 마감
             if (data.remainDay < 0) {
                 tvDetailLessonWarning.visibility = View.VISIBLE
-                tvDetailLessonWarning.background = AppCompatResources.getDrawable(this@LessonDetailActivity, R.drawable.bg_rounded_chip_black)
+                tvDetailLessonWarning.background = AppCompatResources.getDrawable(
+                    this@LessonDetailActivity,
+                    R.drawable.bg_rounded_chip_black
+                )
                 tvDetailLessonWarning.text = getString(R.string.lesson_close)
             }
 

@@ -35,16 +35,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
 
-class RegisterLessonSecondActivity :
-    BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
+class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
+    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(this) }
 
     override val viewModel: RegisterViewModel
-        get() = RegisterViewModel()
+        get() = RegisterViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
         ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
-
-    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
 
     private var flag = 0
 
@@ -94,8 +92,8 @@ class RegisterLessonSecondActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        accessToken = pm.getAccessToken()
-        refreshToken = pm.getRefreshToken()
+        accessToken = preferenceManager.getAccessToken()
+        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
     }
@@ -331,7 +329,7 @@ class RegisterLessonSecondActivity :
                                                                                         //finish
                                                                                         mainScope {
                                                                                             viewModel.removeAuthToken(
-                                                                                                pm)
+                                                                                                preferenceManager)
                                                                                             startActivity(
                                                                                                 LoginActivity.newIntent(
                                                                                                     this@RegisterLessonSecondActivity))
@@ -352,13 +350,8 @@ class RegisterLessonSecondActivity :
                                                                                         //logout
 
                                                                                         //finish
-                                                                                        mainScope {
-                                                                                            viewModel.removeAuthToken(
-                                                                                                pm)
-                                                                                            startActivity(
-                                                                                                LoginActivity.newIntent(
-                                                                                                    this@RegisterLessonSecondActivity))
-                                                                                        }
+                                                                                        mainScope { viewModel.removeAuthToken(preferenceManager)
+                                                                                            startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity)) }
                                                                                     }
                                                                                 }
                                                                             dlg.start()
