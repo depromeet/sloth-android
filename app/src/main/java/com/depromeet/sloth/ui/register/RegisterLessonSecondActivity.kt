@@ -278,88 +278,18 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                                             }
 
                                                             is LessonState.Unauthorized -> {
-                                                                viewModel.registerLesson(
-                                                                    accessToken = refreshToken,
-                                                                    LessonRegisterRequest(
-                                                                        alertDays = alertDays,
-                                                                        categoryId = categoryId.toInt(),
-                                                                        endDate = endDate,
-                                                                        lessonName = lessonName,
-                                                                        message = message,
-                                                                        price = etRegisterLessonPriceInfo.text.toString()
-                                                                            .toInt(),
-                                                                        siteId = siteId.toInt(),
-                                                                        startDate = startDate,
-                                                                        totalNumber = totalNumber.toInt()
-                                                                    )
-                                                                ).let { registerLessonResponse ->
-                                                                    when (registerLessonResponse) {
-                                                                        is LessonState.Success -> {
-                                                                            Log.d(
-                                                                                "Register Success",
-                                                                                "${registerLessonResponse.data}"
-                                                                            )
-
-                                                                            Toast.makeText(
-                                                                                this@RegisterLessonSecondActivity,
-                                                                                "강의가 등록되었습니다.",
-                                                                                Toast.LENGTH_SHORT
-                                                                            ).show()
-
-                                                                            setResult(
-                                                                                RESULT_OK,
-                                                                                Intent(
-                                                                                    this@RegisterLessonSecondActivity,
-                                                                                    RegisterLessonFirstActivity::class.java
-                                                                                )
-                                                                            )
-                                                                            if (!isFinishing) finish()
+                                                                val dlg = SlothDialog(
+                                                                    this@RegisterLessonSecondActivity,
+                                                                    DialogState.FORBIDDEN)
+                                                                dlg.onItemClickListener =
+                                                                    object :
+                                                                        SlothDialog.OnItemClickedListener {
+                                                                        override fun onItemClicked() {
+                                                                            preferenceManager.removeAuthToken()
+                                                                            startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
                                                                         }
-
-                                                                        is LessonState.Unauthorized -> {
-                                                                            val dlg = SlothDialog(
-                                                                                this@RegisterLessonSecondActivity,
-                                                                                DialogState.FORBIDDEN)
-                                                                            dlg.onItemClickListener =
-                                                                                object :
-                                                                                    SlothDialog.OnItemClickedListener {
-                                                                                    override fun onItemClicked() {
-                                                                                        preferenceManager.removeAuthToken()
-                                                                                        startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
-                                                                                    }
-                                                                                }
-                                                                            dlg.start()
-                                                                        }
-
-                                                                        is LessonState.Forbidden -> {
-                                                                            val dlg = SlothDialog(
-                                                                                this@RegisterLessonSecondActivity,
-                                                                                DialogState.FORBIDDEN)
-                                                                            dlg.onItemClickListener =
-                                                                                object :
-                                                                                    SlothDialog.OnItemClickedListener {
-                                                                                    override fun onItemClicked() {
-                                                                                        preferenceManager.removeAuthToken()
-                                                                                        startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
-                                                                                    }
-                                                                                }
-                                                                            dlg.start()
-                                                                        }
-
-                                                                        is LessonState.Error -> {
-                                                                            Log.d(
-                                                                                "Register Error",
-                                                                                "${registerLessonResponse.exception}"
-                                                                            )
-                                                                            Toast.makeText(
-                                                                                this@RegisterLessonSecondActivity,
-                                                                                "강의 등록을 실패하였습니다.",
-                                                                                Toast.LENGTH_SHORT
-                                                                            ).show()
-                                                                        }
-                                                                        else -> Unit
                                                                     }
-                                                                }
+                                                                dlg.start()
                                                             }
 
                                                             is LessonState.Error -> {
