@@ -51,7 +51,7 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
         initViews()
 
         mainScope {
-            binding.pbManage.visibility = View.VISIBLE
+            showProgress()
 
             viewModel.fetchMemberInfo(accessToken).let {
                 when (it) {
@@ -76,7 +76,8 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
                     else -> Unit
                 }
             }
-            binding.pbManage.visibility = View.GONE
+
+            hideProgress()
         }
     }
 
