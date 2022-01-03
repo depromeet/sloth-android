@@ -29,8 +29,8 @@
     <string name="lesson_count">강의 개수</string>
     <string name="lesson_category">카테고리</string>
     <string name="lesson_site">강의 사이트</string>
-    <string name="lesson_start">강의 시작일</string>
-    <string name="lesson_end">완강 목표일</string>
+    <string name="lesson_start_date">강의 시작일</string>
+    <string name="lesson_finish_date">완강 목표일</string>
     <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
     <string name="lesson_price">강의 금액</string>
     <string name="alert_cycle">푸시 알람 주기</string>
