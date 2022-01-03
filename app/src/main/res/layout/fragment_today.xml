@@ -28,10 +28,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_today_alarm"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:src="@drawable/ic_home_today_alarm"
-            app:layout_constraintEnd_toStartOf="@id/gl_end"
+            android:layout_width="23dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_home_lesson_list_alarm"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
