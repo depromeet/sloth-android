@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
@@ -28,9 +29,15 @@ import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+@AndroidEntryPoint
+class ManageFragment : BaseFragment<FragmentManageBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: ManageViewModel by activityViewModels()
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
     lateinit var memberName: String
@@ -38,9 +45,6 @@ class ManageFragment : BaseFragment<ManageViewModel, FragmentManageBinding>() {
 
     override fun getViewBinding(): FragmentManageBinding =
         FragmentManageBinding.inflate(layoutInflater)
-
-    override val viewModel: ManageViewModel
-        get() = ManageViewModel(preferenceManager)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

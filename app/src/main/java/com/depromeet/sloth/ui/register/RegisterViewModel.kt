@@ -1,7 +1,7 @@
 package com.depromeet.sloth.ui.register
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.member.MemberRepository
@@ -9,12 +9,10 @@ import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.withContext
 
-class RegisterViewModel(
-    preferenceManager: PreferenceManager
+class RegisterViewModel @ViewModelInject constructor(
+    private val lessonRepository: LessonRepository,
+    private val memberRepository: MemberRepository
 ): BaseViewModel() {
-    private val lessonRepository = LessonRepository(preferenceManager)
-    private val memberRepository = MemberRepository(preferenceManager)
-
     suspend fun fetchMemberInfo(accessToken: String) =
         withContext(viewModelScope.coroutineContext) {
             memberRepository.fetchMemberInfo(accessToken)

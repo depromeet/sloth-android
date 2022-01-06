@@ -1,19 +1,15 @@
 package com.depromeet.sloth.ui.update
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.LessonUpdateInfoRequest
 import com.depromeet.sloth.ui.base.BaseViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UpdateLessonViewModel(
-    preferenceManager: PreferenceManager
+class UpdateLessonViewModel @ViewModelInject constructor(
+    private val lessonRepository: LessonRepository
 ) : BaseViewModel() {
-    private val lessonRepository = LessonRepository(preferenceManager)
-
     suspend fun updateLesson(
         accessToken: String,
         lessonId: String,
@@ -31,10 +27,4 @@ class UpdateLessonViewModel(
         withContext(viewModelScope.coroutineContext) {
             lessonRepository.fetchLessonSiteList(accessToken)
         }
-
-    suspend fun removeAuthToken(pm: PreferenceManager) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            pm.removeAuthToken()
-        }
-    }
 }

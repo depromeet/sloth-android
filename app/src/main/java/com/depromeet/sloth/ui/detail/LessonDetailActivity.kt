@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -22,10 +23,16 @@ import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonDetailBinding>() {
-    private val preferenceManager = PreferenceManager(this)
+@AndroidEntryPoint
+class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: LessonDetailViewModel by viewModels()
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
     lateinit var lessonId: String
@@ -37,8 +44,6 @@ class LessonDetailActivity : BaseActivity<LessonDetailViewModel, ActivityLessonD
     lateinit var lesson: LessonRegisterRequest
     lateinit var categoryArray: Array<String>
     lateinit var siteArray: Array<String>
-
-    override val viewModel: LessonDetailViewModel = LessonDetailViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityLessonDetailBinding =
         ActivityLessonDetailBinding.inflate(layoutInflater)

@@ -12,7 +12,6 @@ import android.webkit.WebViewClient
 import com.depromeet.sloth.databinding.ActivitySlothPolicyWebViewBinding
 
 class SlothPolicyWebViewActivity : AppCompatActivity() {
-
     companion object {
         fun newIntent(context: Context) = Intent(context, SlothPolicyWebViewActivity::class.java)
 
@@ -67,5 +66,4 @@ class SlothPolicyWebViewActivity : AppCompatActivity() {
             binding.pbSlothPolicyContentLoading.progress = newProgress //DEFAULT
         }
     }
-
 }
