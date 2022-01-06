@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.depromeet.sloth.util.LoadingDialogUtil
+import dagger.hilt.android.AndroidEntryPoint
 
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment() {
-    abstract val viewModel: VM
+abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected lateinit var binding: VB
 
     abstract fun getViewBinding(): VB

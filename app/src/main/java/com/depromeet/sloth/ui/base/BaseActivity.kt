@@ -5,8 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding> : AppCompatActivity() {
-    abstract val viewModel: VM
+abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
     protected lateinit var binding: VB
 
     abstract fun getViewBinding(): VB
