@@ -38,6 +38,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
+        Log.e("test", viewModel.toString())
     }
 
     override fun onStart() {

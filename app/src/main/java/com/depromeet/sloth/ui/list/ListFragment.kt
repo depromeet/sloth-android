@@ -40,6 +40,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
+        Log.e("test", viewModel.toString())
     }
 
     override fun onStart() {
