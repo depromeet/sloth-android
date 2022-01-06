@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
@@ -29,10 +30,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.auth.model.Prompt
 import com.kakao.sdk.user.UserApiClient
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginBottomSheetFragment : BottomSheetDialogFragment() {
-
-    private val loginViewModel: LoginViewModel = LoginViewModel()
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private lateinit var binding: FragmentLoginBottomBinding
     private var _binding: FragmentLoginBottomBinding? = null
@@ -40,8 +45,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
     private lateinit var loginListener: LoginListener
-
-    private val pm: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
 
     fun setLoginListener(loginListener: LoginListener) {
         this.loginListener = loginListener
@@ -116,11 +119,13 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
-                                loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                if(it.data.isNewMember) {
+                                preferenceManager.putAuthToken(
+                                    it.data.accessToken,
+                                    it.data.refreshToken
+                                )
+                                if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
-                                }
-                                else {
+                                } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
 
@@ -153,11 +158,13 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
-                                loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                if(it.data.isNewMember) {
+                                preferenceManager.putAuthToken(
+                                    it.data.accessToken,
+                                    it.data.refreshToken
+                                )
+                                if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
-                                }
-                                else {
+                                } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
                             }
@@ -202,11 +209,13 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("Success", "${it.data}")
-                                loginViewModel.saveAuthToken(pm, it.data.accessToken, it.data.refreshToken)
-                                if(it.data.isNewMember) {
+                                preferenceManager.putAuthToken(
+                                    it.data.accessToken,
+                                    it.data.refreshToken
+                                )
+                                if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
-                                }
-                                else {
+                                } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
                             }

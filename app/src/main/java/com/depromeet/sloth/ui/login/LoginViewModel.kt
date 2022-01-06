@@ -1,7 +1,7 @@
 package com.depromeet.sloth.ui.login
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 import com.depromeet.sloth.data.network.login.LoginRepository
 import com.depromeet.sloth.data.network.login.LoginSlothResponse
@@ -10,9 +10,9 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class LoginViewModel : BaseViewModel() {
-    private val loginRepository = LoginRepository()
-
+class LoginViewModel @ViewModelInject constructor(
+    private val loginRepository: LoginRepository
+): BaseViewModel() {
     suspend fun fetchSlothAuthInfo(
         accessToken: String,
         socialType: String,
@@ -40,11 +40,4 @@ class LoginViewModel : BaseViewModel() {
             authCode = authCode
         )
     }.await()
-
-    suspend fun saveAuthToken(pm: PreferenceManager, accessToken: String, refreshToken: String) =
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                pm.putAuthToken(accessToken, refreshToken)
-            }
-        }
 }

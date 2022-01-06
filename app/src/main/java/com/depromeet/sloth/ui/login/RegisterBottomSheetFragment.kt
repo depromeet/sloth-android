@@ -8,7 +8,6 @@ import com.depromeet.sloth.databinding.FragmentRegisterBottomBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
-
     private lateinit var binding: FragmentRegisterBottomBinding
     private var _binding: FragmentRegisterBottomBinding? = null
 
@@ -38,9 +37,7 @@ class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun openSlothPolicy() {
-        //정책 WebView 로 보여주는 로직
         startActivity(SlothPolicyWebViewActivity.newIntent(requireContext()))
-
     }
 
     fun setRegisterListener(registerListener: RegisterListener) {

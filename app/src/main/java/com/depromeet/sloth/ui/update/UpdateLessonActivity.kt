@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
@@ -21,32 +22,12 @@ import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateLessonBinding>() {
-    private val preferenceManager = PreferenceManager(this)
-
-    override val viewModel: UpdateLessonViewModel = UpdateLessonViewModel(preferenceManager)
-
-    override fun getViewBinding(): ActivityUpdateLessonBinding =
-        ActivityUpdateLessonBinding.inflate(layoutInflater)
-
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
-
-    //lateinit var siteArraySize: Number
-
-    lateinit var lesson: LessonRegisterRequest
-    lateinit var lessonId: String
-    lateinit var startDate: ArrayList<String>
-    lateinit var endDate: ArrayList<String>
-
-    private var lessonCategoryList = mutableListOf<String>()
-    private var lessonSiteList = mutableListOf<String>()
-
-    lateinit var categoryAdapter: ArrayAdapter<String>
-    lateinit var siteAdapter: ArrayAdapter<String>
-
+@AndroidEntryPoint
+class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     companion object {
         fun newIntent(activity: Activity, lessonId: String, lesson: LessonRegisterRequest) =
             Intent(activity, UpdateLessonActivity::class.java).apply {
@@ -57,6 +38,25 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
         private const val LESSON_ID = "lessonId"
         private const val LESSON = "lesson"
     }
+
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: UpdateLessonViewModel by viewModels()
+
+    override fun getViewBinding(): ActivityUpdateLessonBinding =
+        ActivityUpdateLessonBinding.inflate(layoutInflater)
+
+    lateinit var accessToken: String
+    lateinit var refreshToken: String
+
+    lateinit var lesson: LessonRegisterRequest
+    lateinit var lessonId: String
+
+    private var lessonCategoryList = mutableListOf<String>()
+    private var lessonSiteList = mutableListOf<String>()
+
+    lateinit var categoryAdapter: ArrayAdapter<String>
+    lateinit var siteAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,13 +132,8 @@ class UpdateLessonActivity : BaseActivity<UpdateLessonViewModel, ActivityUpdateL
                     dlg.onItemClickListener =
                         object : SlothDialog.OnItemClickedListener {
                             override fun onItemClicked() {
-                                //logout
-
-                                //finish
-                                mainScope {
-                                    viewModel.removeAuthToken(preferenceManager)
-                                    startActivity(LoginActivity.newIntent(this@UpdateLessonActivity))
-                                }
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@UpdateLessonActivity))
                             }
                         }
                     dlg.start()

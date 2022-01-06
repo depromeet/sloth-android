@@ -9,14 +9,16 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.HomeActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
-    private val pm: PreferenceManager by lazy { PreferenceManager(this) }
+@AndroidEntryPoint
+class LoginActivity : BaseActivity<ActivityLoginBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
 
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
-
-    override val viewModel: LoginViewModel = LoginViewModel()
 
     override fun getViewBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
@@ -32,7 +34,7 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if(pm.getAccessToken().isNotEmpty() && pm.getRefreshToken().isNotEmpty()) {
+        if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
             nextActivity()
         } else {
             findViewById<Button>(R.id.btn_login_start).setOnClickListener {
