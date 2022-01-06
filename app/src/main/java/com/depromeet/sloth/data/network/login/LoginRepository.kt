@@ -2,8 +2,9 @@ package com.depromeet.sloth.data.network.login
 
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import javax.inject.Inject
 
-class LoginRepository {
+class LoginRepository @Inject constructor() {
     suspend fun fetchSlothAuthInfo(
         accessToken: String,
         socialType: String
