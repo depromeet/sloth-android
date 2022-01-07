@@ -1,12 +1,14 @@
 package com.depromeet.sloth.ui.manage
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ManageViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ManageViewModel @Inject constructor(
     private val memberRepository: MemberRepository
 ) : BaseViewModel() {
     suspend fun fetchMemberInfo(accessToken: String): MemberState<MemberInfoResponse> =

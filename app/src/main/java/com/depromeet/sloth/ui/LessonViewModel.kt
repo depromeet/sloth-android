@@ -1,14 +1,16 @@
 package com.depromeet.sloth.ui
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LessonViewModel @ViewModelInject constructor (
+@HiltViewModel
+class LessonViewModel @Inject constructor (
     private val lessonRepository: LessonRepository
 ) : BaseViewModel() {
     suspend fun fetchTodayLessonList(

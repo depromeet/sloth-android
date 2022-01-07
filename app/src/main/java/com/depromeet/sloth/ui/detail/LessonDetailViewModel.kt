@@ -1,13 +1,14 @@
 package com.depromeet.sloth.ui.detail
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-
-class LessonDetailViewModel @ViewModelInject constructor(
+@HiltViewModel
+class LessonDetailViewModel @Inject constructor(
     private val lessonRepository: LessonRepository
 ) : BaseViewModel() {
     suspend fun fetchLessonDetail(accessToken: String, lessonId: String) =
