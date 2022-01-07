@@ -51,12 +51,16 @@ class TodayLessonAdapter(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
-        private val tvTodayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
-        private val tvTodayLessonCategory = itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
+        private val tvTodayLessonRemain =
+            itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
+        private val tvTodayLessonCategory =
+            itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
         private val tvTodayLessonSite = itemView.findViewById<TextView>(R.id.tv_today_lesson_site)
         private val tvTodayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
-        private val tvTodayLessonCurrentNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
-        private val tvTodayLessonTotalNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
+        private val tvTodayLessonCurrentNum =
+            itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
+        private val tvTodayLessonTotalNum =
+            itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
         private val pbTodayLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_today_lesson_bar)
         private val btnTodayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val btnTodayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
@@ -108,13 +112,13 @@ class TodayLessonAdapter(
         }
 
         private fun init(allLessonToday: LessonTodayResponse) {
-            val remainDay = allLessonToday.remainDay //D-day
+            tvTodayLessonRemain.text =
+                if (allLessonToday.remainDay == 0) "D-Day" else "D-${allLessonToday.remainDay}"
             tvTodayLessonCategory.text = allLessonToday.categoryName
             tvTodayLessonSite.text = allLessonToday.siteName
             tvTodayLessonName.text = allLessonToday.lessonName
             tvTodayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
             tvTodayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
-            "D-$remainDay".also { tvTodayLessonRemain.text = it }
             pbTodayLessonBar.let {
                 nowProgress = allLessonToday.presentNumber
                 it.max = allLessonToday.untilTodayNumber * 1000
