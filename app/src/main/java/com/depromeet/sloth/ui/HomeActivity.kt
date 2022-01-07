@@ -7,7 +7,9 @@ import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.ui.list.ListFragment
 import com.depromeet.sloth.ui.manage.ManageFragment
 import com.depromeet.sloth.ui.list.TodayFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding
 
@@ -17,7 +19,6 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportFragmentManager.fragmentFactory = SlothFragmentFactory()
-
         initNavigationEvent()
     }
 

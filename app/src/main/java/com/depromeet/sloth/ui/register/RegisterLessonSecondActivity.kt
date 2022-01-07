@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
@@ -31,23 +32,15 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.ceil
 
-class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(this) }
-
-    override val viewModel: RegisterViewModel
-        get() = RegisterViewModel(preferenceManager)
-
-    override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
-        ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
-
-    private var flag = 0
-
+@AndroidEntryPoint
+class RegisterLessonSecondActivity : BaseActivity<ActivityRegisterLessonSecondBinding>() {
     companion object {
-
         fun newIntent(
             activity: Activity,
             lessonName: String,
@@ -68,6 +61,15 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
         private const val DAY = 86400000L
     }
 
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: RegisterViewModel by viewModels()
+
+    override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
+        ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
+
+    private var flag = 0
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
@@ -86,7 +88,6 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     lateinit var totalNumber: Number
     private var startDay: Long? = null
     private var endDay: Long? = null
-
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {

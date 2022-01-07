@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
@@ -17,14 +18,17 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+@AndroidEntryPoint
+class TodayFragment : BaseFragment<FragmentTodayBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: LessonViewModel by activityViewModels()
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
-
-    override val viewModel: LessonViewModel
-        get() = LessonViewModel(preferenceManager)
 
     override fun getViewBinding(): FragmentTodayBinding =
         FragmentTodayBinding.inflate(layoutInflater)
@@ -34,6 +38,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
+        Log.e("test", viewModel.toString())
     }
 
     override fun onStart() {

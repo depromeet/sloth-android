@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
@@ -7,11 +8,9 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class LessonViewModel(
-    preferenceManager: PreferenceManager
+class LessonViewModel @ViewModelInject constructor (
+    private val lessonRepository: LessonRepository
 ) : BaseViewModel() {
-    private val lessonRepository = LessonRepository(preferenceManager)
-
     suspend fun fetchTodayLessonList(
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,

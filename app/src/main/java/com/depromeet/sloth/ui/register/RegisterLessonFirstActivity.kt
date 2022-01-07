@@ -24,6 +24,7 @@ import com.depromeet.sloth.databinding.ActivityRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import kotlin.math.ceil
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.activity.viewModels
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.LessonSiteResponse
@@ -31,21 +32,15 @@ import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
-class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonFirstBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(this) }
-
-    override val viewModel: RegisterViewModel
-        get() = RegisterViewModel(preferenceManager)
-
-    override fun getViewBinding(): ActivityRegisterLessonFirstBinding =
-        ActivityRegisterLessonFirstBinding.inflate(layoutInflater)
-
-    companion object {
-        fun newIntent(activity: Activity) =
-            Intent(activity, RegisterLessonFirstActivity::class.java)
-    }
+@AndroidEntryPoint
+class RegisterLessonFirstActivity : BaseActivity<ActivityRegisterLessonFirstBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: RegisterViewModel by viewModels()
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
@@ -65,7 +60,13 @@ class RegisterLessonFirstActivity : BaseActivity<RegisterViewModel, ActivityRegi
     lateinit var categoryId: Number
     lateinit var siteId: Number
 
-    lateinit var lessonCount: Number
+    override fun getViewBinding(): ActivityRegisterLessonFirstBinding =
+        ActivityRegisterLessonFirstBinding.inflate(layoutInflater)
+
+    companion object {
+        fun newIntent(activity: Activity) =
+            Intent(activity, RegisterLessonFirstActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
