@@ -207,7 +207,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                     when {
                         lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> tvTodayTitleMessage.text =
                             getString(R.string.home_today_title_win)
-                        lessonFinishedList.isEmpty() && lessonNotFinishedList.isNotEmpty() -> tvTodayTitleMessage.text =
+                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }.not()) -> tvTodayTitleMessage.text =
                             getString(R.string.home_today_title_not_start)
                         else -> tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
                     }
