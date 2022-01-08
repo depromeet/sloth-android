@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_today_lesson"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_home_today_item_rounded_sloth">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -29,8 +29,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_home_today_item_rounded_category_sloth"
         android:gravity="center_vertical|center_horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:text="개발"
         android:textColor="#208442"
+        android:textSize="12dp"
         app:layout_constraintStart_toEndOf="@id/tv_today_lesson_remain"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
@@ -43,8 +46,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_home_today_item_rounded_category_sloth"
         android:gravity="center_vertical|center_horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:text="인프런"
         android:textColor="#208442"
+        android:textSize="12dp"
         app:layout_constraintStart_toEndOf="@id/tv_today_lesson_category"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
@@ -84,12 +90,12 @@
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
-        app:layout_constraintEnd_toStartOf="@id/btn_divider"
+        app:layout_constraintEnd_toStartOf="@id/tv_divider"
         app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/btn_divider"
+        android:id="@+id/tv_divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -113,7 +119,7 @@
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
-        app:layout_constraintStart_toEndOf="@id/btn_divider"
+        app:layout_constraintStart_toEndOf="@id/tv_divider"
         app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
         tools:ignore="HardcodedText" />
 

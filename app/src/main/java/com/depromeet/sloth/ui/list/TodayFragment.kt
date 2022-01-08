@@ -38,7 +38,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
-        Log.e("test", viewModel.toString())
+
+        initViews()
     }
 
     override fun onStart() {
@@ -61,6 +62,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
     private fun fetchLessonList() {
         mainScope {
             showProgress()
+            binding.ivTodaySloth.visibility = View.INVISIBLE
 
             viewModel.fetchTodayLessonList(accessToken = accessToken).let {
                 when (it) {
@@ -91,7 +93,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                 }
             }
 
-            initViews()
+            binding.ivTodaySloth.visibility = View.VISIBLE
             hideProgress()
         }
     }
@@ -141,7 +143,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS
                                 )
                             }
 
@@ -149,7 +152,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
 
@@ -165,7 +169,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED
+                                    TodayLessonAdapter.BodyType.FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS
                                 )
                             }
 
@@ -173,7 +178,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED
+                                    TodayLessonAdapter.BodyType.FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
 
@@ -219,7 +225,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
-        bodyType: TodayLessonAdapter.BodyType
+        bodyType: TodayLessonAdapter.BodyType,
+        clickType: TodayLessonAdapter.ClickType
     ) {
         mainScope {
             showProgress()
@@ -230,7 +237,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                         Log.d("Success", it.data.toString())
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber) fetchLessonList() else Unit
+                                if (it.data.presentNumber == lesson.untilTodayNumber ||
+                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)) fetchLessonList() else Unit
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList() else Unit
