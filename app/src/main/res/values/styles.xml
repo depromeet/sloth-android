@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Widget.Sloth.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name = "android:background">@color/white</item>
-        <item name = "android:title">@null</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:title">@null</item>
     </style>
 
     <style name="Widget.Sloth.Toolbar.WithArrow" parent="Widget.Sloth.Toolbar">
-        <item name = "navigationIcon">@drawable/ic_toolbar_arrow_back</item>
-        <item name = "android:background">@color/white</item>
-    </style>
-
-    <style name="ChipTextStyle">
-        <item name="android:textSize">18dp</item>
+        <item name="navigationIcon">@drawable/ic_toolbar_arrow_back</item>
+        <item name="android:background">@color/white</item>
     </style>
 </resources>

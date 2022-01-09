@@ -4,14 +4,15 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LessonViewModel(
-    preferenceManager: PreferenceManager
+@HiltViewModel
+class LessonViewModel @Inject constructor (
+    private val lessonRepository: LessonRepository
 ) : BaseViewModel() {
-    private val lessonRepository = LessonRepository(preferenceManager)
-
     suspend fun fetchTodayLessonList(
         accessToken: String,
         context: CoroutineContext = Dispatchers.IO,

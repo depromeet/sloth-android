@@ -2,21 +2,19 @@ package com.depromeet.sloth.ui.test
 
 import android.os.Bundle
 import android.util.Log
-import com.depromeet.sloth.R
+import androidx.activity.viewModels
 import com.depromeet.sloth.data.network.health.HealthResponse
 import com.depromeet.sloth.data.network.health.HealthState
 import com.depromeet.sloth.databinding.ActivityTestBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 
-class TestActivity : BaseActivity<TestViewModel, ActivityTestBinding>() {
-    override val viewModel: TestViewModel
-        get() = TestViewModel()
+class TestActivity : BaseActivity<ActivityTestBinding>() {
+    private val viewModel: TestViewModel by viewModels()
 
     override fun getViewBinding(): ActivityTestBinding = ActivityTestBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test)
 
         mainScope {
             viewModel.processHealthWork().let {

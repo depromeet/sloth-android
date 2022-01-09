@@ -2,12 +2,16 @@ package com.depromeet.sloth.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * 데이터 저장 및 로드 클래스
  */
-class PreferenceManager(
-    private val context: Context
+@Singleton
+class PreferenceManager @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
     companion object {
         private const val PREFERENCES_NAME = "Sloth-pref"

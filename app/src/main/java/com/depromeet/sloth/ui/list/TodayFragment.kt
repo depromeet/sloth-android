@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
@@ -17,26 +18,28 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+@AndroidEntryPoint
+class TodayFragment : BaseFragment<FragmentTodayBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: LessonViewModel by activityViewModels()
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
-
-    override val viewModel: LessonViewModel
-        get() = LessonViewModel(preferenceManager)
 
     override fun getViewBinding(): FragmentTodayBinding =
         FragmentTodayBinding.inflate(layoutInflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
-
-        //setTestData()
     }
 
     override fun onStart() {
@@ -48,6 +51,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     override fun initViews() {
         with(binding) {
             rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+
             ivTodayAlarm.setOnClickListener {
                 val dlg = SlothDialog(requireContext(), DialogState.WAIT)
                 dlg.start()
@@ -57,6 +61,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
+            showProgress()
+            binding.ivTodaySloth.visibility = View.INVISIBLE
+
             viewModel.fetchTodayLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonTodayResponse>> -> {
@@ -85,6 +92,9 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     }
                 }
             }
+
+            binding.ivTodaySloth.visibility = View.VISIBLE
+            hideProgress()
         }
     }
 
@@ -133,7 +143,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS
                                 )
                             }
 
@@ -141,7 +152,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED
+                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
 
@@ -157,7 +169,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED
+                                    TodayLessonAdapter.BodyType.FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS
                                 )
                             }
 
@@ -165,7 +178,8 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                                 updateLessonCount(
                                     lesson,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED
+                                    TodayLessonAdapter.BodyType.FINISHED,
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
 
@@ -199,7 +213,7 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                     when {
                         lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> tvTodayTitleMessage.text =
                             getString(R.string.home_today_title_win)
-                        lessonFinishedList.isEmpty() && lessonNotFinishedList.isNotEmpty() -> tvTodayTitleMessage.text =
+                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }.not()) -> tvTodayTitleMessage.text =
                             getString(R.string.home_today_title_not_start)
                         else -> tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
                     }
@@ -211,59 +225,29 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
-        bodyType: TodayLessonAdapter.BodyType
+        bodyType: TodayLessonAdapter.BodyType,
+        clickType: TodayLessonAdapter.ClickType
     ) {
         mainScope {
-            viewModel.updateLessonCount(
-                accessToken = accessToken,
-                count = count,
-                lessonId = lesson.lessonId
-            ).let {
+            showProgress()
+
+            viewModel.updateLessonCount(accessToken, count, lesson.lessonId).let {
                 when (it) {
                     is LessonState.Success<LessonUpdateCountResponse> -> {
-                        Log.d("update Success", it.data.toString())
+                        Log.d("Success", it.data.toString())
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber) fetchLessonList()
+                                if (it.data.presentNumber == lesson.untilTodayNumber ||
+                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)) fetchLessonList() else Unit
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList()
+                                if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList() else Unit
                             }
                             else -> Unit
                         }
                     }
                     is LessonState.Unauthorized -> {
-                        Log.i("Unauthorized", "refreshToken used")
-                        viewModel.updateLessonCount(
-                            accessToken = refreshToken,
-                            count = count,
-                            lessonId = lesson.lessonId
-                        ).let { lessonUpdateCountResponse ->
-                            when (lessonUpdateCountResponse) {
-                                is LessonState.Success -> {
-                                    when (bodyType) {
-                                        TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                            if (lessonUpdateCountResponse.data.presentNumber == lesson.untilTodayNumber) {
-                                                fetchLessonList()
-                                            } else {
-                                            }
-                                        }
-                                        TodayLessonAdapter.BodyType.FINISHED -> {
-                                            if (lessonUpdateCountResponse.data.presentNumber < lesson.untilTodayNumber) {
-                                                fetchLessonList()
-                                            } else {
-                                            }
-                                        }
-                                        else -> Unit
-                                    }
-                                }
-
-                                is LessonState.Error -> {
-                                    Log.d("update Error", "${lessonUpdateCountResponse.exception}")
-                                }
-                                else -> Unit
-                            }
-                        }
+                        Log.d("Error", "${it.exception}")
                     }
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
@@ -272,10 +256,12 @@ class TodayFragment : BaseFragment<LessonViewModel, FragmentTodayBinding>() {
                         Log.d("Error", "Forbidden")
                     }
                     is LessonState.Error -> {
-                        Log.d("update Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
                 }
             }
+
+            hideProgress()
         }
     }
 

@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
@@ -15,17 +16,19 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 
 // 현재 사용하지 않는 화면
-class RegisterNicknameActivity : BaseActivity<RegisterViewModel, ActivityRegisterNicknameBinding>() {
-    private val preferenceManager: PreferenceManager = PreferenceManager(this)
+@AndroidEntryPoint
+class RegisterNicknameActivity : BaseActivity<ActivityRegisterNicknameBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: RegisterViewModel by viewModels()
 
     lateinit var accessToken: String
-
-    override val viewModel: RegisterViewModel
-        get() = RegisterViewModel(preferenceManager)
 
     override fun getViewBinding(): ActivityRegisterNicknameBinding =
         ActivityRegisterNicknameBinding.inflate(layoutInflater)

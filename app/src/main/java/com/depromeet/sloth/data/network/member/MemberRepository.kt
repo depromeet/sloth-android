@@ -2,8 +2,9 @@ package com.depromeet.sloth.data.network.member
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import javax.inject.Inject
 
-class MemberRepository(
+class MemberRepository @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun fetchMemberInfo(accessToken: String): MemberState<MemberInfoResponse> {

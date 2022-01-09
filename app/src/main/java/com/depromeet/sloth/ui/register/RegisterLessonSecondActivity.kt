@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
@@ -31,23 +32,15 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.ceil
 
-class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityRegisterLessonSecondBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(this) }
-
-    override val viewModel: RegisterViewModel
-        get() = RegisterViewModel(preferenceManager)
-
-    override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
-        ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
-
-    private var flag = 0
-
+@AndroidEntryPoint
+class RegisterLessonSecondActivity : BaseActivity<ActivityRegisterLessonSecondBinding>() {
     companion object {
-
         fun newIntent(
             activity: Activity,
             lessonName: String,
@@ -68,6 +61,15 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
         private const val DAY = 86400000L
     }
 
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: RegisterViewModel by viewModels()
+
+    override fun getViewBinding(): ActivityRegisterLessonSecondBinding =
+        ActivityRegisterLessonSecondBinding.inflate(layoutInflater)
+
+    private var flag = 0
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
@@ -87,7 +89,6 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     private var startDay: Long? = null
     private var endDay: Long? = null
 
-
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +102,6 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun initViews() = with(binding) {
-
         tbRegisterLesson.setNavigationOnClickListener {
             onBackPressed()
         }
@@ -123,13 +123,13 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
 
             tvRegisterStartLessonDateInfo.setOnClickListener {
 
-                var materialDateBuilder = MaterialDatePicker.Builder.datePicker()
+                var materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
+                    setTitleText(getString(R.string.lesson_start_date))
+                }
 
-                materialDateBuilder.setTitleText("강의 시작일")
-
-                var materialDatePicker = materialDateBuilder.build()
-
-                materialDatePicker.show(supportFragmentManager, "calendar")
+                var materialDatePicker = materialDateBuilder.build().apply {
+                    show(supportFragmentManager, "calendar")
+                }
 
                 materialDatePicker.addOnPositiveButtonClickListener {
                     var calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
@@ -163,12 +163,14 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                                 CalendarConstraints.Builder()
                                     .setValidator(DateValidatorPointForward.from(startDay!! + DAY))
 
-                            materialDateBuilder = MaterialDatePicker.Builder.datePicker()
-                                .setCalendarConstraints(constraintsBuilder.build())
+                            materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply{
+                                setCalendarConstraints(constraintsBuilder.build())
+                                setTitleText(getString(R.string.lesson_finish_date))
+                            }
 
-                            materialDatePicker = materialDateBuilder.build()
-
-                            materialDatePicker.show(supportFragmentManager, "calendar")
+                            materialDatePicker = materialDateBuilder.build().apply{
+                                show(supportFragmentManager, "calendar")
+                            }
 
                             materialDatePicker.addOnPositiveButtonClickListener {
                                 calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
@@ -235,75 +237,76 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
 
                                                     return@setOnClickListener
                                                 }
+                                                else {
+                                                    message =
+                                                        etRegisterLessonMessageInfo.text.toString()
 
-                                                message =
-                                                    etRegisterLessonMessageInfo.text.toString()
-
-                                                mainScope {
-                                                    viewModel.registerLesson(
-                                                        accessToken,
-                                                        LessonRegisterRequest(
-                                                            alertDays = alertDays,
-                                                            categoryId = categoryId.toInt(),
-                                                            endDate = endDate,
-                                                            lessonName = lessonName,
-                                                            message = message,
-                                                            price = etRegisterLessonPriceInfo.text.toString()
-                                                                .toInt(),
-                                                            siteId = siteId.toInt(),
-                                                            startDate = startDate,
-                                                            totalNumber = totalNumber.toInt()
-                                                        )
-                                                    ).let {
-                                                        when (it) {
-                                                            is LessonState.Success -> {
-                                                                Log.d(
-                                                                    "Register Success",
-                                                                    "${it.data}"
-                                                                )
-                                                                Toast.makeText(
-                                                                    this@RegisterLessonSecondActivity,
-                                                                    "강의가 등록되었습니다.",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-
-                                                                setResult(
-                                                                    RESULT_OK,
-                                                                    Intent(
-                                                                        this@RegisterLessonSecondActivity,
-                                                                        RegisterLessonFirstActivity::class.java
+                                                    mainScope {
+                                                        viewModel.registerLesson(
+                                                            accessToken,
+                                                            LessonRegisterRequest(
+                                                                alertDays = alertDays,
+                                                                categoryId = categoryId.toInt(),
+                                                                endDate = endDate,
+                                                                lessonName = lessonName,
+                                                                message = message,
+                                                                price = etRegisterLessonPriceInfo.text.toString()
+                                                                    .toInt(),
+                                                                siteId = siteId.toInt(),
+                                                                startDate = startDate,
+                                                                totalNumber = totalNumber.toInt()
+                                                            )
+                                                        ).let {
+                                                            when (it) {
+                                                                is LessonState.Success -> {
+                                                                    Log.d(
+                                                                        "Register Success",
+                                                                        "${it.data}"
                                                                     )
-                                                                )
-                                                                if (!isFinishing) finish()
-                                                            }
+                                                                    Toast.makeText(
+                                                                        this@RegisterLessonSecondActivity,
+                                                                        "강의가 등록되었습니다.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
 
-                                                            is LessonState.Unauthorized -> {
-                                                                val dlg = SlothDialog(
-                                                                    this@RegisterLessonSecondActivity,
-                                                                    DialogState.FORBIDDEN)
-                                                                dlg.onItemClickListener =
-                                                                    object :
-                                                                        SlothDialog.OnItemClickedListener {
-                                                                        override fun onItemClicked() {
-                                                                            preferenceManager.removeAuthToken()
-                                                                            startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
+                                                                    setResult(
+                                                                        RESULT_OK,
+                                                                        Intent(
+                                                                            this@RegisterLessonSecondActivity,
+                                                                            RegisterLessonFirstActivity::class.java
+                                                                        )
+                                                                    )
+                                                                    if (!isFinishing) finish()
+                                                                }
+
+                                                                is LessonState.Unauthorized -> {
+                                                                    val dlg = SlothDialog(
+                                                                        this@RegisterLessonSecondActivity,
+                                                                        DialogState.FORBIDDEN)
+                                                                    dlg.onItemClickListener =
+                                                                        object :
+                                                                            SlothDialog.OnItemClickedListener {
+                                                                            override fun onItemClicked() {
+                                                                                preferenceManager.removeAuthToken()
+                                                                                startActivity(LoginActivity.newIntent(this@RegisterLessonSecondActivity))
+                                                                            }
                                                                         }
-                                                                    }
-                                                                dlg.start()
-                                                            }
+                                                                    dlg.start()
+                                                                }
 
-                                                            is LessonState.Error -> {
-                                                                Log.d(
-                                                                    "Register Error",
-                                                                    "${it.exception}"
-                                                                )
-                                                                Toast.makeText(
-                                                                    this@RegisterLessonSecondActivity,
-                                                                    "강의 등록을 실패하였습니다.",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
+                                                                is LessonState.Error -> {
+                                                                    Log.d(
+                                                                        "Register Error",
+                                                                        "${it.exception}"
+                                                                    )
+                                                                    Toast.makeText(
+                                                                        this@RegisterLessonSecondActivity,
+                                                                        "강의 등록을 실패하였습니다.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                                else -> Unit
                                                             }
-                                                            else -> Unit
                                                         }
                                                     }
                                                 }
@@ -327,10 +330,11 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
             default + ceil((count - 1) * 16.667).toInt(),
             default + ceil(count * 16.667).toInt()
         )
-
-        animation.duration = 300
-        animation.interpolator = LinearInterpolator()
-        animation.start()
+        animation.apply {
+            duration = 300
+            interpolator = LinearInterpolator()
+            start()
+        }
     }
 
     private fun hideKeyboard() {
@@ -403,7 +407,8 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
     private fun validateInputForm(editText: EditText, button: AppCompatButton) {
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                if (editText.text.toString().isNotEmpty() && editText.text.toString()[0] == '0') {
+                if (editText.text.toString().isNotEmpty()) {
+                    if(editText.text.length != 1 && editText.text.toString()[0] == '0')
                     editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                 } else {
                     editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
@@ -428,7 +433,7 @@ class RegisterLessonSecondActivity : BaseActivity<RegisterViewModel, ActivityReg
                 if (editable.isNullOrEmpty()) {
                     lockButton(button)
                 } else {
-                    if (editable[0] == '0') {
+                    if (editable.length != 1 && editable[0] == '0') {
                         editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         lockButton(button)
                     } else {

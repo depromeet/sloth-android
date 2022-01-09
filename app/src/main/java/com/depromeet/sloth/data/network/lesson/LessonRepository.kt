@@ -2,13 +2,14 @@ package com.depromeet.sloth.data.network.lesson
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import javax.inject.Inject
 
 /**
  * @author 최철훈
  * @created 2021-12-28
  * @desc Lesson 관련 API 저장소
  */
-class LessonRepository(
+class LessonRepository @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun deleteLesson(

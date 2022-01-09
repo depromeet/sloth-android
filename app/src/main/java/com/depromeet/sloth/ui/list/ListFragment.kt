@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.LessonAllResponse
@@ -17,28 +18,29 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
-    private val preferenceManager: PreferenceManager by lazy { PreferenceManager(requireActivity()) }
+@AndroidEntryPoint
+class ListFragment : BaseFragment<FragmentListBinding>() {
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: LessonViewModel by activityViewModels()
+
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
-    override val viewModel: LessonViewModel
-        get() = LessonViewModel(preferenceManager)
-
     override fun getViewBinding(): FragmentListBinding =
         FragmentListBinding.inflate(layoutInflater)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
-
-        initViews()
-
-        //setTestData()
+        Log.e("test", viewModel.toString())
     }
 
     override fun onStart() {
@@ -49,6 +51,8 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
 
     private fun fetchLessonList() {
         mainScope {
+            showProgress()
+
             viewModel.fetchAllLessonList(accessToken = accessToken).let {
                 when (it) {
                     is LessonState.Success<List<LessonAllResponse>> -> {
@@ -63,13 +67,8 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                         val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
                         dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
                             override fun onItemClicked() {
-                                //logout
-
-                                //finish
-                                mainScope {
-                                    viewModel.removeAuthToken(preferenceManager)
-                                    startActivity(LoginActivity.newIntent(requireActivity()))
-                                }
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(requireActivity()))
                             }
                         }
                         dlg.start()
@@ -82,18 +81,22 @@ class ListFragment : BaseFragment<LessonViewModel, FragmentListBinding>() {
                     }
                 }
             }
+
+            initViews()
+            hideProgress()
         }
     }
 
     override fun initViews() {
         with(binding) {
-            rvLessonList.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
 
             ivLessonListRegister.setOnClickListener {
                 startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
             }
+
             ivLessonListAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireContext(),DialogState.WAIT)
+                val dlg = SlothDialog(requireActivity(), DialogState.WAIT)
                 dlg.start()
             }
         }

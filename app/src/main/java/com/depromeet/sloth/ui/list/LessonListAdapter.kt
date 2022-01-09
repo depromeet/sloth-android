@@ -22,11 +22,11 @@ import kotlin.math.ceil
 
 class LessonListAdapter(
     private val bodyType: BodyType,
-    val onClick: (LessonAllResponse) -> Unit
+    val onClick: (LessonAllResponse) -> Unit,
 ) : ListAdapter<LessonAllResponse, LessonListAdapter.LessonListViewHolder>(LessonListDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): LessonListViewHolder {
         val view = when (bodyType) {
             BodyType.NOTHING -> LayoutInflater.from(parent.context)
@@ -44,7 +44,7 @@ class LessonListAdapter(
 
     override fun onBindViewHolder(
         holder: LessonListViewHolder,
-        position: Int
+        position: Int,
     ) {
         val lesson = getItem(position)
         holder.onBind(lesson)
@@ -58,26 +58,36 @@ class LessonListAdapter(
 
     inner class LessonListViewHolder(
         private val bodyType: BodyType,
-        itemView: View
+        itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         private val clLessonList = itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list)
         private val tvLessonListRemain = itemView.findViewById<TextView>(R.id.tv_lesson_list_remain)
-        private val tvLessonListCategory = itemView.findViewById<TextView>(R.id.tv_lesson_list_category)
+        private val tvLessonListCategory =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_category)
         private val tvLessonListSite = itemView.findViewById<TextView>(R.id.tv_lesson_list_site)
         private val tvLessonListName = itemView.findViewById<TextView>(R.id.tv_lesson_list_name)
         private val tvLessonListPrice = itemView.findViewById<TextView>(R.id.tv_lesson_list_price)
-        private val vwLessonListCurrentLine = itemView.findViewById<View>(R.id.vw_lesson_list_current_line)
-        private val vwLessonListGoalLine = itemView.findViewById<View>(R.id.vw_lesson_list_goal_line)
+        private val vwLessonListCurrentLine =
+            itemView.findViewById<View>(R.id.vw_lesson_list_current_line)
+        private val vwLessonListGoalLine =
+            itemView.findViewById<View>(R.id.vw_lesson_list_goal_line)
         private val tvLessonListGoal = itemView.findViewById<TextView>(R.id.tv_lesson_list_goal)
-        private val clLessonListGoalGroup = itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list_goal_group)
+        private val clLessonListGoalGroup =
+            itemView.findViewById<ConstraintLayout>(R.id.cl_lesson_list_goal_group)
         private val pbLessonListBar = itemView.findViewById<ProgressBar>(R.id.pb_lesson_list_bar)
-        private val tvLessonListPercent = itemView.findViewById<TextView>(R.id.tv_lesson_list_percent)
-        private val tvLessonListCurrentNumber = itemView.findViewById<TextView>(R.id.tv_lesson_list_current_number)
-        private val tvLessonListTotalNumber = itemView.findViewById<TextView>(R.id.tv_lesson_list_total_number)
-        private val tvLessonListPlanningDate = itemView.findViewById<TextView>(R.id.tv_lesson_list_planning_date)
-        private val tvLessonListPassedCount = itemView.findViewById<TextView>(R.id.tv_lesson_list_total_count)
+        private val tvLessonListPercent =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_percent)
+        private val tvLessonListCurrentNumber =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_current_number)
+        private val tvLessonListTotalNumber =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_total_number)
+        private val tvLessonListPlanningDate =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_planning_date)
+        private val tvLessonListPassedCount =
+            itemView.findViewById<TextView>(R.id.tv_lesson_list_total_count)
         private val ivLessonListFail = itemView.findViewById<ImageView>(R.id.iv_lesson_list_fail)
-        private val btnRegisterLesson = itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
+        private val btnRegisterLesson =
+            itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
 
         @SuppressLint("SetTextI18n")
         fun onBind(lessonInfo: LessonAllResponse) {
@@ -88,11 +98,13 @@ class LessonListAdapter(
 
                 BodyType.DOING -> {
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
-                    tvLessonListCurrentNumber.text = (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
+                    tvLessonListCurrentNumber.text =
+                        (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
                     tvLessonListTotalNumber.text = lessonInfo.totalNumber.toString()
                     tvLessonListPercent.text = (100 - lessonInfo.currentProgressRate).toString()
                     tvLessonListGoal.text = (progressRate * 100).toInt().toString()
-                    tvLessonListRemain.text = "D-${lessonInfo.remainDay}"
+                    tvLessonListRemain.text =
+                        if (lessonInfo.remainDay == 0) "D-Day" else "D-${lessonInfo.remainDay}"
                     tvLessonListCategory.text = lessonInfo.categoryName
                     tvLessonListSite.text = lessonInfo.siteName
                     tvLessonListName.text = lessonInfo.lessonName
@@ -101,7 +113,8 @@ class LessonListAdapter(
                     val set = ConstraintSet()
                     set.clone(clLessonList)
                     set.setHorizontalBias(vwLessonListCurrentLine.id, progressRate)
-                    set.setHorizontalBias(vwLessonListGoalLine.id, lessonInfo.goalProgressRate / 100.0f)
+                    set.setHorizontalBias(vwLessonListGoalLine.id,
+                        lessonInfo.goalProgressRate / 100.0f)
                     set.applyTo(clLessonList)
                     vwLessonListGoalLine.bringToFront()
                     vwLessonListCurrentLine.bringToFront()
@@ -168,14 +181,14 @@ class LessonListAdapter(
 object LessonListDiffCallback : DiffUtil.ItemCallback<LessonAllResponse>() {
     override fun areItemsTheSame(
         oldItem: LessonAllResponse,
-        newItem: LessonAllResponse
+        newItem: LessonAllResponse,
     ): Boolean {
         return oldItem.lessonId == newItem.lessonId
     }
 
     override fun areContentsTheSame(
         oldItem: LessonAllResponse,
-        newItem: LessonAllResponse
+        newItem: LessonAllResponse,
     ): Boolean {
         return oldItem.categoryName == newItem.categoryName &&
                 oldItem.lessonName == newItem.lessonName &&

@@ -1,16 +1,16 @@
 package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ManageViewModel(
-    preferenceManager: PreferenceManager
+@HiltViewModel
+class ManageViewModel @Inject constructor(
+    private val memberRepository: MemberRepository
 ) : BaseViewModel() {
-    private val memberRepository = MemberRepository(preferenceManager)
-
     suspend fun fetchMemberInfo(accessToken: String): MemberState<MemberInfoResponse> =
         withContext(viewModelScope.coroutineContext) {
             memberRepository.fetchMemberInfo(
