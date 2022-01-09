@@ -40,7 +40,8 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
-        Log.e("test", viewModel.toString())
+
+        initViews()
     }
 
     override fun onStart() {
@@ -82,7 +83,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                 }
             }
 
-            initViews()
             hideProgress()
         }
     }
@@ -198,7 +198,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         val startDate = dateFormat.parse(startDateString)
         val todayDate = Calendar.getInstance()
         val endDate = dateFormat.parse(endDateString)
-        val isPassed = (endDate.time - todayDate.time.time + 86400000L) < 0L
+        val isPassed = (endDate.time - todayDate.time.time + 86_400_000L) < 0L
         val isPlanning = (todayDate.time.time - startDate.time) < 0L
 
         return when {
