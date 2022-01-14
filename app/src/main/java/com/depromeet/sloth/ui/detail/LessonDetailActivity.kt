@@ -83,9 +83,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             lessonPrice = getIntExtra(LESSON_PRICE, 0)
         }
 
-        // test
-        //lessonId = "6"
-
         mainScope {
             viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
@@ -95,57 +92,25 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                         initLessonInfo(it.data)
                     }
 
-                    is LessonState.Unauthorized -> {
-                        viewModel.fetchLessonDetail(accessToken = refreshToken, lessonId = lessonId)
-                            .let { lessonDetailResponse ->
-                                when (lessonDetailResponse) {
-                                    is LessonState.Success -> {
-                                        Log.d("fetch Success", "${lessonDetailResponse.data}")
-
-                                        initLessonInfo(lessonDetailResponse.data)
-                                    }
-
-                                    is LessonState.Unauthorized -> {
-                                        val dlg = SlothDialog(
-                                            this@LessonDetailActivity,
-                                            DialogState.FORBIDDEN
-                                        )
-                                        dlg.onItemClickListener =
-                                            object : SlothDialog.OnItemClickedListener {
-                                                override fun onItemClicked() {
-                                                    preferenceManager.removeAuthToken()
-                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
-                                                }
-                                            }
-                                        dlg.start()
-                                    }
-
-                                    is LessonState.Forbidden -> {
-                                        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                        dlg.onItemClickListener =
-                                            object : SlothDialog.OnItemClickedListener {
-                                                override fun onItemClicked() {
-                                                    preferenceManager.removeAuthToken()
-                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
-                                                }
-                                            }
-                                        dlg.start()
-                                    }
-
-
-                                    is LessonState.Error -> {
-                                        Log.d("fetch Error", "${lessonDetailResponse.exception}")
-                                    }
-                                    else -> Unit
-                                }
-                            }
-                    }
-
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
 
-                    else -> Unit
+                    is LessonState.Unauthorized -> {
+                        Log.d("Unauthorized", "${it.exception}")
+                        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
+                            }
+                        }
+                        dlg.start()
+                    }
+
+                    is LessonState.NotFound -> { Log.d("Error", "NotFound") }
+
+                    is LessonState.Forbidden -> { Log.d("Error", "Forbidden") }
                 }
             }
         }
