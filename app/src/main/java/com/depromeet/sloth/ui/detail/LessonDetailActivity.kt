@@ -208,8 +208,10 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             // 강의 요약
             if (data.currentProgressRate >= data.goalProgressRate) {
                 tvDetailLessonSummary.setText(R.string.mission_success)
+                ivDetailSloth.setImageResource(R.drawable.ic_detail_sloth_win)
             } else {
                 tvDetailLessonSummary.setText(R.string.mission_fail)
+                ivDetailSloth.setImageResource(R.drawable.ic_detail_sloth_win)
             }
 
             // 현재 내가 날린 돈

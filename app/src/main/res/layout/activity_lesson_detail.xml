@@ -52,12 +52,13 @@
 
                 <ImageView
                     android:id="@+id/iv_detail_sloth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="163dp"
+                    android:layout_height="160dp"
                     android:layout_marginStart="35dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="27dp"
+                    android:layout_marginTop="12dp"
                     android:contentDescription="@string/sloth_image"
-                    android:src="@drawable/ic_detail_sloth"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

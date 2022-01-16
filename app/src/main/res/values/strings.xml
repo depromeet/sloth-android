@@ -85,6 +85,7 @@
     <string name="home_today_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
     <string name="home_today_title_win"><font color="#000000">젠장..\n이번주는\n나의 완패다..</font></string>
     <string name="home_today_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
+    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
