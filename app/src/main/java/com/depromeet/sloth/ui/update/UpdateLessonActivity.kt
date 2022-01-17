@@ -52,7 +52,10 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     lateinit var lesson: LessonRegisterRequest
     lateinit var lessonId: String
 
+    lateinit var lessonCategoryMap: HashMap<Int, String>
     private var lessonCategoryList = mutableListOf<String>()
+
+    lateinit var lessonSiteMap: HashMap<Int, String>
     private var lessonSiteList = mutableListOf<String>()
 
     lateinit var categoryAdapter: ArrayAdapter<String>
@@ -109,9 +112,11 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     }
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+        lessonCategoryMap =
+            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
         lessonCategoryList.add(0, "인강 카테고리를 선택해주세요.")
-        Log.d("lessonCategoryList", "$lessonCategoryList")
     }
 
     private suspend fun initLessonSite() {
@@ -149,9 +154,10 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     }
 
     private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+
         lessonSiteList = data.map { it.siteName }.toMutableList()
         lessonSiteList.add(0, "강의 사이트를 선택해주세요.")
-        Log.d("lessonSiteList", "$lessonSiteList")
     }
 
     override fun initViews() = with(binding) {
@@ -169,9 +175,14 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         btnUpdateLesson.setOnClickListener {
             mainScope {
                 val updateLessonRequest = LessonUpdateInfoRequest(
-                    categoryId = spnUpdateLessonCategory.selectedItemPosition,
+                    categoryId =
+                    lessonCategoryMap.filterValues
+                    { it == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition] }.keys.first(),
+                    // == lessonCategoryMap.entries.find {it.value == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition]}?.key,
                     lessonName = etUpdateLessonName.text.toString(),
-                    siteId = spnUpdateLessonSite.selectedItemPosition,
+                    siteId = lessonSiteMap.filterValues
+                    { it == lessonSiteList[spnUpdateLessonSite.selectedItemPosition] }.keys.first(),
+                    // == lessonSiteMap.entries.find {it.value == lessonSiteList[spnUpdateLessonSite.selectedItemPosition]}?.key,
                     totalNumber = etUpdateLessonCount.text.toString().toInt()
                 )
 
@@ -218,7 +229,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
                 }
             }
-
         }
     }
 
@@ -245,8 +255,13 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         etUpdateLessonName.setText(lesson!!.lessonName)
         etUpdateLessonCount.setText(lesson.totalNumber.toString())
 
-        spnUpdateLessonCategory.setSelection(lesson.categoryId)
-        spnUpdateLessonSite.setSelection(lesson.siteId)
+        spnUpdateLessonCategory.setSelection(
+            lessonCategoryList.indexOf(lessonCategoryMap[lesson.categoryId])
+        )
+
+        spnUpdateLessonSite.setSelection(
+            lessonSiteList.indexOf(lessonSiteMap[lesson.siteId])
+        )
 
         tvUpdateStartLessonDate.text = changeDateFormat(lesson.startDate)
         tvUpdateEndLessonDate.text = changeDateFormat(lesson.endDate)
@@ -315,11 +330,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     }
 
     private fun changeDateFormat(date: String): String {
-        Log.d("date", date)
-
         val dateArr = date.split(",")
-
-        Log.d("dateArr", dateArr.toString())
 
         val yearOfDate = dateArr[0].replace("[", "")
         val monthOfDate = changeDate(dateArr[1])
