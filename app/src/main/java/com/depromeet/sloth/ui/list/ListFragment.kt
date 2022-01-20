@@ -17,6 +17,7 @@ import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.login.LoginActivity
+import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -92,7 +93,8 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
             rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
 
             ivLessonListRegister.setOnClickListener {
-                startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
+                //startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
+                startActivity(RegisterLessonActivity.newIntent(requireActivity()))
             }
 
             ivLessonListAlarm.setOnClickListener {

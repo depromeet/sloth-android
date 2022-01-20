@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="lesson_goal_date_array">
+        <item>완강 목표일을 선택해주세요</item>
+        <item>일주일</item>
+        <item>한 달</item>
+        <item>두 달</item>
+        <item>세 달</item>
+        <item>직접 설정</item>
+    </string-array>
+</resources>

@@ -228,7 +228,7 @@
                                 android:id="@+id/tv_detail_lesson_end_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/lesson_goal_date"
+                                android:text="@string/lesson_detail_goal_date"
                                 android:textColor="@color/gray_500"
                                 android:textSize="14dp"
                                 app:layout_constraintEnd_toStartOf="@id/tv_detail_lesson_end_date_info"

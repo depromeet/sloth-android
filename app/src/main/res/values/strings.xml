@@ -68,7 +68,8 @@
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
     <string name="lesson_progress">강의 진행률</string>
-    <string name="lesson_goal_date">목표 완강일:</string>
+    <string name="lesson_detail_goal_date">목표 완강일:</string>
+    <string name="lesson_register_goal_date">완강 목표일</string>
     <string name="lesson_present_number">내가 들은 강의:</string>
     <string name="lesson_current_progress">현재 진행률</string>
     <string name="lesson_goal_progress">목표 진행률</string>
@@ -105,4 +106,9 @@
     <string name="privacy">개인정보 처리방침</string>
     <string name="lesson_close">마감</string>
     <string name="d_day">D-Day</string>
+    <string name="accept">수락하기</string>
+    <string name="lesson_start_date_caution">(생성 후 시작일 변경 불가능)</string>
+    <string name="push_noti_cycle">푸시 알림 주기</string>
+    <string name="push_noti_cycle_info">월, 수, 목</string>
+    <string name="cannot_update">*수정불가</string>
 </resources>
