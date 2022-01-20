@@ -235,7 +235,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     private fun initSpinner() {
         categoryAdapter = ArrayAdapter<String>(
             this@UpdateLessonActivity,
-            android.R.layout.simple_list_item_1,
+            R.layout.spinner_item,
             lessonCategoryList
         )
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -243,7 +243,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
         siteAdapter = ArrayAdapter<String>(
             this@UpdateLessonActivity,
-            android.R.layout.simple_list_item_1,
+            R.layout.spinner_item,
             lessonSiteList
         )
         siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
