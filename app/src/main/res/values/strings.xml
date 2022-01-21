@@ -111,4 +111,6 @@
     <string name="push_noti_cycle">푸시 알림 주기</string>
     <string name="push_noti_cycle_info">월, 수, 목</string>
     <string name="cannot_update">*수정불가</string>
+    <string name="cannot_delete_dialog_message">힝 속았지 삭제는 불가능해!</string>
+    <string name="register_lesson_check_caution">한번 생성하면 삭제할 수 없으니 신중하게 결정하라구!</string>
 </resources>

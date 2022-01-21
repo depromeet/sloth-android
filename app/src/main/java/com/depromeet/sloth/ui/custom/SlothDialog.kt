@@ -91,6 +91,15 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                     dlg.dismiss()
                 }
             }
+
+            DialogState.CANNOT_DELETE -> {
+                tvDialogMessage.setText(R.string.cannot_delete_dialog_message)
+                btnDialogCheck.visibility = View.GONE
+
+                btnDialogCancel.setOnClickListener {
+                    dlg.dismiss()
+                }
+            }
         }
         btnDialogCancel.setOnClickListener {
             dlg.dismiss()
@@ -101,5 +110,5 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 }
 
 enum class DialogState {
-    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT
+    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, CANNOT_DELETE
 }

@@ -10,6 +10,7 @@
         android:id="@+id/sv_register_lesson"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/btn_register_lesson"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -296,8 +297,18 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cv_register_lesson"
+                android:layout_marginTop="24dp"
+                android:textSize="12dp"
+                android:text="@string/register_lesson_check_caution"
+                android:textColor="@color/error"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -308,7 +319,6 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/bg_register_rounded_button_sloth"
         android:text="@string/accept"
@@ -316,7 +326,6 @@
         android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sv_register_lesson" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
