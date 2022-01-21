@@ -339,13 +339,13 @@ class RegisterLessonFirstActivity : BaseActivity<ActivityRegisterLessonFirstBind
         categoryAdapter = ArrayAdapter<String>(this@RegisterLessonFirstActivity,
             android.R.layout.simple_list_item_1,
             lessonCategoryList)
-        categoryAdapter.setDropDownViewResource(R.layout.spinner_item)
+        categoryAdapter.setDropDownViewResource(R.layout.item_spinner)
         binding.spnRegisterLessonCategory.adapter = categoryAdapter
 
         siteAdapter = ArrayAdapter<String>(this@RegisterLessonFirstActivity,
             android.R.layout.simple_list_item_1,
             lessonSiteList)
-        siteAdapter.setDropDownViewResource(R.layout.spinner_item)
+        siteAdapter.setDropDownViewResource(R.layout.item_spinner)
         binding.spnRegisterLessonSite.adapter = siteAdapter
     }
 

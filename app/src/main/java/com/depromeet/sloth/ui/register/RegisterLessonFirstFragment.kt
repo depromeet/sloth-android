@@ -115,14 +115,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         Log.d("categoryAdapter", "notInitialized")
         categoryAdapter = ArrayAdapter<String>(
             requireContext(),
-            R.layout.spinner_item,
+            R.layout.item_spinner,
             categoryList
         )
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         siteAdapter = ArrayAdapter<String>(
             requireContext(),
-            R.layout.spinner_item,
+            R.layout.item_spinner,
             siteList
         )
         siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

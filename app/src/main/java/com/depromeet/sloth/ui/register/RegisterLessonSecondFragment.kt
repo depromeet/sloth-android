@@ -50,7 +50,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     lateinit var lessonStartDate: String
     lateinit var lessonGoalDate: String
 
-    private var isDecided = false
+    private var isLessonGoalDateDecided = false
 
     lateinit var selectedItem: Number
 
@@ -78,7 +78,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         super.onStart()
 
         // if (tvRegisterGoalLessonDateInfo.isVisible)
-        if (isDecided) {
+        if (isLessonGoalDateDecided) {
             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
             Log.d("lessonGoalDate", lessonGoalDate)
 
@@ -129,18 +129,18 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                     0 -> {
                         tvRegisterGoalLessonDateInfo.visibility = View.GONE
                         lockButton(btnRegisterLesson)
-                        isDecided = false
+                        isLessonGoalDateDecided = false
                     }
 
                     1, 2, 3, 4 -> {
                         tvRegisterGoalLessonDateInfo.visibility = View.GONE
-                        isDecided = false
+                        isLessonGoalDateDecided = false
                     }
 
                     else -> {
                         // 직접선택
                         //if (!tvRegisterGoalLessonDateInfo.isVisible)
-                        if (!isDecided) {
+                        if (!isLessonGoalDateDecided) {
                             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
                             registerGoalLessonDate(calendar)
                         }
@@ -151,7 +151,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 tvRegisterGoalLessonDateInfo.visibility = View.GONE
                 lockButton(btnRegisterLesson)
-                isDecided = false
+                isLessonGoalDateDecided = false
             }
         }
 
@@ -174,41 +174,45 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 1 -> {
                     if (::startDate.isInitialized) {
                         calendar.time = startDate
-                        calendar.add(Calendar.DATE, 7)
                     } else {
                         calendar.time = today
-                        calendar.add(Calendar.DATE, 7)
                     }
+                    calendar.add(Calendar.DATE, 7)
+                    goalDay = calendar.timeInMillis
+                    lessonGoalDate = getPickerDateToDash(calendar.time)
                 }
 
                 2 -> {
                     if (::startDate.isInitialized) {
                         calendar.time = startDate
-                        calendar.add(Calendar.MONTH, 1)
                     } else {
                         calendar.time = today
-                        calendar.add(Calendar.MONTH, 1)
                     }
+                    calendar.add(Calendar.MONTH, 1)
+                    goalDay = calendar.timeInMillis
+                    lessonGoalDate = getPickerDateToDash(calendar.time)
                 }
 
                 3 -> {
                     if (::startDate.isInitialized) {
                         calendar.time = startDate
-                        calendar.add(Calendar.MONTH, 2)
                     } else {
                         calendar.time = today
-                        calendar.add(Calendar.MONTH, 2)
                     }
+                    calendar.add(Calendar.MONTH, 2)
+                    goalDay = calendar.timeInMillis
+                    lessonGoalDate = getPickerDateToDash(calendar.time)
                 }
 
                 4 -> {
                     if (::startDate.isInitialized) {
                         calendar.time = startDate
-                        calendar.add(Calendar.MONTH, 3)
                     } else {
                         calendar.time = today
-                        calendar.add(Calendar.MONTH, 3)
                     }
+                    calendar.add(Calendar.MONTH, 3)
+                    goalDay = calendar.timeInMillis
+                    lessonGoalDate = getPickerDateToDash(calendar.time)
                 }
             }
 
@@ -281,8 +285,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
                 goalDay = calendar.timeInMillis
                 lessonGoalDate = getPickerDateToDash(calendar.time)
-
-                isDecided = true
+                isLessonGoalDateDecided = true
             }
         }
         materialDatePicker.show(childFragmentManager, "calendar")
@@ -291,7 +294,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun initAdapter() {
         goalDateAdapter = ArrayAdapter(
             requireContext(),
-            R.layout.spinner_item,
+            R.layout.item_spinner,
             resources.getStringArray(R.array.lesson_goal_date_array)
         ).apply {
             setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
