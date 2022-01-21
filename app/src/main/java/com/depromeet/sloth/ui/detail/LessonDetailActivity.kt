@@ -23,7 +23,11 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
@@ -47,6 +51,10 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
     lateinit var lessonSiteMap: HashMap<Int, String>
     private var lessonSiteList = mutableListOf<String>()
+
+    private var startDay: Long? = null
+    private var isLessonStarted = true
+    private val today = Date().time
 
     override fun getViewBinding(): ActivityLessonDetailBinding =
         ActivityLessonDetailBinding.inflate(layoutInflater)
@@ -213,7 +221,15 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    deleteLesson(accessToken, lessonId)
+                    // 예정 강의만 삭제 가능
+                    if (!isLessonStarted) {
+                        // 예정 강의
+                        deleteLesson(accessToken, lessonId)
+                    } else {
+                        // 진행 중인 강의
+                        val cannotDeleteDlg = SlothDialog(this@LessonDetailActivity, DialogState.CANNOT_DELETE)
+                        cannotDeleteDlg.start()
+                    }
                 }
             }
             dlg.start()
@@ -276,7 +292,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             // 목표 진행율
             pbDetailGoalLessonProgress.labelText =
                 if (data.goalProgressRate > 100) {
-                    "100%"
+                    getString(R.string.one_hundred_percent)
                 } else {
                     "${data.goalProgressRate}%"
                 }
@@ -356,10 +372,12 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             tvDetailLessonCountInfo.text = totalNumber
 
             // 강의 시작 날짜
-            startDateInfo = changeDateFormat(data.startDate)
+            startDateInfo = changeDateFormatToDot(data.startDate)
+            startDay = stringToDate(changeDateFormatToDash(data.startDate)).time
+            isLessonStarted = startDay!! <= today
 
             // 강의 종료 날짜
-            endDateInfo = changeDateFormat(data.endDate)
+            endDateInfo = changeDateFormatToDot(data.endDate)
 
             // 목표 완강일
             tvDetailLessonEndDateInfo.text = " $endDateInfo"
@@ -383,12 +401,27 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         return "${changedPriceFormat}원"
     }
 
-    private fun changeDateFormat(date: ArrayList<String>): String {
+    private fun changeDateFormatToDot(date: ArrayList<String>): String {
         val yearOfDate = date[0]
         val monthOfDate = changeDate(date[1])
         val dayOfDate = changeDate(date[2])
 
         return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
+    }
+
+    private fun changeDateFormatToDash(date: ArrayList<String>): String {
+        val yearOfDate = date[0]
+        val monthOfDate = changeDate(date[1])
+        val dayOfDate = changeDate(date[2])
+
+        return "${yearOfDate}-${monthOfDate}-$dayOfDate"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun stringToDate(string: String): Date? {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+        return dateFormat.parse(string)
     }
 
     private fun changeDate(data: String): String {

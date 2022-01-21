@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_delete_rounded_gray"
+        android:background="@drawable/bg_detail_rounded_btn_cancel"
         android:text="@string/cancel"
         android:textColor="@color/gray_500"
         android:textSize="16dp"
@@ -48,11 +48,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_delete_rounded_caution"
+        android:background="@drawable/bg_detail_rounded_btn_delete"
         android:text="@string/check"
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintStart_toEndOf="@+id/btn_dialog_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_dialog_king_receive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_detail_rounded_btn_king_receive"
+        android:text="@string/king_receive"
+        android:textColor="@color/gray_500"
+        android:textSize="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

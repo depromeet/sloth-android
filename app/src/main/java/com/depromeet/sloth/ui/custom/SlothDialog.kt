@@ -32,6 +32,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
         val ivDialogState = dlg.findViewById<ImageView>(R.id.iv_dialog_state)
         val btnDialogCheck = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_check)
         val btnDialogCancel = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
+        val btnDialogKingReceive = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_king_receive)
         val tvDialogMessage = dlg.findViewById<TextView>(R.id.tv_dialog_message)
 
         when (state) {
@@ -40,8 +41,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 tvDialogMessage.setText(R.string.forbidden_dialog_message)
                 btnDialogCancel.visibility = View.GONE
                 btnDialogCheck.background = AppCompatResources.getDrawable(
-                    context,
-                    R.drawable.bg_home_rounded_sloth
+                    context, R.drawable.bg_home_rounded_sloth
                 )
 
                 btnDialogCheck.setOnClickListener {
@@ -83,8 +83,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 tvDialogMessage.setText(R.string.wait_dialog_message)
                 btnDialogCancel.visibility = View.GONE
                 btnDialogCheck.background = AppCompatResources.getDrawable(
-                    context,
-                    R.drawable.bg_home_rounded_sloth
+                    context, R.drawable.bg_home_rounded_sloth
                 )
 
                 btnDialogCheck.setOnClickListener {
@@ -95,8 +94,10 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
             DialogState.CANNOT_DELETE -> {
                 tvDialogMessage.setText(R.string.cannot_delete_dialog_message)
                 btnDialogCheck.visibility = View.GONE
+                btnDialogCancel.visibility = View.GONE
+                btnDialogKingReceive.visibility = View.VISIBLE
 
-                btnDialogCancel.setOnClickListener {
+                btnDialogKingReceive.setOnClickListener{
                     dlg.dismiss()
                 }
             }
