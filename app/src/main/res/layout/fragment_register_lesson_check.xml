@@ -30,22 +30,11 @@
                     android:id="@+id/iv_register_request_duel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="48dp"
+                    android:layout_marginTop="52dp"
                     android:src="@drawable/ic_register_request_duel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@+id/iv_register_sloth_fight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:src="@drawable/ic_register_sloth_fight"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_register_request_duel"
                     tools:ignore="ContentDescription" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -55,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintWidth_percent="0.888"
-                android:layout_marginTop="232dp"
+                android:layout_marginTop="207dp"
                 android:layout_marginBottom="12dp"
                 android:elevation="16dp"
                 app:cardCornerRadius="24dp"
@@ -73,7 +62,6 @@
                         android:id="@+id/iv_register_duel_form"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="32dp"
                         android:src="@drawable/ic_register_duel_form"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -299,7 +287,20 @@
 
             </androidx.cardview.widget.CardView>
 
+            <ImageView
+                android:id="@+id/iv_register_sloth_fight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="96dp"
+                android:elevation="30dp"
+                android:src="@drawable/ic_register_sloth_fight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
             <TextView
+                android:id="@+id/tv_register_lesson_cannot_delete_caution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"

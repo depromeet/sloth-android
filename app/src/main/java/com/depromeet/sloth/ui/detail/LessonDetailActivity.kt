@@ -373,7 +373,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
             // 강의 시작 날짜
             startDateInfo = changeDateFormatToDot(data.startDate)
-            startDay = stringToDate(changeDateFormatToDash(data.startDate)).time
+            startDay = stringToDate(changeDateFormatToDash(data.startDate))?.time
             isLessonStarted = startDay!! <= today
 
             // 강의 종료 날짜
