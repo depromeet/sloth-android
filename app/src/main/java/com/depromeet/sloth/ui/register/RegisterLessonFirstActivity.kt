@@ -121,7 +121,7 @@ class RegisterLessonFirstActivity : BaseActivity<ActivityRegisterLessonFirstBind
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "인강 카테고리를 선택해주세요.")
+        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요.")
         Log.d("lessonCategoryList", "$lessonCategoryList")
     }
 

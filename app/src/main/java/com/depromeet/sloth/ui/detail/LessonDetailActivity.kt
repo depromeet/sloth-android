@@ -161,7 +161,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "인강 카테고리를 선택해주세요.")
+        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요.")
     }
 
     private suspend fun initLessonSiteList() {
@@ -202,7 +202,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택해주세요.")
+        lessonSiteList.add(0, "강의 사이트를 선택해 주세요.")
     }
 
 

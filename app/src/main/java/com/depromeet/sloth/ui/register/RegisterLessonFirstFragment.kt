@@ -4,6 +4,7 @@ import com.depromeet.sloth.R
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -23,6 +24,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     lateinit var siteMap: HashMap<Int, String>
     private var siteList = mutableListOf<String>()
     lateinit var siteAdapter: ArrayAdapter<String>
+
+    lateinit var lessonCount: Number
 
     companion object {
         const val LESSON_NAME = "lessonName"
@@ -77,6 +80,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
             if (etRegisterLessonCount.text.toString().isEmpty()) {
                 Toast.makeText(requireContext(), "강의 개수를 입력해 주세요.", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            if (etRegisterLessonCount.text.toString()[0] == '0'
+                || etRegisterLessonCount.text.toString().toInt() == 0
+            ) {
+                Toast.makeText(requireContext(), "강의 개수가 올바르지 않습니다.", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
@@ -198,34 +209,43 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
 
     private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        var result = ""
+
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty()) {
-                    lockButton(button)
-                } else {
-                    if (editable[0] == '0') {
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    lessonCount = charSequence.toString().toInt()
+                    result = lessonCount.toString()
+                    if (result[0] == '0') {
                         editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         lockButton(button)
                     } else {
                         editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         unlockButton(button)
                     }
+                    editText.setText(result)
+                    // 커서 위치 설정
+                    editText.setSelection(result.length)
+                }
+            }
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable.isNullOrEmpty() || editable[0] == '0') {
+                    lockButton(button)
+                } else {
+                    unlockButton(button)
                 }
             }
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                if (editText.text.toString().isNotEmpty() && editText.text.toString()[0] == '0')
-                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                else
-                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }

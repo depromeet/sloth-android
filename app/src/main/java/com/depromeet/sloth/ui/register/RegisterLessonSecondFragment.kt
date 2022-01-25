@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
@@ -21,6 +22,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LES
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -41,6 +43,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     lateinit var lessonCount: Number
     lateinit var lessonCategoryName: String
     lateinit var lessonSiteName: String
+    lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
     private var goalDay: Long? = null
@@ -95,6 +98,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
         bindSpinner()
 
+        lockButton(btnRegisterLesson)
+
         validateInputForm(etRegisterLessonPrice, btnRegisterLesson)
         focusInputFormOptional(etRegisterLessonMessage)
 
@@ -134,6 +139,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
                     1, 2, 3, 4 -> {
                         tvRegisterGoalLessonDateInfo.visibility = View.GONE
+                        unlockButton(btnRegisterLesson)
                         isLessonGoalDateDecided = false
                     }
 
@@ -163,6 +169,12 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
         btnRegisterLesson.setOnClickListener {
             clearFocus(etRegisterLessonPrice)
+
+            if(::selectedItem.isInitialized.not()) {
+                Toast.makeText(requireContext(),
+                    "완강 목표일을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             when (selectedItem) {
                 0 -> {
@@ -236,7 +248,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
                 putString(LESSON_START_DATE, lessonStartDate)
                 putString(LESSON_GOAL_DATE, lessonGoalDate)
-                putInt(LESSON_PRICE, etRegisterLessonPrice.text.toString().toInt())
+                putInt(LESSON_PRICE, lessonPrice.toInt())
                 putString(LESSON_MESSAGE, etRegisterLessonMessage.text.toString())
             }
 
@@ -285,6 +297,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
                 goalDay = calendar.timeInMillis
                 lessonGoalDate = getPickerDateToDash(calendar.time)
+                unlockButton(btnRegisterLesson)
                 isLessonGoalDateDecided = true
             }
         }
@@ -326,37 +339,40 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+        var result = ""
+        val decimalFormat = DecimalFormat("#,###")
+
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    lessonPrice = charSequence.toString().replace(",", "").toInt()
+                    Log.d("lessonPrice", "onTextChanged: $lessonPrice")
+                    result =
+                        decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
+                    Log.d("result", "onTextChanged: $result")
+                    editText.setText(result)
+                    // 커서 위치 설정
+                    editText.setSelection(result.length)
+                }
+            }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
                     lockButton(button)
                 } else {
-                    if (editable.length != 1 && editable[0] == '0') {
-                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        lockButton(button)
-                    } else {
-                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        unlockButton(button)
-                    }
+                    unlockButton(button)
                 }
             }
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                if (editText.text.toString().isNotEmpty()) {
-                    if (editText.text.length != 1 && editText.text.toString()[0] == '0')
-                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                    else editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                } else {
-                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                }
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
