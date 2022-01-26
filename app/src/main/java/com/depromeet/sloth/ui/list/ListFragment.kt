@@ -93,7 +93,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
             rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
 
             ivLessonListRegister.setOnClickListener {
-                //startActivity(RegisterLessonFirstActivity.newIntent(requireActivity()))
                 startActivity(RegisterLessonActivity.newIntent(requireActivity()))
             }
 
@@ -105,8 +104,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
     }
 
     private fun moveRegisterActivity() {
-        val intent = Intent(requireContext(), RegisterLessonFirstActivity::class.java)
-        startActivity(intent)
+        startActivity(RegisterLessonActivity.newIntent(requireActivity()))
     }
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {

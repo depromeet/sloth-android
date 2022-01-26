@@ -100,9 +100,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
     }
 
     private fun moveRegisterActivity() {
-        //val intent = Intent(requireContext(), RegisterLessonFirstActivity::class.java)
-        val intent = Intent(requireContext(), RegisterLessonActivity::class.java)
-        startActivity(intent)
+        startActivity(RegisterLessonActivity.newIntent(requireActivity()))
     }
 
     private fun moveDetailActivity(lessonToday: LessonTodayResponse) {
