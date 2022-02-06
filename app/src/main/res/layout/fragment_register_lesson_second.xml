@@ -145,7 +145,7 @@
                 android:background="@drawable/bg_register_rounded_edit_text_gray"
                 android:hint="@string/enter_lesson_price"
                 android:inputType="number"
-                android:maxLength="7"
+                android:maxLength="9"
                 android:paddingHorizontal="18dp"
                 android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"

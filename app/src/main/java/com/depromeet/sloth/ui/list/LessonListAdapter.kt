@@ -85,7 +85,7 @@ class LessonListAdapter(
             itemView.findViewById<TextView>(R.id.tv_lesson_list_planning_date)
         private val tvLessonListPassedCount =
             itemView.findViewById<TextView>(R.id.tv_lesson_list_total_count)
-        private val ivLessonListFail = itemView.findViewById<ImageView>(R.id.iv_lesson_list_fail)
+        private val ivLessonListStamp = itemView.findViewById<ImageView>(R.id.iv_lesson_list_stamp)
         private val btnRegisterLesson =
             itemView.findViewById<TextView>(R.id.btn_lesson_list_register)
 
@@ -160,10 +160,12 @@ class LessonListAdapter(
                     val progressRate = (lessonInfo.currentProgressRate / 100.0f)
                     val isComplete =
                         (ceil(progressRate * lessonInfo.totalNumber)).toInt() == lessonInfo.totalNumber
-                    ivLessonListFail.visibility = if (isComplete) {
-                        View.INVISIBLE
-                    } else View.VISIBLE
-
+                    if(isComplete) {
+                        ivLessonListStamp.setImageResource(R.drawable.ic_home_lesson_list_success)
+                    }
+                    else {
+                        ivLessonListStamp.setImageResource(R.drawable.ic_home_lesson_list_fail)
+                    }
                     clLessonList.setOnClickListener { onClick(lessonInfo) }
                 }
             }

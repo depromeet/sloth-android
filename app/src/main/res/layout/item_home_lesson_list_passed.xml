@@ -138,12 +138,10 @@
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_lesson_list_fail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/iv_lesson_list_stamp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginEnd="18dp"
-        android:background="@drawable/ic_home_lesson_list_fail"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
