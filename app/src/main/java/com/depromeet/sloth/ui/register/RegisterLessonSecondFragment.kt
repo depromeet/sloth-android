@@ -368,12 +368,12 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                     result =
                         decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
                     editText.setText(result)
+                    editText.setSelection(result.length)
+
                     tvRegisterLessonPriceInfo.apply {
                         text = getString(R.string.input_lesson_price, result)
                         visibility = View.VISIBLE
                     }
-
-                    editText.setSelection(result.length)
                 }
 
                 if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
@@ -398,9 +398,9 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
     }

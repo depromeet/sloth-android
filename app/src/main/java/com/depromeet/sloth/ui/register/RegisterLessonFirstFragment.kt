@@ -183,7 +183,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     }
 
 
-    private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+    private fun validateInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
         var result = ""
 
         editText.addTextChangedListener(object : TextWatcher {
@@ -196,14 +196,28 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     lessonCount = charSequence.toString().toInt()
                     result = lessonCount.toString()
                     if (result[0] == '0') {
-                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         (activity as RegisterLessonActivity).lockButton(button)
                     } else {
-                        editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         (activity as RegisterLessonActivity).unlockButton(button)
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
+
+                    tvRegisterLessonCountInfo.apply {
+                        text = getString(R.string.input_lesson_count, result)
+                        visibility = View.VISIBLE
+                    }
+                }
+
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = ""
+                    editText.setText(result)
+                    tvRegisterLessonCountInfo.apply {
+                        text = result
+                        visibility = View.INVISIBLE
+                    }
                 }
             }
 
@@ -219,9 +233,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
     }

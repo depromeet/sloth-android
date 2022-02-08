@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
@@ -80,7 +81,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         }
 
         tvRegisterLessonName.text = lessonName
-        tvRegisterLessonCountInfo.text = lessonCount.toString()
+        tvRegisterLessonCountInfo.text = getString(R.string.input_lesson_count, lessonCount)
         tvRegisterLessonCategoryInfo.text = lessonCategoryName
         tvRegisterLessonSiteInfo.text = lessonSiteName
         tvRegisterLessonPriceInfo.text = changeDecimalFormat(lessonPrice as Int)
