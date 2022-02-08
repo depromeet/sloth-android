@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -61,9 +59,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
         bindSpinner()
 
-        lockButton(btnRegisterLesson)
+        (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
 
-        // validate
         focusInputForm(etRegisterLessonName, btnRegisterLesson)
         validateInputForm(etRegisterLessonCount, btnRegisterLesson)
         focusSpinnerForm(spnRegisterLessonCategory, btnRegisterLesson)
@@ -113,17 +110,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     spnRegisterLessonSite.selectedItem.toString())
             }
 
-            Log.d("bundle", "$args")
-
-
-            // nextFragment
             (activity as RegisterLessonActivity).changeFragment(
                 (activity as RegisterLessonActivity).registerLessonSecondFragment, args)
         }
     }
 
     private fun initAdapter() {
-        Log.d("categoryAdapter", "notInitialized")
         categoryAdapter = ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
@@ -144,24 +136,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         spnRegisterLessonSite.adapter = siteAdapter
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun unlockButton(button: AppCompatButton) {
-        button.isEnabled = true
-        button.background = AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.bg_register_rounded_button_sloth
-        )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun lockButton(button: AppCompatButton) {
-        button.isEnabled = false
-        button.background = AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.bg_register_rounded_button_disabled
-        )
-    }
-
     private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -169,14 +143,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
                 val spinnerId = spinner.selectedItemPosition
                 if (spinnerId == 0) {
-                    lockButton(button)
+                    (activity as RegisterLessonActivity).lockButton(button)
                 } else {
-                    unlockButton(button)
+                    (activity as RegisterLessonActivity).unlockButton(button)
                 }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                unlockButton(button)
+                (activity as RegisterLessonActivity).unlockButton(button)
             }
         }
     }
@@ -184,16 +158,17 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     private fun focusInputForm(editText: EditText, button: AppCompatButton) {
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
-                    lockButton(button)
+                    (activity as RegisterLessonActivity).lockButton(button)
                 } else {
-                    unlockButton(button)
+                    (activity as RegisterLessonActivity).unlockButton(button)
                 }
             }
         })
@@ -222,13 +197,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     result = lessonCount.toString()
                     if (result[0] == '0') {
                         editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        lockButton(button)
+                        (activity as RegisterLessonActivity).lockButton(button)
                     } else {
                         editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        unlockButton(button)
+                        (activity as RegisterLessonActivity).unlockButton(button)
                     }
                     editText.setText(result)
-                    // 커서 위치 설정
                     editText.setSelection(result.length)
                 }
             }
@@ -236,9 +210,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty() || editable[0] == '0') {
-                    lockButton(button)
+                    (activity as RegisterLessonActivity).lockButton(button)
                 } else {
-                    unlockButton(button)
+                    (activity as RegisterLessonActivity).unlockButton(button)
                 }
             }
         })

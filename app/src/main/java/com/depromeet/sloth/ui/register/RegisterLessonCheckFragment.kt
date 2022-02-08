@@ -1,25 +1,17 @@
 package com.depromeet.sloth.ui.register
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
-import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
-import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.ui.manage.ManageViewModel
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_GOAL_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_MESSAGE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_PRICE

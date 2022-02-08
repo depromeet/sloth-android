@@ -115,4 +115,5 @@
     <string name="register_lesson_check_caution">한번 생성하면 삭제할 수 없으니 신중하게 결정하라구!</string>
     <string name="king_receive">킹받네!</string>
     <string name="one_hundred_percent">100%</string>
+    <string name="input_lesson_price">%1$s원</string>
 </resources>

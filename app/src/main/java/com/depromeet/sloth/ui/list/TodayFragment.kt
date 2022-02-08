@@ -18,7 +18,6 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
-import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

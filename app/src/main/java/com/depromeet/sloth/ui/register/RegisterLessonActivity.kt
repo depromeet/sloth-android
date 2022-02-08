@@ -2,10 +2,13 @@ package com.depromeet.sloth.ui.register
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
@@ -33,11 +36,9 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
 
     lateinit var lessonCategoryMap: HashMap<Int, String>
     internal var lessonCategoryList: MutableList<String> = mutableListOf()
-    //lateinit var lessonCategoryAdapter: ArrayAdapter<String>
 
     lateinit var lessonSiteMap: HashMap<Int, String>
     internal var lessonSiteList: MutableList<String> = mutableListOf()
-    //lateinit var lessonSiteAdapter: ArrayAdapter<String>
 
     lateinit var registerLessonFirstFragment: Fragment
     lateinit var registerLessonSecondFragment: Fragment
@@ -68,11 +69,8 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
     }
 
     override fun initViews() = with(binding) {
-        // initially set our container
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fl_register_lesson, registerLessonFirstFragment)
-            //fragment 에는 stack 이 없기 때문에 android 기기 상의 뒤로가기를누르면 앱이 종료된다
-            //addToBackStack 옵션을 추가해주면 뒤로가기를 눌렀을 때 이전의 fragment 로 돌아가게 해준다.
             addToBackStack(null)
             commit()
         }
@@ -195,5 +193,25 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
         lessonSiteList.add(0, "강의 사이트를 선택해 주세요.")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun unlockButton(button: AppCompatButton) {
+        button.apply {
+            isEnabled = true
+            background = AppCompatResources.getDrawable(
+                this@RegisterLessonActivity, R.drawable.bg_register_rounded_button_sloth
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun lockButton(button: AppCompatButton) {
+        button.apply{
+            isEnabled = false
+            background = AppCompatResources.getDrawable(
+                this@RegisterLessonActivity, R.drawable.bg_register_rounded_button_disabled
+            )
+        }
     }
 }

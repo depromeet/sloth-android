@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.register.RegisterLessonSecondActivity">
+    tools:context=".ui.register.RegisterLessonActivity">
 
     <ScrollView
         android:id="@+id/sv_register_lesson"
@@ -43,20 +43,21 @@
                 android:id="@+id/cv_register_lesson"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintWidth_percent="0.888"
                 android:layout_marginTop="207dp"
                 android:layout_marginBottom="12dp"
-                android:elevation="16dp"
-                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.888"
                 tools:layout_height="440dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_register_lesson"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/iv_register_duel_form"
@@ -125,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/category"
                         android:textColor="@color/gray_500"
                         android:textSize="14dp"
@@ -136,7 +137,7 @@
                         android:id="@+id/tv_register_lesson_category_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
@@ -149,7 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/lesson_site"
                         android:textColor="@color/gray_500"
                         android:textSize="14dp"
@@ -160,7 +161,7 @@
                         android:id="@+id/tv_register_lesson_site_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
@@ -173,7 +174,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/lesson_price"
                         android:textColor="@color/gray_500"
                         android:textSize="14dp"
@@ -184,7 +185,7 @@
                         android:id="@+id/tv_register_lesson_price_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
@@ -197,7 +198,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/push_noti_cycle"
                         android:textColor="@color/gray_500"
                         android:textSize="14dp"
@@ -210,7 +211,7 @@
                         android:id="@+id/tv_register_push_noti_cycle_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
@@ -225,7 +226,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/lesson_start_date"
                         android:textColor="@color/gray_500"
                         android:textSize="14dp"
@@ -236,7 +237,7 @@
                         android:id="@+id/tv_register_lesson_start_date_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
@@ -261,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:paddingBottom="32dp"
                         android:text="@string/lesson_register_goal_date"
                         android:textColor="@color/gray_500"
@@ -273,7 +274,7 @@
                         android:id="@+id/tv_register_lesson_goal_date_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="16dp"
                         android:paddingBottom="32dp"
                         android:textColor="@color/gray_600"
@@ -282,10 +283,11 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_start_date_info"
                         tools:text="2022.03.31" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
             </androidx.cardview.widget.CardView>
+
 
             <ImageView
                 android:id="@+id/iv_register_sloth_fight"
@@ -303,13 +305,13 @@
                 android:id="@+id/tv_register_lesson_cannot_delete_caution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_register_lesson"
                 android:layout_marginTop="24dp"
-                android:textSize="12dp"
                 android:text="@string/register_lesson_check_caution"
-                android:textColor="@color/error"/>
+                android:textColor="@color/error"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cv_register_lesson" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

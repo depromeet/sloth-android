@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Drop Shadow Stack -->
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+            <corners
+                android:radius="4dp"/>
+            <solid android:color="#17CCCCCC" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp" />
+            <corners
+                android:radius="4dp"/>
+            <solid android:color="#1ACCCCCC" />
+        </shape>
+    </item>
+    <!-- Background -->
+    <item android:drawable="@drawable/bg_register_lesson_cv_check" />
+
+
+</layer-list>

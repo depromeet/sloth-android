@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
@@ -24,13 +22,18 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.*
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
     companion object {
         private const val DAY = 86400000L
+
+        private const val DEFAULT = 0
+        private const val ONE_WEEK = 1
+        private const val ONE_MONTH = 2
+        private const val TWO_MONTH = 3
+        private const val THREE_MONTH = 4
+        private const val CUSTOM_SETTING = 5
 
         const val LESSON_START_DATE = "lessonStartDate"
         const val LESSON_GOAL_DATE = "lessonGoalDate"
@@ -79,12 +82,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() = with(binding) {
         super.onStart()
-
-        // if (tvRegisterGoalLessonDateInfo.isVisible)
         if (isLessonGoalDateDecided) {
             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
-            Log.d("lessonGoalDate", lessonGoalDate)
-
             tvRegisterGoalLessonDateInfo.text = changeDateFormat(lessonGoalDate)
         }
     }
@@ -98,23 +97,18 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
         bindSpinner()
 
-        lockButton(btnRegisterLesson)
+        (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
 
         validateInputForm(etRegisterLessonPrice, btnRegisterLesson)
         focusInputFormOptional(etRegisterLessonMessage)
 
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
-        // 시작일 default 값 오늘
         if (::lessonStartDate.isInitialized.not()) {
-            lessonStartDate = LocalDate.now(ZoneId.of("Asia/Seoul")).toString()
+            calendar.time = today
+            calendarToText(LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
+        } else {
             tvRegisterStartLessonDateInfo.text = changeDateFormat(lessonStartDate)
-            calendar.time = Date()
-            startDay = calendar.timeInMillis
-        } else tvRegisterStartLessonDateInfo.text = changeDateFormat(lessonStartDate)
-
-        tvRegisterStartLessonDateInfo.setOnClickListener {
-            registerStartLessonDate(calendar)
         }
 
         spnRegisterGoalLessonDate.setSelection(0, false)
@@ -131,106 +125,69 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 selectedItem = spnRegisterGoalLessonDate.selectedItemPosition
 
                 when (selectedItem) {
-                    0 -> {
-                        tvRegisterGoalLessonDateInfo.visibility = View.GONE
-                        lockButton(btnRegisterLesson)
-                        isLessonGoalDateDecided = false
+                    DEFAULT -> {
+                        decideLessonGoalDate(false)
                     }
 
-                    1, 2, 3, 4 -> {
-                        tvRegisterGoalLessonDateInfo.visibility = View.GONE
-                        unlockButton(btnRegisterLesson)
-                        isLessonGoalDateDecided = false
+                    ONE_WEEK -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.DATE, 7)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
-                    else -> {
-                        // 직접선택
-                        //if (!tvRegisterGoalLessonDateInfo.isVisible)
-                        if (!isLessonGoalDateDecided) {
-                            tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
-                            registerGoalLessonDate(calendar)
-                        }
+                    ONE_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 1)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    TWO_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 2)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    THREE_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 3)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    CUSTOM_SETTING -> {
+                        registerGoalLessonDate(calendar)
                     }
                 }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                tvRegisterGoalLessonDateInfo.visibility = View.GONE
-                lockButton(btnRegisterLesson)
-                isLessonGoalDateDecided = false
+                decideLessonGoalDate(false)
             }
+        }
+
+        tvRegisterStartLessonDateInfo.setOnClickListener {
+            registerStartLessonDate(calendar)
         }
 
         tvRegisterGoalLessonDateInfo.setOnClickListener {
             clearFocus(binding.etRegisterLessonPrice)
 
-            registerGoalLessonDate(calendar)
+            if (selectedItem == CUSTOM_SETTING) {
+                registerGoalLessonDate(calendar)
+            } else {
+                return@setOnClickListener
+            }
         }
 
         btnRegisterLesson.setOnClickListener {
             clearFocus(etRegisterLessonPrice)
 
-            if(::selectedItem.isInitialized.not()) {
+            if (::selectedItem.isInitialized.not() || selectedItem == DEFAULT) {
                 Toast.makeText(requireContext(),
                     "완강 목표일을 선택해 주세요.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            when (selectedItem) {
-                0 -> {
-                    Toast.makeText(requireContext(),
-                        "완강 목표일을 선택해 주세요.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                1 -> {
-                    if (::startDate.isInitialized) {
-                        calendar.time = startDate
-                    } else {
-                        calendar.time = today
-                    }
-                    calendar.add(Calendar.DATE, 7)
-                    goalDay = calendar.timeInMillis
-                    lessonGoalDate = getPickerDateToDash(calendar.time)
-                }
-
-                2 -> {
-                    if (::startDate.isInitialized) {
-                        calendar.time = startDate
-                    } else {
-                        calendar.time = today
-                    }
-                    calendar.add(Calendar.MONTH, 1)
-                    goalDay = calendar.timeInMillis
-                    lessonGoalDate = getPickerDateToDash(calendar.time)
-                }
-
-                3 -> {
-                    if (::startDate.isInitialized) {
-                        calendar.time = startDate
-                    } else {
-                        calendar.time = today
-                    }
-                    calendar.add(Calendar.MONTH, 2)
-                    goalDay = calendar.timeInMillis
-                    lessonGoalDate = getPickerDateToDash(calendar.time)
-                }
-
-                4 -> {
-                    if (::startDate.isInitialized) {
-                        calendar.time = startDate
-                    } else {
-                        calendar.time = today
-                    }
-                    calendar.add(Calendar.MONTH, 3)
-                    goalDay = calendar.timeInMillis
-                    lessonGoalDate = getPickerDateToDash(calendar.time)
-                }
-            }
-
-            if (startDay!! >= goalDay!!) {
-                Toast.makeText(requireContext(),
-                    "강의 시작일은 완강 목표일 이전이어야 합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -240,23 +197,45 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 return@setOnClickListener
             }
 
+            if (startDay!! >= goalDay!!) {
+                Toast.makeText(requireContext(),
+                    "강의 시작일은 완강 목표일 이전이어야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val args = Bundle().apply {
                 putString(LESSON_NAME, lessonName)
                 putInt(LESSON_COUNT, lessonCount as Int)
                 putString(LESSON_CATEGORY_NAME, lessonCategoryName)
                 putString(LESSON_SITE_NAME, lessonSiteName)
-
                 putString(LESSON_START_DATE, lessonStartDate)
                 putString(LESSON_GOAL_DATE, lessonGoalDate)
                 putInt(LESSON_PRICE, lessonPrice.toInt())
                 putString(LESSON_MESSAGE, etRegisterLessonMessage.text.toString())
             }
 
-            Log.d("bundle", "$args")
-
-            // nextFragment
             (activity as RegisterLessonActivity).changeFragment(
                 (activity as RegisterLessonActivity).registerLessonCheckFragment, args)
+        }
+    }
+
+    private fun isStartDateInitialized(calendar: Calendar) {
+        if (::startDate.isInitialized) {
+            calendar.time = startDate
+        } else {
+            calendar.time = today
+        }
+    }
+
+    private fun decideLessonGoalDate(flag: Boolean) = with(binding) {
+        if (flag) {
+            tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
+            (activity as RegisterLessonActivity).unlockButton(btnRegisterLesson)
+            isLessonGoalDateDecided = true
+        } else {
+            tvRegisterGoalLessonDateInfo.visibility = View.GONE
+            (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
+            isLessonGoalDateDecided = false
         }
     }
 
@@ -269,13 +248,54 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             addOnPositiveButtonClickListener {
                 startDate = Date(it)
                 calendar.time = Date(it)
-                tvRegisterStartLessonDateInfo.text = getPickerDateToDot(calendar.time)
+                calendarToText(LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
 
-                startDay = calendar.timeInMillis
-                lessonStartDate = getPickerDateToDash(calendar.time)
+                if (isLessonGoalDateDecided) {
+                    updateGoalLessonDate(calendar)
+                }
             }
         }
         materialDatePicker.show(childFragmentManager, "calendar")
+    }
+
+    private fun calendarToText(date: String, calendar: Calendar, textView: TextView? = null) =
+        with(binding) {
+            if (date == LESSON_START_DATE) {
+                startDay = calendar.timeInMillis
+                lessonStartDate = getPickerDateToDash(calendar.time)
+            } else {
+                goalDay = calendar.timeInMillis
+                lessonGoalDate = getPickerDateToDash(calendar.time)
+            }
+            if (textView != null) {
+                textView.text = getPickerDateToDot(calendar.time)
+            }
+        }
+
+    private fun updateGoalLessonDate(calendar: Calendar) = with(binding) {
+        when (selectedItem) {
+            ONE_WEEK -> {
+                calendar.add(Calendar.DATE, 7)
+                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+            }
+
+            ONE_MONTH -> {
+                calendar.add(Calendar.MONTH, 1)
+                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+            }
+
+            TWO_MONTH -> {
+                calendar.add(Calendar.MONTH, 2)
+                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+            }
+
+            THREE_MONTH -> {
+                calendar.add(Calendar.MONTH, 3)
+                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+            }
+
+            else -> Unit
+        }
     }
 
     private fun registerGoalLessonDate(calendar: Calendar) = with(binding) {
@@ -292,13 +312,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
                 calendar.time = Date(it)
-                tvRegisterGoalLessonDateInfo.text =
-                    getPickerDateToDot(calendar.time)
-
-                goalDay = calendar.timeInMillis
-                lessonGoalDate = getPickerDateToDash(calendar.time)
-                unlockButton(btnRegisterLesson)
-                isLessonGoalDateDecided = true
+                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                decideLessonGoalDate(true)
             }
         }
         materialDatePicker.show(childFragmentManager, "calendar")
@@ -338,7 +353,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         return "${yearOfDate}.${monthOfDate}.$dayOfDate"
     }
 
-    private fun validateInputForm(editText: EditText, button: AppCompatButton) {
+    private fun validateInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
         var result = ""
         val decimalFormat = DecimalFormat("#,###")
 
@@ -348,24 +363,35 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
                     lessonPrice = charSequence.toString().replace(",", "").toInt()
-                    Log.d("lessonPrice", "onTextChanged: $lessonPrice")
                     result =
                         decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
-                    Log.d("result", "onTextChanged: $result")
                     editText.setText(result)
-                    // 커서 위치 설정
+                    tvRegisterLessonPriceInfo.apply {
+                        text = getString(R.string.input_lesson_price, result)
+                        visibility = View.VISIBLE
+                    }
+
                     editText.setSelection(result.length)
+                }
+
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = ""
+                    editText.setText(result)
+                    tvRegisterLessonPriceInfo.apply {
+                        text = result
+                        visibility = View.INVISIBLE
+                    }
                 }
             }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
-                    lockButton(button)
+                    (activity as RegisterLessonActivity).lockButton(button)
                 } else {
-                    unlockButton(button)
+                    (activity as RegisterLessonActivity).unlockButton(button)
                 }
             }
         })
@@ -380,7 +406,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun focusInputFormOptional(editText: EditText) {
-
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
@@ -400,24 +425,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun unlockButton(button: AppCompatButton) {
-        button.isEnabled = true
-        button.background = AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.bg_register_rounded_button_sloth
-        )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun lockButton(button: AppCompatButton) {
-        button.isEnabled = false
-        button.background = AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.bg_register_rounded_button_disabled
-        )
     }
 
     private fun clearFocus(editText: EditText) {
