@@ -89,7 +89,11 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         tvRegisterLessonStartDateInfo.text = changeDateFormat(lessonStartDate)
         tvRegisterLessonGoalDateInfo.text = changeDateFormat(lessonGoalDate)
 
-        btnRegisterLesson.setOnClickListener {
+        btnRegisterLessonUpdate.setOnClickListener {
+            (activity as RegisterLessonActivity).onBackPressed()
+        }
+
+        btnRegisterLessonAccept.setOnClickListener {
             mainScope {
                 viewModel.registerLesson(accessToken,
                     LessonRegisterRequest(

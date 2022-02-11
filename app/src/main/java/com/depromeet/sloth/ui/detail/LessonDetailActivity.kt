@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
@@ -221,15 +220,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    // 예정 강의만 삭제 가능
-                    if (!isLessonStarted) {
-                        // 예정 강의
                         deleteLesson(accessToken, lessonId)
-                    } else {
-                        // 진행 중인 강의
-                        val cannotDeleteDlg = SlothDialog(this@LessonDetailActivity, DialogState.CANNOT_DELETE)
-                        cannotDeleteDlg.start()
-                    }
                 }
             }
             dlg.start()
@@ -242,7 +233,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 when (it) {
                     is LessonState.Success<*> -> {
                         Log.d("Success", "${it.data}")
-                        Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                     is LessonState.Unauthorized -> {

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="312dp"
-    android:layout_height="200dp"
+    android:layout_height="202dp"
     android:layout_gravity="center"
     android:background="@drawable/bg_dialog_rounded">
 
@@ -20,8 +20,8 @@
     <TextView
         android:id="@+id/tv_dialog_message"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="18dp"
         android:text="@string/dialog_default_message"
         android:textColor="@color/black"
         android:textSize="18dp"
@@ -53,20 +53,6 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         app:layout_constraintStart_toEndOf="@+id/btn_dialog_cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_dialog_king_receive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_detail_rounded_btn_king_receive"
-        android:text="@string/king_receive"
-        android:textColor="@color/gray_500"
-        android:textSize="16dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

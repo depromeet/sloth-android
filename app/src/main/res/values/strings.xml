@@ -76,7 +76,8 @@
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
-    <string name="delete_lesson_dialog_message">정말 강의를 삭제하시겠어요?</string>
+    <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
+    <string name="delete_lesson_dialog_message_check">포기하기</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
@@ -107,13 +108,11 @@
     <string name="lesson_close">마감</string>
     <string name="d_day">D-Day</string>
     <string name="accept">수락하기</string>
+    <string name="lesson_update">수정하기</string>
     <string name="lesson_start_date_caution">(생성 후 시작일 변경 불가능)</string>
     <string name="push_noti_cycle">푸시 알림 주기</string>
     <string name="push_noti_cycle_info">월, 수, 목</string>
     <string name="cannot_update">*수정불가</string>
-    <string name="cannot_delete_dialog_message">헹 속았지? 삭제는 불가능해!</string>
-    <string name="register_lesson_check_caution">한번 생성하면 삭제할 수 없으니 신중하게 결정하라구!</string>
-    <string name="king_receive">킹받네!</string>
     <string name="one_hundred_percent">100%</string>
     <string name="input_lesson_count">%1$s개</string>
     <string name="input_lesson_price">%1$s원</string>

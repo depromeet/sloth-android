@@ -32,7 +32,6 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
         val ivDialogState = dlg.findViewById<ImageView>(R.id.iv_dialog_state)
         val btnDialogCheck = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_check)
         val btnDialogCancel = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
-        val btnDialogKingReceive = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_king_receive)
         val tvDialogMessage = dlg.findViewById<TextView>(R.id.tv_dialog_message)
 
         when (state) {
@@ -71,6 +70,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
             DialogState.DELETE_LESSON -> {
                 tvDialogMessage.setText(R.string.delete_lesson_dialog_message)
+                btnDialogCheck.setText(R.string.delete_lesson_dialog_message_check)
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
@@ -91,16 +91,6 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 }
             }
 
-            DialogState.CANNOT_DELETE -> {
-                tvDialogMessage.setText(R.string.cannot_delete_dialog_message)
-                btnDialogCheck.visibility = View.GONE
-                btnDialogCancel.visibility = View.GONE
-                btnDialogKingReceive.visibility = View.VISIBLE
-
-                btnDialogKingReceive.setOnClickListener{
-                    dlg.dismiss()
-                }
-            }
         }
         btnDialogCancel.setOnClickListener {
             dlg.dismiss()
@@ -111,5 +101,5 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 }
 
 enum class DialogState {
-    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, CANNOT_DELETE
+    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT
 }
