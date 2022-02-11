@@ -115,7 +115,6 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     when (it) {
                         is LessonState.Success -> {
                             Log.d("Register Success", "${it.data}")
-                            Toast.makeText(requireContext(), "강의가 등록되었습니다.", Toast.LENGTH_SHORT).show()
                             (activity as RegisterLessonActivity).finish()
                         }
 
