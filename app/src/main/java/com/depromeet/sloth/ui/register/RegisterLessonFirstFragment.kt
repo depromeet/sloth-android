@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
@@ -55,6 +57,10 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     override fun initViews() = with(binding) {
         if (::categoryAdapter.isInitialized.not()) {
             initAdapter()
+        }
+
+        if (etRegisterLessonCount.hasFocus()) {
+            clearFocus(etRegisterLessonCount)
         }
 
         bindSpinner()
@@ -199,6 +205,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         (activity as RegisterLessonActivity).lockButton(button)
                     } else {
+                        Log.d("gainFocus", "tvRegisterLessonCountInfo")
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         (activity as RegisterLessonActivity).unlockButton(button)
                     }
@@ -233,17 +240,22 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                Log.d("gainFocus", "etRegisterLessonCount")
             } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                Log.d("loseFocus", "etRegisterLessonCount")
             }
         }
     }
 
-    private fun clearFocus(editText: EditText) {
+    private fun clearFocus(editText: EditText) = with(binding) {
         editText.apply {
             clearFocus()
             setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
         }
+        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
     }
 }
