@@ -7,6 +7,8 @@ data class LessonUpdateInfoRequest (
     val categoryId: Int,
     @SerializedName("lessonName")
     val lessonName: String,
+    @SerializedName("price")
+    val price: Int,
     @SerializedName("siteId")
     val siteId: Int,
     @SerializedName("totalNumber")

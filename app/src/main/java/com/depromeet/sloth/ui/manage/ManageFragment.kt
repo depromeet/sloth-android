@@ -19,12 +19,11 @@ import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.member.MemberInfoResponse
-import com.depromeet.sloth.data.network.member.MemberState
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.HomeActivity
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
@@ -97,11 +96,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     override fun initViews() = with(binding) {
 
         ivManageProfileImage.setOnClickListener {
-            // nickname change
             val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
             updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            // dialog radius 적용
             updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
 
             val nameEditText =
@@ -137,6 +134,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                                     Log.d("Update Error", "${it.exception}")
                                 }
 
+                                is MemberState.Forbidden -> { Log.d("Error", "Forbidden") }
+
+                                is MemberState.NotFound -> { Log.d("Error", "NotFound") }
+
                                 is MemberState.Error -> {
                                     Log.d("Update Error", "${it.exception}")
                                     Toast.makeText(
@@ -170,8 +171,33 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
             val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    preferenceManager.removeAuthToken()
-                    startActivity(LoginActivity.newIntent(requireActivity()))
+                    mainScope {
+                        viewModel.logout(accessToken).let {
+                            when(it) {
+                                is MemberLogoutState.Success<String> -> {
+                                    Log.d("Logout Success", it.data)
+
+                                    preferenceManager.removeAuthToken()
+                                    startActivity(LoginActivity.newIntent(requireActivity()))
+                                    (activity as HomeActivity).finish()
+                                }
+
+                                is MemberLogoutState.Created -> { Log.d("Error", "Create") }
+
+                                is MemberLogoutState.Unauthorized -> {
+                                    Log.d("Logout Error", "${it.exception}")
+                                }
+
+                                is MemberLogoutState.NotFound -> { Log.d("Error", "NotFound") }
+
+                                is MemberLogoutState.Forbidden -> { Log.d("Error", "Forbidden") }
+
+                                is MemberLogoutState.Error -> {
+                                    Log.d("Error", "${it.exception}")
+                                }
+                            }
+                        }
+                    }
                 }
             }
             dlg.start()
