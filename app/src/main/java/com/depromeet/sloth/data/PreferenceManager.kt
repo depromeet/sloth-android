@@ -18,6 +18,7 @@ class PreferenceManager @Inject constructor(
         private const val DEFAULT_STRING_VALUE = ""
         private const val ACCESS_TOKEN = "accessToken"
         private const val REFRESH_TOKEN = "refreshToken"
+        private const val FCM_TOKEN = "fcmToken"
     }
 
     private fun getPreferences(context: Context): SharedPreferences {
@@ -54,6 +55,17 @@ class PreferenceManager @Inject constructor(
     }
 
     /**
+     * FCMToken 저장
+     *
+     * @param fcmToken
+     *
+     */
+    fun putFCMToken(fcmToken: String) {
+        editor.putString(FCM_TOKEN, fcmToken)
+        editor.apply()
+    }
+
+    /**
      * 저장한 accessToken 로드
      *
      * @return
@@ -80,4 +92,14 @@ class PreferenceManager @Inject constructor(
         editor.remove(REFRESH_TOKEN)
         editor.apply()
     }
+
+    /**
+     * 저장된 FCMToken 삭제
+     *
+     */
+    fun removeFCMToken() {
+        editor.remove(FCM_TOKEN)
+        editor.apply()
+    }
+
 }

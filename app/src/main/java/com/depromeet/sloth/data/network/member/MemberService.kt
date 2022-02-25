@@ -14,6 +14,5 @@ interface MemberService {
     suspend fun updateMemberInfo(@Body requestUpdate: MemberUpdateInfoRequest): Response<MemberUpdateInfoResponse>?
 
     @POST("api/logout")
-    //suspend fun logout(): Response<MemberLogoutResponse>?
     suspend fun logout(): Response<String>?
 }
