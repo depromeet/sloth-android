@@ -23,8 +23,19 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import android.graphics.Typeface
+import android.util.Log
+
+import android.widget.TextView
+
+import android.view.ViewGroup
+
+import android.widget.ArrayAdapter
+import android.view.MotionEvent
+
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
+
     companion object {
         private const val DAY = 86400000L
 
@@ -57,6 +68,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     lateinit var lessonGoalDate: String
 
     private var isLessonGoalDateDecided = false
+    private var isLessonGoalDateSpnDecided = true
 
     lateinit var selectedItem: Number
 
@@ -88,12 +100,12 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun initViews() = with(binding) {
         if (::goalDateAdapter.isInitialized.not()) {
             initAdapter()
         }
+        //완강목표일 Spinner textview size 줄이기
 
         bindSpinner()
 
@@ -111,7 +123,11 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             tvRegisterStartLessonDateInfo.text = changeDateFormat(lessonStartDate)
         }
 
-        spnRegisterGoalLessonDate.setSelection(0, false)
+        if (::selectedItem.isInitialized) {
+            spnRegisterGoalLessonDate.setSelection(selectedItem as Int, false)
+        } else {
+            spnRegisterGoalLessonDate.setSelection(0, false)
+        }
 
         spnRegisterGoalLessonDate.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
@@ -299,6 +315,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun registerGoalLessonDate(calendar: Calendar) = with(binding) {
+        Log.d("RegisterLessonSecondFragment", "registerGoalLessonDate: func call")
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.from(startDay!! + DAY))
@@ -325,12 +342,12 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             R.layout.item_spinner,
             resources.getStringArray(R.array.lesson_goal_date_array)
         ).apply {
-            setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
     }
 
     private fun bindSpinner() {
-        binding.spnRegisterGoalLessonDate.adapter
+        binding.spnRegisterGoalLessonDate.adapter = goalDateAdapter
     }
 
     private fun getPickerDateToDash(date: Date): String {
@@ -398,8 +415,10 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                 tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
                 tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
@@ -408,7 +427,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun focusInputFormOptional(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 

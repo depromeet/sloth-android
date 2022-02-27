@@ -108,7 +108,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
         startActivity(
-            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString(), lessonInfo.price)
+            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString())
         )
     }
 

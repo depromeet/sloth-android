@@ -32,6 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_register_guide">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_register_lesson_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp">

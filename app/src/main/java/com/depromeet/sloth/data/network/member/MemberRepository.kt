@@ -65,4 +65,35 @@ class MemberRepository @Inject constructor(
                 }
             } ?: return MemberState.Error(java.lang.Exception("Register Exception"))
     }
+
+    suspend fun logout(
+        accessToken: String,
+    ): MemberLogoutState<String> {
+        RetrofitServiceGenerator.build(accessToken)
+            .create(MemberService::class.java)
+            .logout()?.run {
+                return when (this.code()) {
+                    200 -> MemberLogoutState.Success(this.body() ?: "")
+                    201 -> MemberLogoutState.Created
+                    401 -> {
+                        val refreshToken = preferenceManager.getRefreshToken()
+                        RetrofitServiceGenerator.build(refreshToken)
+                            .create(MemberService::class.java)
+                            .logout()?.run {
+                                when (code()) {
+                                    200 -> {
+                                        val newAccessToken = headers()["Authorization"] ?: "EMPTY"
+                                        preferenceManager.updateAccessToken(newAccessToken)
+                                        MemberLogoutState.Success(body() ?: "")
+                                    }
+                                    else -> MemberLogoutState.Unauthorized(Exception("Authentication Failed Exception"))
+                                }
+                            } ?: MemberLogoutState.Error(Exception("Uncaught Exception"))
+                        }
+                    403 -> MemberLogoutState.Forbidden
+                    404 -> MemberLogoutState.NotFound
+                    else -> MemberLogoutState.Error(java.lang.Exception("Uncaught Exception"))
+                }
+            } ?: return MemberLogoutState.Error(java.lang.Exception("Register Exception"))
+    }
 }

@@ -59,10 +59,9 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         ActivityLessonDetailBinding.inflate(layoutInflater)
 
     companion object {
-        fun newIntent(context: Context, lessonId: String, lessonPrice: Int) =
+        fun newIntent(context: Context, lessonId: String) =
             Intent(context, LessonDetailActivity::class.java).apply {
                 putExtra(LESSON_ID, lessonId)
-                putExtra(LESSON_PRICE, lessonPrice)
             }
 
         private const val LESSON_ID = "lessonId"
@@ -77,15 +76,14 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
+
+        intent.apply {
+            lessonId = getStringExtra(LESSON_ID).toString()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-
-        intent.apply {
-            lessonId = getStringExtra(LESSON_ID).toString()
-            lessonPrice = getIntExtra(LESSON_PRICE, 0)
-        }
 
         mainScope {
             viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
@@ -100,10 +98,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                         }
                     }
 
-                    is LessonState.Error -> {
-                        Log.d("Error", "${it.exception}")
-                    }
-
                     is LessonState.Unauthorized -> {
                         Log.d("Unauthorized", "${it.exception}")
                         val dlg = SlothDialog(this, DialogState.FORBIDDEN)
@@ -116,9 +110,17 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                         dlg.start()
                     }
 
-                    is LessonState.NotFound -> { Log.d("Error", "NotFound") }
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
 
-                    is LessonState.Forbidden -> { Log.d("Error", "Forbidden") }
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
+                    }
+
+                    is LessonState.Error -> {
+                        Log.d("Error", "${it.exception}")
+                    }
                 }
             }
         }
@@ -130,9 +132,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 is LessonState.Success<List<LessonCategoryResponse>> -> {
                     Log.d("fetch Success", "${it.data}")
                     setLessonCategoryList(it.data)
-                }
-                is LessonState.Error -> {
-                    Log.d("fetch Error", "${it.exception}")
                 }
                 is LessonState.Unauthorized -> {
                     val dlg = SlothDialog(this@LessonDetailActivity, DialogState.FORBIDDEN)
@@ -150,6 +149,9 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 }
                 is LessonState.Forbidden -> {
                     Log.d("Error", "Forbidden")
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
                 }
             }
         }
@@ -172,9 +174,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
                     initLessonInfo(lessonDetailInfo)
                 }
-                is LessonState.Error -> {
-                    Log.d("fetch Error", "${it.exception}")
-                }
 
                 is LessonState.Unauthorized -> {
                     val dlg = SlothDialog(this@LessonDetailActivity, DialogState.FORBIDDEN)
@@ -192,6 +191,9 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 }
                 is LessonState.Forbidden -> {
                     Log.d("Error", "Forbidden")
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
                 }
             }
         }
@@ -220,7 +222,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                        deleteLesson(accessToken, lessonId)
+                    deleteLesson(accessToken, lessonId)
                 }
             }
             dlg.start()
@@ -305,11 +307,12 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
             // 현재 내가 날린 돈
             tvDetailLessonLoseMoneyInfo.text =
-                if (data.wastePrice > lessonPrice as Int) {
-                    changeDecimalFormat(lessonPrice as Int)
-                } else {
-                    changeDecimalFormat(data.wastePrice)
-                }
+//                if (data.wastePrice > lessonPrice as Int) {
+//                    changeDecimalFormat(lessonPrice as Int)
+//                } else {
+//                    changeDecimalFormat(data.wastePrice)
+//                }
+                changeDecimalFormat(data.wastePrice)
 
             // 남은 날짜
             tvDetailLessonRemainDay.text =
