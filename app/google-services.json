@@ -14,6 +14,38 @@
       },
       "oauth_client": [
         {
+          "client_id": "328671196053-2jb95rthjgjdjfb9pccdl1n3uo74rkji.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.sloth",
+            "certificate_hash": "f03331124c8be25022866f47a6118935e26146db"
+          }
+        },
+        {
+          "client_id": "328671196053-q0sd5o806rvq3k3cqpc962lg3sdu0qg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.sloth",
+            "certificate_hash": "2b9462c25ed804c496cf08cb26f5ef15677519fb"
+          }
+        },
+        {
+          "client_id": "328671196053-qhgsst093q723p254smam91jm6mo0b3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.sloth",
+            "certificate_hash": "70efc84bb51ac352a03af84a0cb2be331018b3cb"
+          }
+        },
+        {
+          "client_id": "328671196053-t2vfqdro8f1gnd5bhbde2i36aupcd8df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.sloth",
+            "certificate_hash": "b4ded07aef1f0feacdf86ce3e702dc7ef734b6db"
+          }
+        },
+        {
           "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
           "client_type": 3
         }

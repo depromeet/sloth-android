@@ -52,7 +52,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
 
-        Log.e("test", viewModel.toString())
         initViews()
 
         mainScope {
