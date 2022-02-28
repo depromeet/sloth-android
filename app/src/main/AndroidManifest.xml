@@ -16,6 +16,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/sloth" />
+
         <activity
             android:name=".ui.register.RegisterLessonActivity"
             android:exported="true"
