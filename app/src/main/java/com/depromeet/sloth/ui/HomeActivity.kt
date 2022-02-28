@@ -42,23 +42,28 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
         initNavigationEvent()
 
-        if(::fcmToken.isInitialized.not()){
+        if (::fcmToken.isInitialized.not()) {
             registerFCMToken()
         }
     }
 
-    private fun initNavigationEvent() {
-        binding.navigationView.run {
-            setOnItemSelectedListener {
-                when (it.itemId) {
-                    R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
-                    R.id.menu_class -> changeFragment(ListFragment::class.java.name)
-                    R.id.menu_mypage -> changeFragment(ManageFragment::class.java.name)
-                }
-
-                true
+    private fun initNavigationEvent() = with(binding) {
+        navigationView.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
+                R.id.menu_class -> changeFragment(ListFragment::class.java.name)
+                R.id.menu_mypage -> changeFragment(ManageFragment::class.java.name)
             }
-            this.selectedItemId = R.id.menu_today
+            true
+        }
+        navigationView.selectedItemId = R.id.menu_today
+
+        navigationView.setOnItemReselectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_today -> {}
+                R.id.menu_class -> {}
+                R.id.menu_mypage -> {}
+            }
         }
     }
 
@@ -76,7 +81,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         accessToken,
                         NotificationSaveRequest(fcmToken)
                     ).let {
-                        when(it) {
+                        when (it) {
                             is NotificationSaveState.Success<String> -> {
                                 Log.d("register Success", it.data)
                             }
@@ -85,12 +90,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                             }
                             is NotificationSaveState.Unauthorized -> {
                                 val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                                    override fun onItemClicked() {
-                                        preferenceManager.removeAuthToken()
-                                        startActivity(LoginActivity.newIntent(this@HomeActivity))
+                                dlg.onItemClickListener =
+                                    object : SlothDialog.OnItemClickedListener {
+                                        override fun onItemClicked() {
+                                            preferenceManager.removeAuthToken()
+                                            startActivity(LoginActivity.newIntent(this@HomeActivity))
+                                        }
                                     }
-                                }
                                 dlg.start()
                             }
                             is NotificationSaveState.Created -> {

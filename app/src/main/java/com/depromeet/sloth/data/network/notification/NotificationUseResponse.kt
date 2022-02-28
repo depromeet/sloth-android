@@ -4,7 +4,7 @@ package com.depromeet.sloth.data.network.notification
  *  NotificationUseResponse
  *
  *  "fcmToken": "string",
- *  "isUse": 0,
+ *  "isUse": false,
  */
 
 data class NotificationUseResponse (

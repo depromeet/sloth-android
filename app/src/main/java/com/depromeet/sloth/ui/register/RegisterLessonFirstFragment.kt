@@ -205,7 +205,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         (activity as RegisterLessonActivity).lockButton(button)
                     } else {
-                        Log.d("gainFocus", "tvRegisterLessonCountInfo")
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         (activity as RegisterLessonActivity).unlockButton(button)
                     }
@@ -242,11 +241,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                Log.d("gainFocus", "etRegisterLessonCount")
             } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-                Log.d("loseFocus", "etRegisterLessonCount")
             }
         }
     }

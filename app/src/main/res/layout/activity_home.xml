@@ -26,8 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_home_menu_rounded"
-        app:itemTextColor="@drawable/selector_menu_bottom_text"
         android:elevation="20dp"
+        app:itemBackground="@color/white"
+        app:itemTextColor="@drawable/selector_menu_bottom_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
