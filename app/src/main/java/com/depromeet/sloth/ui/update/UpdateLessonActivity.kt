@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.update
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,8 +10,10 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -24,9 +27,11 @@ import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.login.LoginActivity
+import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
@@ -423,9 +428,21 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         setEditTextFocus(editText)
     }
 
-    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
+        spinner.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                hideKeyBoard()
+            }
+            false
+        }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                clearFocus(etUpdateLessonName)
+                clearFocus(etUpdateLessonCount)
+                clearFocus(etUpdateLessonPrice)
+
                 val spinnerId = spinner.selectedItemPosition
                 if (spinnerId == 0) {
                     lockButton(button)
@@ -438,6 +455,11 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 unlockButton(button)
             }
         }
+    }
+
+    private fun hideKeyBoard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 
     private fun setEditTextFocus(editText: EditText) {
@@ -458,6 +480,15 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             }
             false
         }
+    }
+
+    private fun clearFocus(editText: EditText) = with(binding) {
+        editText.apply {
+            clearFocus()
+            setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        }
+        tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
     }
 
     private fun setButton(editable: Editable?, button: AppCompatButton) {
