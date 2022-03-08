@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.update
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +10,10 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -27,6 +31,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
@@ -115,7 +120,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 is LessonState.Forbidden -> {
                     Log.d("Error", "Forbidden")
                 }
-
             }
         }
     }
@@ -125,7 +129,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요.")
+        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
     }
 
     private suspend fun initLessonSite() {
@@ -166,7 +170,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택 해주세요.")
+        lessonSiteList.add(0, "강의 사이트를 선택 해주세요")
     }
 
     override fun initViews() = with(binding) {
@@ -178,7 +182,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         validateCountInputForm(etUpdateLessonCount, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonCategory, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
-        validatePriceInputForm(etUpdateLessonPriceInfo, btnUpdateLesson)
+        validatePriceInputForm(etUpdateLessonPrice, btnUpdateLesson)
 
         initLessonInfo(lesson)
 
@@ -208,7 +212,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                             Log.d("Update Success", "${it.data}")
                             Toast.makeText(
                                 this@UpdateLessonActivity,
-                                "강의 정보가 수정되었습니다.",
+                                "강의 정보가 수정되었어요",
                                 Toast.LENGTH_SHORT
                             ).show()
                             finish()
@@ -228,7 +232,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                             Log.d("Update Error", "${it.exception}")
                             Toast.makeText(
                                 this@UpdateLessonActivity,
-                                "강의 정보가 수정을 실패하였습니다.",
+                                "강의 정보 수정을 실패했어요",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -286,8 +290,213 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         lessonPrice = lesson.price
         val changedPriceFormat = df.format(lesson.price)
 
-        etUpdateLessonPriceInfo.hint = "${changedPriceFormat}원"
+        etUpdateLessonPrice.hint = "${changedPriceFormat}원"
         tvUpdateLessonMessageInfo.text = lesson.message
+    }
+
+    private fun validateCountInputForm(editText: EditText, button: AppCompatButton) =
+        with(binding) {
+            var result = ""
+
+            editText.addTextChangedListener(object : TextWatcher {
+                @RequiresApi(Build.VERSION_CODES.M)
+                override fun beforeTextChanged(
+                    charSequence: CharSequence?,
+                    i1: Int,
+                    i2: Int,
+                    i3: Int,
+                ) {
+                }
+
+                override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                    if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                        lessonCount = charSequence.toString().toInt()
+                        result = lessonCount.toString()
+                        if (result[0] == '0') {
+                            tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                            lockButton(button)
+                        } else {
+                            tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                            unlockButton(button)
+                        }
+                        editText.setText(result)
+                        editText.setSelection(result.length)
+
+                        tvUpdateLessonCountInfo.apply {
+                            text = getString(R.string.input_lesson_count, result)
+                            visibility = View.VISIBLE
+                        }
+                    }
+
+                    if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                        result = ""
+                        editText.setText(result)
+                        tvUpdateLessonCountInfo.apply {
+                            text = result
+                            visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+                @RequiresApi(Build.VERSION_CODES.M)
+                override fun afterTextChanged(editable: Editable?) {
+                    if (editable.isNullOrEmpty() || editable[0] == '0') {
+                        lockButton(button)
+                    } else {
+                        unlockButton(button)
+                    }
+                }
+            })
+            setValidateEditTextFocus(editText, tvUpdateLessonCountInfo)
+        }
+
+    private fun validatePriceInputForm(editText: EditText, button: AppCompatButton) =
+        with(binding) {
+            var result = ""
+            val decimalFormat = DecimalFormat("#,###")
+
+            editText.addTextChangedListener(object : TextWatcher {
+                @RequiresApi(Build.VERSION_CODES.M)
+                override fun beforeTextChanged(
+                    charSequence: CharSequence?,
+                    i1: Int,
+                    i2: Int,
+                    i3: Int,
+                ) {
+                }
+
+                override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                    if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
+                        lessonPrice = charSequence.toString().replace(",", "").toInt()
+                        result =
+                            decimalFormat.format(charSequence.toString().replace(",", "")
+                                .toDouble())
+                        editText.setText(result)
+                        editText.setSelection(result.length)
+
+                        tvUpdateLessonPriceInfo.apply {
+                            text = getString(R.string.input_lesson_price, result)
+                            visibility = View.VISIBLE
+                        }
+                    }
+
+                    if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                        result = ""
+                        editText.setText(result)
+                        tvUpdateLessonPriceInfo.apply {
+                            text = result
+                            visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+                @RequiresApi(Build.VERSION_CODES.M)
+                override fun afterTextChanged(editable: Editable?) {
+                    setButton(editable, button)
+                }
+            })
+            setValidateEditTextFocus(editText, tvUpdateLessonPriceInfo)
+        }
+
+    private fun setValidateEditTextFocus(editText: EditText, textView: TextView) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                textView.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            } else {
+                textView.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+        clearEditTextFocus(editText)
+    }
+
+    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
+        editText.addTextChangedListener(object : TextWatcher {
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+
+            }
+
+            @RequiresApi(Build.VERSION_CODES.M)
+            override fun afterTextChanged(editable: Editable?) {
+                setButton(editable, button)
+            }
+        })
+        setEditTextFocus(editText)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
+        spinner.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                hideKeyBoard()
+            }
+            false
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                clearFocus(etUpdateLessonName)
+                clearFocus(etUpdateLessonCount)
+                clearFocus(etUpdateLessonPrice)
+
+                val spinnerId = spinner.selectedItemPosition
+                if (spinnerId == 0) {
+                    lockButton(button)
+                } else {
+                    unlockButton(button)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                unlockButton(button)
+            }
+        }
+    }
+
+    private fun hideKeyBoard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
+    }
+
+    private fun setEditTextFocus(editText: EditText) {
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            }
+        }
+        clearEditTextFocus(editText)
+    }
+
+    private fun clearEditTextFocus(editText: EditText) {
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                editText.clearFocus()
+            }
+            false
+        }
+    }
+
+    private fun clearFocus(editText: EditText) = with(binding) {
+        editText.apply {
+            clearFocus()
+            setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        }
+        tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+    }
+
+    private fun setButton(editable: Editable?, button: AppCompatButton) {
+        if (editable.isNullOrEmpty()) {
+            lockButton(button)
+        } else {
+            unlockButton(button)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -306,161 +515,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             this,
             R.drawable.bg_update_rounded_gray
         )
-    }
-
-    private fun validateCountInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
-        var result = ""
-
-        editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    lessonCount = charSequence.toString().toInt()
-                    result = lessonCount.toString()
-                    if (result[0] == '0') {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        lockButton(button)
-                    } else {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        unlockButton(button)
-                    }
-                    editText.setText(result)
-                    editText.setSelection(result.length)
-
-                    tvUpdateLessonCountInfo.apply {
-                        text = getString(R.string.input_lesson_count, result)
-                        visibility = View.VISIBLE
-                    }
-                }
-
-                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = ""
-                    editText.setText(result)
-                    tvUpdateLessonCountInfo.apply {
-                        text = result
-                        visibility = View.INVISIBLE
-                    }
-                }
-            }
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty() || editable[0] == '0') {
-                    lockButton(button)
-                } else {
-                    unlockButton(button)
-                }
-            }
-        })
-
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
-    }
-
-    private fun validatePriceInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
-        var result = ""
-        val decimalFormat = DecimalFormat("#,###")
-
-        editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
-                    lessonPrice = charSequence.toString().replace(",", "").toInt()
-                    result =
-                        decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
-                    editText.setText(result)
-                    editText.setSelection(result.length)
-
-                    tvUpdateLessonPriceInfo.apply {
-                        text = getString(R.string.input_lesson_price, result)
-                        visibility = View.VISIBLE
-                    }
-                }
-
-                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = ""
-                    editText.setText(result)
-                    tvUpdateLessonPriceInfo.apply {
-                        text = result
-                        visibility = View.INVISIBLE
-                    }
-                }
-            }
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty()) {
-                    lockButton(button)
-                } else {
-                    unlockButton(button)
-                }
-            }
-        })
-
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
-    }
-
-    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
-        editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-
-            }
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty()) {
-                    lockButton(button)
-                } else {
-                    unlockButton(button)
-                }
-            }
-        })
-
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
-    }
-
-    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) {
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                val spinnerId = spinner.selectedItemPosition
-                if (spinnerId == 0) {
-                    lockButton(button)
-                } else {
-                    unlockButton(button)
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                unlockButton(button)
-            }
-        }
     }
 
     private fun changeDateFormat(date: String): String {

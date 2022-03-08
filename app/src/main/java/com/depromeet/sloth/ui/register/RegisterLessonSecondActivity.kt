@@ -231,7 +231,7 @@
 //                                                if (startDay!! >= endDay!!) {
 //                                                    Toast.makeText(
 //                                                        this@RegisterLessonSecondActivity,
-//                                                        "강의 시작일은 완강 목표일 이전이어야 합니다.",
+//                                                        "강의 시작일은 완강 목표일 이전이어야 해요.",
 //                                                        Toast.LENGTH_SHORT
 //                                                    ).show()
 //
@@ -265,7 +265,7 @@
 //                                                                    )
 //                                                                    Toast.makeText(
 //                                                                        this@RegisterLessonSecondActivity,
-//                                                                        "강의가 등록되었습니다.",
+//                                                                        "강의가 등록되었어요.",
 //                                                                        Toast.LENGTH_SHORT
 //                                                                    ).show()
 //
@@ -301,7 +301,7 @@
 //                                                                    )
 //                                                                    Toast.makeText(
 //                                                                        this@RegisterLessonSecondActivity,
-//                                                                        "강의 등록을 실패하였습니다.",
+//                                                                        "강의 등록을 실패했어요.",
 //                                                                        Toast.LENGTH_SHORT
 //                                                                    ).show()
 //                                                                }

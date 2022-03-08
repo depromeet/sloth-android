@@ -33,7 +33,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.view.MotionEvent
 
-
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
 
     companion object {
@@ -68,13 +67,15 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     lateinit var lessonGoalDate: String
 
     private var isLessonGoalDateDecided = false
-    private var isLessonGoalDateSpnDecided = true
+    //private var isLessonGoalDateSpnDecided = true
 
     lateinit var selectedItem: Number
 
     lateinit var goalDateAdapter: ArrayAdapter<String>
 
     private val today = Date()
+
+    lateinit var calendar: Calendar
 
     override fun getViewBinding(): FragmentRegisterLessonSecondBinding =
         FragmentRegisterLessonSecondBinding.inflate(layoutInflater)
@@ -105,16 +106,15 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         if (::goalDateAdapter.isInitialized.not()) {
             initAdapter()
         }
-        //완강목표일 Spinner textview size 줄이기
 
-        bindSpinner()
+        calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+
+        bindSpinner(spnRegisterGoalLessonDate, calendar)
 
         (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
 
         validateInputForm(etRegisterLessonPrice, btnRegisterLesson)
         focusInputFormOptional(etRegisterLessonMessage)
-
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
         if (::lessonStartDate.isInitialized.not()) {
             calendar.time = today
@@ -127,61 +127,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             spnRegisterGoalLessonDate.setSelection(selectedItem as Int, false)
         } else {
             spnRegisterGoalLessonDate.setSelection(0, false)
-        }
-
-        spnRegisterGoalLessonDate.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener {
-            @SuppressLint("SimpleDateFormat")
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                clearFocus(binding.etRegisterLessonPrice)
-
-                val date = SimpleDateFormat("yyyy-MM-dd")
-                date.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-                selectedItem = spnRegisterGoalLessonDate.selectedItemPosition
-
-                when (selectedItem) {
-                    DEFAULT -> {
-                        decideLessonGoalDate(false)
-                    }
-
-                    ONE_WEEK -> {
-                        decideLessonGoalDate(true)
-                        isStartDateInitialized(calendar)
-                        calendar.add(Calendar.DATE, 7)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
-                    }
-
-                    ONE_MONTH -> {
-                        decideLessonGoalDate(true)
-                        isStartDateInitialized(calendar)
-                        calendar.add(Calendar.MONTH, 1)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
-                    }
-
-                    TWO_MONTH -> {
-                        decideLessonGoalDate(true)
-                        isStartDateInitialized(calendar)
-                        calendar.add(Calendar.MONTH, 2)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
-                    }
-
-                    THREE_MONTH -> {
-                        decideLessonGoalDate(true)
-                        isStartDateInitialized(calendar)
-                        calendar.add(Calendar.MONTH, 3)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
-                    }
-
-                    CUSTOM_SETTING -> {
-                        registerGoalLessonDate(calendar)
-                    }
-                }
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                decideLessonGoalDate(false)
-            }
         }
 
         tvRegisterStartLessonDateInfo.setOnClickListener {
@@ -203,19 +148,19 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
             if (::selectedItem.isInitialized.not() || selectedItem == DEFAULT) {
                 Toast.makeText(requireContext(),
-                    "완강 목표일을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+                    "완강 목표일을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (etRegisterLessonPrice.text.toString().isEmpty()) {
                 Toast.makeText(requireContext(),
-                    "강의 금액을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                    "강의 금액을 입력해 주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (startDay!! >= goalDay!!) {
                 Toast.makeText(requireContext(),
-                    "강의 시작일은 완강 목표일 이전이어야 합니다.", Toast.LENGTH_SHORT).show()
+                    "강의 시작일은 완강 목표일 이전이어야 해요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -315,7 +260,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun registerGoalLessonDate(calendar: Calendar) = with(binding) {
-        Log.d("RegisterLessonSecondFragment", "registerGoalLessonDate: func call")
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.from(startDay!! + DAY))
@@ -346,8 +290,75 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
     }
 
-    private fun bindSpinner() {
-        binding.spnRegisterGoalLessonDate.adapter = goalDateAdapter
+    private fun bindSpinner(spinner: Spinner, calendar: Calendar) {
+        spinner.adapter = goalDateAdapter
+        setSpinnerListener(spinner, calendar)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setSpinnerListener(spinner: Spinner, calendar: Calendar) = with(binding) {
+        spinner.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                (activity as RegisterLessonActivity).hideKeyBoard()
+            }
+            false
+        }
+
+        spinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            @SuppressLint("SimpleDateFormat")
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                clearFocus(etRegisterLessonPrice)
+                clearFocus(etRegisterLessonMessage)
+
+                val date = SimpleDateFormat("yyyy-MM-dd")
+                date.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+                selectedItem = spnRegisterGoalLessonDate.selectedItemPosition
+
+                when (selectedItem) {
+                    DEFAULT -> {
+                        decideLessonGoalDate(false)
+                    }
+
+                    ONE_WEEK -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.DATE, 7)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    ONE_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 1)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    TWO_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 2)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    THREE_MONTH -> {
+                        decideLessonGoalDate(true)
+                        isStartDateInitialized(calendar)
+                        calendar.add(Calendar.MONTH, 3)
+                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                    }
+
+                    CUSTOM_SETTING -> {
+                        registerGoalLessonDate(calendar)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                decideLessonGoalDate(false)
+            }
+        }
     }
 
     private fun getPickerDateToDash(date: Date): String {
@@ -424,7 +435,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
     }
 
-    private fun focusInputFormOptional(editText: EditText) {
+    private fun focusInputFormOptional(editText: EditText) = with(binding) {
         editText.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
@@ -434,7 +445,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
-                clearFocus(binding.etRegisterLessonPrice)
+                clearFocus(etRegisterLessonPrice)
             }
         })
 

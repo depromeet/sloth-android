@@ -1,19 +1,24 @@
 package com.depromeet.sloth.ui.register
 
-import com.depromeet.sloth.R
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnFocusChangeListener
+import android.view.View.OnTouchListener
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
+import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseFragment
+
 
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>() {
 
@@ -76,13 +81,13 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             clearFocus(etRegisterLessonCount)
 
             if (etRegisterLessonName.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), "강의 이름을 입력해 주세요.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "강의 이름을 입력해 주세요", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
             if (etRegisterLessonCount.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), "강의 개수를 입력해 주세요.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "강의 개수를 입력해 주세요", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
@@ -90,19 +95,19 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             if (etRegisterLessonCount.text.toString()[0] == '0'
                 || etRegisterLessonCount.text.toString().toInt() == 0
             ) {
-                Toast.makeText(requireContext(), "강의 개수가 올바르지 않습니다.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "강의 개수가 올바르지 않아요", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
             if (spnRegisterLessonCategory.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "강의 카테고리를 선택해 주세요.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "강의 카테고리를 선택해 주세요", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
             if (spnRegisterLessonSite.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "강의 사이트를 선택해 주세요.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "강의 사이트를 선택해 주세요", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
@@ -142,21 +147,32 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         spnRegisterLessonSite.adapter = siteAdapter
     }
 
-    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) {
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                clearFocus(binding.etRegisterLessonCount)
-
-                val spinnerId = spinner.selectedItemPosition
-                if (spinnerId == 0) {
-                    (activity as RegisterLessonActivity).lockButton(button)
-                } else {
-                    (activity as RegisterLessonActivity).unlockButton(button)
+    @SuppressLint("ClickableViewAccessibility")
+    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
+        spinner.apply {
+            setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    (activity as RegisterLessonActivity).hideKeyBoard()
                 }
+                false
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                (activity as RegisterLessonActivity).unlockButton(button)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    clearFocus(etRegisterLessonCount)
+                    clearFocus(etRegisterLessonName)
+
+                    val spinnerId = spinner.selectedItemPosition
+                    if (spinnerId == 0) {
+                        (activity as RegisterLessonActivity).lockButton(button)
+                    } else {
+                        (activity as RegisterLessonActivity).unlockButton(button)
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    (activity as RegisterLessonActivity).unlockButton(button)
+                }
             }
         }
     }
@@ -205,7 +221,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         (activity as RegisterLessonActivity).lockButton(button)
                     } else {
-                        Log.d("gainFocus", "tvRegisterLessonCountInfo")
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         (activity as RegisterLessonActivity).unlockButton(button)
                     }
@@ -242,11 +257,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                Log.d("gainFocus", "etRegisterLessonCount")
             } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
                 tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-                Log.d("loseFocus", "etRegisterLessonCount")
             }
         }
     }

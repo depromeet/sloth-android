@@ -124,7 +124,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
 
                                     Toast.makeText(
                                         requireContext(),
-                                        "닉네임이 변경되었습니다.",
+                                        "닉네임이 변경되었어요",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -141,7 +141,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                                     Log.d("Update Error", "${it.exception}")
                                     Toast.makeText(
                                         requireContext(),
-                                        "닉네임이 변경 실패하였습니다.",
+                                        "닉네임이 변경을 실패했어요",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -149,7 +149,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "현재 닉네임과 동일합니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "현재 닉네임과 동일한 닉네임이에요", Toast.LENGTH_SHORT).show()
                 }
                 updateDialog.dismiss()
             }
