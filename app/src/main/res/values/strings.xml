@@ -13,7 +13,7 @@
     <string name="register_account_info">계정 정보 등록</string>
     <string name="welcome">환영합니다!</string>
     <string name="nickname">닉네임</string>
-    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요.</string>
+    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요</string>
 
     <string name="Sun">일</string>
     <string name="Mon">월</string>
@@ -23,18 +23,18 @@
     <string name="Fri">금</string>
     <string name="Sat">토</string>
 
-    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요.</string>
+    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요</string>
     <string name="lesson_name">강의 이름</string>
-    <string name="enter_lesson_count">강의 개수를 입력해 주세요.</string>
+    <string name="enter_lesson_count">강의 개수를 입력해 주세요</string>
     <string name="lesson_count">강의 개수</string>
     <string name="lesson_category">카테고리</string>
     <string name="lesson_site">강의 사이트</string>
     <string name="lesson_start_date">강의 시작일</string>
     <string name="lesson_finish_date">완강 목표일</string>
-    <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
+    <string name="enter_lesson_price">강의 금액을 입력해 주세요</string>
     <string name="lesson_price">강의 금액</string>
     <string name="alert_cycle">푸시 알람 주기</string>
-    <string name="max_30">최대 30자 까지 입력 가능합니다.</string>
+    <string name="max_30">최대 30자 까지 입력 가능합니다</string>
     <string name="lesson_message">각오 한마디(선택)</string>
 
     <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다 </font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부 열심히 한다</font></string>

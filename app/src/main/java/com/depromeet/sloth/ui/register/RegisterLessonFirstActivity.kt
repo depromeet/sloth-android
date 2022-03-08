@@ -121,7 +121,7 @@
 //
 //    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
 //        lessonCategoryList = data.map { it.categoryName }.toMutableList()
-//        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요.")
+//        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
 //        Log.d("lessonCategoryList", "$lessonCategoryList")
 //    }
 //
@@ -161,7 +161,7 @@
 //
 //    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
 //        lessonSiteList = data.map { it.siteName }.toMutableList()
-//        lessonSiteList.add(0, "강의 사이트를 선택해주세요.")
+//        lessonSiteList.add(0, "강의 사이트를 선택해주세요")
 //        Log.d("lessonSiteList", "$lessonSiteList")
 //    }
 //

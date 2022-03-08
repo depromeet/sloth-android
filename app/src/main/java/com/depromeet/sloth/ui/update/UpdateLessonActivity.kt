@@ -124,7 +124,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요.")
+        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
     }
 
     private suspend fun initLessonSite() {
@@ -165,7 +165,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택 해주세요.")
+        lessonSiteList.add(0, "강의 사이트를 선택 해주세요")
     }
 
     override fun initViews() = with(binding) {
@@ -207,7 +207,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                             Log.d("Update Success", "${it.data}")
                             Toast.makeText(
                                 this@UpdateLessonActivity,
-                                "강의 정보가 수정되었습니다.",
+                                "강의 정보가 수정되었어요",
                                 Toast.LENGTH_SHORT
                             ).show()
                             finish()
@@ -227,7 +227,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                             Log.d("Update Error", "${it.exception}")
                             Toast.makeText(
                                 this@UpdateLessonActivity,
-                                "강의 정보가 수정을 실패하였습니다.",
+                                "강의 정보 수정을 실패했어요",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -451,8 +451,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         clearEditTextFocus(editText)
     }
 
-    private fun clearEditTextFocus(editText: EditText) = with(binding) {
-        editText.setOnEditorActionListener { v, actionId, keyEvent ->
+    private fun clearEditTextFocus(editText: EditText) {
+        editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 editText.clearFocus()
             }

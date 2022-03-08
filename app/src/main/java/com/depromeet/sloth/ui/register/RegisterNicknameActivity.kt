@@ -89,7 +89,7 @@
 //                        }
 //                    }
 //                    else {
-//                        Toast.makeText(this@RegisterNicknameActivity, "현재 닉네임과 동일합니다.",Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@RegisterNicknameActivity, "현재 닉네임과 동일한 닉네임이에요.",Toast.LENGTH_SHORT).show()
 //                    }
 //                }
 //            }

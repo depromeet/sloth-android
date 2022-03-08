@@ -1,10 +1,12 @@
 package com.depromeet.sloth.ui.register
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
@@ -151,7 +153,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요.")
+        lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
     }
 
     private suspend fun initLessonSite() {
@@ -192,7 +194,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
         lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택해 주세요.")
+        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -213,5 +215,10 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                 this@RegisterLessonActivity, R.drawable.bg_register_rounded_button_disabled
             )
         }
+    }
+
+    fun hideKeyBoard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 }

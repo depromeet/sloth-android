@@ -115,6 +115,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     when (it) {
                         is LessonState.Success -> {
                             Log.d("Register Success", "${it.data}")
+                            Toast.makeText(requireContext(), "강의가 등록되었어요", Toast.LENGTH_SHORT).show()
                             (activity as RegisterLessonActivity).finish()
                         }
 
@@ -131,7 +132,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
                         is LessonState.Error -> {
                             Log.d("Register Error", "${it.exception}")
-                            Toast.makeText(requireContext(), "강의 등록을 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "강의 등록을 실패했어요", Toast.LENGTH_SHORT).show()
                         }
 
                         is LessonState.NotFound -> {
