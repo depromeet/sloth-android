@@ -17,7 +17,7 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.ui.register.RegisterLessonFirstActivity
+import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -99,8 +99,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
     }
 
     private fun moveRegisterActivity() {
-        val intent = Intent(requireContext(), RegisterLessonFirstActivity::class.java)
-        startActivity(intent)
+        startActivity(RegisterLessonActivity.newIntent(requireActivity()))
     }
 
     private fun moveDetailActivity(lessonToday: LessonTodayResponse) {
@@ -211,11 +210,20 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
                     when {
-                        lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> tvTodayTitleMessage.text =
-                            getString(R.string.home_today_title_win)
-                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }.not()) -> tvTodayTitleMessage.text =
-                            getString(R.string.home_today_title_not_start)
-                        else -> tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+                        lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> {
+                            tvTodayTitleMessage.text =
+                                getString(R.string.home_today_title_win)
+                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_lose)
+                        }
+                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }.not()) -> {
+                            tvTodayTitleMessage.text =
+                                getString(R.string.home_today_title_not_start)
+                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
+                        }
+                        else -> {
+                            tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_win)
+                        }
                     }
                 }
             }

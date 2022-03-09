@@ -20,4 +20,14 @@ class LessonDetailViewModel @Inject constructor(
         withContext(viewModelScope.coroutineContext) {
             lessonRepository.deleteLesson(accessToken, lessonId)
         }
+
+    suspend fun fetchLessonCategoryList(accessToken: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.fetchLessonCategoryList(accessToken)
+        }
+
+    suspend fun fetchLessonSiteList(accessToken: String) =
+        withContext(viewModelScope.coroutineContext) {
+            lessonRepository.fetchLessonSiteList(accessToken)
+        }
 }

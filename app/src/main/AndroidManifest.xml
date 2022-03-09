@@ -16,20 +16,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 
-        <activity
-            android:name=".ui.register.RegisterNicknameActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/sloth" />
 
         <activity
-            android:name=".ui.register.RegisterLessonFirstActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-
-        <activity
-            android:name=".ui.register.RegisterLessonSecondActivity"
+            android:name=".ui.register.RegisterLessonActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
@@ -48,6 +44,7 @@
             android:name=".ui.login.SlothPolicyWebViewActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.HomeActivity"
             android:exported="true"
@@ -60,6 +57,7 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -87,6 +85,15 @@
             </intent-filter>
 
         </activity>
+
+        <service android:name=".service.FirebaseService"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
 
     </application>
 

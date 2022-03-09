@@ -68,31 +68,34 @@
         app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_remain"
         tools:ignore="HardcodedText" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_today_lesson_minus"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="14dp"
-        android:background="@drawable/bg_home_today_item_button_minus"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
-        app:layout_constraintEnd_toStartOf="@id/tv_today_lesson_current_num"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
+    <com.depromeet.sloth.ui.custom.ArcProgressBar
+        android:id="@+id/pb_today_lesson_bar"
+        android:layout_width="295dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="18dp"
+        app:progressColor="@color/sloth"
+        app:arcCapRound="true"
+        app:borderWidth="6dp"
+        app:degree="180"
+        app:layout_constraintBottom_toTopOf="@id/btn_today_lesson_plus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
+        app:progressStyle="arc"
+        app:radius="150dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_today_lesson_current_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="8dp"
         android:text="0"
         android:textColor="@color/sloth"
         android:textSize="28dp"
-        app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
+        app:layout_constraintBottom_toBottomOf="@id/pb_today_lesson_bar"
         app:layout_constraintEnd_toStartOf="@id/tv_divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -100,13 +103,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="8dp"
         android:text="/"
         android:textSize="28dp"
-        app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
+        app:layout_constraintBottom_toBottomOf="@id/pb_today_lesson_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -114,34 +116,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="8dp"
         android:text="4"
         android:textSize="28dp"
-        app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
+        app:layout_constraintBottom_toBottomOf="@id/pb_today_lesson_bar"
         app:layout_constraintStart_toEndOf="@id/tv_divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_today_lesson_plus"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="24dp"
+        android:id="@+id/btn_today_lesson_minus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="14dp"
-        android:background="@drawable/bg_home_today_item_button_plus"
-        app:layout_constraintBottom_toTopOf="@id/pb_today_lesson_bar"
-        app:layout_constraintStart_toEndOf="@id/tv_today_lesson_total_num"
-        app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name" />
-
-    <ProgressBar
-        android:id="@+id/pb_today_lesson_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:progressDrawable="@drawable/bg_home_today_lesson"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_home_today_item_button_minus"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_divider" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/view_today_lesson_lottie"
+        android:layout_width="64dp"
+        android:layout_height="58dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/btn_today_lesson_plus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_rawRes="@raw/pig" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_today_lesson_plus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_home_today_item_button_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_divider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

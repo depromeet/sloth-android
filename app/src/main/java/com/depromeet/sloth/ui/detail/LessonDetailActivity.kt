@@ -14,9 +14,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
-import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
@@ -25,7 +23,11 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
@@ -42,17 +44,25 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     lateinit var startDateInfo: String
     lateinit var endDateInfo: String
     lateinit var lesson: LessonRegisterRequest
-    lateinit var categoryArray: Array<String>
-    lateinit var siteArray: Array<String>
+    lateinit var lessonDetailInfo: LessonDetailResponse
+
+    lateinit var lessonCategoryMap: HashMap<Int, String>
+    private var lessonCategoryList = mutableListOf<String>()
+
+    lateinit var lessonSiteMap: HashMap<Int, String>
+    private var lessonSiteList = mutableListOf<String>()
+
+    private var startDay: Long? = null
+    private var isLessonStarted = true
+    private val today = Date().time
 
     override fun getViewBinding(): ActivityLessonDetailBinding =
         ActivityLessonDetailBinding.inflate(layoutInflater)
 
     companion object {
-        fun newIntent(context: Context, lessonId: String, lessonPrice: Int) =
+        fun newIntent(context: Context, lessonId: String) =
             Intent(context, LessonDetailActivity::class.java).apply {
                 putExtra(LESSON_ID, lessonId)
-                putExtra(LESSON_PRICE, lessonPrice)
             }
 
         private const val LESSON_ID = "lessonId"
@@ -63,93 +73,140 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViews()
-
         accessToken = preferenceManager.getAccessToken()
-
         refreshToken = preferenceManager.getRefreshToken()
 
-        categoryArray = resources.getStringArray(R.array.category_array)
+        initViews()
 
-        siteArray = resources.getStringArray(R.array.site_array)
-
+        intent.apply {
+            lessonId = getStringExtra(LESSON_ID).toString()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-
-        intent.apply {
-            lessonId = getStringExtra(LESSON_ID).toString()
-            lessonPrice = getIntExtra(LESSON_PRICE, 0)
-        }
-
-        // test
-        //lessonId = "6"
 
         mainScope {
             viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
                 when (it) {
                     is LessonState.Success<LessonDetailResponse> -> {
                         Log.d("fetch Success", "${it.data}")
+                        lessonDetailInfo = it.data
 
-                        initLessonInfo(it.data)
+                        mainScope {
+                            initLessonCategoryList()
+                            initLessonSiteList()
+                        }
                     }
 
                     is LessonState.Unauthorized -> {
-                        viewModel.fetchLessonDetail(accessToken = refreshToken, lessonId = lessonId)
-                            .let { lessonDetailResponse ->
-                                when (lessonDetailResponse) {
-                                    is LessonState.Success -> {
-                                        Log.d("fetch Success", "${lessonDetailResponse.data}")
-
-                                        initLessonInfo(lessonDetailResponse.data)
-                                    }
-
-                                    is LessonState.Unauthorized -> {
-                                        val dlg = SlothDialog(
-                                            this@LessonDetailActivity,
-                                            DialogState.FORBIDDEN
-                                        )
-                                        dlg.onItemClickListener =
-                                            object : SlothDialog.OnItemClickedListener {
-                                                override fun onItemClicked() {
-                                                    preferenceManager.removeAuthToken()
-                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
-                                                }
-                                            }
-                                        dlg.start()
-                                    }
-
-                                    is LessonState.Forbidden -> {
-                                        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                        dlg.onItemClickListener =
-                                            object : SlothDialog.OnItemClickedListener {
-                                                override fun onItemClicked() {
-                                                    preferenceManager.removeAuthToken()
-                                                    startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
-                                                }
-                                            }
-                                        dlg.start()
-                                    }
-
-
-                                    is LessonState.Error -> {
-                                        Log.d("fetch Error", "${lessonDetailResponse.exception}")
-                                    }
-                                    else -> Unit
-                                }
+                        Log.d("Unauthorized", "${it.exception}")
+                        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
                             }
+                        }
+                        dlg.start()
+                    }
+
+                    is LessonState.NotFound -> {
+                        Log.d("Error", "NotFound")
+                    }
+
+                    is LessonState.Forbidden -> {
+                        Log.d("Error", "Forbidden")
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${it.exception}")
+                        Log.d("Error", "${it.exception}")
                     }
-
-                    else -> Unit
                 }
             }
         }
     }
+
+    private suspend fun initLessonCategoryList() {
+        viewModel.fetchLessonCategoryList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success<List<LessonCategoryResponse>> -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonCategoryList(it.data)
+                }
+                is LessonState.Unauthorized -> {
+                    val dlg = SlothDialog(this@LessonDetailActivity, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
+                            }
+                        }
+                    dlg.start()
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+            }
+        }
+    }
+
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+        lessonCategoryMap =
+            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+
+        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
+    }
+
+    private suspend fun initLessonSiteList() {
+        viewModel.fetchLessonSiteList(accessToken = accessToken).let {
+            when (it) {
+                is LessonState.Success -> {
+                    Log.d("fetch Success", "${it.data}")
+                    setLessonSiteList(it.data)
+
+                    initLessonInfo(lessonDetailInfo)
+                }
+
+                is LessonState.Unauthorized -> {
+                    val dlg = SlothDialog(this@LessonDetailActivity, DialogState.FORBIDDEN)
+                    dlg.onItemClickListener =
+                        object : SlothDialog.OnItemClickedListener {
+                            override fun onItemClicked() {
+                                preferenceManager.removeAuthToken()
+                                startActivity(LoginActivity.newIntent(this@LessonDetailActivity))
+                            }
+                        }
+                    dlg.start()
+                }
+                is LessonState.NotFound -> {
+                    Log.d("Error", "NotFound")
+                }
+                is LessonState.Forbidden -> {
+                    Log.d("Error", "Forbidden")
+                }
+                is LessonState.Error -> {
+                    Log.d("fetch Error", "${it.exception}")
+                }
+            }
+        }
+    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+
+        lessonSiteList = data.map { it.siteName }.toMutableList()
+        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
+    }
+
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -158,11 +215,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
         tvDetailUpdateLesson.setOnClickListener {
             startActivity(
-                UpdateLessonActivity.newIntent(
-                    this@LessonDetailActivity,
-                    lessonId,
-                    lesson
-                )
+                UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lesson)
             )
         }
 
@@ -183,7 +236,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 when (it) {
                     is LessonState.Success<*> -> {
                         Log.d("Success", "${it.data}")
-                        Toast.makeText(this@LessonDetailActivity, "강의가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "강의가 삭제되었어요", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                     is LessonState.Unauthorized -> {
@@ -208,18 +261,23 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     private fun initLessonInfo(data: LessonDetailResponse) {
 
         binding.apply {
-
             lesson = LessonRegisterRequest(
                 alertDays = data.alertDays,
-                categoryId = categoryArray.indexOf(data.categoryName),
+                categoryId =
+                lessonCategoryMap.filterValues
+                { it == data.categoryName }.keys.first(),
+                // == lessonCategoryMap.entries.find {it.value == data.categoryName}?.key,
                 endDate = data.endDate.toString(),
                 lessonName = data.lessonName,
                 message = data.message,
                 price = data.price,
-                siteId = siteArray.indexOf(data.siteName),
+                siteId = lessonSiteMap.filterValues
+                { it == data.siteName }.keys.first(),
+                // == lessonSiteMap.entries.find {it.value == data.siteName}?.key,
                 startDate = data.startDate.toString(),
                 totalNumber = data.totalNumber,
             )
+            Log.d("LessonRegisterRequest", "$lesson")
 
             // 현재 진행율
             pbDetailCurrentLessonProgress.labelText = "${data.currentProgressRate}%"
@@ -228,7 +286,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             // 목표 진행율
             pbDetailGoalLessonProgress.labelText =
                 if (data.goalProgressRate > 100) {
-                    "100%"
+                    getString(R.string.one_hundred_percent)
                 } else {
                     "${data.goalProgressRate}%"
                 }
@@ -243,17 +301,20 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             // 강의 요약
             if (data.currentProgressRate >= data.goalProgressRate) {
                 tvDetailLessonSummary.setText(R.string.mission_success)
+                ivDetailSloth.setImageResource(R.drawable.ic_detail_sloth_steadily_listen)
             } else {
                 tvDetailLessonSummary.setText(R.string.mission_fail)
+                ivDetailSloth.setImageResource(R.drawable.ic_detail_sloth_fail_goal)
             }
 
             // 현재 내가 날린 돈
             tvDetailLessonLoseMoneyInfo.text =
-                if (data.wastePrice > lessonPrice as Int) {
-                    changeDecimalFormat(lessonPrice as Int)
-                } else {
-                    changeDecimalFormat(data.wastePrice)
-                }
+//                if (data.wastePrice > lessonPrice as Int) {
+//                    changeDecimalFormat(lessonPrice as Int)
+//                } else {
+//                    changeDecimalFormat(data.wastePrice)
+//                }
+                changeDecimalFormat(data.wastePrice)
 
             // 남은 날짜
             tvDetailLessonRemainDay.text =
@@ -306,10 +367,12 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             tvDetailLessonCountInfo.text = totalNumber
 
             // 강의 시작 날짜
-            startDateInfo = changeDateFormat(data.startDate)
+            startDateInfo = changeDateFormatToDot(data.startDate)
+            startDay = stringToDate(changeDateFormatToDash(data.startDate))?.time
+            isLessonStarted = startDay!! <= today
 
             // 강의 종료 날짜
-            endDateInfo = changeDateFormat(data.endDate)
+            endDateInfo = changeDateFormatToDot(data.endDate)
 
             // 목표 완강일
             tvDetailLessonEndDateInfo.text = " $endDateInfo"
@@ -333,12 +396,27 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         return "${changedPriceFormat}원"
     }
 
-    private fun changeDateFormat(date: ArrayList<String>): String {
+    private fun changeDateFormatToDot(date: ArrayList<String>): String {
         val yearOfDate = date[0]
         val monthOfDate = changeDate(date[1])
         val dayOfDate = changeDate(date[2])
 
         return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
+    }
+
+    private fun changeDateFormatToDash(date: ArrayList<String>): String {
+        val yearOfDate = date[0]
+        val monthOfDate = changeDate(date[1])
+        val dayOfDate = changeDate(date[2])
+
+        return "${yearOfDate}-${monthOfDate}-$dayOfDate"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun stringToDate(string: String): Date? {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+        return dateFormat.parse(string)
     }
 
     private fun changeDate(data: String): String {

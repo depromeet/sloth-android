@@ -13,7 +13,7 @@
     <string name="register_account_info">계정 정보 등록</string>
     <string name="welcome">환영합니다!</string>
     <string name="nickname">닉네임</string>
-    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요.</string>
+    <string name="nickname_hint">나나공에서 사용하실 닉네임을 입력해주세요</string>
 
     <string name="Sun">일</string>
     <string name="Mon">월</string>
@@ -23,18 +23,18 @@
     <string name="Fri">금</string>
     <string name="Sat">토</string>
 
-    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요.</string>
+    <string name="enter_lesson_name">수강할 강의 이름을 입력해 주세요</string>
     <string name="lesson_name">강의 이름</string>
-    <string name="enter_lesson_count">강의 개수를 입력해 주세요.</string>
+    <string name="enter_lesson_count">강의 개수를 입력해 주세요</string>
     <string name="lesson_count">강의 개수</string>
     <string name="lesson_category">카테고리</string>
     <string name="lesson_site">강의 사이트</string>
     <string name="lesson_start_date">강의 시작일</string>
     <string name="lesson_finish_date">완강 목표일</string>
-    <string name="enter_lesson_price">강의 금액을 입력해 주세요.</string>
+    <string name="enter_lesson_price">강의 금액을 입력해 주세요</string>
     <string name="lesson_price">강의 금액</string>
     <string name="alert_cycle">푸시 알람 주기</string>
-    <string name="max_30">최대 30자 까지 입력 가능합니다.</string>
+    <string name="max_30">최대 30자 까지 입력 가능합니다</string>
     <string name="lesson_message">각오 한마디(선택)</string>
 
     <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다 </font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부 열심히 한다</font></string>
@@ -68,14 +68,16 @@
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
     <string name="lesson_progress">강의 진행률</string>
-    <string name="lesson_goal_date">목표 완강일:</string>
+    <string name="lesson_detail_goal_date">목표 완강일:</string>
+    <string name="lesson_register_goal_date">완강 목표일</string>
     <string name="lesson_present_number">내가 들은 강의:</string>
     <string name="lesson_current_progress">현재 진행률</string>
     <string name="lesson_goal_progress">목표 진행률</string>
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
-    <string name="delete_lesson_dialog_message">정말 강의를 삭제하시겠어요?</string>
+    <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
+    <string name="delete_lesson_dialog_message_check">포기하기</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
@@ -83,8 +85,9 @@
     <string name="lesson_present_number_info">24개 중 10개</string>
     <string name="home_today_title_lose"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
     <string name="home_today_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
-    <string name="home_today_title_win"><font color="#000000">젠장..\n이번주는\n나의 완패다..</font></string>
+    <string name="home_today_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
     <string name="home_today_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
+    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
@@ -104,4 +107,13 @@
     <string name="privacy">개인정보 처리방침</string>
     <string name="lesson_close">마감</string>
     <string name="d_day">D-Day</string>
+    <string name="accept">수락하기</string>
+    <string name="lesson_update">수정하기</string>
+    <string name="lesson_start_date_caution">(생성 후 시작일 변경 불가능)</string>
+    <string name="push_noti_cycle">푸시 알림 주기</string>
+    <string name="push_noti_cycle_info">월, 수, 목</string>
+    <string name="cannot_update">*수정불가</string>
+    <string name="one_hundred_percent">100%</string>
+    <string name="input_lesson_count">%1$s개</string>
+    <string name="input_lesson_price">%1$s원</string>
 </resources>

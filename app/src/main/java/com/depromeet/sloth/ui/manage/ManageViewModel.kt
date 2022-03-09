@@ -5,6 +5,7 @@ import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Member
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,15 @@ class ManageViewModel @Inject constructor(
             memberRepository.updateMemberInfo(
                 accessToken = accessToken,
                 memberUpdateInfoRequest = memberUpdateInfoRequest
+            )
+        }
+
+    suspend fun logout(
+        accessToken: String
+    ): MemberLogoutState<String> =
+        withContext(viewModelScope.coroutineContext) {
+            memberRepository.logout(
+                accessToken = accessToken
             )
         }
 }

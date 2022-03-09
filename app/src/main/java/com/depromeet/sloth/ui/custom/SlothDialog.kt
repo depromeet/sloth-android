@@ -40,8 +40,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 tvDialogMessage.setText(R.string.forbidden_dialog_message)
                 btnDialogCancel.visibility = View.GONE
                 btnDialogCheck.background = AppCompatResources.getDrawable(
-                    context,
-                    R.drawable.bg_home_rounded_sloth
+                    context, R.drawable.bg_home_rounded_sloth
                 )
 
                 btnDialogCheck.setOnClickListener {
@@ -71,6 +70,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
             DialogState.DELETE_LESSON -> {
                 tvDialogMessage.setText(R.string.delete_lesson_dialog_message)
+                btnDialogCheck.setText(R.string.delete_lesson_dialog_message_check)
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
@@ -83,14 +83,14 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 tvDialogMessage.setText(R.string.wait_dialog_message)
                 btnDialogCancel.visibility = View.GONE
                 btnDialogCheck.background = AppCompatResources.getDrawable(
-                    context,
-                    R.drawable.bg_home_rounded_sloth
+                    context, R.drawable.bg_home_rounded_sloth
                 )
 
                 btnDialogCheck.setOnClickListener {
                     dlg.dismiss()
                 }
             }
+
         }
         btnDialogCancel.setOnClickListener {
             dlg.dismiss()

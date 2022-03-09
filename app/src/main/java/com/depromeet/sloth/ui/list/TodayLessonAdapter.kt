@@ -5,10 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +13,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
+import com.airbnb.lottie.LottieAnimationView
+import com.depromeet.sloth.ui.custom.ArcProgressBar
+
 
 class TodayLessonAdapter(
     private val bodyType: BodyType,
@@ -61,19 +61,17 @@ class TodayLessonAdapter(
             itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
         private val tvTodayLessonTotalNum =
             itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
-        private val pbTodayLessonBar = itemView.findViewById<ProgressBar>(R.id.pb_today_lesson_bar)
+        private val pbTodayLessonBar = itemView.findViewById<ArcProgressBar>(R.id.pb_today_lesson_bar)
         private val btnTodayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val btnTodayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
+        private val viewTodayLessonLottie = itemView.findViewById<LottieAnimationView>(R.id.view_today_lesson_lottie)
         private val clTodayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
 
         fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
                     clTodayLesson.setOnClickListener {
-                        onClick(
-                            ClickType.CLICK_NORMAL,
-                            lessonToday
-                        )
+                        onClick(ClickType.CLICK_NORMAL, lessonToday)
                     }
                 }
 
@@ -97,6 +95,7 @@ class TodayLessonAdapter(
                     init(lessonToday)
 
                     btnTodayLessonPlus.setOnClickListener {
+                        viewTodayLessonLottie.playAnimation()
                         updateLessonCountOnServer(true, lessonToday)
                         updateProgress(true, lessonToday.untilTodayNumber)
                         updateText(true, lessonToday.untilTodayNumber)
@@ -112,15 +111,20 @@ class TodayLessonAdapter(
         }
 
         private fun init(allLessonToday: LessonTodayResponse) {
-            tvTodayLessonRemain.text =
-                if (allLessonToday.remainDay == 0) "D-Day" else "D-${allLessonToday.remainDay}"
+            tvTodayLessonRemain.text = if (allLessonToday.remainDay == 0) "D-Day" else "D-${allLessonToday.remainDay}"
             tvTodayLessonCategory.text = allLessonToday.categoryName
             tvTodayLessonSite.text = allLessonToday.siteName
             tvTodayLessonName.text = allLessonToday.lessonName
             tvTodayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
             tvTodayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
-            pbTodayLessonBar.let {
-                nowProgress = allLessonToday.presentNumber
+            nowProgress = allLessonToday.presentNumber
+
+//            pbTodayLessonBar.let {
+//                it.max = allLessonToday.untilTodayNumber * 1000
+//                it.progress = allLessonToday.presentNumber * 1000
+//            }
+
+            pbTodayLessonBar?.let {
                 it.max = allLessonToday.untilTodayNumber * 1000
                 it.progress = allLessonToday.presentNumber * 1000
             }
@@ -151,19 +155,27 @@ class TodayLessonAdapter(
                 false -> nowProgress--
             }
 
-            val animation = ObjectAnimator.ofInt(
-                pbTodayLessonBar,
-                "progress",
-                pbTodayLessonBar.progress, nowProgress * 1000
-            )
+            pbTodayLessonBar?.let {
+                val animationTest = ObjectAnimator.ofInt(
+                    pbTodayLessonBar,
+                    "progress",
+                    pbTodayLessonBar.progress, nowProgress * 1000
+                )
 
-            animation.apply {
-                duration = 500
-                interpolator = when (isUp) {
-                    true -> DecelerateInterpolator()
-                    false -> AccelerateInterpolator()
-                }
-            }.start()
+                animationTest.apply {
+                    duration = 500
+                }.start()
+            }
+
+//            val animation = ObjectAnimator.ofInt(
+//                pbTodayLessonBar,
+//                "progress",
+//                pbTodayLessonBar.progress, nowProgress * 1000
+//            )
+//
+//            animation.apply {
+//                duration = 500
+//            }.start()
         }
 
         private fun updateLessonCountOnServer(isUp: Boolean, lessonToday: LessonTodayResponse) {
