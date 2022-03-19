@@ -9,6 +9,7 @@ import com.depromeet.sloth.R
 import android.graphics.RectF
 import android.graphics.PorterDuff
 import android.graphics.Bitmap
+import com.depromeet.sloth.util.ContextUtil
 
 /**
  * @author 최철훈
@@ -16,14 +17,14 @@ import android.graphics.Bitmap
  * @desc 반원 프로그래스바
  */
 class ArcProgressBar @JvmOverloads constructor(
-    context: Context?,
+    context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ProgressBar(context, attrs, defStyleAttr) {
 
-    private val DEFAULT_LINEHEIGHT = dp2px(15)
-    private val DEFAULT_mTickWidth = dp2px(2)
-    private val DEFAULT_mRadius = dp2px(72)
+    private val DEFAULT_LINEHEIGHT = ContextUtil.dpToPx(context,15)
+    private val DEFAULT_mTickWidth = ContextUtil.dpToPx(context,2)
+    private val DEFAULT_mRadius = ContextUtil.dpToPx(context,72)
     private val DEFAULT_mUnmProgressColor = -0x151516
     private val DEFAULT_mProgressColor = Color.YELLOW
     private val DEFAULT_OFFSETDEGREE = 60
@@ -89,7 +90,6 @@ class ArcProgressBar @JvmOverloads constructor(
 
     @Synchronized
     override fun onDraw(canvas: Canvas) {
-        canvas.save()
         val roate = progress * 1.0f / max
         val x = mArcRectf!!.right / 2 + mBoardWidth / 2
         val y = mArcRectf!!.right / 2 + mBoardWidth / 2
@@ -113,7 +113,6 @@ class ArcProgressBar @JvmOverloads constructor(
         mArcPaint.color = mUnmProgressColor
         canvas.drawArc(mArcRectf!!, 120 + angle + targetDegree, 300 - mDegree - targetDegree , false, mArcPaint)
 
-        canvas.restore()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -132,13 +131,6 @@ class ArcProgressBar @JvmOverloads constructor(
             mCenterBitmap!!.recycle()
             mCenterBitmap = null
         }
-    }
-
-    protected fun dp2px(dpVal: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dpVal.toFloat(), resources.displayMetrics
-        ).toInt()
     }
 
     fun setOnCenterDraw(mOnCenter: OnCenterDraw?) {
