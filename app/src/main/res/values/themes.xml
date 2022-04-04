@@ -1,7 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Sloth" parent="Theme.MaterialComponents.Light.NoActionBar">
-
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/sloth</item>
         <item name="colorPrimaryVariant">@color/primary_700</item>
@@ -21,6 +20,10 @@
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+    </style>
+
+    <style name="Theme.Sloth.NoActionBar.Splash">
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme"
