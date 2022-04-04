@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.graphics.Typeface
 import android.util.Log
+import android.view.LayoutInflater
 
 import android.widget.TextView
 
@@ -32,6 +33,7 @@ import android.view.ViewGroup
 
 import android.widget.ArrayAdapter
 import android.view.MotionEvent
+import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
 
@@ -77,8 +79,12 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     lateinit var calendar: Calendar
 
-    override fun getViewBinding(): FragmentRegisterLessonSecondBinding =
-        FragmentRegisterLessonSecondBinding.inflate(layoutInflater)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentRegisterLessonSecondBinding {
+        return FragmentRegisterLessonSecondBinding.inflate(inflater, container, false)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -297,7 +303,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setSpinnerListener(spinner: Spinner, calendar: Calendar) = with(binding) {
-        spinner.setOnTouchListener { v, event ->
+        spinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 (activity as RegisterLessonActivity).hideKeyBoard()
             }

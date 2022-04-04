@@ -27,11 +27,9 @@ import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
@@ -50,7 +48,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     lateinit var preferenceManager: PreferenceManager
     private val viewModel: UpdateLessonViewModel by viewModels()
 
-    override fun getViewBinding(): ActivityUpdateLessonBinding =
+    override fun getActivityBinding(): ActivityUpdateLessonBinding =
         ActivityUpdateLessonBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String

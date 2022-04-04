@@ -11,7 +11,7 @@ import com.depromeet.sloth.ui.base.BaseActivity
 class TestActivity : BaseActivity<ActivityTestBinding>() {
     private val viewModel: TestViewModel by viewModels()
 
-    override fun getViewBinding(): ActivityTestBinding = ActivityTestBinding.inflate(layoutInflater)
+    override fun getActivityBinding(): ActivityTestBinding = ActivityTestBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

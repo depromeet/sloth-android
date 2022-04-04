@@ -56,7 +56,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     private var isLessonStarted = true
     private val today = Date().time
 
-    override fun getViewBinding(): ActivityLessonDetailBinding =
+    override fun getActivityBinding(): ActivityLessonDetailBinding =
         ActivityLessonDetailBinding.inflate(layoutInflater)
 
     companion object {

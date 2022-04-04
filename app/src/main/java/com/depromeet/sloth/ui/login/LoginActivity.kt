@@ -20,7 +20,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
 
-    override fun getViewBinding(): ActivityLoginBinding =
+    override fun getActivityBinding(): ActivityLoginBinding =
         ActivityLoginBinding.inflate(layoutInflater)
 
     companion object {
@@ -31,7 +31,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
         if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
             nextActivity()

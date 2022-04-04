@@ -52,7 +52,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
             Intent(activity, RegisterLessonActivity::class.java)
     }
 
-    override fun getViewBinding(): ActivityRegisterLessonBinding =
+    override fun getActivityBinding(): ActivityRegisterLessonBinding =
         ActivityRegisterLessonBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {

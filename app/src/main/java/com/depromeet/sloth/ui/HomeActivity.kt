@@ -3,6 +3,8 @@ package com.depromeet.sloth.ui
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.notification.NotificationSaveRequest
@@ -10,9 +12,9 @@ import com.depromeet.sloth.data.network.notification.NotificationSaveState
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.list.ListFragment
-import com.depromeet.sloth.ui.manage.ManageFragment
 import com.depromeet.sloth.ui.list.TodayFragment
 import com.depromeet.sloth.ui.login.LoginActivity
+import com.depromeet.sloth.ui.manage.ManageFragment
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -23,7 +25,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     lateinit var preferenceManager: PreferenceManager
     private val viewModel: HomeViewModel by viewModels()
 
-    override fun getViewBinding(): ActivityHomeBinding =
+    override fun getActivityBinding(): ActivityHomeBinding =
         ActivityHomeBinding.inflate(layoutInflater)
 
     lateinit var accessToken: String
@@ -32,15 +34,21 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         accessToken = preferenceManager.getAccessToken()
         refreshToken = preferenceManager.getRefreshToken()
 
-        supportFragmentManager.fragmentFactory = SlothFragmentFactory()
+        // bottom navigation view icon 의 원래 색상 부여를 위해 (그라데이션)
+        binding.bottomNavigationHome.itemIconTintList = null
 
-        initNavigationEvent()
+//        supportFragmentManager.fragmentFactory = SlothFragmentFactory()
+//        initNavigationEvent()
+
+        val navController = supportFragmentManager.findFragmentById(R.id.container_home)?.findNavController()
+        navController?.let {
+            binding.bottomNavigationHome.setupWithNavController(it)
+        } ?: run {
+            Log.d("HomeActivity", "navController is null")
+        }
 
         if (::fcmToken.isInitialized.not()) {
             registerFCMToken()
@@ -48,21 +56,21 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     private fun initNavigationEvent() = with(binding) {
-        navigationView.setOnItemSelectedListener { menuItem ->
+        bottomNavigationHome.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_today -> changeFragment(TodayFragment::class.java.name)
-                R.id.menu_class -> changeFragment(ListFragment::class.java.name)
-                R.id.menu_mypage -> changeFragment(ManageFragment::class.java.name)
+                R.id.navigation_today -> changeFragment(TodayFragment::class.java.name)
+                R.id.navigation_list -> changeFragment(ListFragment::class.java.name)
+                R.id.navigation_manage -> changeFragment(ManageFragment::class.java.name)
             }
             true
         }
-        navigationView.selectedItemId = R.id.menu_today
+        bottomNavigationHome.selectedItemId = R.id.navigation_today
 
-        navigationView.setOnItemReselectedListener { menuItem ->
+        bottomNavigationHome.setOnItemReselectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_today -> {}
-                R.id.menu_class -> {}
-                R.id.menu_mypage -> {}
+                R.id.navigation_today -> {}
+                R.id.navigation_list -> {}
+                R.id.navigation_manage -> {}
             }
         }
     }
@@ -71,6 +79,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, className)
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
+
 
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->

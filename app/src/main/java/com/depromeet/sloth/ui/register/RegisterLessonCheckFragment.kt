@@ -2,7 +2,9 @@ package com.depromeet.sloth.ui.register
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.R
@@ -45,8 +47,12 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
     lateinit var categoryMap: HashMap<Int, String>
     lateinit var siteMap: HashMap<Int, String>
 
-    override fun getViewBinding(): FragmentRegisterLessonCheckBinding =
-        FragmentRegisterLessonCheckBinding.inflate(layoutInflater)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentRegisterLessonCheckBinding {
+        return FragmentRegisterLessonCheckBinding.inflate(inflater, container, false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

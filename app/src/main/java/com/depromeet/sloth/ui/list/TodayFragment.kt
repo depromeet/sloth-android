@@ -3,7 +3,9 @@ package com.depromeet.sloth.ui.list
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -30,8 +32,12 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
     lateinit var accessToken: String
     lateinit var refreshToken: String
 
-    override fun getViewBinding(): FragmentTodayBinding =
-        FragmentTodayBinding.inflate(layoutInflater)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentTodayBinding {
+        return FragmentTodayBinding.inflate(inflater, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

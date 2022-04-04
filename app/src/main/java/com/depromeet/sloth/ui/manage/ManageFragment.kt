@@ -9,17 +9,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.ui.DialogState
@@ -28,13 +30,16 @@ import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
+import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>() {
     @Inject
     lateinit var preferenceManager: PreferenceManager
+
     private val viewModel: ManageViewModel by activityViewModels()
 
     lateinit var accessToken: String
@@ -42,8 +47,12 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     lateinit var memberName: String
     lateinit var memberUpdateInfoRequest: MemberUpdateInfoRequest
 
-    override fun getViewBinding(): FragmentManageBinding =
-        FragmentManageBinding.inflate(layoutInflater)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentManageBinding {
+        return FragmentManageBinding.inflate(inflater, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,7 +63,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         initViews()
 
         mainScope {
-            showProgress()
+//        lifecycleScope.launch {
+            showProgress(requireContext())
 
             viewModel.fetchMemberInfo(accessToken).let {
                 when (it) {
@@ -79,7 +89,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                     else -> Unit
                 }
             }
-
             hideProgress()
         }
     }
@@ -93,7 +102,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     }
 
     override fun initViews() = with(binding) {
-
+//    fun initViews() = with(binding) {
         ivManageProfileImage.setOnClickListener {
             val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
             updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -115,6 +124,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                 )
                 if (nameEditText.text.toString() != memberName) {
                     mainScope {
+//                    lifecycleScope.launch {
                         viewModel.updateMemberInfo(accessToken, memberUpdateInfoRequest).let {
                             when (it) {
                                 is MemberState.Success<MemberUpdateInfoResponse> -> {
@@ -170,7 +180,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
             val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
             dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    mainScope {
+//                    mainScope {
+                    lifecycleScope.launch {
                         viewModel.logout(accessToken).let {
                             when(it) {
                                 is MemberLogoutState.Success<String> -> {

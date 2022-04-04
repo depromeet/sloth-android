@@ -8,19 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.depromeet.sloth.util.LoadingDialogUtil
-import dagger.hilt.android.AndroidEntryPoint
 
-abstract class BaseFragment<VB : ViewBinding> : Fragment() {
-    protected lateinit var binding: VB
+abstract class BaseFragment<B : ViewBinding>: Fragment() {
 
-    abstract fun getViewBinding(): VB
+    private var _binding: B? =  null
+    protected val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = getViewBinding()
+        _binding = getFragmentBinding(layoutInflater, container)
         return binding.root
     }
 
@@ -29,6 +28,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
             block.invoke()
         }
     }
+
+    abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?): B
 
     open fun initViews() = Unit
 
@@ -40,5 +41,10 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     protected fun hideProgress() {
         LoadingDialogUtil.hideProgress()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

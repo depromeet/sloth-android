@@ -5,15 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
-    protected lateinit var binding: VB
+abstract class BaseActivity<B: ViewBinding> : AppCompatActivity() {
+    protected lateinit var binding: B
 
-    abstract fun getViewBinding(): VB
+    abstract fun getActivityBinding(): B
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = getViewBinding()
+        binding = getActivityBinding()
         setContentView(binding.root)
     }
 

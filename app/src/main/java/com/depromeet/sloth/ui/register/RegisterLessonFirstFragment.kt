@@ -8,9 +8,11 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -18,7 +20,6 @@ import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.ui.base.BaseFragment
-
 
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>() {
 
@@ -39,8 +40,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         const val LESSON_SITE_NAME = "lessonSiteName"
     }
 
-    override fun getViewBinding(): FragmentRegisterLessonFirstBinding =
-        FragmentRegisterLessonFirstBinding.inflate(layoutInflater)
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentRegisterLessonFirstBinding {
+        return FragmentRegisterLessonFirstBinding.inflate(inflater, container, false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
