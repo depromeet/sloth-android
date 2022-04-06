@@ -1,6 +1,8 @@
 package com.depromeet.sloth.data.network.lesson
 
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
 
@@ -205,6 +207,7 @@ class LessonRepository @Inject constructor(
 
     suspend fun fetchLessonCategoryList(
         accessToken: String,
+//    ): LessonState<List<LessonCategory>> {
     ): LessonState<List<LessonCategoryResponse>> {
         RetrofitServiceGenerator.build(accessToken)
             .create(LessonService::class.java)
@@ -235,6 +238,7 @@ class LessonRepository @Inject constructor(
 
     suspend fun fetchLessonSiteList(
         accessToken: String,
+//    ): LessonState<List<LessonSite>> {
     ): LessonState<List<LessonSiteResponse>> {
         RetrofitServiceGenerator.build(accessToken)
             .create(LessonService::class.java)

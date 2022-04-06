@@ -46,9 +46,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         val navController = supportFragmentManager.findFragmentById(R.id.container_home)?.findNavController()
         navController?.let {
             binding.bottomNavigationHome.setupWithNavController(it)
-        } ?: run {
-            Log.d("HomeActivity", "navController is null")
-        }
+        } 
 
         if (::fcmToken.isInitialized.not()) {
             registerFCMToken()

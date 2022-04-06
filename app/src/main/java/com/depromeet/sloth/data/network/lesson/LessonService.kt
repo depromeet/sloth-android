@@ -1,5 +1,7 @@
 package com.depromeet.sloth.data.network.lesson
 
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -24,6 +26,12 @@ interface LessonService {
 
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateInfoRequest): Response<LessonUpdateInfoResponse>?
+
+//    @GET("api/category/list")
+//    suspend fun fetchLessonCategoryList(): Response<List<LessonCategory>>?
+//
+//    @GET("api/site/list")
+//    suspend fun fetchLessonSiteList(): Response<List<LessonSite>>?
 
     @GET("api/category/list")
     suspend fun fetchLessonCategoryList(): Response<List<LessonCategoryResponse>>?

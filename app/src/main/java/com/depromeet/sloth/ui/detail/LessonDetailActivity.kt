@@ -14,8 +14,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.Lesson
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -83,8 +87,8 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         mainScope {
             viewModel.fetchLessonDetail(accessToken = accessToken, lessonId = lessonId).let {
@@ -130,6 +134,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     private suspend fun initLessonCategoryList() {
         viewModel.fetchLessonCategoryList(accessToken = accessToken).let {
             when (it) {
+//                is LessonState.Success<List<LessonCategory>> -> {
                 is LessonState.Success<List<LessonCategoryResponse>> -> {
                     Log.d("fetch Success", "${it.data}")
                     setLessonCategoryList(it.data)
@@ -166,13 +171,20 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
     }
 
+//    private fun setLessonCategoryList(data: List<LessonCategory>) {
+//        lessonCategoryMap =
+//            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+//
+//        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+//        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
+//    }
+
     private suspend fun initLessonSiteList() {
         viewModel.fetchLessonSiteList(accessToken = accessToken).let {
             when (it) {
                 is LessonState.Success -> {
                     Log.d("fetch Success", "${it.data}")
                     setLessonSiteList(it.data)
-
                     initLessonInfo(lessonDetailInfo)
                 }
 
@@ -206,6 +218,13 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         lessonSiteList = data.map { it.siteName }.toMutableList()
         lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
     }
+
+//    private fun setLessonSiteList(data: List<LessonSite>) {
+//        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+//
+//        lessonSiteList = data.map { it.siteName }.toMutableList()
+//        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
+//    }
 
 
     @SuppressLint("SetTextI18n")
@@ -259,9 +278,8 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
     @SuppressLint("SetTextI18n")
     private fun initLessonInfo(data: LessonDetailResponse) {
-
         binding.apply {
-            lesson = LessonRegisterRequest(
+            lesson = LessonRegisterRequest (
                 alertDays = data.alertDays,
                 categoryId =
                 lessonCategoryMap.filterValues
@@ -308,13 +326,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             }
 
             // 현재 내가 날린 돈
-            tvDetailLessonLoseMoneyInfo.text =
-//                if (data.wastePrice > lessonPrice as Int) {
-//                    changeDecimalFormat(lessonPrice as Int)
-//                } else {
-//                    changeDecimalFormat(data.wastePrice)
-//                }
-                changeDecimalFormat(data.wastePrice)
+            tvDetailLessonLoseMoneyInfo.text = changeDecimalFormat(data.wastePrice)
 
             // 남은 날짜
             tvDetailLessonRemainDay.text =
@@ -387,43 +399,5 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             // 각오 한 마디
             tvDetailLessonMessageInfo.text = data.message
         }
-    }
-
-    private fun changeDecimalFormat(data: Int): String {
-        val df = DecimalFormat("#,###")
-        val changedPriceFormat = df.format(data)
-
-        return "${changedPriceFormat}원"
-    }
-
-    private fun changeDateFormatToDot(date: ArrayList<String>): String {
-        val yearOfDate = date[0]
-        val monthOfDate = changeDate(date[1])
-        val dayOfDate = changeDate(date[2])
-
-        return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
-    }
-
-    private fun changeDateFormatToDash(date: ArrayList<String>): String {
-        val yearOfDate = date[0]
-        val monthOfDate = changeDate(date[1])
-        val dayOfDate = changeDate(date[2])
-
-        return "${yearOfDate}-${monthOfDate}-$dayOfDate"
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun stringToDate(string: String): Date? {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-
-        return dateFormat.parse(string)
-    }
-
-    private fun changeDate(data: String): String {
-        var tmp = data
-        if (tmp.length == 1) {
-            tmp = "0$tmp"
-        }
-        return tmp
     }
 }

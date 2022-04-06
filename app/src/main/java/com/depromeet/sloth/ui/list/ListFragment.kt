@@ -14,9 +14,9 @@ import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,7 +71,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                     is LessonState.Unauthorized -> {
                         Log.d("Error", "${it.exception}")
                         val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                        dlg.onItemClickListener = object: SlothDialog.OnItemClickedListener {
+                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
                             override fun onItemClicked() {
                                 preferenceManager.removeAuthToken()
                                 startActivity(LoginActivity.newIntent(requireActivity()))
@@ -194,7 +194,7 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
     @SuppressLint("SimpleDateFormat")
     private fun getLessonType(
-        lessonInfo: LessonAllResponse
+        lessonInfo: LessonAllResponse,
     ): LessonListAdapter.BodyType {
         val startDateString = lessonInfo.startDate
         val endDateString = lessonInfo.endDate
@@ -292,14 +292,14 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
 
         val doingLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-            moveDetailActivity(lesson)
+            //moveDetailActivity(lesson)
         }
         val planningLessonAdapter =
             LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-                moveDetailActivity(lesson)
+                //moveDetailActivity(lesson)
             }
         val passedLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-            moveDetailActivity(lesson)
+            //moveDetailActivity(lesson)
         }
 
         val concatAdapter = ConcatAdapter(

@@ -11,6 +11,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
+import com.depromeet.sloth.extensions.changeDateFormat
+import com.depromeet.sloth.extensions.changeDecimalFormat
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -21,7 +23,6 @@ import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_PUSH_NOTI_CYCLE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_START_DATE
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,10 +30,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
-    private val viewModel: RegisterViewModel by activityViewModels()
-
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
+    private val viewModel: RegisterLessonViewModel by activityViewModels()
 
     lateinit var lessonName: String
     lateinit var lessonCount: Number
@@ -44,9 +42,6 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
     lateinit var lessonGoalDate: String
     lateinit var lessonMessage: String
 
-    lateinit var categoryMap: HashMap<Int, String>
-    lateinit var siteMap: HashMap<Int, String>
-
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,21 +49,8 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         return FragmentRegisterLessonCheckBinding.inflate(inflater, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        (activity as RegisterLessonActivity).apply {
-            categoryMap = lessonCategoryMap
-            siteMap = lessonSiteMap
-        }
-
-        accessToken = preferenceManager.getAccessToken()
-        refreshToken = preferenceManager.getRefreshToken()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViews()
     }
 
@@ -100,19 +82,24 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         }
 
         btnRegisterLessonAccept.setOnClickListener {
+            Log.d("categoryId", "${(activity as RegisterLessonActivity).lessonCategoryMap.filterValues
+            { it == lessonCategoryName }.keys.first()}")
+            Log.d("siteId", "${(activity as RegisterLessonActivity).lessonSiteMap.filterValues
+            { it == lessonSiteName }.keys.first()}")
+
             mainScope {
-                viewModel.registerLesson(accessToken,
+                viewModel.registerLesson((activity as RegisterLessonActivity).accessToken,
                     LessonRegisterRequest(
                         alertDays = lessonPushNotiCycle,
                         categoryId =
-                        categoryMap.filterValues
+                        (activity as RegisterLessonActivity).lessonCategoryMap.filterValues
                         { it == lessonCategoryName }.keys.first(),
                         endDate = lessonGoalDate,
                         lessonName = lessonName,
                         message = lessonMessage,
                         price = lessonPrice as Int,
                         siteId =
-                        siteMap.filterValues
+                        (activity as RegisterLessonActivity).lessonSiteMap.filterValues
                         { it == lessonSiteName }.keys.first(),
                         startDate = lessonStartDate,
                         totalNumber = lessonCount as Int
@@ -151,22 +138,5 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                 }
             }
         }
-    }
-
-    private fun changeDecimalFormat(data: Int): String {
-        val df = DecimalFormat("#,###")
-        val changedPriceFormat = df.format(data)
-
-        return "${changedPriceFormat}원"
-    }
-
-    private fun changeDateFormat(date: String): String {
-        val dateArr = date.split("-")
-
-        val yearOfDate = dateArr[0]
-        val monthOfDate = dateArr[1]
-        val dayOfDate = dateArr[2]
-
-        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
     }
 }

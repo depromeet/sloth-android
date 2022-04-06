@@ -55,8 +55,8 @@
                     android:layout_width="163dp"
                     android:layout_height="160dp"
                     android:layout_marginStart="35dp"
-                    android:layout_marginBottom="27dp"
                     android:layout_marginTop="12dp"
+                    android:layout_marginBottom="27dp"
                     android:contentDescription="@string/sloth_image"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,12 +92,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="72dp"
-                    tools:text="@string/waste_money_info"
                     android:textColor="@color/primary_500"
                     android:textSize="24dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tv_detail_lesson_lose_money"
-                    app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_lose_money" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_lose_money"
+                    tools:text="@string/waste_money_info" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -163,12 +163,12 @@
                     android:gravity="center"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    tools:text="개발"
                     android:textColor="@color/gray_600"
                     android:textSize="12dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_name"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    tools:text="개발" />
 
                 <TextView
                     android:id="@+id/tv_detail_lesson_site"
@@ -180,12 +180,12 @@
                     android:gravity="center"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    tools:text="인프런"
                     android:textColor="@color/gray_600"
                     android:textSize="12dp"
                     app:layout_constraintStart_toEndOf="@id/tv_detail_lesson_category"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_name"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    tools:text="인프런" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_detail_lesson_progress"
@@ -305,16 +305,16 @@
                             app:progressView_colorProgress="@color/primary_400"
                             app:progressView_labelColorInner="@color/white"
                             app:progressView_labelColorOuter="@color/black"
+                            app:progressView_labelConstraints="align_progress"
                             app:progressView_labelSize="10sp"
                             app:progressView_labelSpace="10dp"
-                            tools:progressView_labelText="40%"
-                            app:progressView_labelConstraints="align_progress"
                             app:progressView_labelTypeface="bold"
                             app:progressView_max="100"
                             app:progressView_min="0"
                             app:progressView_padding="1dp"
                             app:progressView_progressFromPrevious="true"
-                            app:progressView_radius="12dp" />
+                            app:progressView_radius="12dp"
+                            tools:progressView_labelText="40%" />
 
 
                         <TextView
@@ -342,16 +342,16 @@
                             app:progressView_colorProgress="@color/primary_600"
                             app:progressView_labelColorInner="@color/white"
                             app:progressView_labelColorOuter="@color/black"
+                            app:progressView_labelConstraints="align_progress"
                             app:progressView_labelSize="10sp"
                             app:progressView_labelSpace="10dp"
-                            tools:progressView_labelText="65%"
-                            app:progressView_labelConstraints="align_progress"
                             app:progressView_labelTypeface="bold"
                             app:progressView_max="100"
                             app:progressView_min="0"
                             app:progressView_padding="1dp"
                             app:progressView_progressFromPrevious="true"
-                            app:progressView_radius="12dp" />
+                            app:progressView_radius="12dp"
+                            tools:progressView_labelText="65%" />
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,8 +23,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import android.graphics.Typeface
-import android.util.Log
 import android.view.LayoutInflater
 
 import android.widget.TextView
@@ -33,7 +31,9 @@ import android.view.ViewGroup
 
 import android.widget.ArrayAdapter
 import android.view.MotionEvent
-import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
+import com.depromeet.sloth.extensions.*
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
 
@@ -110,14 +110,14 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun initViews() = with(binding) {
         if (::goalDateAdapter.isInitialized.not()) {
-            initAdapter()
+            bindAdapter()
         }
 
         calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
         bindSpinner(spnRegisterGoalLessonDate, calendar)
 
-        (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
+        lockButton(btnRegisterLesson, requireContext())
 
         validateInputForm(etRegisterLessonPrice, btnRegisterLesson)
         focusInputFormOptional(etRegisterLessonMessage)
@@ -183,7 +183,25 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
             (activity as RegisterLessonActivity).changeFragment(
                 (activity as RegisterLessonActivity).registerLessonCheckFragment, args)
+            //moveRegisterLessonCheck()
         }
+    }
+
+    private fun moveRegisterLessonCheck() = with(binding) {
+        findNavController().navigate(
+            //data 는 bundle 객체에 담아 보냄
+            R.id.action_register_lesson_second_to_register_lesson_check, bundleOf(
+                //"key" to "value"
+                LESSON_NAME to lessonName,
+                LESSON_COUNT to lessonCount as Int,
+                LESSON_CATEGORY_NAME to lessonCategoryName,
+                LESSON_SITE_NAME to lessonSiteName,
+                LESSON_START_DATE to lessonStartDate,
+                LESSON_GOAL_DATE to lessonGoalDate,
+                LESSON_PRICE to lessonPrice.toInt(),
+                LESSON_MESSAGE to  etRegisterLessonMessage.text.toString()
+            )
+        )
     }
 
     private fun isStartDateInitialized(calendar: Calendar) {
@@ -197,11 +215,11 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun decideLessonGoalDate(flag: Boolean) = with(binding) {
         if (flag) {
             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
-            (activity as RegisterLessonActivity).unlockButton(btnRegisterLesson)
+            unlockButton(btnRegisterLesson,requireContext())
             isLessonGoalDateDecided = true
         } else {
             tvRegisterGoalLessonDateInfo.visibility = View.GONE
-            (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
+            lockButton(btnRegisterLesson, requireContext())
             isLessonGoalDateDecided = false
         }
     }
@@ -286,7 +304,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         materialDatePicker.show(childFragmentManager, "calendar")
     }
 
-    private fun initAdapter() {
+    private fun bindAdapter() {
         goalDateAdapter = ArrayAdapter(
             requireContext(),
             R.layout.item_spinner,
@@ -305,7 +323,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun setSpinnerListener(spinner: Spinner, calendar: Calendar) = with(binding) {
         spinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                (activity as RegisterLessonActivity).hideKeyBoard()
+                hideKeyBoard(requireActivity())
             }
             false
         }
@@ -367,26 +385,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
     }
 
-    private fun getPickerDateToDash(date: Date): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
-        return formatter.format(date)
-    }
-
-    private fun getPickerDateToDot(date: Date): String {
-        val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA)
-        return formatter.format(date)
-    }
-
-    private fun changeDateFormat(date: String): String {
-        val dateArr = date.split("-")
-
-        val yearOfDate = dateArr[0]
-        val monthOfDate = dateArr[1]
-        val dayOfDate = dateArr[2]
-
-        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
-    }
-
     private fun validateInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
         var result = ""
         val decimalFormat = DecimalFormat("#,###")
@@ -423,9 +421,9 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
-                    (activity as RegisterLessonActivity).lockButton(button)
+                    lockButton(button, requireContext())
                 } else {
-                    (activity as RegisterLessonActivity).unlockButton(button)
+                    unlockButton(button, requireContext())
                 }
             }
         })

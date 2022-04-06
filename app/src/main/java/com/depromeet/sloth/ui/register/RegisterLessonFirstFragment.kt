@@ -1,36 +1,47 @@
 package com.depromeet.sloth.ui.register
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.network.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.network.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
+import com.depromeet.sloth.extensions.hideKeyBoard
+import com.depromeet.sloth.extensions.lockButton
+import com.depromeet.sloth.extensions.unlockButton
+import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>() {
 
-    lateinit var categoryMap: HashMap<Int, String>
-    private var categoryList = mutableListOf<String>()
-    lateinit var categoryAdapter: ArrayAdapter<String>
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private val viewModel: RegisterLessonViewModel by activityViewModels()
 
-    lateinit var siteMap: HashMap<Int, String>
-    private var siteList = mutableListOf<String>()
-    lateinit var siteAdapter: ArrayAdapter<String>
-
+    lateinit var lessonCategoryAdapter: ArrayAdapter<String>
+    lateinit var lessonSiteAdapter: ArrayAdapter<String>
     lateinit var lessonCount: Number
 
     companion object {
@@ -47,26 +58,120 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         return FragmentRegisterLessonFirstBinding.inflate(inflater, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        (activity as RegisterLessonActivity).apply {
-            categoryMap = lessonCategoryMap
-            categoryList = lessonCategoryList
-
-            siteMap = lessonSiteMap
-            siteList = lessonSiteList
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//
+//        mainScope {
+//            initLessonCategory()
+//            initLessonSite()
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initViews()
     }
 
+//    private suspend fun initLessonCategory() {
+//        viewModel.fetchLessonCategoryList((activity as RegisterLessonActivity).accessToken).let {
+//            when (it) {
+//                is LessonState.Success<List<LessonCategory>> -> {
+//                    Log.d("fetch Success", "${it.data}")
+//                    setLessonCategoryList(it.data)
+//                }
+//                is LessonState.Error -> {
+//                    Log.d("fetch Error", "${it.exception}")
+//                }
+//
+//                is LessonState.Unauthorized -> {
+//                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+//                    dlg.onItemClickListener =
+//                        object : SlothDialog.OnItemClickedListener {
+//                            override fun onItemClicked() {
+//                                preferenceManager.removeAuthToken()
+//                                startActivity(LoginActivity.newIntent(requireActivity()))
+//                            }
+//                        }
+//                    dlg.start()
+//                }
+//                is LessonState.NotFound -> {
+//                    Log.d("Error", "NotFound")
+//                }
+//                is LessonState.Forbidden -> {
+//                    Log.d("Error", "Forbidden")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) =
+//        with(activity as RegisterLessonActivity) {
+//            lessonCategoryMap =
+//                data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+//            lessonCategoryList = data.map { it.categoryName }.toMutableList()
+//            lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
+//        }
+
+//    private fun setLessonCategoryList(data: List<LessonCategory>) =
+//        with(activity as RegisterLessonActivity) {
+//            lessonCategoryMap =
+//                data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+//            lessonCategoryList = data.map { it.categoryName }.toMutableList()
+//            lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
+//        }
+
+//    private suspend fun initLessonSite() {
+//        viewModel.fetchLessonSiteList((activity as RegisterLessonActivity).accessToken).let {
+//            when (it) {
+//                is LessonState.Success -> {
+//                    Log.d("fetch Success", "${it.data}")
+//                    setLessonSiteList(it.data)
+//
+//                    initViews()
+//                }
+//                is LessonState.Error -> {
+//                    Log.d("fetch Error", "${it.exception}")
+//                }
+//
+//                is LessonState.Unauthorized -> {
+//                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+//                    dlg.onItemClickListener =
+//                        object : SlothDialog.OnItemClickedListener {
+//                            override fun onItemClicked() {
+//                                preferenceManager.removeAuthToken()
+//                                startActivity(LoginActivity.newIntent(requireActivity()))
+//                            }
+//                        }
+//                    dlg.start()
+//                }
+//                is LessonState.NotFound -> {
+//                    Log.d("Error", "NotFound")
+//                }
+//                is LessonState.Forbidden -> {
+//                    Log.d("Error", "Forbidden")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun setLessonSiteList(data: List<LessonSiteResponse>) =
+//        with(activity as RegisterLessonActivity) {
+//            lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+//            lessonSiteList = data.map { it.siteName }.toMutableList()
+//            lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
+//        }
+
+//    private fun setLessonSiteList(data: List<LessonSite>) =
+//        with(activity as RegisterLessonActivity) {
+//            lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+//            lessonSiteList = data.map { it.siteName }.toMutableList()
+//            lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
+//        }
+
     override fun initViews() = with(binding) {
-        if (::categoryAdapter.isInitialized.not()) {
-            initAdapter()
+        if (::lessonCategoryAdapter.isInitialized.not()) {
+            bindAdapter()
         }
 
         if (etRegisterLessonCount.hasFocus()) {
@@ -75,7 +180,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
         bindSpinner()
 
-        (activity as RegisterLessonActivity).lockButton(btnRegisterLesson)
+        lockButton(btnRegisterLesson, requireContext())
 
         focusInputForm(etRegisterLessonName, btnRegisterLesson)
         validateInputForm(etRegisterLessonCount, btnRegisterLesson)
@@ -128,28 +233,43 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
             (activity as RegisterLessonActivity).changeFragment(
                 (activity as RegisterLessonActivity).registerLessonSecondFragment, args)
+
+            //moveRegisterLessonSecond()
         }
     }
 
-    private fun initAdapter() {
-        categoryAdapter = ArrayAdapter<String>(
-            requireContext(),
-            R.layout.item_spinner,
-            categoryList
+    private fun moveRegisterLessonSecond() = with(binding) {
+        findNavController().navigate(
+            //data 는 bundle 객체에 담아 보냄
+            R.id.action_register_lesson_first_to_register_lesson_second, bundleOf(
+                //"key" to "value"
+                LESSON_NAME to etRegisterLessonName.text.toString(),
+                LESSON_COUNT to etRegisterLessonCount.text.toString().toInt(),
+                LESSON_CATEGORY_NAME to spnRegisterLessonCategory.selectedItem.toString(),
+                LESSON_SITE_NAME to spnRegisterLessonSite.selectedItem.toString()
+            )
         )
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    }
 
-        siteAdapter = ArrayAdapter<String>(
+    private fun bindAdapter() {
+        lessonCategoryAdapter = ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            siteList
+            (activity as RegisterLessonActivity).lessonCategoryList
         )
-        siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        lessonSiteAdapter = ArrayAdapter<String>(
+            requireContext(),
+            R.layout.item_spinner,
+            (activity as RegisterLessonActivity).lessonSiteList
+        )
+        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
     }
 
     private fun bindSpinner() = with(binding) {
-        spnRegisterLessonCategory.adapter = categoryAdapter
-        spnRegisterLessonSite.adapter = siteAdapter
+        spnRegisterLessonCategory.adapter = lessonCategoryAdapter
+        spnRegisterLessonSite.adapter = lessonSiteAdapter
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -157,7 +277,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         spinner.apply {
             setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
-                    (activity as RegisterLessonActivity).hideKeyBoard()
+                    hideKeyBoard(requireActivity())
                 }
                 false
             }
@@ -169,14 +289,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
                     val spinnerId = spinner.selectedItemPosition
                     if (spinnerId == 0) {
-                        (activity as RegisterLessonActivity).lockButton(button)
+                        lockButton(button, requireContext())
                     } else {
-                        (activity as RegisterLessonActivity).unlockButton(button)
+                        unlockButton(button, requireContext())
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-                    (activity as RegisterLessonActivity).unlockButton(button)
+                    unlockButton(button, requireContext())
                 }
             }
         }
@@ -193,9 +313,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
-                    (activity as RegisterLessonActivity).lockButton(button)
+                    lockButton(button, requireContext())
                 } else {
-                    (activity as RegisterLessonActivity).unlockButton(button)
+                    unlockButton(button, requireContext())
                 }
             }
         })
@@ -224,10 +344,10 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     result = lessonCount.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        (activity as RegisterLessonActivity).lockButton(button)
+                        lockButton(button, requireContext())
                     } else {
                         tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        (activity as RegisterLessonActivity).unlockButton(button)
+                        unlockButton(button, requireContext())
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
@@ -251,9 +371,9 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty() || editable[0] == '0') {
-                    (activity as RegisterLessonActivity).lockButton(button)
+                    lockButton(button, requireContext())
                 } else {
-                    (activity as RegisterLessonActivity).unlockButton(button)
+                    unlockButton(button, requireContext())
                 }
             }
         })

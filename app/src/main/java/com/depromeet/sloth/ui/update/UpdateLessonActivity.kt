@@ -12,17 +12,18 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.Lesson
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.*
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -81,8 +82,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         mainScope {
             initLessonCategory()
@@ -93,6 +94,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     private suspend fun initLessonCategory() {
         viewModel.fetchLessonCategoryList(accessToken = accessToken).let {
             when (it) {
+//                is LessonState.Success<List<LessonCategory>> -> {
                 is LessonState.Success<List<LessonCategoryResponse>> -> {
                     Log.d("fetch Success", "${it.data}")
                     setLessonCategoryList(it.data)
@@ -122,12 +124,34 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         }
     }
 
+//    private fun setLessonCategoryList(data: List<LessonCategory>) {
+//        lessonCategoryMap =
+//            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+//
+//        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+//        lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
+//    }
+
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         lessonCategoryMap =
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
         lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
+    }
+
+//    private fun setLessonSiteList(data: List<LessonSite>) {
+//        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+//
+//        lessonSiteList = data.map { it.siteName }.toMutableList()
+//        lessonSiteList.add(0, "강의 사이트를 선택 해주세요")
+//    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+
+        lessonSiteList = data.map { it.siteName }.toMutableList()
+        lessonSiteList.add(0, "강의 사이트를 선택 해주세요")
     }
 
     private suspend fun initLessonSite() {
@@ -164,19 +188,13 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         }
     }
 
-    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
-        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-
-        lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택 해주세요")
-    }
-
     override fun initViews() = with(binding) {
         tbUpdateLesson.setNavigationOnClickListener { finish() }
 
-        initSpinner()
+        bindAdapter()
+        bindSpinner()
 
-        focusInputForm(etUpdateLessonName, btnUpdateLesson)
+        focusInputForm(etUpdateLessonName, btnUpdateLesson, this@UpdateLessonActivity)
         validateCountInputForm(etUpdateLessonCount, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonCategory, btnUpdateLesson)
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
@@ -246,14 +264,13 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         }
     }
 
-    private fun initSpinner() {
+    private fun bindAdapter() {
         categoryAdapter = ArrayAdapter<String>(
             this@UpdateLessonActivity,
             R.layout.item_spinner,
             lessonCategoryList
         )
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spnUpdateLessonCategory.adapter = categoryAdapter
 
         siteAdapter = ArrayAdapter<String>(
             this@UpdateLessonActivity,
@@ -261,7 +278,11 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             lessonSiteList
         )
         siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spnUpdateLessonSite.adapter = siteAdapter
+    }
+
+    private fun bindSpinner() = with(binding) {
+        spnUpdateLessonCategory.adapter = categoryAdapter
+        spnUpdateLessonSite.adapter = siteAdapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -280,8 +301,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             lessonSiteList.indexOf(lessonSiteMap[lesson.siteId])
         )
 
-        tvUpdateStartLessonDate.text = changeDateFormat(lesson.startDate)
-        tvUpdateEndLessonDate.text = changeDateFormat(lesson.endDate)
+        tvUpdateStartLessonDate.text = changeDateFormatArrayToDot(lesson.startDate)
+        tvUpdateEndLessonDate.text = changeDateFormatArrayToDot(lesson.endDate)
 
         val df = DecimalFormat("#,###")
 
@@ -303,8 +324,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     i1: Int,
                     i2: Int,
                     i3: Int,
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
@@ -312,10 +332,10 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                         result = lessonCount.toString()
                         if (result[0] == '0') {
                             tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                            lockButton(button)
+                            lockButton(button, this@UpdateLessonActivity)
                         } else {
                             tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                            unlockButton(button)
+                            unlockButton(button, this@UpdateLessonActivity)
                         }
                         editText.setText(result)
                         editText.setSelection(result.length)
@@ -339,9 +359,9 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 @RequiresApi(Build.VERSION_CODES.M)
                 override fun afterTextChanged(editable: Editable?) {
                     if (editable.isNullOrEmpty() || editable[0] == '0') {
-                        lockButton(button)
+                        lockButton(button, this@UpdateLessonActivity)
                     } else {
-                        unlockButton(button)
+                        unlockButton(button, this@UpdateLessonActivity)
                     }
                 }
             })
@@ -360,8 +380,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     i1: Int,
                     i2: Int,
                     i3: Int,
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
@@ -390,7 +409,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
                 @RequiresApi(Build.VERSION_CODES.M)
                 override fun afterTextChanged(editable: Editable?) {
-                    setButton(editable, button)
+                    setButton(editable, button, this@UpdateLessonActivity)
                 }
             })
             setValidateEditTextFocus(editText, tvUpdateLessonPriceInfo)
@@ -408,29 +427,11 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         clearEditTextFocus(editText)
     }
 
-    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
-        editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-
-            }
-
-            @RequiresApi(Build.VERSION_CODES.M)
-            override fun afterTextChanged(editable: Editable?) {
-                setButton(editable, button)
-            }
-        })
-        setEditTextFocus(editText)
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
         spinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                hideKeyBoard()
+                hideKeyBoard(this@UpdateLessonActivity)
             }
             false
         }
@@ -443,40 +444,15 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
                 val spinnerId = spinner.selectedItemPosition
                 if (spinnerId == 0) {
-                    lockButton(button)
+                    lockButton(button, this@UpdateLessonActivity)
                 } else {
-                    unlockButton(button)
+                    unlockButton(button, this@UpdateLessonActivity)
                 }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                unlockButton(button)
+                unlockButton(button, this@UpdateLessonActivity)
             }
-        }
-    }
-
-    private fun hideKeyBoard() {
-        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
-    }
-
-    private fun setEditTextFocus(editText: EditText) {
-        editText.setOnFocusChangeListener { _, gainFocus ->
-            if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-            } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-            }
-        }
-        clearEditTextFocus(editText)
-    }
-
-    private fun clearEditTextFocus(editText: EditText) {
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                editText.clearFocus()
-            }
-            false
         }
     }
 
@@ -487,49 +463,5 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         }
         tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
         tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-    }
-
-    private fun setButton(editable: Editable?, button: AppCompatButton) {
-        if (editable.isNullOrEmpty()) {
-            lockButton(button)
-        } else {
-            unlockButton(button)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun unlockButton(button: AppCompatButton) {
-        button.isEnabled = true
-        button.background = AppCompatResources.getDrawable(
-            this,
-            R.drawable.bg_update_rounded_sloth
-        )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun lockButton(button: AppCompatButton) {
-        button.isEnabled = false
-        button.background = AppCompatResources.getDrawable(
-            this,
-            R.drawable.bg_update_rounded_gray
-        )
-    }
-
-    private fun changeDateFormat(date: String): String {
-        val dateArr = date.split(",")
-
-        val yearOfDate = dateArr[0].replace("[", "")
-        val monthOfDate = changeDate(dateArr[1])
-        val dayOfDate = changeDate(dateArr[2]).replace("]", "")
-
-        return "${yearOfDate}.${monthOfDate}.$dayOfDate"
-    }
-
-    private fun changeDate(data: String): String {
-        var tmp = data
-        if (tmp.length == 1) {
-            tmp = "0$tmp"
-        }
-        return tmp
     }
 }
