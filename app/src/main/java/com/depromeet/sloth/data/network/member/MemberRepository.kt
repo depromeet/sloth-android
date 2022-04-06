@@ -7,8 +7,8 @@ import javax.inject.Inject
 class MemberRepository @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) {
-    suspend fun fetchMemberInfo(accessToken: String): MemberState<MemberInfoResponse> {
-        RetrofitServiceGenerator.build(accessToken)
+    suspend fun fetchMemberInfo(): MemberState<MemberInfoResponse> {
+        RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .fetchMemberInfo()?.run {
                 return when (this.code()) {
@@ -36,14 +36,14 @@ class MemberRepository @Inject constructor(
     }
 
     suspend fun updateMemberInfo(
-        accessToken: String,
         memberUpdateInfoRequest: MemberUpdateInfoRequest
-    ): MemberState<MemberUpdateInfoResponse> {
-        RetrofitServiceGenerator.build(accessToken)
+    ): MemberUpdateState<MemberUpdateInfoResponse> {
+        RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .updateMemberInfo(memberUpdateInfoRequest)?.run {
                 return when (this.code()) {
-                    200 -> MemberState.Success(this.body() ?: MemberUpdateInfoResponse())
+                    200 -> MemberUpdateState.Success(this.body() ?: MemberUpdateInfoResponse())
+                    404 -> MemberUpdateState.NoContent
                     401 -> {
                         val refreshToken = preferenceManager.getRefreshToken()
                         RetrofitServiceGenerator.build(refreshToken)
@@ -53,23 +53,20 @@ class MemberRepository @Inject constructor(
                                     200 -> {
                                         val newAccessToken = headers()["Authorization"] ?: "EMPTY"
                                         preferenceManager.updateAccessToken(newAccessToken)
-                                        MemberState.Success(body() ?: MemberUpdateInfoResponse())
+                                        MemberUpdateState.Success(body() ?: MemberUpdateInfoResponse())
                                     }
-                                    else -> MemberState.Unauthorized(Exception("Authentication Failed Exception"))
+                                    else -> MemberUpdateState.Unauthorized(Exception("Authentication Failed Exception"))
                                 }
-                            } ?: MemberState.Error(Exception("Uncaught Exception"))
+                            } ?: MemberUpdateState.Error(Exception("Uncaught Exception"))
                     }
-                    403 -> MemberState.Forbidden
-                    404 -> MemberState.NotFound
-                    else -> MemberState.Error(java.lang.Exception("Uncaught Exception"))
+                    403 -> MemberUpdateState.Forbidden
+                    else -> MemberUpdateState.Error(java.lang.Exception("Uncaught Exception"))
                 }
-            } ?: return MemberState.Error(java.lang.Exception("Register Exception"))
+            } ?: return MemberUpdateState.Error(java.lang.Exception("Register Exception"))
     }
 
-    suspend fun logout(
-        accessToken: String,
-    ): MemberLogoutState<String> {
-        RetrofitServiceGenerator.build(accessToken)
+    suspend fun logout(): MemberLogoutState<String> {
+        RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .logout()?.run {
                 return when (this.code()) {
@@ -95,5 +92,9 @@ class MemberRepository @Inject constructor(
                     else -> MemberLogoutState.Error(java.lang.Exception("Uncaught Exception"))
                 }
             } ?: return MemberLogoutState.Error(java.lang.Exception("Register Exception"))
+    }
+
+    fun removeAuthToken() {
+        preferenceManager.removeAuthToken()
     }
 }
