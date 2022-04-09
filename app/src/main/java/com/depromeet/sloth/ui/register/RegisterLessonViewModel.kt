@@ -1,19 +1,9 @@
 package com.depromeet.sloth.ui.register
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
-import com.depromeet.sloth.data.network.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.network.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,6 +14,7 @@ import javax.inject.Inject
 class RegisterLessonViewModel @Inject constructor(
     //private var preferenceManager: PreferenceManager,
     private val lessonRepository: LessonRepository,
+    private val memberRepository: MemberRepository
 ) : BaseViewModel() {
 
 //    private val _lessonCategoryList = MutableLiveData<List<LessonCategory>>()
@@ -39,10 +30,9 @@ class RegisterLessonViewModel @Inject constructor(
 //    }
 
     suspend fun registerLesson(
-        accessToken: String,
         request: LessonRegisterRequest,
     ) = withContext(viewModelScope.coroutineContext) {
-        lessonRepository.registerLesson(accessToken, request)
+        lessonRepository.registerLesson(request)
     }
 
 //    private fun fetchLessonCategoryList(accessToken: String) = viewModelScope.launch {
@@ -113,13 +103,17 @@ class RegisterLessonViewModel @Inject constructor(
 //        }
 //    }
 
-    suspend fun fetchLessonCategoryList(accessToken: String) =
+    suspend fun fetchLessonCategoryList() =
         withContext(viewModelScope.coroutineContext) {
-            lessonRepository.fetchLessonCategoryList(accessToken)
+            lessonRepository.fetchLessonCategoryList()
         }
 
-    suspend fun fetchLessonSiteList(accessToken: String) =
+    suspend fun fetchLessonSiteList() =
         withContext(viewModelScope.coroutineContext) {
-            lessonRepository.fetchLessonSiteList(accessToken)
+            lessonRepository.fetchLessonSiteList()
         }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        memberRepository.removeAuthToken()
+    }
 }

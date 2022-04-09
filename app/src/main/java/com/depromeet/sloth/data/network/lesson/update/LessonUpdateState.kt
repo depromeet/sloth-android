@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.lesson
+package com.depromeet.sloth.data.network.lesson.update
 
 /**
  * @author 최철훈
@@ -8,6 +8,7 @@ package com.depromeet.sloth.data.network.lesson
 import java.lang.Exception
 
 sealed class LessonUpdateState<out R> {
+    object Loading : LessonUpdateState<Nothing>()
     data class Success<out T>(val data: T) : LessonUpdateState<T>()
     data class Unauthorized(val exception: Exception) : LessonUpdateState<Nothing>()
     data class Error(val exception: Exception) : LessonUpdateState<Nothing>()

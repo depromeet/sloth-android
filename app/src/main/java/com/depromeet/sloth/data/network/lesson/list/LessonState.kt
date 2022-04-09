@@ -1,5 +1,6 @@
-package com.depromeet.sloth.data.network.lesson
+package com.depromeet.sloth.data.network.lesson.list
 
+import com.depromeet.sloth.data.model.LessonSite
 import java.lang.Exception
 
 /**
@@ -9,6 +10,7 @@ import java.lang.Exception
  */
 
 sealed class LessonState<out R> {
+    object Loading : LessonState<Nothing>()
     data class Success<out T>(val data: T) : LessonState<T>()
     data class Unauthorized(val exception: Exception) : LessonState<Nothing>()
     data class Error(val exception: Exception) : LessonState<Nothing>()

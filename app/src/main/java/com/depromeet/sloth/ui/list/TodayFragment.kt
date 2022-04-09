@@ -6,31 +6,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
+import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
+import com.depromeet.sloth.util.LoadingDialogUtil
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>() {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
-    private val viewModel: LessonViewModel by activityViewModels()
 
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
+    private val viewModel: LessonViewModel by activityViewModels()
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -41,9 +38,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        accessToken = preferenceManager.getAccessToken()
-        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
     }
@@ -70,23 +64,16 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
             showProgress()
             binding.ivTodaySloth.visibility = View.INVISIBLE
 
-            viewModel.fetchTodayLessonList(accessToken = accessToken).let {
+            viewModel.fetchTodayLessonList().let {
                 when (it) {
+                    is LessonState.Loading -> handleLoadingState(requireContext())
+
                     is LessonState.Success<List<LessonTodayResponse>> -> {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized -> {
-                        Log.d("Error", "${it.exception}")
-                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                            override fun onItemClicked() {
-                                preferenceManager.removeAuthToken()
-                                startActivity(LoginActivity.newIntent(requireActivity()))
-                            }
-                        }
-                        dlg.start()
-                    }
+                    is LessonState.Unauthorized -> showLogoutDialog()
+
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
                     }
@@ -97,12 +84,31 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                         Log.d("Error", "${it.exception}")
                     }
                 }
+                hideProgress()
             }
 
             binding.ivTodaySloth.visibility = View.VISIBLE
             hideProgress()
         }
     }
+
+    private fun showLogoutDialog() {
+        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+            override fun onItemClicked() {
+                logout()
+            }
+        }
+        dlg.start()
+    }
+
+    private fun logout() {
+        viewModel.removeAuthToken()
+        Toast.makeText(requireContext(), "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
+        startActivity(LoginActivity.newIntent(requireActivity()))
+    }
+
+
 
     private fun moveRegisterActivity() {
         startActivity(RegisterLessonActivity.newIntent(requireActivity()))
@@ -245,8 +251,12 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
         mainScope {
             showProgress()
 
-            viewModel.updateLessonCount(accessToken, count, lesson.lessonId).let {
+            viewModel.updateLessonCount(count, lesson.lessonId).let {
                 when (it) {
+                    is LessonState.Loading -> {
+                        showProgress()
+                    }
+
                     is LessonState.Success<LessonUpdateCountResponse> -> {
                         Log.d("Success", it.data.toString())
                         when (bodyType) {

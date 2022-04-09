@@ -2,7 +2,7 @@ package com.depromeet.sloth.data.network.member
 
 
 /**
- *  MypageResponse
+ *  MemberInfoResponse
  *
  *  "email": "string",
  *  "memberId": 0,

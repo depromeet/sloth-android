@@ -7,12 +7,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Lesson (
     val alertDays: String?,
-    val categoryId: Int,
+    val categoryName: String,
     val endDate: String,
     val lessonName: String,
     val message: String?,
     val price: Int,
-    val siteId: Int,
+    val siteName: String,
     val startDate: String,
     val totalNumber: Int
 ): Parcelable

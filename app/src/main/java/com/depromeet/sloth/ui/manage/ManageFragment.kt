@@ -19,7 +19,10 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
+import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.Event
+import com.depromeet.sloth.ui.EventObserver
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.login.LoginActivity
@@ -34,8 +37,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
 
     private val viewModel: ManageViewModel by activityViewModels()
 
-    lateinit var memberName: String
-
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,12 +46,19 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("ManageFragment", "onViewCreated: ${this.hashCode()}")
+
+        binding.lifecycleOwner = viewLifecycleOwner
+
         viewModel.apply {
             memberState.observe(viewLifecycleOwner) { memberState ->
                 when (memberState) {
-                    is MemberState.Loading -> handleLoadingState()
+                    is MemberState.Loading -> handleLoadingState(requireContext())
 
-                    is MemberState.Success<MemberInfoResponse> -> handleSuccessState(memberState.data)
+                    is MemberState.Success<MemberInfoResponse> -> {
+                        Log.d("fetch Success", "${memberState.data}")
+                        handleSuccessState(memberState.data)
+                    }
 
                     is MemberState.Unauthorized -> showLogoutDialog()
 
@@ -65,14 +73,18 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                             .show()
                     }
                 }
+                hideProgress()
             }
 
-            memberUpdateState.observe(viewLifecycleOwner) { memberUpdateState ->
+            memberUpdateState.observe(viewLifecycleOwner, EventObserver { memberUpdateState ->
+                Log.d("ManageFragment",  "memberUpdateState: onChange 호출")
                 when (memberUpdateState) {
-                    is MemberUpdateState.Loading -> handleLoadingState()
+                    is MemberUpdateState.Loading -> handleLoadingState(requireContext())
 
-                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> handleSuccessState(
-                        memberUpdateState.data)
+                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
+                        Log.d("update Success", "${memberUpdateState.data}")
+                        handleSuccessState(memberUpdateState.data)
+                    }
 
                     is MemberUpdateState.NoContent, MemberUpdateState.Forbidden ->
                         Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
@@ -86,11 +98,35 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                             .show()
                     }
                 }
-            }
+                hideProgress()
+            })
+
+//            memberUpdateState.observe(viewLifecycleOwner) { memberUpdateState ->
+//                Log.d("ManageFragment",  "memberUpdateState: onChange 호출")
+//                when (memberUpdateState) {
+//                    is MemberUpdateState.Loading -> handleLoadingState(requireContext())
+//
+//                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> handleSuccessState(
+//                        memberUpdateState.data)
+//
+//                    is MemberUpdateState.NoContent, MemberUpdateState.Forbidden ->
+//                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
+//                            .show()
+//
+//                    is MemberUpdateState.Unauthorized -> showLogoutDialog()
+//
+//                    is MemberUpdateState.Error -> {
+//                        Log.d("update Error", "${memberUpdateState.exception}")
+//                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
+//                            .show()
+//                    }
+//                }
+//                hideProgress()
+//            }
 
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
-                    is MemberLogoutState.Loading -> handleLoadingState()
+                    is MemberLogoutState.Loading -> handleLoadingState(requireContext())
 
                     is MemberLogoutState.Success<String> -> handleSuccessState(memberLogoutState.data)
 
@@ -108,6 +144,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                             .show()
                     }
                 }
+                hideProgress()
+            }
+
+            member.observe(viewLifecycleOwner) { member ->
+                binding.member = member
             }
         }
 
@@ -144,19 +185,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         }
     }
 
-    private fun handleLoadingState() {
-        showProgress(requireContext())
-    }
-
     private fun <T> handleSuccessState(data: T) {
         if (data is MemberInfoResponse) {
-            initMemberInfo(data)
+            viewModel.setMemberInfo(data)
         } else if (data is MemberUpdateInfoResponse) {
-            updateMemberInfo(data)
+            viewModel.fetchMemberInfo()
         } else {
             logout()
         }
-        hideProgress()
     }
 
     private fun showLogoutDialog() {
@@ -193,12 +229,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         startActivity(LoginActivity.newIntent(requireActivity()))
     }
 
-    private fun initMemberInfo(data: MemberInfoResponse) = with(binding) {
-        memberName = data.memberName
-        tvManageProfileName.text = memberName
-        tvManageProfileEmail.text = data.email
-    }
-
     private fun showUpdateDialog() {
         val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
         updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -210,12 +240,12 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         val updateButton =
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
-        nameEditText.hint = memberName
+        nameEditText.hint = viewModel.member.value?.memberName ?: ""
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != memberName) {
-                viewModel.updateMemberInfo(MemberUpdateInfoRequest(memberName = nameEditText.text.toString()))
+            if (nameEditText.text.toString() != viewModel.member.value?.memberName ?: "") {
+                viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
             } else {
                 Toast.makeText(requireContext(), "현재 닉네임과 동일한 닉네임이에요", Toast.LENGTH_SHORT).show()
             }
@@ -223,12 +253,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         }
         updateDialog.show()
     }
-
-    private fun updateMemberInfo(memberUpdateInfoResponse: MemberUpdateInfoResponse) =
-        with(binding) {
-            tvManageProfileName.text = memberUpdateInfoResponse.memberName
-            //Toast.makeText(requireContext(), "닉네임이 변경되었어요", Toast.LENGTH_SHORT).show()
-        }
 
     private fun sendEmail() {
         startActivity(

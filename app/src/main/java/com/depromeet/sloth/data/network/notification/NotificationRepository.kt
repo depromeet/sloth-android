@@ -9,10 +9,9 @@ class NotificationRepository @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun saveFCMToken(
-        accessToken: String,
         notificationRequest: NotificationSaveRequest
     ): NotificationSaveState<String> {
-        RetrofitServiceGenerator.build(accessToken)
+        RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
             .saveFCMToken(notificationRequest)?.run {
                 return when (this.code()) {
@@ -41,10 +40,9 @@ class NotificationRepository @Inject constructor(
     }
 
     suspend fun updateFCMTokenUse(
-        accessToken: String,
         notificationUseRequest: NotificationUseRequest
     ): NotificationUseState<NotificationUseResponse> {
-        RetrofitServiceGenerator.build(accessToken)
+        RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
             .updateFCMTokenUse(notificationUseRequest)?.run {
                 return when (this.code()) {

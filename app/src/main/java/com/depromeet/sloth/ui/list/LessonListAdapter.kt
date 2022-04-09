@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonAllResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import java.text.DecimalFormat
 import kotlin.math.ceil
 

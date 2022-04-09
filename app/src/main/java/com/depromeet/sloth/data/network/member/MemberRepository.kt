@@ -97,4 +97,8 @@ class MemberRepository @Inject constructor(
     fun removeAuthToken() {
         preferenceManager.removeAuthToken()
     }
+
+    fun putFCMToken(fcmToken: String) {
+        preferenceManager.putFCMToken(fcmToken)
+    }
 }

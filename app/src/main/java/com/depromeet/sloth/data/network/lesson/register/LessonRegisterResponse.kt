@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.lesson
+package com.depromeet.sloth.data.network.lesson.register
 
 /**
  * RegisterLessonResponse

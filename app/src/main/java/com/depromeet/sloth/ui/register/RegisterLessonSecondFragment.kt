@@ -32,10 +32,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.view.MotionEvent
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.extensions.*
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
+
+    private val viewModel: RegisterLessonViewModel by activityViewModels()
 
     companion object {
         private const val DAY = 86400000L

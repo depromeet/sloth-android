@@ -3,6 +3,7 @@ package com.depromeet.sloth.ui
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
@@ -21,32 +22,26 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
     private val viewModel: HomeViewModel by viewModels()
 
     override fun getActivityBinding(): ActivityHomeBinding =
         ActivityHomeBinding.inflate(layoutInflater)
 
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
     lateinit var fcmToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        accessToken = preferenceManager.getAccessToken()
-        refreshToken = preferenceManager.getRefreshToken()
 
         // bottom navigation view icon 의 원래 색상 부여를 위해 (그라데이션)
-        binding.bottomNavigationHome.itemIconTintList = null
+        binding.bnvHome.itemIconTintList = null
 
 //        supportFragmentManager.fragmentFactory = SlothFragmentFactory()
 //        initNavigationEvent()
 
-        val navController = supportFragmentManager.findFragmentById(R.id.container_home)?.findNavController()
+        val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)?.findNavController()
         navController?.let {
-            binding.bottomNavigationHome.setupWithNavController(it)
-        } 
+            binding.bnvHome.setupWithNavController(it)
+        }
 
         if (::fcmToken.isInitialized.not()) {
             registerFCMToken()
@@ -54,7 +49,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     private fun initNavigationEvent() = with(binding) {
-        bottomNavigationHome.setOnItemSelectedListener { menuItem ->
+        bnvHome.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_today -> changeFragment(TodayFragment::class.java.name)
                 R.id.navigation_list -> changeFragment(ListFragment::class.java.name)
@@ -62,9 +57,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             }
             true
         }
-        bottomNavigationHome.selectedItemId = R.id.navigation_today
+        bnvHome.selectedItemId = R.id.navigation_today
 
-        bottomNavigationHome.setOnItemReselectedListener { menuItem ->
+        bnvHome.setOnItemReselectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_today -> {}
                 R.id.navigation_list -> {}
@@ -78,14 +73,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
 
-
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 fcmToken = task.result ?: ""
                 mainScope {
                     viewModel.saveFCMToken(
-                        accessToken,
                         NotificationSaveRequest(fcmToken)
                     ).let {
                         when (it) {
@@ -100,7 +93,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                                 dlg.onItemClickListener =
                                     object : SlothDialog.OnItemClickedListener {
                                         override fun onItemClicked() {
-                                            preferenceManager.removeAuthToken()
+                                            viewModel.removeAuthToken()
                                             startActivity(LoginActivity.newIntent(this@HomeActivity))
                                         }
                                     }
@@ -119,7 +112,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     }
                 }
 
-                preferenceManager.putFCMToken(fcmToken)
+                viewModel.putFCMToken(fcmToken)
                 Log.d("FCM Token", fcmToken)
             }
         }

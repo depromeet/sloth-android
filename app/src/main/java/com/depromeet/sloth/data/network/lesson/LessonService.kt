@@ -1,7 +1,17 @@
 package com.depromeet.sloth.data.network.lesson
 
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
+import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
+import com.depromeet.sloth.data.network.lesson.detail.LessonDetailResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
+import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountRequest
+import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,13 +35,7 @@ interface LessonService {
     suspend fun registerLesson(@Body request: LessonRegisterRequest): Response<LessonRegisterResponse>?
 
     @PATCH("api/lesson/{lessonId}")
-    suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateInfoRequest): Response<LessonUpdateInfoResponse>?
-
-//    @GET("api/category/list")
-//    suspend fun fetchLessonCategoryList(): Response<List<LessonCategory>>?
-//
-//    @GET("api/site/list")
-//    suspend fun fetchLessonSiteList(): Response<List<LessonSite>>?
+    suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateRequest): Response<LessonUpdateResponse>?
 
     @GET("api/category/list")
     suspend fun fetchLessonCategoryList(): Response<List<LessonCategoryResponse>>?

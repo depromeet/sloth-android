@@ -6,12 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
+import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
@@ -19,6 +21,7 @@ import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
+import com.depromeet.sloth.util.LoadingDialogUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,12 +29,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>() {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
-    private val viewModel: LessonViewModel by activityViewModels()
 
-    lateinit var accessToken: String
-    lateinit var refreshToken: String
+    private val viewModel: LessonViewModel by activityViewModels()
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -42,9 +41,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        accessToken = preferenceManager.getAccessToken()
-        refreshToken = preferenceManager.getRefreshToken()
 
         initViews()
     }
@@ -59,32 +55,27 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         mainScope {
             showProgress()
 
-            viewModel.fetchAllLessonList(accessToken = accessToken).let {
+            viewModel.fetchAllLessonList().let {
                 when (it) {
+                    is LessonState.Loading -> handleLoadingState(requireContext())
+
                     is LessonState.Success<List<LessonAllResponse>> -> {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
+                    is LessonState.Unauthorized -> showLogoutDialog()
+
+                    is LessonState.NotFound, LessonState.Forbidden -> {
+                        Toast.makeText(requireContext(), "강의 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
                     is LessonState.Error -> {
                         Log.d("Error", "${it.exception}")
+                        Toast.makeText(requireContext(), "강의 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
+                            .show()
                     }
-                    is LessonState.Unauthorized -> {
-                        Log.d("Error", "${it.exception}")
-                        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                            override fun onItemClicked() {
-                                preferenceManager.removeAuthToken()
-                                startActivity(LoginActivity.newIntent(requireActivity()))
-                            }
-                        }
-                        dlg.start()
-                    }
-                    is LessonState.NotFound -> {
-                        Log.d("Error", "NotFound")
-                    }
-                    is LessonState.Forbidden -> {
-                        Log.d("Error", "Forbidden")
-                    }
+
                 }
             }
 
@@ -105,6 +96,22 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                 dlg.start()
             }
         }
+    }
+
+    private fun showLogoutDialog() {
+        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
+        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+            override fun onItemClicked() {
+                logout()
+            }
+        }
+        dlg.start()
+    }
+
+    private fun logout() {
+        viewModel.removeAuthToken()
+        Toast.makeText(requireContext(), "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
+        startActivity(LoginActivity.newIntent(requireActivity()))
     }
 
     private fun moveRegisterActivity() {

@@ -9,7 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.*
+import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDecimalFormat
@@ -88,7 +89,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             { it == lessonSiteName }.keys.first()}")
 
             mainScope {
-                viewModel.registerLesson((activity as RegisterLessonActivity).accessToken,
+                viewModel.registerLesson(
                     LessonRegisterRequest(
                         alertDays = lessonPushNotiCycle,
                         categoryId =
@@ -106,6 +107,10 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     )
                 ).let {
                     when (it) {
+                        is LessonState.Loading -> {
+                            showProgress()
+                        }
+
                         is LessonState.Success -> {
                             Log.d("Register Success", "${it.data}")
                             Toast.makeText(requireContext(), "강의가 등록되었어요", Toast.LENGTH_SHORT).show()
