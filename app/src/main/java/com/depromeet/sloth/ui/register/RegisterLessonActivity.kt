@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
@@ -18,9 +17,8 @@ import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
+import com.depromeet.sloth.util.LoadingDialogUtil
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -53,22 +51,82 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
         registerLessonFirstFragment = RegisterLessonFirstFragment()
         registerLessonSecondFragment = RegisterLessonSecondFragment()
         registerLessonCheckFragment = RegisterLessonCheckFragment()
-    }
 
-    override fun onStart() {
-        super.onStart()
+        viewModel.apply {
+            lessonCategoryListState.observe(this@RegisterLessonActivity) { lessonState ->
+                when (lessonState) {
+                    is LessonState.Loading -> handleLoadingState(this@RegisterLessonActivity)
 
-        mainScope {
-            initLessonCategory()
-            initLessonSite()
+                    is LessonState.Success<List<LessonCategoryResponse>> -> {
+                        Log.d("lessonCategoryState", "LessonState.Success 호출")
+                        //handleSuccessState(lessonState.data)
+                        setLessonCategoryList(lessonState.data)
+                    }
+
+                    is LessonState.Unauthorized -> showLogoutDialog()
+
+                    is LessonState.Forbidden, LessonState.NotFound ->
+                        Toast.makeText(this@RegisterLessonActivity,
+                            "강의 카테고리를 가져오지 못했어요",
+                            Toast.LENGTH_SHORT)
+                            .show()
+
+                    is LessonState.Error -> {
+                        Log.d("fetch Error", "${lessonState.exception}")
+                        Toast.makeText(this@RegisterLessonActivity,
+                            "강의 카테고리를 가져오지 못했어요",
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                LoadingDialogUtil.hideProgress()
+            }
+
+            lessonSiteListState.observe(this@RegisterLessonActivity) { lessonState ->
+                when (lessonState) {
+                    is LessonState.Loading -> handleLoadingState(this@RegisterLessonActivity)
+
+                    is LessonState.Success<List<LessonSiteResponse>> -> {
+                        Log.d("lessonSiteState", "LessonState.Success 호출")
+                        //handleSuccessState(lessonState.data)
+                        setLessonSiteList(lessonState.data)
+                        initViews()
+                    }
+
+                    is LessonState.Unauthorized -> showLogoutDialog()
+
+                    is LessonState.Forbidden, LessonState.NotFound ->
+                        Toast.makeText(this@RegisterLessonActivity,
+                            "강의 카테고리를 가져오지 못했어요",
+                            Toast.LENGTH_SHORT)
+                            .show()
+
+                    is LessonState.Error -> {
+                        Log.d("fetch Error", "${lessonState.exception}")
+                        Toast.makeText(this@RegisterLessonActivity,
+                            "강의 카테고리를 가져오지 못했어요",
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                LoadingDialogUtil.hideProgress()
+            }
         }
     }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        initViews()
-//    }
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) = with(binding)
+    {
+        lessonCategoryMap =
+            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+        lessonCategoryList = data.map { it.categoryName }.toMutableList()
+        lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
+    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) = with(binding) {
+        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+        lessonSiteList = data.map { it.siteName }.toMutableList()
+        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
+    }
 
     override fun initViews() = with(binding) {
         supportFragmentManager.beginTransaction().apply {
@@ -119,33 +177,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
         }
     }
 
-    private suspend fun initLessonCategory() {
-        viewModel.fetchLessonCategoryList().let {
-            when (it) {
-                is LessonState.Loading -> {
-                    showProgress(this)
-                }
-
-                is LessonState.Success<List<LessonCategoryResponse>> -> {
-                    Log.d("fetch Success", "${it.data}")
-                    setLessonCategoryList(it.data)
-                }
-
-                is LessonState.Unauthorized -> showLogoutDialog()
-
-                is LessonState.NotFound, LessonState.Forbidden -> {
-                    Toast.makeText(this, "강의 카테고리 정보를 가져오지 못했어요", Toast.LENGTH_SHORT).show()
-                }
-
-                is LessonState.Error -> {
-                    Log.d("fetch Error", "${it.exception}")
-                    Toast.makeText(this, "강의 카테고리 정보를 가져오지 못했어요", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun showLogoutDialog() {
+    fun showLogoutDialog() {
         val dlg = SlothDialog(this, DialogState.FORBIDDEN)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
@@ -155,53 +187,9 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
         dlg.start()
     }
 
-    private fun logout() {
+    fun logout() {
         viewModel.removeAuthToken()
         Toast.makeText(this, "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
         startActivity(LoginActivity.newIntent(this))
     }
-
-    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) = with(binding)
-    {
-        lessonCategoryMap =
-            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-        lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
-    }
-
-    private suspend fun initLessonSite() {
-        viewModel.fetchLessonSiteList().let {
-            when (it) {
-                is LessonState.Loading -> {
-                    handleLoadingState(this@RegisterLessonActivity)
-                }
-
-                is LessonState.Success -> {
-                    Log.d("fetch Success", "${it.data}")
-                    setLessonSiteList(it.data)
-
-                    initViews()
-                }
-
-                is LessonState.Unauthorized -> showLogoutDialog()
-
-                is LessonState.NotFound, LessonState.Forbidden -> {
-                    Toast.makeText(this, "강의 사이트 정보를 가져오지 못했어요", Toast.LENGTH_SHORT).show()
-                }
-
-                is LessonState.Error -> {
-                    Log.d("fetch Error", "${it.exception}")
-                    Toast.makeText(this, "강의 사이트 정보를 가져오지 못했어요", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun setLessonSiteList(data: List<LessonSiteResponse>) = with(binding) {
-        lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-        lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
-    }
-
-
 }

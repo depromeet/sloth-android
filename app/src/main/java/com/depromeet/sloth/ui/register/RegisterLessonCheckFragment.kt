@@ -8,29 +8,23 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDecimalFormat
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_GOAL_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_MESSAGE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_PRICE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_PUSH_NOTI_CYCLE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_START_DATE
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>() {
 
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
     lateinit var lessonName: String
@@ -107,9 +101,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     )
                 ).let {
                     when (it) {
-                        is LessonState.Loading -> {
-                            showProgress()
-                        }
+                        is LessonState.Loading -> handleLoadingState(requireContext())
 
                         is LessonState.Success -> {
                             Log.d("Register Success", "${it.data}")
@@ -118,14 +110,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                         }
 
                         is LessonState.Unauthorized -> {
-                            val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-                            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                                override fun onItemClicked() {
-                                    preferenceManager.removeAuthToken()
-                                    startActivity(LoginActivity.newIntent(requireActivity()))
-                                }
-                            }
-                            dlg.start()
+                            (activity as RegisterLessonActivity).showLogoutDialog()
                         }
 
                         is LessonState.Error -> {

@@ -113,7 +113,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 hideProgress()
             }
 
-            lessonCategoryState.observe(this@UpdateLessonActivity) { lessonState ->
+            lessonCategoryListState.observe(this@UpdateLessonActivity) { lessonState ->
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
@@ -142,7 +142,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 hideProgress()
             }
 
-            lessonSiteState.observe(this@UpdateLessonActivity) { lessonState ->
+            lessonSiteListState.observe(this@UpdateLessonActivity) { lessonState ->
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 

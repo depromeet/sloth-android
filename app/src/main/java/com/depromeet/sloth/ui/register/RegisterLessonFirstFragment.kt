@@ -17,20 +17,17 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.hideKeyBoard
 import com.depromeet.sloth.extensions.lockButton
 import com.depromeet.sloth.extensions.unlockButton
 import com.depromeet.sloth.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>() {
 
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
     lateinit var lessonCategoryAdapter: ArrayAdapter<String>
@@ -51,116 +48,11 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         return FragmentRegisterLessonFirstBinding.inflate(inflater, container, false)
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-//        mainScope {
-//            initLessonCategory()
-//            initLessonSite()
-//        }
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
     }
-
-//    private suspend fun initLessonCategory() {
-//        viewModel.fetchLessonCategoryList((activity as RegisterLessonActivity).accessToken).let {
-//            when (it) {
-//                is LessonState.Success<List<LessonCategory>> -> {
-//                    Log.d("fetch Success", "${it.data}")
-//                    setLessonCategoryList(it.data)
-//                }
-//                is LessonState.Error -> {
-//                    Log.d("fetch Error", "${it.exception}")
-//                }
-//
-//                is LessonState.Unauthorized -> {
-//                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-//                    dlg.onItemClickListener =
-//                        object : SlothDialog.OnItemClickedListener {
-//                            override fun onItemClicked() {
-//                                preferenceManager.removeAuthToken()
-//                                startActivity(LoginActivity.newIntent(requireActivity()))
-//                            }
-//                        }
-//                    dlg.start()
-//                }
-//                is LessonState.NotFound -> {
-//                    Log.d("Error", "NotFound")
-//                }
-//                is LessonState.Forbidden -> {
-//                    Log.d("Error", "Forbidden")
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) =
-//        with(activity as RegisterLessonActivity) {
-//            lessonCategoryMap =
-//                data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-//            lessonCategoryList = data.map { it.categoryName }.toMutableList()
-//            lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
-//        }
-
-//    private fun setLessonCategoryList(data: List<LessonCategory>) =
-//        with(activity as RegisterLessonActivity) {
-//            lessonCategoryMap =
-//                data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-//            lessonCategoryList = data.map { it.categoryName }.toMutableList()
-//            lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
-//        }
-
-//    private suspend fun initLessonSite() {
-//        viewModel.fetchLessonSiteList((activity as RegisterLessonActivity).accessToken).let {
-//            when (it) {
-//                is LessonState.Success -> {
-//                    Log.d("fetch Success", "${it.data}")
-//                    setLessonSiteList(it.data)
-//
-//                    initViews()
-//                }
-//                is LessonState.Error -> {
-//                    Log.d("fetch Error", "${it.exception}")
-//                }
-//
-//                is LessonState.Unauthorized -> {
-//                    val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-//                    dlg.onItemClickListener =
-//                        object : SlothDialog.OnItemClickedListener {
-//                            override fun onItemClicked() {
-//                                preferenceManager.removeAuthToken()
-//                                startActivity(LoginActivity.newIntent(requireActivity()))
-//                            }
-//                        }
-//                    dlg.start()
-//                }
-//                is LessonState.NotFound -> {
-//                    Log.d("Error", "NotFound")
-//                }
-//                is LessonState.Forbidden -> {
-//                    Log.d("Error", "Forbidden")
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun setLessonSiteList(data: List<LessonSiteResponse>) =
-//        with(activity as RegisterLessonActivity) {
-//            lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-//            lessonSiteList = data.map { it.siteName }.toMutableList()
-//            lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
-//        }
-
-//    private fun setLessonSiteList(data: List<LessonSite>) =
-//        with(activity as RegisterLessonActivity) {
-//            lessonSiteMap = data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-//            lessonSiteList = data.map { it.siteName }.toMutableList()
-//            lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
-//        }
 
     override fun initViews() = with(binding) {
         if (::lessonCategoryAdapter.isInitialized.not()) {

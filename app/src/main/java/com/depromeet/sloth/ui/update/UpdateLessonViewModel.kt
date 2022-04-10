@@ -1,6 +1,5 @@
 package com.depromeet.sloth.ui.update
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -26,12 +25,12 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonUpdateState = MutableLiveData<LessonUpdateState<LessonUpdateResponse>>()
     val lessonUpdateState: LiveData<LessonUpdateState<LessonUpdateResponse>> = _lessonUpdateState
 
-    private val _lessonCategoryState = MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
-    val lessonCategoryState: LiveData<LessonState<List<LessonCategoryResponse>>> =
-        _lessonCategoryState
+    private val _lessonCategoryListState = MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
+    val lessonCategoryListState: LiveData<LessonState<List<LessonCategoryResponse>>> =
+        _lessonCategoryListState
 
-    private val _lessonSiteState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
-    val lessonSiteState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteState
+    private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
+    val lessonSiteListState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteListState
 
     init {
         viewModelScope.launch {
@@ -50,19 +49,15 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     private suspend fun fetchLessonCategoryList() {
-        Log.d("UpdateLessonViewModel", "fetchLessonCategoryList: 호출")
-        _lessonCategoryState.value = LessonState.Loading
-        val lessonCategoryResponse = lessonRepository.fetchLessonCategoryList()
-        _lessonCategoryState.value = lessonCategoryResponse
-        Log.d("UpdateLessonViewModel", "fetchLessonCategoryList: 호출 완료")
+        _lessonCategoryListState.value = LessonState.Loading
+        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
+        _lessonCategoryListState.value = lessonCategoryListResponse
     }
 
     private suspend fun fetchLessonSiteList() {
-        Log.d("UpdateLessonViewModel", "fetchLessonSiteList: 호출")
-        _lessonSiteState.value = LessonState.Loading
-        val lessonSiteResponse = lessonRepository.fetchLessonSiteList()
-        _lessonSiteState.value = lessonSiteResponse
-        Log.d("UpdateLessonViewModel", "fetchLessonSiteList: 호출 완료")
+        _lessonSiteListState.value = LessonState.Loading
+        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
+        _lessonSiteListState.value = lessonSiteListResponse
     }
 
     fun removeAuthToken() = viewModelScope.launch {
