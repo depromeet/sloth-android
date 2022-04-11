@@ -48,11 +48,11 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.lifecycleOwner = this
+
         intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
         }
-
-        binding.lifecycleOwner = this
 
         viewModel.apply {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
@@ -142,7 +142,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         }
 
         if (data is LessonDetailResponse) {
-            viewModel.setLessonInfo(data)
+            viewModel.setLessonDetailInfo(data)
             setLessonDetailInfo(data)
         }
     }
@@ -192,17 +192,17 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         viewModel.deleteLesson(lessonId)
     }
 
-    private fun setLessonDetailInfo(data: LessonDetailResponse) = with(binding) {
+    private fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
         lesson = Lesson(
-            alertDays = data.alertDays,
-            categoryName = data.categoryName,
-            endDate = data.endDate.toString(),
-            lessonName = data.lessonName,
-            message = data.message,
-            price = data.price,
-            siteName = data.siteName,
-            startDate = data.startDate.toString(),
-            totalNumber = data.totalNumber,
+            alertDays,
+            categoryName,
+            endDate,
+            lessonName,
+            message,
+            price,
+            siteName,
+            startDate,
+            totalNumber,
         )
     }
 }

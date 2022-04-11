@@ -32,7 +32,13 @@ fun setLessonSummaryText(view: TextView, currentProgressRate: Float, goalProgres
         }
     }
 
-@BindingAdapter("goalProgressRate", "price")
+@BindingAdapter("totalNumber")
+fun setLessonTotalNumberFormat(view: TextView, totalNumber: Int) = with(view) {
+    hint = view.context.getString(R.string.unit_lesson_total_number, totalNumber)
+}
+
+
+@BindingAdapter("goalProgressRate", "priceFormat")
 fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = with(view) {
     if (goalProgressRate == 0F) {
         visibility = View.GONE
@@ -44,11 +50,29 @@ fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = w
     }
 }
 
-@BindingAdapter("price")
+@BindingAdapter("text")
+fun toString(view: TextView, number: Int) = with(view) {
+    text = number.toString()
+}
+
+@BindingAdapter("priceFormat")
 fun setPriceFormat(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
     text = view.context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
+
+@BindingAdapter("priceFormatHint")
+fun setPriceFormatHint(view: TextView, price: Int) = with(view) {
+    val decimalFormat = DecimalFormat("#,###")
+    hint = view.context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
+}
+
+@BindingAdapter("price")
+fun setPrice(view: TextView, price: Int) = with(view) {
+    val decimalFormat = DecimalFormat("#,###")
+    text = decimalFormat.format(price)
+}
+
 
 @BindingAdapter("goalProgressRate","d_day")
 fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = with(view) {
@@ -106,10 +130,10 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
     }
 }
 
-@BindingAdapter("lessonEndDate")
-fun setLessonEndDate(view: TextView, endDate: ArrayList<String>?) = with(view) {
+@BindingAdapter("lessonDate")
+fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
     text = context.getString(R.string.lesson_end_date_info,
-        endDate?.let { changeDateFormatToDot(it) })
+        date?.let { changeDateFormatToDot(it) })
 }
 
 @BindingAdapter("startDate", "endDate")

@@ -3,6 +3,7 @@ package com.depromeet.sloth.ui.update
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
@@ -25,18 +26,36 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonUpdateState = MutableLiveData<LessonUpdateState<LessonUpdateResponse>>()
     val lessonUpdateState: LiveData<LessonUpdateState<LessonUpdateResponse>> = _lessonUpdateState
 
-    private val _lessonCategoryListState = MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
+    private val _lessonCategoryListState =
+        MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
     val lessonCategoryListState: LiveData<LessonState<List<LessonCategoryResponse>>> =
         _lessonCategoryListState
 
     private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
     val lessonSiteListState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteListState
 
+    private val _lessonUpdate = MutableLiveData<Lesson>()
+    val lessonUpdate: LiveData<Lesson> = _lessonUpdate
+
     init {
         viewModelScope.launch {
             fetchLessonCategoryList()
             fetchLessonSiteList()
         }
+    }
+
+    fun setLessonUpdateInfo(lesson: Lesson) = with(lesson) {
+        _lessonUpdate.value = Lesson(
+            alertDays,
+            categoryName,
+            endDate,
+            lessonName,
+            message,
+            price,
+            siteName,
+            startDate,
+            totalNumber
+        )
     }
 
     fun updateLesson(

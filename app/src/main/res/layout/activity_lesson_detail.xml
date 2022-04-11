@@ -109,7 +109,7 @@
                     <TextView
                         android:id="@+id/tv_detail_lesson_waste_money_info"
                         goalProgressRate="@{lessonDetail.goalProgressRate}"
-                        price="@{lessonDetail.wastePrice}"
+                        priceFormat="@{lessonDetail.wastePrice}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -279,7 +279,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_detail_lesson_end_date_info"
-                                    lessonEndDate="@{lessonDetail.endDate}"
+                                    lessonDate="@{lessonDetail.endDate}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/gray_600"
@@ -482,7 +482,7 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_price_info"
-                        price="@{lessonDetail.price}"
+                        priceFormat="@{lessonDetail.price}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="164dp"

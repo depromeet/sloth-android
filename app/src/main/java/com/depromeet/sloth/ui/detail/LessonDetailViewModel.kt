@@ -1,6 +1,5 @@
 package com.depromeet.sloth.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,7 +13,6 @@ import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,27 +46,25 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDeleteState.value = lessonDeleteResponse
     }
 
-    fun setLessonInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
-        Log.d("LessonDetailViewModel", "setLessonInfo: 호출")
+    fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
         _lessonDetail.value = LessonDetail(
-            alertDays = alertDays,
-            categoryName = categoryName,
-            currentProgressRate = currentProgressRate.toFloat(),
-            endDate = endDate,
-            goalProgressRate = goalProgressRate.toFloat(),
-            isFinished = isFinished,
-            lessonId = lessonId,
-            lessonName = lessonName,
-            message = message,
-            presentNumber = presentNumber,
-            price = price,
-            remainDay = remainDay,
-            siteName = siteName,
-            startDate = startDate,
-            totalNumber = totalNumber,
-            wastePrice = wastePrice
+            alertDays,
+            categoryName,
+            currentProgressRate.toFloat(),
+            endDate,
+            goalProgressRate.toFloat(),
+            isFinished,
+            lessonId,
+            lessonName,
+            message,
+            presentNumber,
+            price,
+            remainDay,
+            siteName,
+            startDate,
+            totalNumber,
+            wastePrice
         )
-        Log.d("LessonDetailViewModel", "setLessonInfo: ${_lessonDetail.value}")
     }
 
     fun removeAuthToken() = viewModelScope.launch {

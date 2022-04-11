@@ -16,7 +16,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
@@ -33,10 +32,15 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
+
+    private val viewModel: UpdateLessonViewModel by viewModels()
+
+    override fun getActivityBinding(): ActivityUpdateLessonBinding =
+        ActivityUpdateLessonBinding.inflate(layoutInflater)
+
     companion object {
         fun newIntent(activity: Activity, lessonId: String, lesson: Lesson) =
             Intent(activity, UpdateLessonActivity::class.java).apply {
@@ -47,13 +51,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         private const val LESSON_ID = "lessonId"
         private const val LESSON = "lesson"
     }
-
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
-    private val viewModel: UpdateLessonViewModel by viewModels()
-
-    override fun getActivityBinding(): ActivityUpdateLessonBinding =
-        ActivityUpdateLessonBinding.inflate(layoutInflater)
 
     lateinit var lesson: Lesson
     lateinit var lessonId: String
@@ -73,6 +70,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.lifecycleOwner = this
+
         intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
             lesson = getParcelableExtra(LESSON)!!
@@ -80,7 +79,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
         viewModel.apply {
             lessonUpdateState.observe(this@UpdateLessonActivity) { lessonUpdateState ->
-                when(lessonUpdateState) {
+                when (lessonUpdateState) {
                     is LessonUpdateState.Loading ->
                         handleLoadingState(this@UpdateLessonActivity)
 
@@ -172,6 +171,10 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 }
                 hideProgress()
             }
+
+            lessonUpdate.observe(this@UpdateLessonActivity) { lessonUpdate ->
+                binding.lessonUpdate = lessonUpdate
+            }
         }
     }
 
@@ -207,7 +210,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         lessonCategoryMap =
-            //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+                //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
             data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
 
         lessonCategoryList = data.map { it.categoryName }.toMutableList()
@@ -216,7 +219,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
     private fun setLessonSiteList(data: List<LessonSiteResponse>) {
         lessonSiteMap =
-            //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+                //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
             data.associate { it.siteId to it.siteName } as HashMap<Int, String>
 
         lessonSiteList = data.map { it.siteName }.toMutableList()
@@ -232,7 +235,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
         validatePriceInputForm(etUpdateLessonPrice, btnUpdateLesson)
 
-        setLessonInfo(lesson)
+        viewModel.setLessonUpdateInfo(lesson)
+        setLessonUpdateInfo(lesson)
 
         btnUpdateLesson.setOnClickListener {
             viewModel.updateLesson(
@@ -272,19 +276,19 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         binding.spnUpdateLessonSite.adapter = siteAdapter
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun setLessonInfo(lesson: Lesson) = with(binding) {
-        //강의 이름
-        etUpdateLessonName.setText(lesson.lessonName)
-
+    private fun setLessonUpdateInfo(lesson: Lesson) = with(binding) {
         //강의 개수
         lessonCount = lesson.totalNumber
-        //etUpdateLessonCount.setText(lesson.totalNumber.toString())
-        etUpdateLessonCount.hint = "${lessonCount}개"
+        //강의 금액
+        lessonPrice = lesson.price
 
         bindAdapter()
 
-        val categoryId = lessonCategoryMap.filterValues { it == lesson.categoryName }.keys.first()
+        setSpinner(lesson.categoryName, lesson.siteName)
+    }
+
+    private fun setSpinner(categoryName: String, siteName: String) = with(binding) {
+        val categoryId = lessonCategoryMap.filterValues { it == categoryName }.keys.first()
 
         //강의 카테고리
         spnUpdateLessonCategory.setSelection(
@@ -292,26 +296,13 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             lessonCategoryList.indexOf(lessonCategoryMap[categoryId])
         )
 
-        val siteId = lessonSiteMap.filterValues { it == lesson.siteName }.keys.first()
+        val siteId = lessonSiteMap.filterValues { it == siteName }.keys.first()
 
         //강의 사이트
         spnUpdateLessonSite.setSelection(
-           // lessonSiteList.indexOf(lessonSiteMap[lesson.siteId])
+            // lessonSiteList.indexOf(lessonSiteMap[lesson.siteId])
             lessonSiteList.indexOf(lessonSiteMap[siteId])
         )
-
-        //강의 시작일
-        tvUpdateStartLessonDate.text = changeDateFormatArrayToDot(lesson.startDate)
-
-        //강의 완료일
-        tvUpdateEndLessonDate.text = changeDateFormatArrayToDot(lesson.endDate)
-
-        //강의 금액
-        lessonPrice = lesson.price
-        etUpdateLessonPrice.hint = changeDecimalFormat(lessonPrice as Int)
-
-        //각오 한마디
-        tvUpdateLessonMessageInfo.text = lesson.message
     }
 
     private fun validateCountInputForm(editText: EditText, button: AppCompatButton) =

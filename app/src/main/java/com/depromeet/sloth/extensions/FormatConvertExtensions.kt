@@ -63,12 +63,3 @@ fun stringToDate(string: String): Date? {
 
     return dateFormat.parse(string)
 }
-
-fun changeDateFormatArrayToDot(date: String): String {
-    val dateArr = date.split(",")
-    val yearOfDate = dateArr[0].replace("[", "")
-    val monthOfDate = addLeadingZero(dateArr[1])
-    val dayOfDate = addLeadingZero(dateArr[2]).replace("]", "")
-
-    return "${yearOfDate}.${monthOfDate}.$dayOfDate"
-}
