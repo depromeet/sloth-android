@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.common
 
 import androidx.lifecycle.Observer
 
@@ -21,7 +21,6 @@ class Event<T>(private val content: T) {
 class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
     override fun onChanged(event: Event<T>?) {
         event?.getContentIfNotHandled()?.let {
-            //아직 처리되지 않은 데이터를 전달
             onEventUnhandledContent(it)
         }
     }

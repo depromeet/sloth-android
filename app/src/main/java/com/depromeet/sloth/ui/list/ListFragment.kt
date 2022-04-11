@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
@@ -21,11 +20,9 @@ import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
-import com.depromeet.sloth.util.LoadingDialogUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>() {
@@ -299,14 +296,14 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
         val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
 
         val doingLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-            //moveDetailActivity(lesson)
+            moveDetailActivity(lesson)
         }
         val planningLessonAdapter =
             LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-                //moveDetailActivity(lesson)
+                moveDetailActivity(lesson)
             }
         val passedLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-            //moveDetailActivity(lesson)
+            moveDetailActivity(lesson)
         }
 
         val concatAdapter = ConcatAdapter(

@@ -21,14 +21,12 @@ import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.Event
-import com.depromeet.sloth.ui.EventObserver
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
-import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 
