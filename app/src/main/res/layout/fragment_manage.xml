@@ -6,7 +6,7 @@
     <data>
         <variable
             name="member"
-            type="com.depromeet.sloth.data.model.Member" />
+            type="com.depromeet.sloth.data.network.member.MemberInfoResponse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

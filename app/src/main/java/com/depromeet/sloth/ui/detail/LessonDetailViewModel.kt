@@ -1,19 +1,16 @@
 package com.depromeet.sloth.ui.detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.*
-import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
-import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
-import com.depromeet.sloth.data.network.member.MemberLogoutState
 import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.ui.Event
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -33,14 +30,17 @@ class LessonDetailViewModel @Inject constructor(
     private val _lessonDeleteState = MutableLiveData<LessonDeleteState<LessonDeleteResponse>>()
     val lessonDeleteState: LiveData<LessonDeleteState<LessonDeleteResponse>> = _lessonDeleteState
 
-    private val _memberLogoutState = MutableLiveData<MemberLogoutState<String>>()
-    val memberLogoutState: LiveData<MemberLogoutState<String>> = _memberLogoutState
+    private val _lessonDetail = MutableLiveData<LessonDetail>()
+    val lessonDetail: LiveData<LessonDetail> = _lessonDetail
 
+    private val _lessonId = MutableLiveData<String>()
+    val lessonId: LiveData<String> = _lessonId
 
-    suspend fun fetchLessonDetail(lessonId: String) =
-        withContext(viewModelScope.coroutineContext) {
-            lessonRepository.fetchLessonDetail(lessonId)
-        }
+    fun fetchLessonDetail(lessonId: String) = viewModelScope.launch {
+        _lessonDetailState.value = LessonDetailState.Loading
+        val lessonDetailResponse = lessonRepository.fetchLessonDetail(lessonId)
+        _lessonDetailState.value = lessonDetailResponse
+    }
 
     fun deleteLesson(lessonId: String) = viewModelScope.launch {
         _lessonDeleteState.value = LessonDeleteState.Loading
@@ -48,11 +48,27 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDeleteState.value = lessonDeleteResponse
     }
 
-
-    fun logout() = viewModelScope.launch {
-        _memberLogoutState.value = MemberLogoutState.Loading
-        val memberLogoutState = memberRepository.logout()
-        _memberLogoutState.value = memberLogoutState
+    fun setLessonInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
+        Log.d("LessonDetailViewModel", "setLessonInfo: 호출")
+        _lessonDetail.value = LessonDetail(
+            alertDays = alertDays,
+            categoryName = categoryName,
+            currentProgressRate = currentProgressRate.toFloat(),
+            endDate = endDate,
+            goalProgressRate = goalProgressRate.toFloat(),
+            isFinished = isFinished,
+            lessonId = lessonId,
+            lessonName = lessonName,
+            message = message,
+            presentNumber = presentNumber,
+            price = price,
+            remainDay = remainDay,
+            siteName = siteName,
+            startDate = startDate,
+            totalNumber = totalNumber,
+            wastePrice = wastePrice
+        )
+        Log.d("LessonDetailViewModel", "setLessonInfo: ${_lessonDetail.value}")
     }
 
     fun removeAuthToken() = viewModelScope.launch {

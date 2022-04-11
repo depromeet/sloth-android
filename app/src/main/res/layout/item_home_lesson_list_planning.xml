@@ -44,7 +44,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_lesson_list_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"

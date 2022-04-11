@@ -33,7 +33,7 @@ class TodayLessonAdapter(
             BodyType.FINISHED -> LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_today_lesson_finished, parent, false)
             BodyType.NOT_FINISHED -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_today_lesson_not_finished, parent, false)
+                .inflate(R.layout.item_home_today_lesson_doing, parent, false)
         }
 
         return TodayLessonViewHolder(view)

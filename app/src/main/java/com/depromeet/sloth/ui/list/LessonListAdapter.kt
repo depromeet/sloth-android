@@ -36,7 +36,7 @@ class LessonListAdapter(
             BodyType.PLANNING -> LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_home_lesson_list_planning, parent, false)
             BodyType.PASSED -> LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home_lesson_list_passed, parent, false)
+                .inflate(R.layout.item_home_lesson_list_finished, parent, false)
         }
 
         return LessonListViewHolder(bodyType, view)

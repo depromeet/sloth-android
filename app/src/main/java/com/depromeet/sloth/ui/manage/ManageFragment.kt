@@ -44,8 +44,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("ManageFragment", "onViewCreated: ${this.hashCode()}")
-
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.apply {
@@ -99,29 +97,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                 hideProgress()
             })
 
-//            memberUpdateState.observe(viewLifecycleOwner) { memberUpdateState ->
-//                Log.d("ManageFragment",  "memberUpdateState: onChange 호출")
-//                when (memberUpdateState) {
-//                    is MemberUpdateState.Loading -> handleLoadingState(requireContext())
-//
-//                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> handleSuccessState(
-//                        memberUpdateState.data)
-//
-//                    is MemberUpdateState.NoContent, MemberUpdateState.Forbidden ->
-//                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-//                            .show()
-//
-//                    is MemberUpdateState.Unauthorized -> showLogoutDialog()
-//
-//                    is MemberUpdateState.Error -> {
-//                        Log.d("update Error", "${memberUpdateState.exception}")
-//                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                }
-//                hideProgress()
-//            }
-
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
                     is MemberLogoutState.Loading -> handleLoadingState(requireContext())
@@ -145,8 +120,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                 hideProgress()
             }
 
-            member.observe(viewLifecycleOwner) { member ->
-                binding.member = member
+            member.observe(viewLifecycleOwner) { memberinfoResponse ->
+                binding.member = memberinfoResponse
             }
         }
 

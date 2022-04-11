@@ -59,14 +59,17 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_lesson_list_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
         android:textColor="#222222"
         android:textSize="18dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/tv_lesson_list_remain"
         app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_remain"
         tools:ignore="HardcodedText" />
 

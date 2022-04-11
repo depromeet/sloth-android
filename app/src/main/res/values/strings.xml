@@ -57,13 +57,13 @@
     <string name="lesson_price_info">250,000원</string>
     <string name="lesson_period_date_info">2021.10.24 – 2021.12.24</string>
     <string name="lesson_detail_message">각오 한마디</string>
-    <string name="lesson_message_info">완강까지 열심히 달려보자!</string>
+    <string name="lesson_message_info">완강까지 열심히 달려보자! 완강까지 열심히 달려보자! 완강까지 열심히 달려보자!</string>
     <string name="remove">삭제</string>
     <string name="lesson_period">수강 기간</string>
     <string name="lesson_count_info">24강</string>
     <string name="lesson_name_info">프로그래밍 시작하기 : 파이썬 입문(Inflearn Original)</string>
-    <string name="mission_fail">목표를 채우지 못했어요!</string>
-    <string name="mission_success">꾸준히 듣고 있는 중이에요!</string>
+    <string name="mission_fail">목표를 채우지\n못했어요!</string>
+    <string name="mission_success">꾸준히 듣고\n있는 중이에요!</string>
     <string name="waste_money">현재 내가 날린 돈</string>
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
@@ -76,6 +76,7 @@
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
+    <string name="not_started_yet">결투를 기다리고\n있다구!</string>
     <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
     <string name="delete_lesson_dialog_message_check">포기하기</string>
     <string name="cancel">취소</string>
@@ -87,7 +88,7 @@
     <string name="home_today_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
     <string name="home_today_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
     <string name="home_today_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
-    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요?</font></string>
+    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는 강의가 없네요?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
@@ -116,4 +117,17 @@
     <string name="one_hundred_percent">100%</string>
     <string name="input_lesson_count">%1$s개</string>
     <string name="input_lesson_price">%1$s원</string>
+
+    <string name="current_lesson_progress">&#160;%d개 중 %d개</string>
+
+    <string name="d_day_plus_format">D+%d</string>
+    <string name="d_day_minus_format">D-%d</string>
+
+    <string name="lesson_end_date_info">&#160;%s</string>
+    <string name="lesson_period_info">&#160;%s - %s</string>
+
+    <string name="unit_lesson_number">%d강</string>
+    <string name="unit_lesson_take_rate">%d%%</string>
+    <string name="unit_lesson_price">%s원</string>
+
 </resources>

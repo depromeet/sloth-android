@@ -356,7 +356,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
         val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
         val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
         val notFinishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
+            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, _ ->
                 when (clickType) {
                     TodayLessonAdapter.ClickType.CLICK_PLUS -> {
 
