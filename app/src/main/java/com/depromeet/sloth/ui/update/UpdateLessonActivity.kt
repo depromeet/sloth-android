@@ -90,7 +90,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
 
                     is LessonUpdateState.Unauthorized ->
-                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@UpdateLessonActivity,
+                            this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonUpdateState.NoContent, LessonUpdateState.Forbidden ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -114,13 +115,13 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonCategoryResponse>> -> {
-                        Log.d("lessonCategoryState", "LessonState.Success 호출")
                         //handleSuccessState(lessonState.data)
                         setLessonCategoryList(lessonState.data)
                     }
 
                     is LessonState.Unauthorized ->
-                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@UpdateLessonActivity,
+                            this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -144,7 +145,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonSiteResponse>> -> {
-                        Log.d("lessonSiteState", "LessonState.Success 호출")
                         //handleSuccessState(lessonState.data)
                         setLessonSiteList(lessonState.data)
 
@@ -152,7 +152,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
 
                     is LessonState.Unauthorized ->
-                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@UpdateLessonActivity,
+                            this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -222,23 +223,27 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         setLessonUpdateInfo(lesson)
 
         btnUpdateLesson.setOnClickListener {
-            viewModel.updateLesson(
-                lessonId,
-                LessonUpdateRequest(
-                    categoryId =
-                    lessonCategoryMap.filterValues
-                    { it == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition] }.keys.first(),
-                    // == lessonCategoryMap.entries.find {it.value == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition]}?.key,
-                    lessonName = etUpdateLessonName.text.toString(),
-                    price = lessonPrice as Int,
-                    siteId = lessonSiteMap.filterValues
-                    { it == lessonSiteList[spnUpdateLessonSite.selectedItemPosition] }.keys.first(),
-                    // == lessonSiteMap.entries.find {it.value == lessonSiteList[spnUpdateLessonSite.selectedItemPosition]}?.key,
-                    //totalNumber = etUpdateLessonCount.text.toString().toInt()
-                    totalNumber = lessonCount.toInt()
-                )
-            )
+            updateLesson()
         }
+    }
+
+    private fun updateLesson() = with(binding) {
+        viewModel.updateLesson(
+            lessonId,
+            LessonUpdateRequest(
+                categoryId =
+                lessonCategoryMap.filterValues
+                { it == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition] }.keys.first(),
+                // == lessonCategoryMap.entries.find {it.value == lessonCategoryList[spnUpdateLessonCategory.selectedItemPosition]}?.key,
+                lessonName = etUpdateLessonName.text.toString(),
+                price = lessonPrice as Int,
+                siteId = lessonSiteMap.filterValues
+                { it == lessonSiteList[spnUpdateLessonSite.selectedItemPosition] }.keys.first(),
+                // == lessonSiteMap.entries.find {it.value == lessonSiteList[spnUpdateLessonSite.selectedItemPosition]}?.key,
+                //totalNumber = etUpdateLessonCount.text.toString().toInt()
+                totalNumber = lessonCount.toInt()
+            )
+        )
     }
 
     private fun bindAdapter() {

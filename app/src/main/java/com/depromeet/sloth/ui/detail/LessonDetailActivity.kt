@@ -57,7 +57,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
                 when (lessonDetailState) {
                     is LessonDetailState.Loading -> {
-                        Log.d("LessonDetailActivity", "onCreate: LessonDetailState.Loading 호출")
                         handleLoadingState(this@LessonDetailActivity)
                     }
 
@@ -68,7 +67,8 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                     }
 
                     is LessonDetailState.Unauthorized -> {
-                        showLogoutDialog(this@LessonDetailActivity, this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@LessonDetailActivity,
+                            this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonDetailState.NotFound, LessonDetailState.Forbidden -> {
@@ -93,7 +93,8 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                         lessonDeleteState.data)
 
                     is LessonDeleteState.Unauthorized ->
-                        showLogoutDialog(this@LessonDetailActivity, this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@LessonDetailActivity,
+                            this@LessonDetailActivity) { viewModel.removeAuthToken() }
 
                     is LessonDeleteState.NoContent, LessonDeleteState.Forbidden -> {
                         Toast.makeText(this@LessonDetailActivity,
@@ -172,21 +173,22 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         dlg.start()
     }
 
-    private fun deleteLesson(lessonId: String) = mainScope {
+    private fun deleteLesson(lessonId: String) {
         viewModel.deleteLesson(lessonId)
     }
 
-    private fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
-        lesson = Lesson(
-            alertDays,
-            categoryName,
-            endDate,
-            lessonName,
-            message,
-            price,
-            siteName,
-            startDate,
-            totalNumber,
-        )
-    }
+    private fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) =
+        with(lessonDetailResponse) {
+            lesson = Lesson(
+                alertDays,
+                categoryName,
+                endDate,
+                lessonName,
+                message,
+                price,
+                siteName,
+                startDate,
+                totalNumber,
+            )
+        }
 }

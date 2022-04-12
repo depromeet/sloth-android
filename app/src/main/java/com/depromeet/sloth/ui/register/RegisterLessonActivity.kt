@@ -57,7 +57,6 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                     is LessonState.Loading -> handleLoadingState(this@RegisterLessonActivity)
 
                     is LessonState.Success<List<LessonCategoryResponse>> -> {
-                        Log.d("lessonCategoryState", "LessonState.Success 호출")
                         //handleSuccessState(lessonState.data)
                         setLessonCategoryList(lessonState.data)
                     }
@@ -87,7 +86,6 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                     is LessonState.Loading -> handleLoadingState(this@RegisterLessonActivity)
 
                     is LessonState.Success<List<LessonSiteResponse>> -> {
-                        Log.d("lessonSiteState", "LessonState.Success 호출")
                         //handleSuccessState(lessonState.data)
                         setLessonSiteList(lessonState.data)
                         initViews()
