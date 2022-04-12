@@ -14,13 +14,13 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
-class LessonViewModel @Inject constructor (
+class LessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    private val memberRepository: MemberRepository
-) : BaseViewModel() {
+    memberRepository: MemberRepository,
+) : BaseViewModel(memberRepository) {
     suspend fun fetchTodayLessonList(
         context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT
+        start: CoroutineStart = CoroutineStart.DEFAULT,
     ): LessonState<List<LessonTodayResponse>> = viewModelScope.async(
         context = context,
         start = start
@@ -30,7 +30,7 @@ class LessonViewModel @Inject constructor (
 
     suspend fun fetchAllLessonList(
         context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT
+        start: CoroutineStart = CoroutineStart.DEFAULT,
     ): LessonState<List<LessonAllResponse>> = viewModelScope.async(
         context = context,
         start = start
@@ -42,7 +42,7 @@ class LessonViewModel @Inject constructor (
         count: Int,
         lessonId: Int,
         context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT
+        start: CoroutineStart = CoroutineStart.DEFAULT,
     ): LessonState<LessonUpdateCountResponse> = viewModelScope.async(
         context = context,
         start = start
@@ -52,8 +52,4 @@ class LessonViewModel @Inject constructor (
             lessonId = lessonId
         )
     }.await()
-
-    fun removeAuthToken() = viewModelScope.launch {
-        memberRepository.removeAuthToken()
-    }
 }

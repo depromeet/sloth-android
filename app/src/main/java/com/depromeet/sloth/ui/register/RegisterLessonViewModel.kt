@@ -20,8 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    private val memberRepository: MemberRepository,
-) : BaseViewModel() {
+    memberRepository: MemberRepository,
+) : BaseViewModel(memberRepository) {
 
     private val _lessonCategoryListState =
         MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
@@ -76,9 +76,5 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonSiteListState.value = LessonState.Loading
         val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
         _lessonSiteListState.value = lessonSiteListResponse
-    }
-
-    fun removeAuthToken() = viewModelScope.launch {
-        memberRepository.removeAuthToken()
     }
 }

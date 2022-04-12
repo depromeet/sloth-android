@@ -18,7 +18,6 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +68,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                     }
 
                     is LessonDetailState.Unauthorized -> {
-                        showLogoutDialog()
+                        showLogoutDialog(this@LessonDetailActivity, this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonDetailState.NotFound, LessonDetailState.Forbidden -> {
@@ -93,7 +92,8 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                     is LessonDeleteState.Success<LessonDeleteResponse> -> handleSuccessState(
                         lessonDeleteState.data)
 
-                    is LessonDeleteState.Unauthorized -> showLogoutDialog()
+                    is LessonDeleteState.Unauthorized ->
+                        showLogoutDialog(this@LessonDetailActivity, this@LessonDetailActivity) { viewModel.removeAuthToken() }
 
                     is LessonDeleteState.NoContent, LessonDeleteState.Forbidden -> {
                         Toast.makeText(this@LessonDetailActivity,
@@ -145,22 +145,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             viewModel.setLessonDetailInfo(data)
             setLessonDetailInfo(data)
         }
-    }
-
-    private fun showLogoutDialog() {
-        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    private fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(this, "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(this))
     }
 
     override fun initViews() = with(binding) {

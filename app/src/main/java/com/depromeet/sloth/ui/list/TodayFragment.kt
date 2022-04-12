@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -15,13 +14,12 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
-import com.depromeet.sloth.util.LoadingDialogUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -72,7 +70,9 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(requireContext(),
+                            requireActivity()) { viewModel.removeAuthToken() }
 
                     is LessonState.NotFound -> {
                         Log.d("Error", "NotFound")
@@ -91,24 +91,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
             hideProgress()
         }
     }
-
-    private fun showLogoutDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    private fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(requireContext(), "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(requireActivity()))
-    }
-
-
 
     private fun moveRegisterActivity() {
         startActivity(RegisterLessonActivity.newIntent(requireActivity()))
@@ -227,7 +209,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                                 getString(R.string.home_today_title_win)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_lose)
                         }
-                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }.not()) -> {
+                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
+                            .not()) -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_not_start)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
@@ -246,7 +229,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
         lesson: LessonTodayResponse,
         count: Int,
         bodyType: TodayLessonAdapter.BodyType,
-        clickType: TodayLessonAdapter.ClickType
+        clickType: TodayLessonAdapter.ClickType,
     ) {
         mainScope {
             showProgress()
@@ -262,7 +245,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (it.data.presentNumber == lesson.untilTodayNumber ||
-                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)) fetchLessonList() else Unit
+                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
+                                ) fetchLessonList() else Unit
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList() else Unit

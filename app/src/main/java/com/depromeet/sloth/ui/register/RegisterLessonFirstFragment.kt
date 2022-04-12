@@ -30,8 +30,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
-    lateinit var lessonCategoryAdapter: ArrayAdapter<String>
-    lateinit var lessonSiteAdapter: ArrayAdapter<String>
+    private lateinit var lessonCategoryAdapter: ArrayAdapter<String>
+    private lateinit var lessonSiteAdapter: ArrayAdapter<String>
     lateinit var lessonCount: Number
 
     companion object {

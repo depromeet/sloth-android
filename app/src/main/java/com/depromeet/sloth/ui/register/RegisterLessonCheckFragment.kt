@@ -13,6 +13,7 @@ import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_NAME
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_TOTAL_NUMBER
@@ -65,8 +66,6 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             lessonMessage = getString(LESSON_MESSAGE).toString()
         }
 
-        Log.d("RegisterLessonCheckFragment", "onViewCreated: $lessonPrice $lessonStartDate $lessonEndDate")
-
         viewModel.apply {
             lessonRegisterState.observe(viewLifecycleOwner) { lessonRegisterResponse ->
                 when (lessonRegisterResponse) {
@@ -79,7 +78,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     }
 
                     is LessonState.Unauthorized -> {
-                        (activity as RegisterLessonActivity).showLogoutDialog()
+                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.NotFound, LessonState.Forbidden -> {
@@ -95,9 +94,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             }
 
             lessonRegister.observe(viewLifecycleOwner) { lessonRegister ->
-                Log.d("RegisterLessonCheckFragment", "onViewCreated: lessonRegister 호출")
                 binding.lessonRegister = lessonRegister
-                Log.d("RegisterLessonCheckFragment", "onViewCreated: $lessonRegister")
             }
         }
 

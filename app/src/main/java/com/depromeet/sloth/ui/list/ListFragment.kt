@@ -13,12 +13,12 @@ import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -60,7 +60,8 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
 
                     is LessonState.NotFound, LessonState.Forbidden -> {
                         Toast.makeText(requireContext(), "강의 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
@@ -93,22 +94,6 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                 dlg.start()
             }
         }
-    }
-
-    private fun showLogoutDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    private fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(requireContext(), "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(requireActivity()))
     }
 
     private fun moveRegisterActivity() {

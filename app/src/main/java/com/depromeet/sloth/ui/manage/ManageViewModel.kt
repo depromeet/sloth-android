@@ -2,9 +2,9 @@ package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.member.*
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    private val memberRepository: MemberRepository,
-) : ViewModel() {
+    val memberRepository: MemberRepository,
+) : BaseViewModel(memberRepository) {
     private val _memberState = MutableLiveData<MemberState<MemberInfoResponse>>()
     val memberState: LiveData<MemberState<MemberInfoResponse>> = _memberState
 
@@ -51,9 +51,5 @@ class ManageViewModel @Inject constructor(
         _memberLogoutState.value = MemberLogoutState.Loading
         val memberLogoutState = memberRepository.logout()
         _memberLogoutState.value = memberLogoutState
-    }
-
-    fun removeAuthToken() = viewModelScope.launch {
-        memberRepository.removeAuthToken()
     }
 }

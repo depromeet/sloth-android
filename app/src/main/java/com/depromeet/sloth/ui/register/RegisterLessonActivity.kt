@@ -13,11 +13,10 @@ import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.ActivityRegisterLessonBinding
 import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.util.LoadingDialogUtil
+import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -63,7 +62,8 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                         setLessonCategoryList(lessonState.data)
                     }
 
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(this@RegisterLessonActivity, this@RegisterLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@RegisterLessonActivity,
@@ -79,7 +79,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                             .show()
                     }
                 }
-                LoadingDialogUtil.hideProgress()
+                hideProgress()
             }
 
             lessonSiteListState.observe(this@RegisterLessonActivity) { lessonState ->
@@ -93,7 +93,8 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                         initViews()
                     }
 
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(this@RegisterLessonActivity, this@RegisterLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@RegisterLessonActivity,
@@ -109,7 +110,7 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
                             .show()
                     }
                 }
-                LoadingDialogUtil.hideProgress()
+                hideProgress()
             }
         }
     }
@@ -175,21 +176,5 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
             is RegisterLessonCheckFragment ->
                 changeFragment(registerLessonSecondFragment, null, true)
         }
-    }
-
-    fun showLogoutDialog() {
-        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(this, "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(this))
     }
 }

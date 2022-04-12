@@ -102,7 +102,7 @@
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
     <string name="right_arrow">right arrow</string>
-    <string name="wait_dialog_message">아직 준비중인 기능입니다</string>
+    <string name="wait_dialog_message">아직 준비중인 기능이에요</string>
     <string name="dialog_default_message">안내 메세지</string>
     <string name="forbidden_dialog_message">다시 로그인 해주세요</string>
     <string name="privacy">개인정보 처리방침</string>

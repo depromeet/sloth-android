@@ -7,7 +7,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.notification.NotificationSaveRequest
 import com.depromeet.sloth.data.network.notification.NotificationSaveState
 import com.depromeet.sloth.databinding.ActivityHomeBinding
@@ -18,7 +17,6 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.manage.ManageFragment
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {

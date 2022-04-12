@@ -13,17 +13,13 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
-    private val memberRepository: MemberRepository
-) : BaseViewModel() {
+    val memberRepository: MemberRepository
+) : BaseViewModel(memberRepository) {
 
     suspend fun saveFCMToken(
         notificationSaveRequest: NotificationSaveRequest
     ) = withContext(viewModelScope.coroutineContext) {
         notificationRepository.saveFCMToken(notificationSaveRequest)
-    }
-
-    fun removeAuthToken() = viewModelScope.launch {
-        memberRepository.removeAuthToken()
     }
 
     fun putFCMToken(fcmToken: String) = viewModelScope.launch {

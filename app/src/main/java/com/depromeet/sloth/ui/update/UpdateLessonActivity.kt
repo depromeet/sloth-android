@@ -25,10 +25,7 @@ import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
@@ -93,7 +90,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
 
                     is LessonUpdateState.Unauthorized ->
-                        showLogoutDialog()
+                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonUpdateState.NoContent, LessonUpdateState.Forbidden ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -122,7 +119,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                         setLessonCategoryList(lessonState.data)
                     }
 
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -153,7 +151,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                         initViews()
                     }
 
-                    is LessonState.Unauthorized -> showLogoutDialog()
+                    is LessonState.Unauthorized ->
+                        showLogoutDialog(this@UpdateLessonActivity, this@UpdateLessonActivity) { viewModel.removeAuthToken() }
 
                     is LessonState.Forbidden, LessonState.NotFound ->
                         Toast.makeText(this@UpdateLessonActivity,
@@ -191,22 +190,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 //            setLessonSiteList(data)
 //        }
 //    }
-
-    private fun showLogoutDialog() {
-        val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    private fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(this, "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(this))
-    }
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         lessonCategoryMap =
@@ -292,7 +275,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
         //강의 카테고리
         spnUpdateLessonCategory.setSelection(
-            //lessonCategoryList.indexOf(lessonCategoryMap[lesson.categoryId])
             lessonCategoryList.indexOf(lessonCategoryMap[categoryId])
         )
 
@@ -300,7 +282,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
         //강의 사이트
         spnUpdateLessonSite.setSelection(
-            // lessonSiteList.indexOf(lessonSiteMap[lesson.siteId])
             lessonSiteList.indexOf(lessonSiteMap[siteId])
         )
     }

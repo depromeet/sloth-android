@@ -53,14 +53,14 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         const val LESSON_START_DATE = "lessonStartDate"
         const val LESSON_END_DATE = "lessonGoalDate"
         const val LESSON_PRICE = "lessonPrice"
-        const val LESSON_ALERT_DAYS = "lessonPushNotiCycle"
+        const val LESSON_ALERT_DAYS = "lessonAlertDays"
         const val LESSON_MESSAGE = "lessonMessage"
     }
 
     lateinit var lessonName: String
-    lateinit var lessoTotalNumber: Number
-    lateinit var lessonCategoryName: String
-    lateinit var lessonSiteName: String
+    private lateinit var lessoTotalNumber: Number
+    private lateinit var lessonCategoryName: String
+    private lateinit var lessonSiteName: String
     lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
@@ -68,19 +68,19 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     lateinit var startDate: Date
 
-    lateinit var lessonStartDate: String
-    lateinit var lessonEndDate: String
+    private lateinit var lessonStartDate: String
+    private lateinit var lessonEndDate: String
 
     private var isLessonGoalDateDecided = false
     //private var isLessonGoalDateSpnDecided = true
 
     lateinit var selectedItem: Number
 
-    lateinit var lessonEndDateAdapter: ArrayAdapter<String>
+    private lateinit var lessonEndDateAdapter: ArrayAdapter<String>
 
     private val today = Date()
 
-    lateinit var calendar: Calendar
+    private lateinit var calendar: Calendar
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

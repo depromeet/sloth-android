@@ -20,6 +20,8 @@ import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
 import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.logout
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -56,7 +58,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                         handleSuccessState(memberState.data)
                     }
 
-                    is MemberState.Unauthorized -> showLogoutDialog()
+                    is MemberState.Unauthorized ->
+                        showLogoutDialog(requireContext(),
+                            requireActivity()) { viewModel.removeAuthToken() }
 
                     is MemberState.NotFound, MemberState.Forbidden -> {
                         Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
@@ -85,7 +89,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                         Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
                             .show()
 
-                    is MemberUpdateState.Unauthorized -> showLogoutDialog()
+                    is MemberUpdateState.Unauthorized ->
+                        showLogoutDialog(requireContext(),
+                            requireActivity()) { viewModel.removeAuthToken() }
 
                     is MemberUpdateState.Error -> {
                         Log.d("update Error", "${memberUpdateState.exception}")
@@ -104,7 +110,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
 
                     is MemberLogoutState.Created -> Unit
 
-                    is MemberLogoutState.Unauthorized -> showLogoutDialog()
+                    is MemberLogoutState.Unauthorized ->
+                        showLogoutDialog(requireContext(),
+                            requireActivity()) { viewModel.removeAuthToken() }
 
                     is MemberLogoutState.Forbidden, MemberLogoutState.NotFound ->
                         Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
@@ -120,7 +128,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
             }
 
             member.observe(viewLifecycleOwner) { memberInfoResponse ->
-                binding.member =memberInfoResponse
+                binding.member = memberInfoResponse
             }
         }
 
@@ -163,26 +171,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         } else if (data is MemberUpdateInfoResponse) {
             viewModel.fetchMemberInfo()
         } else {
-            logout()
+            logout(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
         }
     }
-
-    private fun showLogoutDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.FORBIDDEN)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                logout()
-            }
-        }
-        dlg.start()
-    }
-
-    private fun logout() {
-        viewModel.removeAuthToken()
-        Toast.makeText(requireContext(), "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
-        startActivity(LoginActivity.newIntent(requireActivity()))
-    }
-
 
     private fun showWithdrawDialog() {
         val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)

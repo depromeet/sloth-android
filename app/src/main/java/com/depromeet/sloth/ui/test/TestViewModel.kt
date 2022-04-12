@@ -1,10 +1,10 @@
 package com.depromeet.sloth.ui.test
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.health.HealthRepository
 import com.depromeet.sloth.data.network.health.HealthResponse
 import com.depromeet.sloth.data.network.health.HealthState
-import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class TestViewModel @Inject constructor(
     private val healthRepository: HealthRepository
-) : BaseViewModel() {
+) : ViewModel() {
     /**
      * Activity나 Fragment단에서 작업의 결과값을 리턴하여 State 분기를 편하게 처리할 수 있음
      *
