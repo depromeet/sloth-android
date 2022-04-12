@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_name" />
 
             <TextView
-                android:id="@+id/tv_register_lesson_count"
+                android:id="@+id/tv_register_lesson_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -91,10 +91,10 @@
                 android:paddingHorizontal="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_count" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_total_number" />
 
             <TextView
-                android:id="@+id/tv_register_lesson_count_info"
+                android:id="@+id/tv_register_lesson_total_number_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -108,7 +108,7 @@
                 android:paddingHorizontal="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_count" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_total_number" />
 
             <TextView
                 android:id="@+id/tv_register_lesson_category"

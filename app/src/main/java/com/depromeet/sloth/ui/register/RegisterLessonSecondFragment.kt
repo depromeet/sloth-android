@@ -14,7 +14,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_NAME
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_COUNT
+import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_TOTAL_NUMBER
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_NAME
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_NAME
 import com.google.android.material.datepicker.CalendarConstraints
@@ -51,32 +51,32 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         private const val CUSTOM_SETTING = 5
 
         const val LESSON_START_DATE = "lessonStartDate"
-        const val LESSON_GOAL_DATE = "lessonGoalDate"
+        const val LESSON_END_DATE = "lessonGoalDate"
         const val LESSON_PRICE = "lessonPrice"
-        const val LESSON_PUSH_NOTI_CYCLE = "lessonPushNotiCycle"
+        const val LESSON_ALERT_DAYS = "lessonPushNotiCycle"
         const val LESSON_MESSAGE = "lessonMessage"
     }
 
     lateinit var lessonName: String
-    lateinit var lessonCount: Number
+    lateinit var lessoTotalNumber: Number
     lateinit var lessonCategoryName: String
     lateinit var lessonSiteName: String
     lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
-    private var goalDay: Long? = null
+    private var endDay: Long? = null
 
     lateinit var startDate: Date
 
     lateinit var lessonStartDate: String
-    lateinit var lessonGoalDate: String
+    lateinit var lessonEndDate: String
 
     private var isLessonGoalDateDecided = false
     //private var isLessonGoalDateSpnDecided = true
 
     lateinit var selectedItem: Number
 
-    lateinit var goalDateAdapter: ArrayAdapter<String>
+    lateinit var lessonEndDateAdapter: ArrayAdapter<String>
 
     private val today = Date()
 
@@ -94,7 +94,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         super.onViewCreated(view, savedInstanceState)
         arguments?.apply {
             lessonName = getString(LESSON_NAME).toString()
-            lessonCount = getInt(LESSON_COUNT)
+            lessoTotalNumber = getInt(LESSON_TOTAL_NUMBER)
             lessonCategoryName = getString(LESSON_CATEGORY_NAME).toString()
             lessonSiteName = getString(LESSON_SITE_NAME).toString()
         }
@@ -106,13 +106,13 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         super.onStart()
         if (isLessonGoalDateDecided) {
             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
-            tvRegisterGoalLessonDateInfo.text = changeDateFormat(lessonGoalDate)
+            tvRegisterGoalLessonDateInfo.text = changeDateFormat(lessonEndDate)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun initViews() = with(binding) {
-        if (::goalDateAdapter.isInitialized.not()) {
+        if (::lessonEndDateAdapter.isInitialized.not()) {
             bindAdapter()
         }
 
@@ -167,7 +167,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 return@setOnClickListener
             }
 
-            if (startDay!! >= goalDay!!) {
+            if (startDay!! >= endDay!!) {
                 Toast.makeText(requireContext(),
                     "강의 시작일은 완강 목표일 이전이어야 해요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -175,11 +175,11 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
             val args = Bundle().apply {
                 putString(LESSON_NAME, lessonName)
-                putInt(LESSON_COUNT, lessonCount as Int)
+                putInt(LESSON_TOTAL_NUMBER, lessoTotalNumber as Int)
                 putString(LESSON_CATEGORY_NAME, lessonCategoryName)
                 putString(LESSON_SITE_NAME, lessonSiteName)
                 putString(LESSON_START_DATE, lessonStartDate)
-                putString(LESSON_GOAL_DATE, lessonGoalDate)
+                putString(LESSON_END_DATE, lessonEndDate)
                 putInt(LESSON_PRICE, lessonPrice.toInt())
                 putString(LESSON_MESSAGE, etRegisterLessonMessage.text.toString())
             }
@@ -192,15 +192,14 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     private fun moveRegisterLessonCheck() = with(binding) {
         findNavController().navigate(
-            //data 는 bundle 객체에 담아 보냄
             R.id.action_register_lesson_second_to_register_lesson_check, bundleOf(
                 //"key" to "value"
                 LESSON_NAME to lessonName,
-                LESSON_COUNT to lessonCount as Int,
+                LESSON_TOTAL_NUMBER to lessoTotalNumber as Int,
                 LESSON_CATEGORY_NAME to lessonCategoryName,
                 LESSON_SITE_NAME to lessonSiteName,
                 LESSON_START_DATE to lessonStartDate,
-                LESSON_GOAL_DATE to lessonGoalDate,
+                LESSON_END_DATE to lessonEndDate,
                 LESSON_PRICE to lessonPrice.toInt(),
                 LESSON_MESSAGE to  etRegisterLessonMessage.text.toString()
             )
@@ -252,8 +251,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 startDay = calendar.timeInMillis
                 lessonStartDate = getPickerDateToDash(calendar.time)
             } else {
-                goalDay = calendar.timeInMillis
-                lessonGoalDate = getPickerDateToDash(calendar.time)
+                endDay = calendar.timeInMillis
+                lessonEndDate = getPickerDateToDash(calendar.time)
             }
             if (textView != null) {
                 textView.text = getPickerDateToDot(calendar.time)
@@ -264,22 +263,22 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         when (selectedItem) {
             ONE_WEEK -> {
                 calendar.add(Calendar.DATE, 7)
-                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             ONE_MONTH -> {
                 calendar.add(Calendar.MONTH, 1)
-                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             TWO_MONTH -> {
                 calendar.add(Calendar.MONTH, 2)
-                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             THREE_MONTH -> {
                 calendar.add(Calendar.MONTH, 3)
-                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             else -> Unit
@@ -300,7 +299,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
                 calendar.time = Date(it)
-                calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                 decideLessonGoalDate(true)
             }
         }
@@ -308,7 +307,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun bindAdapter() {
-        goalDateAdapter = ArrayAdapter(
+        lessonEndDateAdapter = ArrayAdapter(
             requireContext(),
             R.layout.item_spinner,
             resources.getStringArray(R.array.lesson_goal_date_array)
@@ -318,7 +317,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     private fun bindSpinner(spinner: Spinner, calendar: Calendar) {
-        spinner.adapter = goalDateAdapter
+        spinner.adapter = lessonEndDateAdapter
         setSpinnerListener(spinner, calendar)
     }
 
@@ -352,28 +351,28 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.DATE, 7)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     ONE_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 1)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     TWO_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 2)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     THREE_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 3)
-                        calendarToText(LESSON_GOAL_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     CUSTOM_SETTING -> {

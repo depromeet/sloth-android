@@ -73,7 +73,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
             }
 
             memberUpdateState.observe(viewLifecycleOwner, EventObserver { memberUpdateState ->
-                Log.d("ManageFragment",  "memberUpdateState: onChange 호출")
                 when (memberUpdateState) {
                     is MemberUpdateState.Loading -> handleLoadingState(requireContext())
 
@@ -120,8 +119,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                 hideProgress()
             }
 
-            member.observe(viewLifecycleOwner) { memberinfoResponse ->
-                binding.member = memberinfoResponse
+            member.observe(viewLifecycleOwner) { memberInfoResponse ->
+                binding.member =memberInfoResponse
             }
         }
 

@@ -36,7 +36,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     companion object {
         const val LESSON_NAME = "lessonName"
-        const val LESSON_COUNT = "lessonCount"
+        const val LESSON_TOTAL_NUMBER = "lessonCount"
         const val LESSON_CATEGORY_NAME = "lessonCategoryName"
         const val LESSON_SITE_NAME = "lessonSiteName"
     }
@@ -109,7 +109,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
             val args = Bundle().apply {
                 putString(LESSON_NAME, etRegisterLessonName.text.toString())
-                putInt(LESSON_COUNT, etRegisterLessonCount.text.toString().toInt())
+                putInt(LESSON_TOTAL_NUMBER, etRegisterLessonCount.text.toString().toInt())
                 putString(LESSON_CATEGORY_NAME,
                     spnRegisterLessonCategory.selectedItem.toString())
                 putString(LESSON_SITE_NAME,
@@ -129,7 +129,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             R.id.action_register_lesson_first_to_register_lesson_second, bundleOf(
                 //"key" to "value"
                 LESSON_NAME to etRegisterLessonName.text.toString(),
-                LESSON_COUNT to etRegisterLessonCount.text.toString().toInt(),
+                LESSON_TOTAL_NUMBER to etRegisterLessonCount.text.toString().toInt(),
                 LESSON_CATEGORY_NAME to spnRegisterLessonCategory.selectedItem.toString(),
                 LESSON_SITE_NAME to spnRegisterLessonSite.selectedItem.toString()
             )
@@ -228,16 +228,16 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     lessonCount = charSequence.toString().toInt()
                     result = lessonCount.toString()
                     if (result[0] == '0') {
-                        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         lockButton(button, requireContext())
                     } else {
-                        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                         unlockButton(button, requireContext())
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
 
-                    tvRegisterLessonCountInfo.apply {
+                    tvRegisterLessonTotalNumberInfo.apply {
                         text = getString(R.string.input_lesson_count, result)
                         visibility = View.VISIBLE
                     }
@@ -246,7 +246,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                 if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
                     result = ""
                     editText.setText(result)
-                    tvRegisterLessonCountInfo.apply {
+                    tvRegisterLessonTotalNumberInfo.apply {
                         text = result
                         visibility = View.INVISIBLE
                     }
@@ -266,10 +266,10 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
             } else {
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-                tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
     }
@@ -279,6 +279,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             clearFocus()
             setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
         }
-        tvRegisterLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
     }
 }

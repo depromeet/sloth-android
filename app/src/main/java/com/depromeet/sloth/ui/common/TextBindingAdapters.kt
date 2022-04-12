@@ -6,6 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormatToDot
+import com.depromeet.sloth.extensions.changeListToDot
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 
@@ -58,13 +59,13 @@ fun toString(view: TextView, number: Int) = with(view) {
 @BindingAdapter("priceFormat")
 fun setPriceFormat(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
-    text = view.context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
+    text = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
 
 @BindingAdapter("priceFormatHint")
 fun setPriceFormatHint(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
-    hint = view.context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
+    hint = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
 
 @BindingAdapter("price")
@@ -96,9 +97,9 @@ fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = wi
 }
 
 @BindingAdapter("setProgressRate")
-fun setProgressRate(view: ProgressView, progressRate: Float)  {
-    view.labelText = view.context.getString(R.string.unit_lesson_take_rate, progressRate.toInt())
-    view.progress = progressRate
+fun setProgressRate(view: ProgressView, progressRate: Float) = with(view)  {
+    labelText = view.context.getString(R.string.unit_lesson_take_rate, progressRate.toInt())
+    progress = progressRate
 }
 
 @BindingAdapter("total", "present")
@@ -134,6 +135,12 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
 fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
     text = context.getString(R.string.lesson_end_date_info,
         date?.let { changeDateFormatToDot(it) })
+}
+
+@BindingAdapter("checkLessonDate")
+fun checkLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
+    text = date?.let { changeListToDot(it) }
+
 }
 
 @BindingAdapter("startDate", "endDate")
