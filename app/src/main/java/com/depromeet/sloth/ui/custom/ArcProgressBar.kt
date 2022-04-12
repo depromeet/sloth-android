@@ -51,8 +51,8 @@ class ArcProgressBar @JvmOverloads constructor(
     init {
         val attributes = getContext().obtainStyledAttributes(attrs, R.styleable.ArcProgressBar)
         mBoardWidth = attributes.getDimensionPixelOffset(R.styleable.ArcProgressBar_borderWidth, DEFAULT_LINEHEIGHT)
-        mUnmProgressColor = attributes.getColor(R.styleable.ArcProgressBar_unprogresColor, DEFAULT_mUnmProgressColor)
         mProgressColor = attributes.getColor(R.styleable.ArcProgressBar_progressColor, DEFAULT_mProgressColor)
+        mUnmProgressColor = attributes.getColor(R.styleable.ArcProgressBar_unprogresColor, DEFAULT_mUnmProgressColor)
         mTickWidth = attributes.getDimensionPixelOffset(R.styleable.ArcProgressBar_tickWidth, DEFAULT_mTickWidth)
         mTickDensity = attributes.getInt(R.styleable.ArcProgressBar_tickDensity, DEFAULT_DENSITY)
         mRadius = attributes.getDimensionPixelOffset(R.styleable.ArcProgressBar_radius, DEFAULT_mRadius).toFloat()
@@ -61,12 +61,12 @@ class ArcProgressBar @JvmOverloads constructor(
         mBgShow = attributes.getBoolean(R.styleable.ArcProgressBar_bgShow, false)
         mDegree = attributes.getInt(R.styleable.ArcProgressBar_degree, DEFAULT_OFFSETDEGREE)
         mStyleProgreess = attributes.getInt(R.styleable.ArcProgressBar_progressStyle, 0)
-        val capRount = attributes.getBoolean(R.styleable.ArcProgressBar_arcCapRound, false)
+        val capRound = attributes.getBoolean(R.styleable.ArcProgressBar_arcCapRound, false)
         mArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mArcPaint.color = mArcbgColor
-        if (capRount) mArcPaint.strokeCap = Paint.Cap.ROUND
-        mArcPaint.strokeWidth = mBoardWidth.toFloat()
         mArcPaint.style = Paint.Style.STROKE
+        if (capRound) mArcPaint.strokeCap = Paint.Cap.ROUND // 프로그래스 마지막지점 처리
+        mArcPaint.strokeWidth = mBoardWidth.toFloat() // 프로그래스 두께 설정
         mLinePaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mLinePaint.strokeWidth = mTickWidth.toFloat()
     }
@@ -85,6 +85,7 @@ class ArcProgressBar @JvmOverloads constructor(
             val heightSize = (mRadius * 2 + mBoardWidth * 2).toInt()
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY)
         }
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
@@ -93,6 +94,7 @@ class ArcProgressBar @JvmOverloads constructor(
         val roate = progress * 1.0f / max
         val x = mArcRectf!!.right / 2 + mBoardWidth / 2
         val y = mArcRectf!!.right / 2 + mBoardWidth / 2
+
         if (mOnCenter != null) {
             if (mCenterCanvas == null) {
                 mCenterBitmap = Bitmap.createBitmap(
@@ -106,17 +108,19 @@ class ArcProgressBar @JvmOverloads constructor(
             mOnCenter!!.draw(mCenterCanvas, mArcRectf, x, y, mBoardWidth.toFloat(), progress)
             canvas.drawBitmap(mCenterBitmap!!, 0f, 0f, null)
         }
+
         val angle = mDegree / 2
         val targetDegree = (300 - mDegree) * roate
-        mArcPaint.color = mProgressColor
-        canvas.drawArc(mArcRectf!!, (120 + angle).toFloat(), targetDegree, false, mArcPaint)
+
         mArcPaint.color = mUnmProgressColor
         canvas.drawArc(mArcRectf!!, 120 + angle + targetDegree, 300 - mDegree - targetDegree , false, mArcPaint)
-
+        mArcPaint.color = mProgressColor
+        canvas.drawArc(mArcRectf!!, (120 + angle).toFloat(), targetDegree, false, mArcPaint)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
+
         mArcRectf = RectF(
             mBoardWidth.toFloat(),
             mBoardWidth.toFloat(),
@@ -127,6 +131,7 @@ class ArcProgressBar @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+
         if (mCenterBitmap != null) {
             mCenterBitmap!!.recycle()
             mCenterBitmap = null
