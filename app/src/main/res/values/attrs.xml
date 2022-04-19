@@ -13,7 +13,7 @@
         <attr name="radius" format="dimension"></attr>
         <attr name="arcbgColor" format="color"></attr>
         <attr name="degree" format="integer"></attr>
-        <attr name="arcCapRound" format="boolean"></attr>
+        <attr name="capRound" format="boolean"></attr>
         <attr name="progressStyle" format="enum">
             <enum name="tick" value="1"></enum>
             <enum name="arc" value="0"></enum>

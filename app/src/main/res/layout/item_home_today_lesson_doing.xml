@@ -78,7 +78,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="18dp"
-        app:arcCapRound="true"
+        app:capRound="true"
         app:borderWidth="6dp"
         app:degree="180"
         app:layout_constraintBottom_toTopOf="@id/btn_today_lesson_plus"
