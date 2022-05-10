@@ -1,8 +1,6 @@
 package com.depromeet.sloth.ui.update
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -16,7 +14,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.Lesson
+import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
@@ -38,19 +36,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     override fun getActivityBinding(): ActivityUpdateLessonBinding =
         ActivityUpdateLessonBinding.inflate(layoutInflater)
 
-    companion object {
-        fun newIntent(activity: Activity, lessonId: String, lesson: Lesson) =
-            Intent(activity, UpdateLessonActivity::class.java).apply {
-                putExtra(LESSON_ID, lessonId)
-                putExtra(LESSON, lesson)
-            }
-
-        private const val LESSON_ID = "lessonId"
-        private const val LESSON = "lesson"
-    }
-
-    lateinit var lesson: Lesson
-    lateinit var lessonId: String
+    lateinit var lessonDetailInfo: LessonDetail
 
     lateinit var lessonCount: Number
     lateinit var lessonPrice: Number
@@ -70,8 +56,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         binding.lifecycleOwner = this
 
         intent.apply {
-            lessonId = getStringExtra(LESSON_ID).toString()
-            lesson = getParcelableExtra(LESSON)!!
+            lessonDetailInfo = getParcelableExtra("lessonDetail")!!
         }
 
         viewModel.apply {
@@ -172,9 +157,11 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                 hideProgress()
             }
 
-            lessonUpdate.observe(this@UpdateLessonActivity) { lessonUpdate ->
-                binding.lessonUpdate = lessonUpdate
-            }
+
+        }
+
+        viewModel.lessonDetail.observe(this@UpdateLessonActivity) { lessonDetail ->
+            binding.lessonDetail = lessonDetail
         }
     }
 
@@ -219,17 +206,43 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
         validatePriceInputForm(etUpdateLessonPrice, btnUpdateLesson)
 
-        viewModel.setLessonUpdateInfo(lesson)
-        setLessonUpdateInfo(lesson)
+        viewModel.setLessonUpdateInfo(lessonDetailInfo)
+        setLessonUpdateInfo(lessonDetailInfo)
 
         btnUpdateLesson.setOnClickListener {
+            if ((lessonCount as Int) == 0) {
+                Toast.makeText(this@UpdateLessonActivity, "강의 개수가 올바르지 않아요", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            if ((lessonCount as Int) < lessonDetailInfo.presentNumber) {
+                Toast.makeText(this@UpdateLessonActivity,
+                    "강의 개수가 들은 강의 개수보다 적어요",
+                    Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            if(spnUpdateLessonCategory.selectedItemPosition == 0) {
+                Toast.makeText(this@UpdateLessonActivity, "강의 카테고리를 선택해 주세요", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            if(spnUpdateLessonSite.selectedItemPosition == 0) {
+                Toast.makeText(this@UpdateLessonActivity, "강의 사이트를 선택해 주세요", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
             updateLesson()
         }
     }
 
     private fun updateLesson() = with(binding) {
         viewModel.updateLesson(
-            lessonId,
+            lessonDetailInfo.lessonId.toString(),
             LessonUpdateRequest(
                 categoryId =
                 lessonCategoryMap.filterValues
@@ -264,28 +277,23 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
         binding.spnUpdateLessonSite.adapter = siteAdapter
     }
 
-    private fun setLessonUpdateInfo(lesson: Lesson) = with(binding) {
-        //강의 개수
-        lessonCount = lesson.totalNumber
-        //강의 금액
-        lessonPrice = lesson.price
+    private fun setLessonUpdateInfo(lessonDetail: LessonDetail) = with(lessonDetail) {
+        lessonCount = totalNumber
+        lessonPrice = price
 
         bindAdapter()
-
-        setSpinner(lesson.categoryName, lesson.siteName)
+        setSpinner(categoryName, siteName)
     }
 
     private fun setSpinner(categoryName: String, siteName: String) = with(binding) {
         val categoryId = lessonCategoryMap.filterValues { it == categoryName }.keys.first()
 
-        //강의 카테고리
         spnUpdateLessonCategory.setSelection(
             lessonCategoryList.indexOf(lessonCategoryMap[categoryId])
         )
 
         val siteId = lessonSiteMap.filterValues { it == siteName }.keys.first()
 
-        //강의 사이트
         spnUpdateLessonSite.setSelection(
             lessonSiteList.indexOf(lessonSiteMap[siteId])
         )

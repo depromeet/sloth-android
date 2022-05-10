@@ -1,11 +1,5 @@
 package com.depromeet.sloth.data.network.lesson.detail
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.LocalDate
-import java.time.LocalDateTime
-
-
 /**
  * LessonDetailResponse
  *
@@ -26,7 +20,6 @@ import java.time.LocalDateTime
  * "totalNumber": 0,
  * "wastePrice": 0
  */
-
 
 data class LessonDetailResponse (
     var alertDays: String? = "",
