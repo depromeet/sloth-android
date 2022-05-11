@@ -9,10 +9,12 @@ import com.google.gson.GsonBuilder
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import javax.inject.Inject
 
 object RetrofitServiceGenerator {
-    private const val timeoutRead = 30
-    private const val timeoutConnect = 30
+
+    private const val timeoutRead = 30L
+    private const val timeoutConnect = 30L
 
     private fun setClient(authToken: String? = null): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
@@ -23,8 +25,8 @@ object RetrofitServiceGenerator {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
             })
-            connectTimeout(timeoutConnect.toLong(), TimeUnit.SECONDS)
-            readTimeout(timeoutRead.toLong(), TimeUnit.SECONDS)
+            connectTimeout(timeoutConnect, TimeUnit.SECONDS)
+            readTimeout(timeoutRead, TimeUnit.SECONDS)
         }.build()
     }
 
@@ -47,6 +49,53 @@ object RetrofitServiceGenerator {
 //            .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(GsonConverterFactory.create())
             .client(setClient(accessToken))
+            .build()
+    }
+}
+
+
+
+class RetrofitServiceGeneratorTest {
+
+    private val timeoutRead = 30L
+    private val timeoutConnect = 30L
+
+    @Inject
+    lateinit var accessTokenAuthenticator : AccessTokenAuthenticator
+
+    private fun setTestClient(authToken: String? = null): OkHttpClient {
+        val httpClient = OkHttpClient.Builder()
+        return httpClient.apply {
+            authenticator(accessTokenAuthenticator)
+            addInterceptor(AuthenticationInterceptor(authToken))
+            addInterceptor(HttpLoggingInterceptor().apply {
+                if (BuildConfig.DEBUG) {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            })
+            connectTimeout(timeoutConnect, TimeUnit.SECONDS)
+            readTimeout(timeoutRead, TimeUnit.SECONDS)
+        }.build()
+    }
+
+    val gson: Gson = GsonBuilder()
+        .setLenient()
+        .create()
+
+    fun buildTest(
+        accessToken: String? = null,
+        isGoogleLogin: Boolean = false
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(
+                when (isGoogleLogin) {
+                    true -> BuildConfig.GOOGLE_BASE_URL
+                    false -> BuildConfig.SLOTH_BASE_URL
+                }
+            )
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(setTestClient(accessToken))
             .build()
     }
 }
