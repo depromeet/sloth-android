@@ -125,8 +125,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         )
 
         btnRegisterLessonUpdate.setOnClickListener {
-            //(activity as RegisterLessonActivity).navController.navigateUp()
-            (activity as RegisterLessonActivity).onBackPressed()
+            (activity as RegisterLessonActivity).navController.navigateUp()
         }
 
         btnRegisterLessonAccept.setOnClickListener {
