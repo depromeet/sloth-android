@@ -44,7 +44,6 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
         navController.navigatorProvider.addNavigator(navigator)
         navController.setGraph(R.navigation.nav_graph_register_lesson)
 
-        binding.tbRegisterLesson.setNavigationOnClickListener { onBackPressed() }
-        //binding.tbRegisterLesson.setNavigationOnClickListener { navController.navigateUp() }
+        binding.tbRegisterLesson.setNavigationOnClickListener { navController.navigateUp() }
     }
 }
