@@ -3,7 +3,7 @@ package com.depromeet.sloth.ui.update
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.Lesson
+import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
@@ -34,8 +34,14 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
     val lessonSiteListState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteListState
 
-    private val _lessonUpdate = MutableLiveData<Lesson>()
-    val lessonUpdate: LiveData<Lesson> = _lessonUpdate
+    private val _lessonDetail = MutableLiveData<LessonDetail>()
+    val lessonDetail: LiveData<LessonDetail> = _lessonDetail
+
+    private val _lessonCategoryList =  MutableLiveData<MutableList<String>>()
+    val lessonCategoryList: LiveData<MutableList<String>> = _lessonCategoryList
+
+    private val _lessonSiteList =  MutableLiveData<MutableList<String>>()
+    val lessonSiteList: LiveData<MutableList<String>> = _lessonSiteList
 
     init {
         viewModelScope.launch {
@@ -44,17 +50,24 @@ class UpdateLessonViewModel @Inject constructor(
         }
     }
 
-    fun setLessonUpdateInfo(lesson: Lesson) = with(lesson) {
-        _lessonUpdate.value = Lesson(
+    fun setLessonUpdateInfo(lessonDetail: LessonDetail) = with(lessonDetail) {
+        _lessonDetail.value = LessonDetail(
             alertDays,
             categoryName,
+            currentProgressRate,
             endDate,
+            goalProgressRate,
+            isFinished,
+            lessonId,
             lessonName,
             message,
+            presentNumber,
             price,
+            remainDay,
             siteName,
             startDate,
-            totalNumber
+            totalNumber,
+            wastePrice
         )
     }
 

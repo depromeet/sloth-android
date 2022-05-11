@@ -11,6 +11,7 @@ import com.depromeet.sloth.data.network.lesson.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,12 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository
+    memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
     private val _lessonDetailState = MutableLiveData<LessonDetailState<LessonDetailResponse>>()
     val lessonDetailState: LiveData<LessonDetailState<LessonDetailResponse>> = _lessonDetailState
-
 
     private val _lessonDeleteState = MutableLiveData<LessonDeleteState<LessonDeleteResponse>>()
     val lessonDeleteState: LiveData<LessonDeleteState<LessonDeleteResponse>> = _lessonDeleteState
@@ -31,8 +31,11 @@ class LessonDetailViewModel @Inject constructor(
     private val _lessonDetail = MutableLiveData<LessonDetail>()
     val lessonDetail: LiveData<LessonDetail> = _lessonDetail
 
-    private val _lessonId = MutableLiveData<String>()
-    val lessonId: LiveData<String> = _lessonId
+    private val _lessonUpdateEvent = MutableLiveData<Event<LessonDetail>>()
+    val lessonUpdateEvent: LiveData<Event<LessonDetail>> = _lessonUpdateEvent
+
+    private val _lessonDeleteEvent = MutableLiveData<Event<Boolean>>()
+    val lessonDeleteEvent: LiveData<Event<Boolean>> = _lessonDeleteEvent
 
     fun fetchLessonDetail(lessonId: String) = viewModelScope.launch {
         _lessonDetailState.value = LessonDetailState.Loading
@@ -46,24 +49,33 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDeleteState.value = lessonDeleteResponse
     }
 
-    fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) = with(lessonDetailResponse) {
-        _lessonDetail.value = LessonDetail(
-            alertDays,
-            categoryName,
-            currentProgressRate.toFloat(),
-            endDate,
-            goalProgressRate.toFloat(),
-            isFinished,
-            lessonId,
-            lessonName,
-            message,
-            presentNumber,
-            price,
-            remainDay,
-            siteName,
-            startDate,
-            totalNumber,
-            wastePrice
-        )
+    fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) =
+        with(lessonDetailResponse) {
+            _lessonDetail.value = LessonDetail(
+                alertDays,
+                categoryName,
+                currentProgressRate.toFloat(),
+                endDate,
+                goalProgressRate.toFloat(),
+                isFinished,
+                lessonId,
+                lessonName,
+                message,
+                presentNumber,
+                price,
+                remainDay,
+                siteName,
+                startDate,
+                totalNumber,
+                wastePrice
+            )
+        }
+
+    fun onClickLessonUpdateEvent(lessonDetail: LessonDetail) {
+        _lessonUpdateEvent.value = Event(lessonDetail)
+    }
+
+    fun onClickLessonDeleteEvent() {
+        _lessonDeleteEvent.value = Event(true)
     }
 }

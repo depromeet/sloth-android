@@ -18,6 +18,7 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,7 +48,10 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initViews()
+
         binding.lifecycleOwner = this
+        binding.vm = viewModel
 
         intent.apply {
             lessonId = getStringExtra(LESSON_ID).toString()
@@ -77,7 +81,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                             Toast.LENGTH_SHORT)
                             .show()
                     }
-
                     is LessonDetailState.Error -> {
                         Log.d("Error", "${lessonDetailState.exception}")
                     }
@@ -124,9 +127,19 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
             lessonDetail.observe(this@LessonDetailActivity) { lessonDetail ->
                 binding.lessonDetail = lessonDetail
             }
-        }
 
-        initViews()
+            lessonUpdateEvent.observe(this@LessonDetailActivity, EventObserver { lessonDetail ->
+                startActivity(
+                    Intent(this@LessonDetailActivity, UpdateLessonActivity::class.java).apply {
+                        putExtra("lessonDetail", lessonDetail)
+                    }
+                )
+            })
+
+            lessonDeleteEvent.observe(this@LessonDetailActivity, EventObserver { lessonDelete ->
+                showLessonDeleteDialog()
+            })
+        }
     }
 
     override fun onStart() {
@@ -144,51 +157,20 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
         if (data is LessonDetailResponse) {
             viewModel.setLessonDetailInfo(data)
-            setLessonDetailInfo(data)
         }
     }
 
     override fun initViews() = with(binding) {
         tbDetailLesson.setNavigationOnClickListener { finish() }
-
-        tvDetailUpdateLesson.setOnClickListener {
-            startActivity(
-                UpdateLessonActivity.newIntent(this@LessonDetailActivity, lessonId, lesson)
-            )
-        }
-
-        btnDetailDeleteLesson.setOnClickListener {
-            showLessonDeleteDialog()
-        }
     }
 
     private fun showLessonDeleteDialog() {
         val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
-                deleteLesson(lessonId)
-                finish()
+                viewModel.deleteLesson(lessonId)
             }
         }
         dlg.start()
     }
-
-    private fun deleteLesson(lessonId: String) {
-        viewModel.deleteLesson(lessonId)
-    }
-
-    private fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) =
-        with(lessonDetailResponse) {
-            lesson = Lesson(
-                alertDays,
-                categoryName,
-                endDate,
-                lessonName,
-                message,
-                price,
-                siteName,
-                startDate,
-                totalNumber,
-            )
-        }
 }

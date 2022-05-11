@@ -2,19 +2,18 @@ package com.depromeet.sloth.ui
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.notification.NotificationSaveRequest
-import com.depromeet.sloth.data.network.notification.NotificationSaveState
+import com.depromeet.sloth.data.network.notification.NotificationRegisterRequest
+import com.depromeet.sloth.data.network.notification.NotificationRegisterState
 import com.depromeet.sloth.databinding.ActivityHomeBinding
+import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.list.ListFragment
-import com.depromeet.sloth.ui.list.TodayFragment
-import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.ui.manage.ManageFragment
+import com.depromeet.sloth.util.LoadingDialogUtil
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,45 +29,53 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // bottom navigation view icon 의 원래 색상 부여를 위해 (그라데이션)
-        binding.bnvHome.itemIconTintList = null
-
-//        supportFragmentManager.fragmentFactory = SlothFragmentFactory()
-//        initNavigationEvent()
-
-        val navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)?.findNavController()
-        navController?.let {
-            binding.bnvHome.setupWithNavController(it)
-        }
-
         if (::fcmToken.isInitialized.not()) {
             registerFCMToken()
         }
+
+        initNavigation()
+
+        viewModel.apply {
+            notificationRegisterState.observe(this@HomeActivity) { notificationRegisterState ->
+                when (notificationRegisterState) {
+                    is NotificationRegisterState.Loading -> {
+                        handleLoadingState(this@HomeActivity)
+                    }
+
+                    is NotificationRegisterState.Success<String> -> {
+                        Log.d("fetch Success", notificationRegisterState.data)
+                    }
+
+                    is NotificationRegisterState.Unauthorized -> {
+                        showLogoutDialog(this@HomeActivity,
+                            this@HomeActivity) { viewModel.removeAuthToken() }
+                    }
+
+                    is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {
+                        Toast.makeText(this@HomeActivity,
+                            "강의 상세 정보를 가져오지 못했어요",
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                    is NotificationRegisterState.Error -> {
+                        Log.d("Error", "${notificationRegisterState.exception}")
+                    }
+
+                    else -> Unit
+                }
+                LoadingDialogUtil.hideProgress()
+            }
+        }
     }
 
-    private fun initNavigationEvent() = with(binding) {
-        bnvHome.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.navigation_today -> changeFragment(TodayFragment::class.java.name)
-                R.id.navigation_list -> changeFragment(ListFragment::class.java.name)
-                R.id.navigation_manage -> changeFragment(ManageFragment::class.java.name)
-            }
-            true
+    private fun initNavigation() {
+        val navController = supportFragmentManager.findFragmentById(R.id.nav_host_home_container)
+            ?.findNavController()
+        navController?.let {
+            binding.bnvHome.setupWithNavController(it)
         }
-        bnvHome.selectedItemId = R.id.navigation_today
-
-        bnvHome.setOnItemReselectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.navigation_today -> {}
-                R.id.navigation_list -> {}
-                R.id.navigation_manage -> {}
-            }
-        }
-    }
-
-    private fun changeFragment(className: String) {
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, className)
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
+        binding.bnvHome.itemIconTintList = null
     }
 
     private fun registerFCMToken() {
@@ -76,42 +83,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             if (task.isSuccessful) {
                 fcmToken = task.result ?: ""
                 mainScope {
-                    viewModel.saveFCMToken(
-                        NotificationSaveRequest(fcmToken)
-                    ).let {
-                        when (it) {
-                            is NotificationSaveState.Success<String> -> {
-                                Log.d("register Success", it.data)
-                            }
-                            is NotificationSaveState.Error -> {
-                                Log.d("register Error", "${it.exception}")
-                            }
-                            is NotificationSaveState.Unauthorized -> {
-                                val dlg = SlothDialog(this, DialogState.FORBIDDEN)
-                                dlg.onItemClickListener =
-                                    object : SlothDialog.OnItemClickedListener {
-                                        override fun onItemClicked() {
-                                            viewModel.removeAuthToken()
-                                            startActivity(LoginActivity.newIntent(this@HomeActivity))
-                                        }
-                                    }
-                                dlg.start()
-                            }
-                            is NotificationSaveState.Created -> {
-                                Log.d("Error", "Created")
-                            }
-                            is NotificationSaveState.NotFound -> {
-                                Log.d("Error", "NotFound")
-                            }
-                            is NotificationSaveState.Forbidden -> {
-                                Log.d("Error", "Forbidden")
-                            }
-                        }
-                    }
+                    viewModel.registerFCMToken(NotificationRegisterRequest(fcmToken))
+                    viewModel.putFCMToken(fcmToken)
+                    Log.d("FCM Token", fcmToken)
                 }
-
-                viewModel.putFCMToken(fcmToken)
-                Log.d("FCM Token", fcmToken)
             }
         }
     }

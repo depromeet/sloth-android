@@ -2,41 +2,40 @@ package com.depromeet.sloth.data.network.notification
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
 import javax.inject.Inject
 
 class NotificationRepository @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) {
-    suspend fun saveFCMToken(
-        notificationRequest: NotificationSaveRequest
-    ): NotificationSaveState<String> {
+    suspend fun registerFCMToken(
+        notificationRequest: NotificationRegisterRequest
+    ): NotificationRegisterState<String> {
         RetrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
-            .saveFCMToken(notificationRequest)?.run {
+            .registerFCMToken(notificationRequest)?.run {
                 return when (this.code()) {
-                    200 -> NotificationSaveState.Success(this.body() ?: "")
-                    201 -> NotificationSaveState.Created
+                    200 -> NotificationRegisterState.Success(this.body() ?: "")
+                    201 -> NotificationRegisterState.Created
                     401 -> {
                         val refreshToken = preferenceManager.getRefreshToken()
                         RetrofitServiceGenerator.build(refreshToken)
                             .create(NotificationService::class.java)
-                            .saveFCMToken(notificationRequest)?.run {
+                            .registerFCMToken(notificationRequest)?.run {
                                 when (code()) {
                                     200 -> {
                                         val newAccessToken = headers()["Authorization"] ?: "EMPTY"
                                         preferenceManager.updateAccessToken(newAccessToken)
-                                        NotificationSaveState.Success(body() ?: "")
+                                        NotificationRegisterState.Success(body() ?: "")
                                     }
-                                    else -> NotificationSaveState.Unauthorized(Exception("Authentication Failed Exception"))
+                                    else -> NotificationRegisterState.Unauthorized(Exception("Authentication Failed Exception"))
                                 }
-                            } ?: NotificationSaveState.Error(Exception("Uncaught Exception"))
+                            } ?: NotificationRegisterState.Error(Exception("Uncaught Exception"))
                     }
-                    403 -> NotificationSaveState.Forbidden
-                    404 -> NotificationSaveState.NotFound
-                    else -> NotificationSaveState.Error(Exception("Uncaught Exception"))
+                    403 -> NotificationRegisterState.Forbidden
+                    404 -> NotificationRegisterState.NotFound
+                    else -> NotificationRegisterState.Error(Exception("Uncaught Exception"))
                 }
-            } ?: return NotificationSaveState.Error(Exception("Retrofit Exception"))
+            } ?: return NotificationRegisterState.Error(Exception("Retrofit Exception"))
     }
 
     suspend fun updateFCMTokenUse(

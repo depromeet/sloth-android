@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -35,6 +36,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_ID
+import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_ID
 
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
 
@@ -58,9 +61,11 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     }
 
     lateinit var lessonName: String
-    private lateinit var lessoTotalNumber: Number
+    private lateinit var lessonTotalNumber: Number
     private lateinit var lessonCategoryName: String
+    lateinit var lessonCategoryId: Number
     private lateinit var lessonSiteName: String
+    lateinit var lessonSiteId: Number
     lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
@@ -72,7 +77,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private lateinit var lessonEndDate: String
 
     private var isLessonGoalDateDecided = false
-    //private var isLessonGoalDateSpnDecided = true
 
     lateinit var selectedItem: Number
 
@@ -92,11 +96,15 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("Second", "${this.hashCode()}")
+
         arguments?.apply {
             lessonName = getString(LESSON_NAME).toString()
-            lessoTotalNumber = getInt(LESSON_TOTAL_NUMBER)
+            lessonTotalNumber = getInt(LESSON_TOTAL_NUMBER)
             lessonCategoryName = getString(LESSON_CATEGORY_NAME).toString()
+            lessonCategoryId = getInt(LESSON_CATEGORY_ID)
             lessonSiteName = getString(LESSON_SITE_NAME).toString()
+            lessonSiteId = getInt(LESSON_SITE_ID)
         }
         initViews()
     }
@@ -173,20 +181,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 return@setOnClickListener
             }
 
-            val args = Bundle().apply {
-                putString(LESSON_NAME, lessonName)
-                putInt(LESSON_TOTAL_NUMBER, lessoTotalNumber as Int)
-                putString(LESSON_CATEGORY_NAME, lessonCategoryName)
-                putString(LESSON_SITE_NAME, lessonSiteName)
-                putString(LESSON_START_DATE, lessonStartDate)
-                putString(LESSON_END_DATE, lessonEndDate)
-                putInt(LESSON_PRICE, lessonPrice.toInt())
-                putString(LESSON_MESSAGE, etRegisterLessonMessage.text.toString())
-            }
-
-            (activity as RegisterLessonActivity).changeFragment(
-                (activity as RegisterLessonActivity).registerLessonCheckFragment, args)
-            //moveRegisterLessonCheck()
+            moveRegisterLessonCheck()
         }
     }
 
@@ -195,13 +190,15 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             R.id.action_register_lesson_second_to_register_lesson_check, bundleOf(
                 //"key" to "value"
                 LESSON_NAME to lessonName,
-                LESSON_TOTAL_NUMBER to lessoTotalNumber as Int,
+                LESSON_TOTAL_NUMBER to lessonTotalNumber as Int,
                 LESSON_CATEGORY_NAME to lessonCategoryName,
+                LESSON_CATEGORY_ID to lessonCategoryId as Int,
                 LESSON_SITE_NAME to lessonSiteName,
+                LESSON_SITE_ID to lessonSiteId as Int,
                 LESSON_START_DATE to lessonStartDate,
                 LESSON_END_DATE to lessonEndDate,
                 LESSON_PRICE to lessonPrice.toInt(),
-                LESSON_MESSAGE to  etRegisterLessonMessage.text.toString()
+                LESSON_MESSAGE to etRegisterLessonMessage.text.toString()
             )
         )
     }
@@ -217,7 +214,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun decideLessonGoalDate(flag: Boolean) = with(binding) {
         if (flag) {
             tvRegisterGoalLessonDateInfo.visibility = View.VISIBLE
-            unlockButton(btnRegisterLesson,requireContext())
+            unlockButton(btnRegisterLesson, requireContext())
             isLessonGoalDateDecided = true
         } else {
             tvRegisterGoalLessonDateInfo.visibility = View.GONE
