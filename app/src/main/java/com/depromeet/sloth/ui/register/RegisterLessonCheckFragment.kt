@@ -15,9 +15,12 @@ import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_ID
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_NAME
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_TOTAL_NUMBER
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_NAME
+import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_ID
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_NAME
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_END_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_MESSAGE
@@ -34,7 +37,9 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
     lateinit var lessonName: String
     lateinit var lessonTotalNumber: Number
     lateinit var lessonCategoryName: String
+    lateinit var lessonCategoryId: Number
     lateinit var lessonSiteName: String
+    lateinit var lessonSiteId: Number
     lateinit var lessonPrice: Number
     lateinit var lessonAlertDays: String
     lateinit var lessonStartDate: String
@@ -50,6 +55,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("Third", "${this.hashCode()}")
 
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -58,7 +64,9 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             lessonTotalNumber = getInt(LESSON_TOTAL_NUMBER)
             lessonCategoryName =
                 getString(LESSON_CATEGORY_NAME).toString()
+            lessonCategoryId = getInt(LESSON_CATEGORY_ID)
             lessonSiteName = getString(LESSON_SITE_NAME).toString()
+            lessonSiteId = getInt(LESSON_SITE_ID)
             lessonPrice = getInt(LESSON_PRICE)
             lessonAlertDays = getString(LESSON_ALERT_DAYS).toString()
             lessonStartDate = getString(LESSON_START_DATE).toString()
@@ -67,7 +75,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         }
 
         viewModel.apply {
-            lessonRegisterState.observe(viewLifecycleOwner) { lessonRegisterResponse ->
+            lessonRegisterState.observe(viewLifecycleOwner, EventObserver { lessonRegisterResponse ->
                 when (lessonRegisterResponse) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
 
@@ -91,7 +99,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     }
                 }
                 hideProgress()
-            }
+            })
 
             lessonRegister.observe(viewLifecycleOwner) { lessonRegister ->
                 binding.lessonRegister = lessonRegister
@@ -117,6 +125,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         )
 
         btnRegisterLessonUpdate.setOnClickListener {
+            //(activity as RegisterLessonActivity).navController.navigateUp()
             (activity as RegisterLessonActivity).onBackPressed()
         }
 
@@ -124,16 +133,14 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             viewModel.registerLesson(
                 LessonRegisterRequest(
                     lessonAlertDays,
-                    (activity as RegisterLessonActivity).lessonCategoryMap.filterValues
-                    { it == lessonCategoryName }.keys.first(),
+                    lessonCategoryId as Int,
                     lessonEndDate,
                     lessonName,
                     lessonMessage,
-                    lessonPrice.toInt(),
-                    (activity as RegisterLessonActivity).lessonSiteMap.filterValues
-                    { it == lessonSiteName }.keys.first(),
+                    lessonPrice as Int,
+                    lessonSiteId as Int,
                     lessonStartDate,
-                    lessonTotalNumber.toInt()
+                    lessonTotalNumber as Int
                 )
             )
         }
