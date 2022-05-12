@@ -41,7 +41,7 @@ class AccessTokenAuthenticator @Inject constructor(
                     Log.e("test", "123".toString())
                     limitCount++
                     if(limitCount > 20) return null
-                    return newRequestWithAccessToken(response.request, "")
+                    return newRequestWithAccessToken(response.request, refreshToken)
                 } catch (exception: Exception) {
                     return null
                 }

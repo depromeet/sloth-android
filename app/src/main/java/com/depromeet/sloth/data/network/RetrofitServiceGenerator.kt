@@ -54,13 +54,19 @@ object RetrofitServiceGenerator {
 }
 
 
+val gson: Gson = GsonBuilder()
+    .setLenient()
+    .create()
+
 class RetrofitServiceGeneratorTest @Inject constructor(
     private val accessTokenAuthenticator: AccessTokenAuthenticator,
 ) {
     private val timeoutRead = 30L
     private val timeoutConnect = 30L
 
-    private fun setTestClient(authToken: String? = null): OkHttpClient {
+    private fun provideHttpClient(
+        authToken: String? = null
+    ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         return httpClient.apply {
             authenticator(accessTokenAuthenticator)
@@ -75,10 +81,6 @@ class RetrofitServiceGeneratorTest @Inject constructor(
         }.build()
     }
 
-    val gson: Gson = GsonBuilder()
-        .setLenient()
-        .create()
-
     fun build(
         accessToken: String? = null,
         isGoogleLogin: Boolean = false
@@ -92,7 +94,7 @@ class RetrofitServiceGeneratorTest @Inject constructor(
             )
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .client(setTestClient(accessToken))
+            .client(provideHttpClient(accessToken))
             .build()
     }
 }
