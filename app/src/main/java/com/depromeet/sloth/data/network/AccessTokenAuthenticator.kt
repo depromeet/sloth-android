@@ -23,7 +23,7 @@ class AccessTokenAuthenticator @Inject constructor(
     private val keyContentType = "Content-Type"
     private val valueContentType = "application/json"
     private val keyAuthorization = "Authorization"
-    private var limitCount = 1
+    private var retryLimitCount = 1
 
     override fun authenticate(route: Route?, response: Response): Request? {
         val accessToken = preferenceManager.getAccessToken()
@@ -35,10 +35,10 @@ class AccessTokenAuthenticator @Inject constructor(
                     return newRequestWithAccessToken(response.request, newAccessToken)
                 }
 
-                if(limitCount == 0) {
+                if(retryLimitCount == 0) {
                     return null
                 }
-                limitCount = limitCount.minus(1)
+                retryLimitCount = retryLimitCount.minus(1)
 
                 val refreshToken = preferenceManager.getRefreshToken()
                 return newRequestWithAccessToken(response.request, refreshToken)
