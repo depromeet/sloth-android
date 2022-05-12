@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(
         start = start
     ) {
         loginRepository.fetchSlothAuthInfo(
-            accessToken = accessToken,
+            authToken = accessToken,
             socialType = socialType
         )
     }.await()

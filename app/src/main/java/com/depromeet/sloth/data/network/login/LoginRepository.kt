@@ -1,27 +1,37 @@
 package com.depromeet.sloth.data.network.login
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
 import javax.inject.Inject
 
-class LoginRepository @Inject constructor() {
+class LoginRepository @Inject constructor(
+    private val retrofitServiceGeneratorTest: RetrofitServiceGeneratorTest,
+    private val preferenceManager: PreferenceManager
+) {
     suspend fun fetchSlothAuthInfo(
-        accessToken: String,
+        authToken: String,
         socialType: String
     ): LoginState<LoginSlothResponse> {
-        RetrofitServiceGenerator.build(accessToken)
+        retrofitServiceGeneratorTest.build(authToken)
             .create(LoginService::class.java)
-            .fetchSlothAuthInfo(LoginSlothRequest(socialType))?.run {
-                return LoginState.Success(
-                    this.body() ?: LoginSlothResponse()
+            .fetchSlothAuthInfo(
+                LoginSlothRequest(
+                    socialType = socialType
                 )
+            )?.run {
+                val accessToken = body()?.accessToken ?: ""
+                val refreshToken = body()?.refreshToken ?: ""
+                preferenceManager.putAuthToken(accessToken, refreshToken)
+
+                return LoginState.Success(this.body() ?: LoginSlothResponse())
             } ?: return LoginState.Error(Exception("Login Exception"))
     }
 
     suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): LoginState<LoginGoogleResponse> {
-        RetrofitServiceGenerator.build(isGoogleLogin = true)
+        retrofitServiceGeneratorTest.build(isGoogleLogin = true)
             .create(LoginService::class.java)
             .fetchGoogleAuthInfo(
                 LoginGoogleRequest(
@@ -32,9 +42,7 @@ class LoginRepository @Inject constructor() {
                     code = authCode
                 )
             )?.run {
-                return LoginState.Success(
-                    this.body() ?: LoginGoogleResponse()
-                )
+                return LoginState.Success(this.body() ?: LoginGoogleResponse())
             } ?: return LoginState.Error(Exception("Retrofit Exception"))
     }
 }

@@ -119,10 +119,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
-                                preferenceManager.putAuthToken(
-                                    it.data.accessToken,
-                                    it.data.refreshToken
-                                )
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -158,10 +154,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("인증정보 수신 성공", it.data.toString())
-                                preferenceManager.putAuthToken(
-                                    it.data.accessToken,
-                                    it.data.refreshToken
-                                )
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -209,10 +201,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
                                 Log.d("Success", "${it.data}")
-                                preferenceManager.putAuthToken(
-                                    it.data.accessToken,
-                                    it.data.refreshToken
-                                )
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
