@@ -1,17 +1,18 @@
 package com.depromeet.sloth.data.network.notification
 
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
 
 class NotificationRepository @Inject constructor(
-    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun registerFCMToken(
         notificationRequest: NotificationRegisterRequest
     ): NotificationRegisterState<String> {
-        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
+        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
             .registerFCMToken(notificationRequest)?.run {
                 return when (this.code()) {
@@ -31,7 +32,8 @@ class NotificationRepository @Inject constructor(
     suspend fun updateFCMTokenUse(
         notificationUseRequest: NotificationUseRequest
     ): NotificationUseState<NotificationUseResponse> {
-        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
+        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
             .updateFCMTokenUse(notificationUseRequest)?.run {
                 return when (this.code()) {

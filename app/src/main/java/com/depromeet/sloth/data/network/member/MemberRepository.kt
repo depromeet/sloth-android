@@ -1,15 +1,16 @@
 package com.depromeet.sloth.data.network.member
 
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
 
 class MemberRepository @Inject constructor(
-    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun fetchMemberInfo(): MemberState<MemberInfoResponse> {
-        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
+        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .fetchMemberInfo()?.run {
                 return when (this.code()) {
@@ -29,7 +30,8 @@ class MemberRepository @Inject constructor(
     suspend fun updateMemberInfo(
         memberUpdateInfoRequest: MemberUpdateInfoRequest
     ): MemberUpdateState<MemberUpdateInfoResponse> {
-        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
+        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .updateMemberInfo(memberUpdateInfoRequest)?.run {
                 return when (this.code()) {
@@ -47,7 +49,8 @@ class MemberRepository @Inject constructor(
     }
 
     suspend fun logout(): MemberLogoutState<String> {
-        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
+        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .logout()?.run {
                 return when (this.code()) {
