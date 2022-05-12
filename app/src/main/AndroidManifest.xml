@@ -61,8 +61,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.test.TestActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:exported="true"></activity>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true"

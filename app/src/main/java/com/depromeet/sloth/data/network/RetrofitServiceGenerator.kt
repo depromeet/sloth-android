@@ -54,14 +54,11 @@ object RetrofitServiceGenerator {
 }
 
 
-
-class RetrofitServiceGeneratorTest {
-
+class RetrofitServiceGeneratorTest @Inject constructor(
+    private val accessTokenAuthenticator: AccessTokenAuthenticator,
+) {
     private val timeoutRead = 30L
     private val timeoutConnect = 30L
-
-    @Inject
-    lateinit var accessTokenAuthenticator : AccessTokenAuthenticator
 
     private fun setTestClient(authToken: String? = null): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
@@ -82,7 +79,7 @@ class RetrofitServiceGeneratorTest {
         .setLenient()
         .create()
 
-    fun buildTest(
+    fun build(
         accessToken: String? = null,
         isGoogleLogin: Boolean = false
     ): Retrofit {

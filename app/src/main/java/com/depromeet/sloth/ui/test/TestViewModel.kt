@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.health.HealthRepository
 import com.depromeet.sloth.data.network.health.HealthResponse
 import com.depromeet.sloth.data.network.health.HealthState
+import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -29,4 +32,14 @@ class TestViewModel @Inject constructor(
             healthRepository.getHealth()
         }.await()
     }
+
+    suspend fun fetchTodayLessonList(
+        context: CoroutineContext = Dispatchers.IO,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+    ): LessonState<List<LessonTodayResponse>> = viewModelScope.async(
+        context = context,
+        start = start
+    ) {
+        healthRepository.fetchTodayLessonList()
+    }.await()
 }
