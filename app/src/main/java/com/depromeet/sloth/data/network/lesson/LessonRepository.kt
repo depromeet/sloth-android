@@ -1,7 +1,7 @@
 package com.depromeet.sloth.data.network.lesson
 
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
@@ -22,11 +22,11 @@ import javax.inject.Inject
  * @desc Lesson 관련 API 저장소
  */
 class LessonRepository @Inject constructor(
-    private val retrofitServiceGeneratorTest: RetrofitServiceGeneratorTest,
+    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun deleteLesson(lessonId: String): LessonDeleteState<LessonDeleteResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .deleteLesson(lessonId)?.run {
                 return when (this.code()) {
@@ -44,7 +44,7 @@ class LessonRepository @Inject constructor(
     }
 
     suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchTodayLessonList()?.run {
                 return when (this.code()) {
@@ -62,7 +62,7 @@ class LessonRepository @Inject constructor(
     }
 
     suspend fun fetchAllLessonList(): LessonState<List<LessonAllResponse>> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchAllLessonList()?.run {
                 return when (this.code()) {
@@ -83,7 +83,7 @@ class LessonRepository @Inject constructor(
         count: Int,
         lessonId: Int
     ): LessonState<LessonUpdateCountResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
                 return when (this.code()) {
@@ -103,7 +103,7 @@ class LessonRepository @Inject constructor(
     suspend fun fetchLessonDetail(
         lessonId: String
     ): LessonDetailState<LessonDetailResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchLessonDetail(lessonId)?.run {
                 return when (this.code()) {
@@ -123,7 +123,7 @@ class LessonRepository @Inject constructor(
     suspend fun registerLesson(
         request: LessonRegisterRequest
     ): LessonState<LessonRegisterResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .registerLesson(request)?.run {
                 return when (this.code()) {
@@ -141,7 +141,7 @@ class LessonRepository @Inject constructor(
     }
 
     suspend fun fetchLessonCategoryList(): LessonState<List<LessonCategoryResponse>> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchLessonCategoryList()?.run {
                 return when (this.code()) {
@@ -159,7 +159,7 @@ class LessonRepository @Inject constructor(
     }
 
     suspend fun fetchLessonSiteList(): LessonState<List<LessonSiteResponse>> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchLessonSiteList()?.run {
                 return when (this.code()) {
@@ -180,7 +180,7 @@ class LessonRepository @Inject constructor(
         lessonId: String,
         updateLessonRequest: LessonUpdateRequest
     ): LessonUpdateState<LessonUpdateResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .updateLesson(lessonId, updateLessonRequest)?.run {
                 return when (this.code()) {

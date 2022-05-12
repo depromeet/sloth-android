@@ -1,15 +1,15 @@
 package com.depromeet.sloth.data.network.member
 
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
 
 class MemberRepository @Inject constructor(
-    private val retrofitServiceGeneratorTest: RetrofitServiceGeneratorTest,
+    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun fetchMemberInfo(): MemberState<MemberInfoResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .fetchMemberInfo()?.run {
                 return when (this.code()) {
@@ -29,7 +29,7 @@ class MemberRepository @Inject constructor(
     suspend fun updateMemberInfo(
         memberUpdateInfoRequest: MemberUpdateInfoRequest
     ): MemberUpdateState<MemberUpdateInfoResponse> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .updateMemberInfo(memberUpdateInfoRequest)?.run {
                 return when (this.code()) {
@@ -47,7 +47,7 @@ class MemberRepository @Inject constructor(
     }
 
     suspend fun logout(): MemberLogoutState<String> {
-        retrofitServiceGeneratorTest.build(preferenceManager.getAccessToken())
+        retrofitServiceGenerator.build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
             .logout()?.run {
                 return when (this.code()) {

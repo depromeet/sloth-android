@@ -2,9 +2,7 @@ package com.depromeet.sloth.di
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
-import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
-import com.depromeet.sloth.data.network.health.HealthRepository
-import dagger.Binds
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +24,8 @@ object NetworkModule {
         AccessTokenAuthenticator(preferenceManager)
 
     @Provides
-    fun provideServiceGenerator(
+    fun provideRetrofitServiceGenerator(
         accessTokenAuthenticator: AccessTokenAuthenticator
-    ): RetrofitServiceGeneratorTest =
-        RetrofitServiceGeneratorTest(accessTokenAuthenticator)
+    ): RetrofitServiceGenerator =
+        RetrofitServiceGenerator(accessTokenAuthenticator)
 }

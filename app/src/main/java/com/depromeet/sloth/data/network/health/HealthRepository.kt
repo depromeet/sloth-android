@@ -2,7 +2,6 @@ package com.depromeet.sloth.data.network.health
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
-import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
 import com.depromeet.sloth.data.network.lesson.LessonService
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
@@ -10,23 +9,23 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class HealthRepository @Inject constructor(
-    private val retrofitServiceGeneratorTest: RetrofitServiceGeneratorTest,
+    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
-    suspend fun getHealth(): HealthState<HealthResponse> {
-        RetrofitServiceGenerator.build("Input your test token")
-            .create(HealthService::class.java)
-            .fetchHealth()?.run {
-                return HealthState.Success(
-                    this.body() ?: HealthResponse()
-                )
-            } ?: return HealthState.Error(Exception("Retrofit Exception"))
-    }
+//    suspend fun getHealth(): HealthState<HealthResponse> {
+//        RetrofitServiceGenerator.build("Input your test token")
+//            .create(HealthService::class.java)
+//            .fetchHealth()?.run {
+//                return HealthState.Success(
+//                    this.body() ?: HealthResponse()
+//                )
+//            } ?: return HealthState.Error(Exception("Retrofit Exception"))
+//    }
 
     suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
         val accessToken = preferenceManager.getAccessToken()
 
-        retrofitServiceGeneratorTest.build(accessToken)
+        retrofitServiceGenerator.build(accessToken)
             .create(LessonService::class.java)
             .fetchTodayLessonList()?.run {
                 return when (this.code()) {

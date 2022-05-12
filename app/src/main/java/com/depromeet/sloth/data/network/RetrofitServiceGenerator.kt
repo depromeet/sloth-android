@@ -11,54 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Inject
 
-object RetrofitServiceGenerator {
-
-    private const val timeoutRead = 30L
-    private const val timeoutConnect = 30L
-
-    private fun setClient(authToken: String? = null): OkHttpClient {
-        val httpClient = OkHttpClient.Builder()
-        return httpClient.apply {
-            addInterceptor(AuthenticationInterceptor(authToken))
-            addInterceptor(HttpLoggingInterceptor().apply {
-                if (BuildConfig.DEBUG) {
-                    level = HttpLoggingInterceptor.Level.BODY
-                }
-            })
-            connectTimeout(timeoutConnect, TimeUnit.SECONDS)
-            readTimeout(timeoutRead, TimeUnit.SECONDS)
-        }.build()
-    }
-
-    val gson: Gson = GsonBuilder()
-        .setLenient()
-        .create()
-
-    fun build(
-        accessToken: String? = null,
-        isGoogleLogin: Boolean = false
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(
-                when (isGoogleLogin) {
-                    true -> BuildConfig.GOOGLE_BASE_URL
-                    false -> BuildConfig.SLOTH_BASE_URL
-                }
-            )
-            .addConverterFactory(ScalarsConverterFactory.create())
-//            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(setClient(accessToken))
-            .build()
-    }
-}
-
-
-val gson: Gson = GsonBuilder()
-    .setLenient()
-    .create()
-
-class RetrofitServiceGeneratorTest @Inject constructor(
+class RetrofitServiceGenerator @Inject constructor(
     private val accessTokenAuthenticator: AccessTokenAuthenticator,
 ) {
     private val timeoutRead = 30L
@@ -98,3 +51,52 @@ class RetrofitServiceGeneratorTest @Inject constructor(
             .build()
     }
 }
+
+val gson: Gson = GsonBuilder()
+    .setLenient()
+    .create()
+
+//object RetrofitServiceGenerator {
+//
+//    private const val timeoutRead = 30L
+//    private const val timeoutConnect = 30L
+//
+//    private fun setClient(authToken: String? = null): OkHttpClient {
+//        val httpClient = OkHttpClient.Builder()
+//        return httpClient.apply {
+//            addInterceptor(AuthenticationInterceptor(authToken))
+//            addInterceptor(HttpLoggingInterceptor().apply {
+//                if (BuildConfig.DEBUG) {
+//                    level = HttpLoggingInterceptor.Level.BODY
+//                }
+//            })
+//            connectTimeout(timeoutConnect, TimeUnit.SECONDS)
+//            readTimeout(timeoutRead, TimeUnit.SECONDS)
+//        }.build()
+//    }
+//
+//    val gson: Gson = GsonBuilder()
+//        .setLenient()
+//        .create()
+//
+//    fun build(
+//        accessToken: String? = null,
+//        isGoogleLogin: Boolean = false
+//    ): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl(
+//                when (isGoogleLogin) {
+//                    true -> BuildConfig.GOOGLE_BASE_URL
+//                    false -> BuildConfig.SLOTH_BASE_URL
+//                }
+//            )
+//            .addConverterFactory(ScalarsConverterFactory.create())
+////            .addConverterFactory(GsonConverterFactory.create(gson))
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .client(setClient(accessToken))
+//            .build()
+//    }
+//}
+
+
+

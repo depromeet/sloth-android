@@ -24,14 +24,14 @@ class TestViewModel @Inject constructor(
      *
      * @return Result<HealthResponse>
      */
-    suspend fun processHealthWork(
-        context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-    ): HealthState<HealthResponse> {
-        return viewModelScope.async(context = context, start = start) {
-            healthRepository.getHealth()
-        }.await()
-    }
+//    suspend fun processHealthWork(
+//        context: CoroutineContext = Dispatchers.IO,
+//        start: CoroutineStart = CoroutineStart.DEFAULT,
+//    ): HealthState<HealthResponse> {
+//        return viewModelScope.async(context = context, start = start) {
+//            healthRepository.getHealth()
+//        }.await()
+//    }
 
     suspend fun fetchTodayLessonList(
         context: CoroutineContext = Dispatchers.IO,

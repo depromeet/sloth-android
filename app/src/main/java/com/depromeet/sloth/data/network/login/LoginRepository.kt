@@ -2,18 +2,18 @@ package com.depromeet.sloth.data.network.login
 
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.RetrofitServiceGeneratorTest
+import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
-    private val retrofitServiceGeneratorTest: RetrofitServiceGeneratorTest,
+    private val retrofitServiceGenerator: RetrofitServiceGenerator,
     private val preferenceManager: PreferenceManager
 ) {
     suspend fun fetchSlothAuthInfo(
         authToken: String,
         socialType: String
     ): LoginState<LoginSlothResponse> {
-        retrofitServiceGeneratorTest.build(authToken)
+        retrofitServiceGenerator.build(authToken)
             .create(LoginService::class.java)
             .fetchSlothAuthInfo(
                 LoginSlothRequest(
@@ -31,7 +31,7 @@ class LoginRepository @Inject constructor(
     suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): LoginState<LoginGoogleResponse> {
-        retrofitServiceGeneratorTest.build(isGoogleLogin = true)
+        retrofitServiceGenerator.build(isGoogleLogin = true)
             .create(LoginService::class.java)
             .fetchGoogleAuthInfo(
                 LoginGoogleRequest(
