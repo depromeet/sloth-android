@@ -29,12 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 
 @AndroidEntryPoint
-class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
+class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
 
     private val viewModel: UpdateLessonViewModel by viewModels()
-
-    override fun getActivityBinding(): ActivityUpdateLessonBinding =
-        ActivityUpdateLessonBinding.inflate(layoutInflater)
 
     lateinit var lessonDetailInfo: LessonDetail
 
@@ -53,8 +50,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.lifecycleOwner = this
-
         intent.apply {
             lessonDetailInfo = getParcelableExtra("lessonDetail")!!
         }
@@ -68,28 +63,18 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     is LessonUpdateState.Success<LessonUpdateResponse> -> {
                         //handleSuccessState(lessonUpdateState.data)
                         Log.d("Update Success", "${lessonUpdateState.data}")
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의 정보가 수정되었어요",
-                            Toast.LENGTH_SHORT).show()
+                        showToast("강의 정보가 수정되었어요")
                         finish()
                     }
 
-                    is LessonUpdateState.Unauthorized ->
+                    is LessonUpdateState.Unauthorized -> {
                         showLogoutDialog(this@UpdateLessonActivity,
                             this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-
-                    is LessonUpdateState.NoContent, LessonUpdateState.Forbidden ->
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의를 수정하지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is LessonUpdateState.Error -> {
                         Log.d("fetch Error", "${lessonUpdateState.exception}")
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의를 수정하지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의를 수정하지 못했어요")
                     }
                 }
                 hideProgress()
@@ -104,22 +89,14 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                         setLessonCategoryList(lessonState.data)
                     }
 
-                    is LessonState.Unauthorized ->
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(this@UpdateLessonActivity,
                             this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-
-                    is LessonState.Forbidden, LessonState.NotFound ->
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is LessonState.Error -> {
                         Log.d("fetch Error", "${lessonState.exception}")
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 카테고리를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
@@ -136,28 +113,18 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                         initViews()
                     }
 
-                    is LessonState.Unauthorized ->
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(this@UpdateLessonActivity,
                             this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-
-                    is LessonState.Forbidden, LessonState.NotFound ->
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is LessonState.Error -> {
                         Log.d("fetch Error", "${lessonState.exception}")
-                        Toast.makeText(this@UpdateLessonActivity,
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
             }
-
-
         }
 
         viewModel.lessonDetail.observe(this@UpdateLessonActivity) { lessonDetail ->
@@ -168,7 +135,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 //    private fun <T> handleSuccessState(data: T) {
 //        if (data is LessonUpdateResponse) {
 //            Log.d("Update Success", "$data")
-//            Toast.makeText(this@UpdateLessonActivity, "강의 정보가 수정되었어요", Toast.LENGTH_SHORT).show()
+//            showToast("강의 정보가 수정되었어요")
 //            finish()
 //        } else if (data is List<LessonCategoryResponse>) {
 //            Log.d("UpdateLessonActivity", "LessonCategoryResponse: $data")
@@ -211,28 +178,22 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
 
         btnUpdateLesson.setOnClickListener {
             if ((lessonCount as Int) == 0) {
-                Toast.makeText(this@UpdateLessonActivity, "강의 개수가 올바르지 않아요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 개수가 올바르지 않아요")
                 return@setOnClickListener
             }
 
             if ((lessonCount as Int) < lessonDetailInfo.presentNumber) {
-                Toast.makeText(this@UpdateLessonActivity,
-                    "강의 개수가 들은 강의 개수보다 적어요",
-                    Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 개수가 들은 강의 개수보다 적어요")
                 return@setOnClickListener
             }
 
             if(spnUpdateLessonCategory.selectedItemPosition == 0) {
-                Toast.makeText(this@UpdateLessonActivity, "강의 카테고리를 선택해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 카테고리를 선택해 주세요")
                 return@setOnClickListener
             }
 
             if(spnUpdateLessonSite.selectedItemPosition == 0) {
-                Toast.makeText(this@UpdateLessonActivity, "강의 사이트를 선택해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 사이트를 선택해 주세요")
                 return@setOnClickListener
             }
 
@@ -304,7 +265,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             var result = ""
 
             editText.addTextChangedListener(object : TextWatcher {
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun beforeTextChanged(
                     charSequence: CharSequence?,
                     i1: Int,
@@ -343,7 +303,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
                 }
 
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun afterTextChanged(editable: Editable?) {
                     if (editable.isNullOrEmpty() || editable[0] == '0') {
                         lockButton(button, this@UpdateLessonActivity)
@@ -361,7 +320,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
             val decimalFormat = DecimalFormat("#,###")
 
             editText.addTextChangedListener(object : TextWatcher {
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun beforeTextChanged(
                     charSequence: CharSequence?,
                     i1: Int,
@@ -395,7 +353,6 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>() {
                     }
                 }
 
-                @RequiresApi(Build.VERSION_CODES.M)
                 override fun afterTextChanged(editable: Editable?) {
                     setButton(editable, button, this@UpdateLessonActivity)
                 }

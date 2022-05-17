@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
@@ -30,7 +30,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LE
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>() {
+class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
@@ -46,18 +46,9 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
     lateinit var lessonEndDate: String
     lateinit var lessonMessage: String
 
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentRegisterLessonCheckBinding {
-        return FragmentRegisterLessonCheckBinding.inflate(inflater, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Third", "${this.hashCode()}")
-
-        binding.lifecycleOwner = viewLifecycleOwner
 
         arguments?.apply {
             lessonName = getString(LESSON_NAME).toString()
@@ -81,7 +72,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
                     is LessonState.Success -> {
                         Log.d("Register Success", "${lessonRegisterResponse.data}")
-                        Toast.makeText(requireContext(), "강의가 등록되었어요", Toast.LENGTH_SHORT).show()
+                        showToast("강의가 등록되었어요")
                         (activity as RegisterLessonActivity).finish()
                     }
 
@@ -89,13 +80,9 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                         showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonState.NotFound, LessonState.Forbidden -> {
-                        Toast.makeText(requireContext(), "강의 등록을 실패했어요", Toast.LENGTH_SHORT).show()
-                    }
-
                     is LessonState.Error -> {
                         Log.d("Register Error", "${lessonRegisterResponse.exception}")
-                        Toast.makeText(requireContext(), "강의 등록을 실패했어요", Toast.LENGTH_SHORT).show()
+                        showToast("강의 등록을 실패했어요")
                     }
                 }
                 hideProgress()

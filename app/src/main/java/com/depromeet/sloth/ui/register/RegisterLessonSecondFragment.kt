@@ -39,7 +39,7 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_ID
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_ID
 
-class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>() {
+class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
@@ -85,13 +85,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private val today = Date()
 
     private lateinit var calendar: Calendar
-
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentRegisterLessonSecondBinding {
-        return FragmentRegisterLessonSecondBinding.inflate(inflater, container, false)
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,20 +157,17 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             clearFocus(etRegisterLessonPrice)
 
             if (::selectedItem.isInitialized.not() || selectedItem == DEFAULT) {
-                Toast.makeText(requireContext(),
-                    "완강 목표일을 선택해 주세요", Toast.LENGTH_SHORT).show()
+                showToast("완강 목표일을 선택해 주세요")
                 return@setOnClickListener
             }
 
             if (etRegisterLessonPrice.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(),
-                    "강의 금액을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                showToast("강의 금액을 입력해 주세요")
                 return@setOnClickListener
             }
 
             if (startDay!! >= endDay!!) {
-                Toast.makeText(requireContext(),
-                    "강의 시작일은 완강 목표일 이전이어야 해요", Toast.LENGTH_SHORT).show()
+                showToast("강의 시작일은 완강 목표일 이전이어야 해요")
                 return@setOnClickListener
             }
 
@@ -389,7 +379,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         val decimalFormat = DecimalFormat("#,###")
 
         editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
@@ -417,7 +406,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 }
             }
 
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
                     lockButton(button, requireContext())
@@ -440,13 +428,11 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     private fun focusInputFormOptional(editText: EditText) = with(binding) {
         editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 clearFocus(etRegisterLessonPrice)
             }

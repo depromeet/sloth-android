@@ -23,16 +23,9 @@ import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TodayFragment : BaseFragment<FragmentTodayBinding>() {
+class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
 
     private val viewModel: LessonViewModel by activityViewModels()
-
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentTodayBinding {
-        return FragmentTodayBinding.inflate(inflater, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,16 +63,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized ->
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
+                    }
 
-                    is LessonState.NotFound -> {
-                        Log.d("Error", "NotFound")
-                    }
-                    is LessonState.Forbidden -> {
-                        Log.d("Error", "Forbidden")
-                    }
                     is LessonState.Error -> {
                         Log.d("Error", "${it.exception}")
                     }
@@ -257,12 +245,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>() {
                     is LessonState.Unauthorized -> {
                         Log.d("Error", "${it.exception}")
                     }
-                    is LessonState.NotFound -> {
-                        Log.d("Error", "NotFound")
-                    }
-                    is LessonState.Forbidden -> {
-                        Log.d("Error", "Forbidden")
-                    }
+
                     is LessonState.Error -> {
                         Log.d("Error", "${it.exception}")
                     }

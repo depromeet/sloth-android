@@ -18,11 +18,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : BaseActivity<ActivityHomeBinding>() {
+class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     private val viewModel: HomeViewModel by viewModels()
-
-    override fun getActivityBinding(): ActivityHomeBinding =
-        ActivityHomeBinding.inflate(layoutInflater)
 
     lateinit var fcmToken: String
 
@@ -52,10 +49,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     }
 
                     is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {
-                        Toast.makeText(this@HomeActivity,
-                            "강의 상세 정보를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 상세 정보를 가져오지 못했어요")
                     }
 
                     is NotificationRegisterState.Error -> {

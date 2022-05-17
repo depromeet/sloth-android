@@ -1,215 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.register.RegisterLessonActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/tv_register_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="42dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/setup_goal"
-        android:textColor="@color/black"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/sv_register_lesson"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ScrollView
-        android:id="@+id/sv_register_lesson"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_register_lesson"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_register_guide">
+        android:layout_height="match_parent"
+        tools:context=".ui.register.RegisterLessonActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_register_lesson_second"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_register_guide"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="16dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="42dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/setup_goal"
+            android:textColor="@color/black"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/sv_register_lesson"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_register_start_lesson_date"
-                android:layout_width="wrap_content"
+        <ScrollView
+            android:id="@+id/sv_register_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_register_lesson"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_register_guide">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_register_lesson_second"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/lesson_start_date"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:paddingVertical="16dp">
 
-            <TextView
-                android:id="@+id/tv_register_start_lesson_date_caution"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/lesson_start_date_caution"
-                android:textColor="@color/error"
-                android:textSize="14dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_register_start_lesson_date"
-                app:layout_constraintStart_toEndOf="@+id/tv_register_start_lesson_date"
-                app:layout_constraintTop_toTopOf="@+id/tv_register_start_lesson_date" />
+                <TextView
+                    android:id="@+id/tv_register_start_lesson_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_start_date"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_register_start_lesson_date_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_spinner_gray"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="16dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_start_lesson_date" />
+                <TextView
+                    android:id="@+id/tv_register_start_lesson_date_caution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/lesson_start_date_caution"
+                    android:textColor="@color/error"
+                    android:textSize="14dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_register_start_lesson_date"
+                    app:layout_constraintStart_toEndOf="@+id/tv_register_start_lesson_date"
+                    app:layout_constraintTop_toTopOf="@+id/tv_register_start_lesson_date" />
 
-            <TextView
-                android:id="@+id/tv_register_goal_lesson_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/lesson_finish_date"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_register_start_lesson_date_info" />
+                <TextView
+                    android:id="@+id/tv_register_start_lesson_date_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="16dp"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_start_lesson_date" />
 
-            <Spinner
-                android:id="@+id/spn_register_goal_lesson_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_spinner_gray"
-                android:entries="@array/lesson_goal_date_array"
-                android:spinnerMode="dropdown"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date" />
+                <TextView
+                    android:id="@+id/tv_register_goal_lesson_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_finish_date"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_register_start_lesson_date_info" />
 
-            <TextView
-                android:id="@+id/tv_register_goal_lesson_date_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_spinner_gray"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="16dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spn_register_goal_lesson_date"
-                tools:visibility="visible" />
+                <Spinner
+                    android:id="@+id/spn_register_goal_lesson_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:entries="@array/lesson_goal_date_array"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date" />
 
-            <TextView
-                android:id="@+id/tv_register_lesson_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/lesson_price"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date_info" />
+                <TextView
+                    android:id="@+id/tv_register_goal_lesson_date_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="16dp"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spn_register_goal_lesson_date"
+                    tools:visibility="visible" />
 
-            <EditText
-                android:id="@+id/et_register_lesson_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_edit_text_gray"
-                android:hint="@string/enter_lesson_price"
-                android:inputType="number"
-                android:maxLength="9"
-                android:paddingHorizontal="18dp"
-                android:visibility="visible"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
+                <TextView
+                    android:id="@+id/tv_register_lesson_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_price"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date_info" />
 
-            <TextView
-                android:id="@+id/tv_register_lesson_price_Info"
-                android:textColor="@color/black"
-                android:visibility="invisible"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_edit_text_gray"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="18dp"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
+                <EditText
+                    android:id="@+id/et_register_lesson_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:hint="@string/enter_lesson_price"
+                    android:inputType="number"
+                    android:maxLength="9"
+                    android:paddingHorizontal="18dp"
+                    android:visibility="visible"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
 
-            <TextView
-                android:id="@+id/tv_register_lesson_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/lesson_message"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price_Info" />
+                <TextView
+                    android:id="@+id/tv_register_lesson_price_Info"
+                    android:textColor="@color/black"
+                    android:visibility="invisible"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="18dp"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
 
-            <EditText
-                android:id="@+id/et_register_lesson_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_register_rounded_edit_text_gray"
-                android:hint="@string/max_30"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLength="30"
-                android:paddingHorizontal="18dp"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_message" />
+                <TextView
+                    android:id="@+id/tv_register_lesson_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_message"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price_Info" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <EditText
+                    android:id="@+id/et_register_lesson_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:hint="@string/max_30"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="30"
+                    android:paddingHorizontal="18dp"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_message" />
 
-    </ScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_register_lesson"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_register_rounded_button_disabled"
-        android:text="@string/finish"
-        android:textColor="@color/white"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_register_lesson"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_register_rounded_button_disabled"
+            android:text="@string/finish"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -6,9 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
@@ -25,16 +25,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class ListFragment : BaseFragment<FragmentListBinding>() {
+class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
     private val viewModel: LessonViewModel by activityViewModels()
-
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentListBinding {
-        return FragmentListBinding.inflate(inflater, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,20 +53,15 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
                         Log.d("Success", "${it.data}")
                         setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized ->
-                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
 
-                    is LessonState.NotFound, LessonState.Forbidden -> {
-                        Toast.makeText(requireContext(), "강의 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                    is LessonState.Unauthorized -> {
+                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
                         Log.d("Error", "${it.exception}")
-                        Toast.makeText(requireContext(), "강의 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 정보를 가져오지 못했어요")
                     }
-
                 }
             }
 

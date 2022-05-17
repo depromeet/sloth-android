@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
@@ -25,15 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
+class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.activity_lesson_detail) {
 
     private val viewModel: LessonDetailViewModel by viewModels()
 
     lateinit var lessonId: String
     lateinit var lesson: Lesson
-
-    override fun getActivityBinding(): ActivityLessonDetailBinding =
-        ActivityLessonDetailBinding.inflate(layoutInflater)
 
     companion object {
         fun newIntent(context: Context, lessonId: String) =
@@ -49,8 +46,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
         super.onCreate(savedInstanceState)
 
         initViews()
-
-        binding.lifecycleOwner = this
         binding.vm = viewModel
 
         intent.apply {
@@ -75,12 +70,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                             this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonDetailState.NotFound, LessonDetailState.Forbidden -> {
-                        Toast.makeText(this@LessonDetailActivity,
-                            "강의 상세 정보를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
-                    }
                     is LessonDetailState.Error -> {
                         Log.d("Error", "${lessonDetailState.exception}")
                     }
@@ -95,30 +84,14 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                     is LessonDeleteState.Success<LessonDeleteResponse> -> handleSuccessState(
                         lessonDeleteState.data)
 
-                    is LessonDeleteState.Unauthorized ->
+                    is LessonDeleteState.Unauthorized -> {
                         showLogoutDialog(this@LessonDetailActivity,
                             this@LessonDetailActivity) { viewModel.removeAuthToken() }
-
-                    is LessonDeleteState.NoContent, LessonDeleteState.Forbidden -> {
-                        Toast.makeText(this@LessonDetailActivity,
-                            "강의를 삭제하지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
                     }
 
                     is LessonDeleteState.Error -> {
                         Log.d("fetch Error", "${lessonDeleteState.exception}")
-                        Toast.makeText(this@LessonDetailActivity,
-                            "강의를 삭제하지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
-                    }
-
-                    is LessonDeleteState.Finish -> {
-                        Toast.makeText(this@LessonDetailActivity,
-                            "강의가 삭제 되었어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의를 삭제하지 못했어요")
                     }
                 }
                 hideProgress()
@@ -136,7 +109,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
                 )
             })
 
-            lessonDeleteEvent.observe(this@LessonDetailActivity, EventObserver { lessonDelete ->
+            lessonDeleteEvent.observe(this@LessonDetailActivity, EventObserver {
                 showLessonDeleteDialog()
             })
         }
@@ -151,7 +124,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>() {
 
     private fun <T> handleSuccessState(data: T) {
         if (data is LessonDeleteResponse) {
-            Toast.makeText(this@LessonDetailActivity, "강의가 삭제 되었어요", Toast.LENGTH_SHORT).show()
+            showToast("강의가 삭제 되었어요")
             finish()
         }
 

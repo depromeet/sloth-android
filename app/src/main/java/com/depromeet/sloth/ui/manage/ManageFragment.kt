@@ -18,10 +18,7 @@ import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
-import com.depromeet.sloth.extensions.focusInputForm
-import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.extensions.logout
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -33,20 +30,12 @@ import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ManageFragment : BaseFragment<FragmentManageBinding>() {
+class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
     private val viewModel: ManageViewModel by activityViewModels()
 
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentManageBinding =
-        FragmentManageBinding.inflate(inflater, container, false)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.apply {
             memberState.observe(viewLifecycleOwner) { memberState ->
@@ -58,19 +47,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                         handleSuccessState(memberState.data)
                     }
 
-                    is MemberState.Unauthorized ->
+                    is MemberState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
-
-                    is MemberState.NotFound, MemberState.Forbidden -> {
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
                     }
 
                     is MemberState.Error -> {
                         Log.d("fetch Error", "${memberState.exception}")
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("회원 정보를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
@@ -85,18 +69,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
                         handleSuccessState(memberUpdateState.data)
                     }
 
-                    is MemberUpdateState.NoContent, MemberUpdateState.Forbidden ->
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
-
-                    is MemberUpdateState.Unauthorized ->
+                    is MemberUpdateState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
+                    }
 
                     is MemberUpdateState.Error -> {
                         Log.d("update Error", "${memberUpdateState.exception}")
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("회원 정보를 변경하지 못했어요")
                     }
                 }
                 hideProgress()
@@ -108,20 +88,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
 
                     is MemberLogoutState.Success<String> -> handleSuccessState(memberLogoutState.data)
 
-                    is MemberLogoutState.Created -> Unit
-
-                    is MemberLogoutState.Unauthorized ->
+                    is MemberLogoutState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
-
-                    is MemberLogoutState.Forbidden, MemberLogoutState.NotFound ->
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is MemberLogoutState.Error -> {
                         Log.d("update Error", "${memberLogoutState.exception}")
-                        Toast.makeText(requireContext(), "회원 정보를 가져오지 못했어요", Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("로그아웃 하지 못했어요")
                     }
                 }
                 hideProgress()
@@ -169,6 +143,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         if (data is MemberInfoResponse) {
             viewModel.setMemberInfo(data)
         } else if (data is MemberUpdateInfoResponse) {
+            showToast("닉네임이 변경되었어요")
             viewModel.fetchMemberInfo()
         } else {
             logout(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
@@ -188,7 +163,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
     //회원 탈퇴 api 필요
     private fun withdraw() {
         viewModel.removeAuthToken()
-        Toast.makeText(requireContext(), "회원탈퇴 되었어요", Toast.LENGTH_SHORT).show()
+        showToast("회원탈퇴 되었어요")
         startActivity(LoginActivity.newIntent(requireActivity()))
     }
 
@@ -207,10 +182,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>() {
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != viewModel.member.value?.memberName ?: "") {
+            if (nameEditText.text.toString() != (viewModel.member.value?.memberName ?: "")) {
                 viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
             } else {
-                Toast.makeText(requireContext(), "현재 닉네임과 동일한 닉네임이에요", Toast.LENGTH_SHORT).show()
+                hideKeyBoard(requireActivity())
+                showToast("현재 닉네임과 동일한 닉네임이에요")
             }
             updateDialog.dismiss()
         }

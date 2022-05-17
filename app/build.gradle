@@ -28,6 +28,7 @@ android {
         buildConfigField("String", "GOOGLE_CLIENT_ID", GOOGLE_CLIENT_ID)
         buildConfigField("String", "GOOGLE_CLIENT_SECRET", GOOGLE_CLIENT_SECRET)
         buildConfigField("String", "GOOGLE_BASE_URL", GOOGLE_BASE_URL)
+        buildConfigField("String", "POLICY_WEB_VIEW_URL", POLICY_WEB_VIEW_URL)
     }
 
     signingConfigs {
@@ -64,7 +65,6 @@ android {
 
     buildFeatures{
         dataBinding true
-        viewBinding true
     }
 }
 

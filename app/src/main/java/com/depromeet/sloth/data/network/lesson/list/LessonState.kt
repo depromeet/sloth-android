@@ -14,6 +14,4 @@ sealed class LessonState<out R> {
     data class Success<out T>(val data: T) : LessonState<T>()
     data class Unauthorized(val exception: Exception) : LessonState<Nothing>()
     data class Error(val exception: Exception) : LessonState<Nothing>()
-    object Forbidden : LessonState<Nothing>()
-    object NotFound : LessonState<Nothing>()
 }

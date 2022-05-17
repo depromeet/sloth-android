@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
+class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.layout.activity_register_lesson) {
 
     private val viewModel: RegisterLessonViewModel by viewModels()
     lateinit var navController: NavController
@@ -24,14 +24,10 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>() {
             Intent(activity, RegisterLessonActivity::class.java)
     }
 
-    override fun getActivityBinding(): ActivityRegisterLessonBinding =
-        ActivityRegisterLessonBinding.inflate(layoutInflater)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initNavigation()
     }
-
 
     private fun initNavigation() {
         val navHostFragment =

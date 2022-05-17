@@ -29,7 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>() {
+class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
@@ -53,13 +53,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         const val LESSON_SITE_ID = "lessonSiteId"
     }
 
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-    ): FragmentRegisterLessonFirstBinding {
-        return FragmentRegisterLessonFirstBinding.inflate(inflater, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("First", "${this.hashCode()}")
@@ -73,22 +66,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         setLessonCategoryList(lessonState.data)
                     }
 
-                    is LessonState.Unauthorized ->
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
-
-                    is LessonState.Forbidden, LessonState.NotFound ->
-                        Toast.makeText(requireContext(),
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is LessonState.Error -> {
                         Log.d("fetch Error", "${lessonState.exception}")
-                        Toast.makeText(requireContext(),
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 카테고리를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
@@ -102,22 +87,14 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         setLessonSiteList(lessonState.data)
                     }
 
-                    is LessonState.Unauthorized ->
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(requireContext(),
                             requireActivity()) { viewModel.removeAuthToken() }
-
-                    is LessonState.Forbidden, LessonState.NotFound ->
-                        Toast.makeText(requireContext(),
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                    }
 
                     is LessonState.Error -> {
                         Log.d("fetch Error", "${lessonState.exception}")
-                        Toast.makeText(requireContext(),
-                            "강의 카테고리를 가져오지 못했어요",
-                            Toast.LENGTH_SHORT)
-                            .show()
+                        showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
@@ -195,34 +172,29 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             clearFocus(etRegisterLessonCount)
 
             if (etRegisterLessonName.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), "강의 이름을 입력해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 이름을 입력해 주세요")
                 return@setOnClickListener
             }
 
             if (etRegisterLessonCount.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), "강의 개수를 입력해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 개수를 입력해 주세요")
                 return@setOnClickListener
             }
 
             if (etRegisterLessonCount.text.toString()[0] == '0'
                 || etRegisterLessonCount.text.toString().toInt() == 0
             ) {
-                Toast.makeText(requireContext(), "강의 개수가 올바르지 않아요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 개수가 올바르지 않아요")
                 return@setOnClickListener
             }
 
             if (spnRegisterLessonCategory.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "강의 카테고리를 선택해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 카테고리를 선택해 주세요")
                 return@setOnClickListener
             }
 
             if (spnRegisterLessonSite.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "강의 사이트를 선택해 주세요", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("강의 사이트를 선택해 주세요")
                 return@setOnClickListener
             }
 
@@ -298,13 +270,11 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     private fun focusInputForm(editText: EditText, button: AppCompatButton) {
         editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
                     lockButton(button, requireContext())
@@ -327,7 +297,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         var result = ""
 
         editText.addTextChangedListener(object : TextWatcher {
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
@@ -361,7 +330,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                 }
             }
 
-            @RequiresApi(Build.VERSION_CODES.M)
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty() || editable[0] == '0') {
                     lockButton(button, requireContext())
