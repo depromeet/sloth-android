@@ -58,19 +58,12 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             viewModel.fetchTodayLessonList().let {
                 when (it) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
-
-                    is LessonState.Success<List<LessonTodayResponse>> -> {
-                        Log.d("Success", "${it.data}")
-                        setLessonList(it.data)
-                    }
-                    is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
-                    }
-
+                    is LessonState.Success<List<LessonTodayResponse>> -> setLessonList(it.data)
                     is LessonState.Error -> {
+                        showToast("강의 정보를 가져오지 못했어요")
                         Log.d("Error", "${it.exception}")
                     }
+                    else -> Unit
                 }
                 hideProgress()
             }
@@ -224,12 +217,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
             viewModel.updateLessonCount(count, lesson.lessonId).let {
                 when (it) {
-                    is LessonState.Loading -> {
-                        showProgress()
-                    }
-
+                    is LessonState.Loading -> showProgress()
                     is LessonState.Success<LessonUpdateCountResponse> -> {
-                        Log.d("Success", it.data.toString())
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (it.data.presentNumber == lesson.untilTodayNumber ||
@@ -242,13 +231,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             else -> Unit
                         }
                     }
-                    is LessonState.Unauthorized -> {
-                        Log.d("Error", "${it.exception}")
-                    }
-
                     is LessonState.Error -> {
+                        showToast("강의 정보를 업데이트 하지 못했어요")
                         Log.d("Error", "${it.exception}")
                     }
+                    else -> Unit
                 }
             }
 

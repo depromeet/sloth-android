@@ -35,9 +35,6 @@ class TestActivity : BaseActivity<ActivityTestBinding>(R.layout.activity_test) {
                         Log.d("Success", "${it.data}")
                         //setLessonList(it.data)
                     }
-                    is LessonState.Unauthorized -> {
-                        Log.d("Unauthorized", "Unauthorized")
-                    }
 
                     is LessonState.Error -> {
                         Log.d("Error", "${it.exception}")

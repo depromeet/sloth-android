@@ -48,20 +48,12 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             viewModel.fetchAllLessonList().let {
                 when (it) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
-
-                    is LessonState.Success<List<LessonAllResponse>> -> {
-                        Log.d("Success", "${it.data}")
-                        setLessonList(it.data)
-                    }
-
-                    is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
-                    }
-
+                    is LessonState.Success<List<LessonAllResponse>> -> setLessonList(it.data)
                     is LessonState.Error -> {
-                        Log.d("Error", "${it.exception}")
                         showToast("강의 정보를 가져오지 못했어요")
+                        Log.d("Error", "${it.exception}")
                     }
+                    else -> Unit
                 }
             }
 

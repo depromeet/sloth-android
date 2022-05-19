@@ -58,6 +58,10 @@ class LessonRepository @Inject constructor(
 
                         LessonState.Success(body() ?: listOf(LessonTodayResponse.EMPTY))
                     }
+                    401 -> {
+                        preferenceManager.removeAuthToken()
+                        LessonState.Error(Exception(message()))
+                    }
                     else -> LessonState.Error(java.lang.Exception(message()))
                 }
             } ?: return LessonState.Error(java.lang.Exception("Retrofit Exception"))
@@ -76,6 +80,10 @@ class LessonRepository @Inject constructor(
                         }
 
                         LessonState.Success(this.body() ?: listOf(LessonAllResponse.EMPTY))
+                    }
+                    401 -> {
+                        preferenceManager.removeAuthToken()
+                        LessonState.Error(Exception(message()))
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -98,6 +106,10 @@ class LessonRepository @Inject constructor(
                         }
 
                         LessonState.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
+                    }
+                    401 -> {
+                        preferenceManager.removeAuthToken()
+                        LessonState.Error(Exception(message()))
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -140,6 +152,10 @@ class LessonRepository @Inject constructor(
                         }
 
                         LessonState.Success(this.body() ?: LessonRegisterResponse())
+                    }
+                    401 -> {
+                        preferenceManager.removeAuthToken()
+                        LessonState.Error(Exception(message()))
                     }
                     else -> LessonState.Error(java.lang.Exception(message()))
                 }
