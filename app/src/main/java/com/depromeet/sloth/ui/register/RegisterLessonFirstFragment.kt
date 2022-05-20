@@ -26,6 +26,7 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -55,7 +56,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("First", "${this.hashCode()}")
+        Timber.tag("First").d("${this.hashCode()}")
 
         viewModel.apply {
             lessonCategoryListState.observe(viewLifecycleOwner, EventObserver { lessonState ->
@@ -72,7 +73,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.exception}")
+                        Timber.tag("fetch Error").d(lessonState.exception)
                         showToast("강의 카테고리를 가져오지 못했어요")
                     }
                 }
@@ -93,7 +94,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.exception}")
+                        Timber.tag("fetch Error").d(lessonState.exception)
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }

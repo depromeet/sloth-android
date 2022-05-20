@@ -6,12 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.BuildConfig
@@ -28,6 +24,7 @@ import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
@@ -43,7 +40,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     is MemberState.Loading -> handleLoadingState(requireContext())
 
                     is MemberState.Success<MemberInfoResponse> -> {
-                        Log.d("fetch Success", "${memberState.data}")
+                        Timber.tag("fetch Success").d("${memberState.data}")
                         handleSuccessState(memberState.data)
                     }
 
@@ -53,7 +50,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
 
                     is MemberState.Error -> {
-                        Log.d("fetch Error", "${memberState.exception}")
+                        Timber.tag("fetch Error").d(memberState.exception)
                         showToast("회원 정보를 가져오지 못했어요")
                     }
                 }
@@ -65,7 +62,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     is MemberUpdateState.Loading -> handleLoadingState(requireContext())
 
                     is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
-                        Log.d("update Success", "${memberUpdateState.data}")
+                        Timber.tag("update Success").d("${memberUpdateState.data}")
                         handleSuccessState(memberUpdateState.data)
                     }
 
@@ -75,7 +72,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
 
                     is MemberUpdateState.Error -> {
-                        Log.d("update Error", "${memberUpdateState.exception}")
+                        Timber.tag("update Error").d(memberUpdateState.exception)
                         showToast("회원 정보를 변경하지 못했어요")
                     }
                 }
@@ -94,7 +91,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
 
                     is MemberLogoutState.Error -> {
-                        Log.d("update Error", "${memberLogoutState.exception}")
+                        Timber.tag("update Error").d(memberLogoutState.exception)
                         showToast("로그아웃 하지 못했어요")
                     }
                 }

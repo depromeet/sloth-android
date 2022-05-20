@@ -14,13 +14,13 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
@@ -61,7 +61,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     is LessonState.Success<List<LessonTodayResponse>> -> setLessonList(it.data)
                     is LessonState.Error -> {
                         showToast("강의 정보를 가져오지 못했어요")
-                        Log.d("Error", "${it.exception}")
+                        Timber.tag("Error").d(it.exception)
                     }
                     else -> Unit
                 }
@@ -233,7 +233,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     }
                     is LessonState.Error -> {
                         showToast("강의 정보를 업데이트 하지 못했어요")
-                        Log.d("Error", "${it.exception}")
+                        Timber.tag("Error").d(it.exception)
                     }
                     else -> Unit
                 }

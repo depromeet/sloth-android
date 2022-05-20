@@ -31,12 +31,12 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.lay
 
     private fun initNavigation() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_register_container) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.lesson_register_container) as NavHostFragment
         navController = navHostFragment.navController
 
         val navigator = KeepStateNavigator(this,
             navHostFragment.childFragmentManager,
-            R.id.nav_host_register_container)
+            R.id.lesson_register_container)
         navController.navigatorProvider.addNavigator(navigator)
         navController.setGraph(R.navigation.nav_graph_register_lesson)
 

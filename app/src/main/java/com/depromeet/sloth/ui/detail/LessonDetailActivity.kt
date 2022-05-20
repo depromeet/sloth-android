@@ -22,6 +22,7 @@ import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -60,7 +61,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     }
 
                     is LessonDetailState.Success<LessonDetailResponse> -> {
-                        Log.d("fetch Success", "${lessonDetailState.data}")
+                        Timber.tag("fetch Success").d("${lessonDetailState.data}")
 
                         handleSuccessState(lessonDetailState.data)
                     }
@@ -71,7 +72,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     }
 
                     is LessonDetailState.Error -> {
-                        Log.d("Error", "${lessonDetailState.exception}")
+                        Timber.tag("Error").d(lessonDetailState.exception)
                     }
                 }
                 hideProgress()
@@ -90,7 +91,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     }
 
                     is LessonDeleteState.Error -> {
-                        Log.d("fetch Error", "${lessonDeleteState.exception}")
+                        Timber.tag("fetch Error").d(lessonDeleteState.exception)
                         showToast("강의를 삭제하지 못했어요")
                     }
                 }
