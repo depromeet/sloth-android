@@ -3,9 +3,7 @@ package com.depromeet.sloth.ui.list
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -13,7 +11,6 @@ import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
@@ -44,7 +41,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     private fun fetchLessonList() {
         mainScope {
             showProgress()
-
             viewModel.fetchAllLessonList().let {
                 when (it) {
                     is LessonState.Loading -> handleLoadingState(requireContext())

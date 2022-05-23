@@ -10,6 +10,7 @@ import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -52,4 +53,41 @@ class LessonViewModel @Inject constructor(
             lessonId = lessonId
         )
     }.await()
+
+    private val _todayLessonList = MutableStateFlow<LessonState<List<LessonTodayResponse>>>(LessonState.Loading)
+    val todayLessonList: StateFlow<LessonState<List<LessonTodayResponse>>> = _todayLessonList
+
+    fun fetchTodayLessonListTest() {
+        viewModelScope.launch {
+            lessonRepository.fetchTodayLessonListTest().collect { lessonState ->
+                _todayLessonList.value = when(lessonState) {
+                    is LessonState.Loading -> LessonState.Loading
+                    is LessonState.Success<List<LessonTodayResponse>> -> LessonState.Success(lessonState.data)
+                    is LessonState.Unauthorized -> LessonState.Unauthorized(lessonState.exception)
+                    is LessonState.Error -> LessonState.Error(lessonState.exception)
+                }
+            }
+        }
+    }
+
+    private val _allLessonList = MutableStateFlow<LessonState<List<LessonAllResponse>>>(LessonState.Loading)
+    val allLessonList: StateFlow<LessonState<List<LessonAllResponse>>> = _allLessonList
+
+    fun fetchAllLessonListTest() {
+        viewModelScope.launch {
+            lessonRepository.fetchAllLessonListTest().collect { lessonState ->
+                _allLessonList.value = when(lessonState) {
+                    is LessonState.Loading -> LessonState.Loading
+                    is LessonState.Success -> LessonState.Success(lessonState.data)
+                    is LessonState.Unauthorized -> LessonState.Unauthorized(lessonState.exception)
+                    is LessonState.Error -> LessonState.Error(lessonState.exception)
+                }
+            }
+        }
+    }
+
+    init {
+        fetchAllLessonListTest()
+        fetchTodayLessonListTest()
+    }
 }

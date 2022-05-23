@@ -9,9 +9,9 @@ import java.lang.Exception
  * @desc Lesson API 응답 상태
  */
 
-sealed class LessonState<out R> {
+sealed class LessonState<out T> {
     object Loading : LessonState<Nothing>()
-    data class Success<out T>(val data: T) : LessonState<T>()
+    data class Success<T>(val data: T) : LessonState<T>()
     data class Unauthorized(val exception: Exception) : LessonState<Nothing>()
     data class Error(val exception: Exception) : LessonState<Nothing>()
 }

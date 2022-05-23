@@ -3,10 +3,9 @@ package com.depromeet.sloth.ui.list
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonState
@@ -14,7 +13,6 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
@@ -31,6 +29,28 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
+        observeData()
+    }
+
+    override fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.todayLessonList.collect { lessonState ->
+                when(lessonState) {
+                    is LessonState.Loading -> {
+                        Log.e("test", "Loading")
+                    }
+                    is LessonState.Success<List<LessonTodayResponse>> -> {
+                        Log.e("test", "Success")
+                    }
+                    is LessonState.Unauthorized -> {
+                        Log.e("test", "Unauthorized")
+                    }
+                    is LessonState.Error -> {
+                        Log.e("test", "Error")
+                    }
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -58,10 +78,12 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             viewModel.fetchTodayLessonList().let {
                 when (it) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
-                    is LessonState.Success<List<LessonTodayResponse>> -> setLessonList(it.data)
+                    is LessonState.Success<List<LessonTodayResponse>> -> {
+                        val lessonTodayList = it.data
+                        setLessonList(lessonTodayList)
+                    }
                     is LessonState.Error -> {
                         showToast("강의 정보를 가져오지 못했어요")
-                        Log.d("Error", "${it.exception}")
                     }
                     else -> Unit
                 }
