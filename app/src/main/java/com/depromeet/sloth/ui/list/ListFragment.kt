@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.*
@@ -30,6 +32,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
+        observeData()
     }
 
     override fun onStart() {
@@ -68,6 +71,27 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             ivLessonListAlarm.setOnClickListener {
                 val dlg = SlothDialog(requireActivity(), DialogState.WAIT)
                 dlg.start()
+            }
+        }
+    }
+
+    override fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.allLessonList.collect { lessonState ->
+                when(lessonState) {
+                    is LessonState.Loading -> {
+                        Log.e("test1", "Loading")
+                    }
+                    is LessonState.Success<List<LessonAllResponse>> -> {
+                        Log.e("test1", "Success")
+                    }
+                    is LessonState.Unauthorized -> {
+                        Log.e("test1", "Unauthorized")
+                    }
+                    is LessonState.Error -> {
+                        Log.e("test1", "Error")
+                    }
+                }
             }
         }
     }

@@ -32,6 +32,23 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         observeData()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        fetchLessonList()
+    }
+
+    override fun initViews() {
+        with(binding) {
+            rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+
+            ivTodayAlarm.setOnClickListener {
+                val dlg = SlothDialog(requireContext(), DialogState.WAIT)
+                dlg.start()
+            }
+        }
+    }
+
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.todayLessonList.collect { lessonState ->
@@ -49,23 +66,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         Log.e("test", "Error")
                     }
                 }
-            }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        fetchLessonList()
-    }
-
-    override fun initViews() {
-        with(binding) {
-            rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-
-            ivTodayAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireContext(), DialogState.WAIT)
-                dlg.start()
             }
         }
     }
