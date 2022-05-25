@@ -5,7 +5,7 @@ package com.depromeet.sloth.ui.base
  * @created 2022-05-25
  * @desc API 요청에 대한 응답 상태
  */
-sealed class UIState<T> {
+sealed class UIState<out T> {
     object Loading : UIState<Nothing>()
     object UnLoading : UIState<Nothing>()
     data class Success<T>(val data: T) : UIState<T>()
