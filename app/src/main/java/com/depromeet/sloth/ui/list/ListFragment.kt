@@ -2,7 +2,6 @@ package com.depromeet.sloth.ui.list
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.*

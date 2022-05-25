@@ -31,6 +31,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.auth.model.Prompt
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -108,9 +109,9 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
     private fun loginWithKakaoTalk() {
         UserApiClient.instance.loginWithKakaoTalk(requireActivity()) { token: OAuthToken?, error: Throwable? ->
             if (error != null) {
-                Log.d("로그인 실패", error.message ?: "NULL")
+                Timber.tag("로그인 실패").d(error)
             } else if (token != null) {
-                Log.d("로그인 성공 -> accessToken ", token.toString())
+                Timber.tag("로그인 성공 -> accessToken ").d(token.toString())
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
@@ -118,7 +119,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     ).let {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
-                                Log.d("인증정보 수신 성공", it.data.toString())
+                                Timber.tag("인증정보 수신 성공").d(it.data.toString())
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -127,7 +128,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
 
                             }
                             is LoginState.Error -> {
-                                Log.d("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                                Timber.tag("인증정보 수신 실패").d(it.exception)
                                 loginListener.onError()
                             }
                         }
@@ -143,9 +144,9 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
             prompts = listOf(Prompt.LOGIN) //보안을 위해 기존의 로그인 여부와 상관없이 재인증 요청시 필요
         ) { token, error ->
             if (error != null) {
-                Log.d("로그인 실패", error.message ?: "NULL")
+                Timber.tag("로그인 실패").d(error.message.toString())
             } else if (token != null) {
-                Log.d("로그인 성공 -> accessToken ", token.toString())
+                Timber.tag("로그인 성공 -> accessToken ").d(token.toString())
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
@@ -153,7 +154,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     ).let {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
-                                Log.d("인증정보 수신 성공", it.data.toString())
+                                Timber.tag("인증정보 수신 성공").d(it.data.toString())
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -161,7 +162,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                                 }
                             }
                             is LoginState.Error -> {
-                                Log.d("인증정보 수신 실패", it.exception.message ?: "Unsupported Exception")
+                                Timber.tag("인증정보 수신 실패").d(it.exception)
                                 loginListener.onError()
                             }
                         }
@@ -186,12 +187,12 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     loginViewModel.fetchGoogleAuthInfo(this).let {
                         when (it) {
                             is LoginState.Success<LoginGoogleResponse> -> {
-                                Log.d("Success", "${it.data}")
+                                Timber.tag("Success").d("${it.data}")
                                 accessToken = it.data.access_token
                             }
 
                             is LoginState.Error -> {
-                                Log.d("Error", "${it.exception}")
+                                Timber.tag("Error").d(it.exception)
                                 loginListener.onError()
                             }
                         }
@@ -200,7 +201,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     loginViewModel.fetchSlothAuthInfo(accessToken, "GOOGLE").let {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
-                                Log.d("Success", "${it.data}")
+                                Timber.tag("Success").d("${it.data}")
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -208,17 +209,17 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                                 }
                             }
                             is LoginState.Error -> {
-                                Log.d("Error", "${it.exception}")
+                                Timber.tag("Error").d(it.exception)
                                 loginListener.onError()
                             }
                         }
                     }
-                } ?: Log.e("구글 서버 인증 실패", "Authentication failed")
+                } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
             }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.e("로그인 실패", "signInResult:failed code=" + e.statusCode)
+            Timber.tag("로그인 실패").e("signInResult:failed code=%s", e.statusCode)
         }
     }
 

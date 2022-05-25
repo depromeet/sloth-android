@@ -1,10 +1,7 @@
 package com.depromeet.sloth.ui.register
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Lesson
@@ -28,6 +25,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LE
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_ALERT_DAYS
 import com.depromeet.sloth.ui.register.RegisterLessonSecondFragment.Companion.LESSON_START_DATE
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
@@ -48,8 +46,9 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Third", "${this.hashCode()}")
+        Timber.tag("Third").d("${this.hashCode()}")
 
+        Timber.d("$arguments")
         arguments?.apply {
             lessonName = getString(LESSON_NAME).toString()
             lessonTotalNumber = getInt(LESSON_TOTAL_NUMBER)
@@ -66,27 +65,31 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         }
 
         viewModel.apply {
-            lessonRegisterState.observe(viewLifecycleOwner, EventObserver { lessonRegisterResponse ->
-                when (lessonRegisterResponse) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
+            lessonRegisterState.observe(viewLifecycleOwner,
+                EventObserver { lessonRegisterResponse ->
+                    when (lessonRegisterResponse) {
+                        is LessonState.Loading -> handleLoadingState(requireContext())
 
-                    is LessonState.Success -> {
-                        Log.d("Register Success", "${lessonRegisterResponse.data}")
-                        showToast("강의가 등록되었어요")
-                        (activity as RegisterLessonActivity).finish()
-                    }
+                        is LessonState.Success -> {
+                            Timber.tag("Register Success").d("${lessonRegisterResponse.data}")
+                            showToast("강의가 등록되었어요")
+                            (activity as RegisterLessonActivity).finish()
+                        }
 
-                    is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
-                    }
+                        is LessonState.Unauthorized -> {
+                            showLogoutDialog(
+                                requireContext(),
+                                requireActivity()
+                            ) { viewModel.removeAuthToken() }
+                        }
 
-                    is LessonState.Error -> {
-                        Log.d("Register Error", "${lessonRegisterResponse.throwable}")
-                        showToast("강의 등록을 실패했어요")
+                        is LessonState.Error -> {
+                            Timber.tag("Register Error").d(lessonRegisterResponse.throwable)
+                            showToast("강의 등록을 실패했어요")
+                        }
                     }
-                }
-                hideProgress()
-            })
+                    hideProgress()
+                })
 
             lessonRegister.observe(viewLifecycleOwner) { lessonRegister ->
                 binding.lessonRegister = lessonRegister

@@ -1,17 +1,14 @@
 package com.depromeet.sloth.ui.update
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
@@ -26,6 +23,7 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.text.DecimalFormat
 
 @AndroidEntryPoint
@@ -62,7 +60,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
 
                     is LessonUpdateState.Success<LessonUpdateResponse> -> {
                         //handleSuccessState(lessonUpdateState.data)
-                        Log.d("Update Success", "${lessonUpdateState.data}")
+                        Timber.tag("Update Success").d("${lessonUpdateState.data}")
                         showToast("강의 정보가 수정되었어요")
                         finish()
                     }
@@ -73,7 +71,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                     }
 
                     is LessonUpdateState.Error -> {
-                        Log.d("fetch Error", "${lessonUpdateState.exception}")
+                        Timber.tag("fetch Error").d(lessonUpdateState.exception)
                         showToast("강의를 수정하지 못했어요")
                     }
                 }
@@ -95,7 +93,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.throwable}")
+                        Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 카테고리를 가져오지 못했어요")
                     }
                 }
@@ -119,7 +117,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.throwable}")
+                        Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }

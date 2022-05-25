@@ -22,6 +22,9 @@ class LessonViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
+    val todayLessonList: Flow<UIState<List<LessonTodayResponse>>> =
+        lessonRepository.fetchTodayLessonList()
+
 //        suspend fun fetchTodayLessonList(
 //        context: CoroutineContext = Dispatchers.IO,
 //        start: CoroutineStart = CoroutineStart.DEFAULT,
@@ -31,9 +34,6 @@ class LessonViewModel @Inject constructor(
 //    ) {
 //        lessonRepository.fetchTodayLessonList()
 //    }.await()
-
-    val todayLessonList: Flow<UIState<List<LessonTodayResponse>>> =
-        lessonRepository.fetchTodayLessonList()
 
     val allLessonList: Flow<UIState<List<LessonAllResponse>>> =
         lessonRepository.fetchAllLessonList()

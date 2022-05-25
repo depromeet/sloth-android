@@ -8,14 +8,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
-import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.base.UIState
@@ -75,7 +73,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             lessonViewModel.todayLessonList
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
-                    when(uiState) {
+                    when (uiState) {
                         is UIState.Loading -> showProgress()
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success -> setLessonList(uiState.data)
@@ -110,7 +108,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
-                    tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+                    tvTodayTitleMessage.text =
+                        getString(R.string.home_today_title_not_register)
                 }
             }
 
@@ -122,7 +121,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     else lessonNotFinishedList.add(lesson)
                 }
 
-                val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
+                val notFinishedHeader =
+                    HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
                 val notFinishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lesson ->
                         when (clickType) {
@@ -148,7 +148,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             }
                         }
                     }
-                val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
+                val finishedHeader =
+                    HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
                 val finishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lesson ->
                         when (clickType) {
@@ -210,7 +211,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
                         }
                         else -> {
-                            tvTodayTitleMessage.text = getString(R.string.home_today_title_lose)
+                            tvTodayTitleMessage.text =
+                                getString(R.string.home_today_title_lose)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_win)
                         }
                     }

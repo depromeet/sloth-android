@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -24,12 +23,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import android.view.LayoutInflater
-
 import android.widget.TextView
-
-import android.view.ViewGroup
-
 import android.widget.ArrayAdapter
 import android.view.MotionEvent
 import androidx.core.os.bundleOf
@@ -38,8 +32,10 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_ID
 import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_ID
+import timber.log.Timber
 
-class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
+class RegisterLessonSecondFragment :
+    BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
@@ -89,7 +85,9 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Second", "${this.hashCode()}")
+        Timber.tag("Second").d("${this.hashCode()}")
+
+        Timber.d("$arguments")
 
         arguments?.apply {
             lessonName = getString(LESSON_NAME).toString()

@@ -16,6 +16,7 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.util.LoadingDialogUtil
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
@@ -40,7 +41,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     }
 
                     is NotificationRegisterState.Success<String> -> {
-                        Log.d("fetch Success", notificationRegisterState.data)
+                        Timber.tag("fetch Success").d(notificationRegisterState.data)
                     }
 
                     is NotificationRegisterState.Unauthorized -> {
@@ -53,7 +54,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     }
 
                     is NotificationRegisterState.Error -> {
-                        Log.d("Error", "${notificationRegisterState.exception}")
+                        Timber.tag("Error").d(notificationRegisterState.exception)
                     }
 
                     else -> Unit
@@ -79,7 +80,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                 mainScope {
                     viewModel.registerFCMToken(NotificationRegisterRequest(fcmToken))
                     viewModel.putFCMToken(fcmToken)
-                    Log.d("FCM Token", fcmToken)
+                    Timber.tag("FCM Token").d(fcmToken)
                 }
             }
         }
