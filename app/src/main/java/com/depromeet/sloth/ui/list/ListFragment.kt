@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -17,46 +19,56 @@ import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.base.UIState
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
-    private val viewModel: LessonViewModel by activityViewModels()
+    private val lessonViewModel: LessonViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        observeData()
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         fetchLessonList()
     }
 
     private fun fetchLessonList() {
-        mainScope {
-            showProgress()
-            viewModel.fetchAllLessonList().let {
-                when (it) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
-                    is LessonState.Success<List<LessonAllResponse>> -> setLessonList(it.data)
-                    is LessonState.Error -> {
-                        showToast("강의 정보를 가져오지 못했어요")
-                        Log.d("Error", "${it.exception}")
+//        mainScope {
+//            showProgress()
+//            viewModel.fetchAllLessonList().let {
+//                when (it) {
+//                    is LessonState.Loading -> handleLoadingState(requireContext())
+//                    is LessonState.Success<List<LessonAllResponse>> -> setLessonList(it.data)
+//                    is LessonState.Error -> {
+//                        showToast("강의 정보를 가져오지 못했어요")
+//                        Log.d("Error", "${it.throwable}")
+//                    }
+//                    else -> Unit
+//                }
+//            }
+//
+//            hideProgress()
+//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            lessonViewModel.allLessonList
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { uiState ->
+                    when(uiState) {
+                        is UIState.Loading -> showProgress()
+                        is UIState.UnLoading -> hideProgress()
+                        is UIState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
+                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
+                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
                     }
-                    else -> Unit
                 }
-            }
-
-            hideProgress()
         }
     }
 
@@ -71,27 +83,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             ivLessonListAlarm.setOnClickListener {
                 val dlg = SlothDialog(requireActivity(), DialogState.WAIT)
                 dlg.start()
-            }
-        }
-    }
-
-    override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.allLessonList.collect { lessonState ->
-                when(lessonState) {
-                    is LessonState.Loading -> {
-                        Log.e("test1", "Loading")
-                    }
-                    is LessonState.Success<List<LessonAllResponse>> -> {
-                        Log.e("test1", "Success")
-                    }
-                    is LessonState.Unauthorized -> {
-                        Log.e("test1", "Unauthorized")
-                    }
-                    is LessonState.Error -> {
-                        Log.e("test1", "Error")
-                    }
-                }
             }
         }
     }

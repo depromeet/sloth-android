@@ -37,7 +37,7 @@ class TestActivity : BaseActivity<ActivityTestBinding>(R.layout.activity_test) {
                     }
 
                     is LessonState.Error -> {
-                        Log.d("Error", "${it.exception}")
+                        Log.d("Error", "${it.throwable}")
                     }
                 }
             }

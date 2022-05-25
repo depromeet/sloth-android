@@ -72,7 +72,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.exception}")
+                        Log.d("fetch Error", "${lessonState.throwable}")
                         showToast("강의 카테고리를 가져오지 못했어요")
                     }
                 }
@@ -93,7 +93,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.exception}")
+                        Log.d("fetch Error", "${lessonState.throwable}")
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }

@@ -81,7 +81,7 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("Register Error", "${lessonRegisterResponse.exception}")
+                        Log.d("Register Error", "${lessonRegisterResponse.throwable}")
                         showToast("강의 등록을 실패했어요")
                     }
                 }

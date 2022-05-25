@@ -15,7 +15,10 @@ import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
+import com.depromeet.sloth.ui.base.UIState
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 /**
@@ -45,12 +48,14 @@ class LessonRepository @Inject constructor(
             } ?: return LessonDeleteState.Error(Exception("Retrofit Exception"))
     }
 
-    fun fetchTodayLessonListTest() = flow {
+    fun fetchTodayLessonList() = flow {
+        emit(UIState.Loading)
+
         val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchTodayLessonList() ?: run {
-            emit(LessonState.Error(Exception("Response is null")))
+            emit(UIState.Error(Exception("Response is null")))
             return@flow
         }
 
@@ -61,45 +66,49 @@ class LessonRepository @Inject constructor(
                     preferenceManager.updateAccessToken(newAccessToken)
                 }
 
-                emit(LessonState.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
+                emit(UIState.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
             }
             401 -> {
                 preferenceManager.removeAuthToken()
-                emit(LessonState.Unauthorized(Exception(response.message())))
+                emit(UIState.Unauthorized(Exception(response.message())))
             }
-            else -> emit(LessonState.Error(Exception(response.message())))
+            else -> emit(UIState.Error(Exception(response.message())))
         }
     }
+        .catch { throwable -> emit(UIState.Error(throwable)) }
+        .onCompletion { emit(UIState.UnLoading) }
 
-    suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
-            .create(LessonService::class.java)
-            .fetchTodayLessonList()?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if (newAccessToken.isNotEmpty()) {
-                            preferenceManager.updateAccessToken(newAccessToken)
-                        }
+//    suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
+//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+//            .build(preferenceManager.getAccessToken())
+//            .create(LessonService::class.java)
+//            .fetchTodayLessonList()?.run {
+//                return when (this.code()) {
+//                    200 -> {
+//                        val newAccessToken = headers()["Authorization"] ?: ""
+//                        if (newAccessToken.isNotEmpty()) {
+//                            preferenceManager.updateAccessToken(newAccessToken)
+//                        }
+//
+//                        LessonState.Success(body() ?: listOf())
+//                    }
+//                    401 -> {
+//                        preferenceManager.removeAuthToken()
+//                        LessonState.Error(Exception(message()))
+//                    }
+//                    else -> LessonState.Error(Exception(message()))
+//                }
+//            } ?: return LessonState.Error(Exception("Response is null"))
+//    }
 
-                        LessonState.Success(body() ?: listOf())
-                    }
-                    401 -> {
-                        preferenceManager.removeAuthToken()
-                        LessonState.Error(Exception(message()))
-                    }
-                    else -> LessonState.Error(Exception(message()))
-                }
-            } ?: return LessonState.Error(Exception("Response is null"))
-    }
+    fun fetchAllLessonList() = flow {
+        emit(UIState.Loading)
 
-    fun fetchAllLessonListTest() = flow {
         val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
             .fetchAllLessonList() ?: run {
-            emit(LessonState.Error(Exception("Response is null")))
+            emit(UIState.Error(Exception("Response is null")))
             return@flow
         }
 
@@ -110,38 +119,40 @@ class LessonRepository @Inject constructor(
                     preferenceManager.updateAccessToken(newAccessToken)
                 }
 
-                emit(LessonState.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
+                emit(UIState.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
             }
             401 -> {
                 preferenceManager.removeAuthToken()
-                emit(LessonState.Error(Exception(response.message())))
+                emit(UIState.Error(Exception(response.message())))
             }
-            else -> emit(LessonState.Error(Exception(response.message())))
+            else -> emit(UIState.Error(Exception(response.message())))
         }
     }
+        .catch { throwable -> emit(UIState.Error(throwable)) }
+        .onCompletion { emit(UIState.UnLoading) }
 
-    suspend fun fetchAllLessonList(): LessonState<List<LessonAllResponse>> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
-            .create(LessonService::class.java)
-            .fetchAllLessonList()?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if (newAccessToken.isNotEmpty()) {
-                            preferenceManager.updateAccessToken(newAccessToken)
-                        }
-
-                        LessonState.Success(body() ?: listOf())
-                    }
-                    401 -> {
-                        preferenceManager.removeAuthToken()
-                        LessonState.Error(Exception(message()))
-                    }
-                    else -> LessonState.Error(Exception(message()))
-                }
-            } ?: return LessonState.Error(Exception("Response is null"))
-    }
+//    suspend fun fetchAllLessonList(): LessonState<List<LessonAllResponse>> {
+//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+//            .build(preferenceManager.getAccessToken())
+//            .create(LessonService::class.java)
+//            .fetchAllLessonList()?.run {
+//                return when (this.code()) {
+//                    200 -> {
+//                        val newAccessToken = headers()["Authorization"] ?: ""
+//                        if (newAccessToken.isNotEmpty()) {
+//                            preferenceManager.updateAccessToken(newAccessToken)
+//                        }
+//
+//                        LessonState.Success(body() ?: listOf())
+//                    }
+//                    401 -> {
+//                        preferenceManager.removeAuthToken()
+//                        LessonState.Error(Exception(message()))
+//                    }
+//                    else -> LessonState.Error(Exception(message()))
+//                }
+//            } ?: return LessonState.Error(Exception("Response is null"))
+//    }
 
     suspend fun updateLessonCount(
         count: Int,
