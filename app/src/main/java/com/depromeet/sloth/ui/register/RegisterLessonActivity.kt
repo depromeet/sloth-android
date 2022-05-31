@@ -8,7 +8,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityRegisterLessonBinding
-import com.depromeet.sloth.navigation.KeepStateNavigator
 import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,12 +32,6 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.lay
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.lesson_register_container) as NavHostFragment
         navController = navHostFragment.navController
-
-        val navigator = KeepStateNavigator(this,
-            navHostFragment.childFragmentManager,
-            R.id.lesson_register_container)
-        navController.navigatorProvider.addNavigator(navigator)
-        navController.setGraph(R.navigation.nav_graph_register_lesson)
 
         binding.tbRegisterLesson.setNavigationOnClickListener { navController.navigateUp() }
     }

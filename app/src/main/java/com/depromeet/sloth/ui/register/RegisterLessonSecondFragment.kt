@@ -56,6 +56,7 @@ class RegisterLessonSecondFragment :
         const val LESSON_MESSAGE = "lessonMessage"
     }
 
+    //TODO 뷰에서 사용하는 변수 viewModel 에서 관리
     lateinit var lessonName: String
     private lateinit var lessonTotalNumber: Number
     private lateinit var lessonCategoryName: String
@@ -85,8 +86,6 @@ class RegisterLessonSecondFragment :
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.tag("Second").d("${this.hashCode()}")
-
         Timber.d("$arguments")
 
         arguments?.apply {

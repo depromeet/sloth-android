@@ -46,7 +46,6 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.tag("Third").d("${this.hashCode()}")
 
         Timber.d("$arguments")
         arguments?.apply {

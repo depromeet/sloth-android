@@ -1,18 +1,13 @@
 package com.depromeet.sloth.ui.register
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
@@ -56,7 +51,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.tag("First").d("${this.hashCode()}")
 
         viewModel.apply {
             lessonCategoryListState.observe(viewLifecycleOwner, EventObserver { lessonState ->
@@ -76,6 +70,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 카테고리를 가져오지 못했어요")
                     }
+                    else -> Unit
                 }
                 hideProgress()
             })
@@ -94,21 +89,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     }
 
                     is LessonState.Error -> {
-                        Log.d("fetch Error", "${lessonState.throwable}")
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
                 }
                 hideProgress()
             })
-
-//            lessonName.observe(viewLifecycleOwner) { name ->
-//                //lessonName = name
-//            }
-
-//            lessonTotalNumber.observe(viewLifecycleOwner) { number ->
-//                //lessonTotalNumber = number
-//            }
 
             lessonCategorySelectedItemPosition.observe(viewLifecycleOwner) { position ->
                 initViews()
@@ -208,6 +194,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
         viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
 
+        // 한꺼번에 저장ㄴ 하나씩 저장 ㅇㅇ
+        //TODO 양방향 바인딩을 통해 번들로 이동되는 뷰에 선언되는 변수가 존재하지 않도록
         findNavController().navigate(
             R.id.action_register_lesson_first_to_register_lesson_second, bundleOf(
                 LESSON_NAME to etRegisterLessonName.text.toString(),
