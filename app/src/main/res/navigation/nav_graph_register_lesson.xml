@@ -5,7 +5,7 @@
     android:id="@+id/navigation_register"
     app:startDestination="@id/navigation_register_lesson_first">
 
-    <keep_state_fragment
+    <fragment
         android:id="@+id/navigation_register_lesson_first"
         android:name="com.depromeet.sloth.ui.register.RegisterLessonFirstFragment"
         android:label="RegisterLessonFirstFragment"
@@ -17,9 +17,9 @@
             app:exitAnim="@anim/slide_right_exit"
             app:popEnterAnim="@anim/slide_left_enter"
             app:popExitAnim="@anim/slide_left_exit" />
-    </keep_state_fragment>
+    </fragment>
 
-    <keep_state_fragment
+    <fragment
         android:id="@+id/navigation_register_lesson_second"
         android:name="com.depromeet.sloth.ui.register.RegisterLessonSecondFragment"
         android:label="RegisterLessonSecondFragment"
@@ -31,9 +31,9 @@
             app:exitAnim="@anim/slide_right_exit"
             app:popEnterAnim="@anim/slide_left_enter"
             app:popExitAnim="@anim/slide_left_exit" />
-    </keep_state_fragment>
+    </fragment>
 
-    <keep_state_fragment
+    <fragment
         android:id="@+id/navigation_register_lesson_check"
         android:name="com.depromeet.sloth.ui.register.RegisterLessonCheckFragment"
         android:label="RegisterLessonCheckFragment"

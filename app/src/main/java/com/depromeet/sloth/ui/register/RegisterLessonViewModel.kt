@@ -44,42 +44,20 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteSelectedItemPosition = MutableLiveData<Int>()
     val lessonSiteSelectedItemPosition: LiveData<Int> = _lessonSiteSelectedItemPosition
 
-    private val _lessonName = MutableLiveData<String>()
-    val lessonName: LiveData<String> = _lessonName
+    val lessonName = MutableLiveData<String>()
 
     private val _lessonTotalNumber = MutableLiveData<Int>()
     val lessonTotalNumber: LiveData<Int> = _lessonTotalNumber
 
-//    private val moveSecond = MediatorLiveData<Boolean>()
+    private val _lesson = MutableLiveData<Lesson>()
+    val lesson: LiveData<Lesson> = _lesson
 
     init {
         viewModelScope.launch {
             fetchLessonCategoryList()
             fetchLessonSiteList()
         }
-
-//        moveSecond.apply {
-//            addSource(lessonName) {
-//                moveSecond.value = _moveSecond()
-//            }
-//            addSource(lessonTotalNumber) {
-//                moveSecond.value = _moveSecond()
-//            }
-//
-//            addSource(lessonCategorySelectedItemPosition) {
-//                moveSecond.value = _moveSecond()
-//            }
-//
-//            addSource(lessonSiteSelectedItemPosition) {
-//                moveSecond.value = _moveSecond()
-//            }
-//        }
     }
-
-//    private fun _moveSecond(): Boolean {
-//        return (!lessonName.value.isNullOrEmpty() && lessonTotalNumber.value != 0
-//                && lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0)
-//    }
 
     fun setLessonRegisterInfo(lesson: Lesson) = with(lesson) {
         _lessonRegister.value = Lesson(

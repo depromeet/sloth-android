@@ -20,7 +20,7 @@ buildscript {
 ext {
     lifecycle_version = "2.4.1"
     room_version = "2.4.2"
-    coroutine_version = "1.6.1"
+    coroutine_version = "1.6.2"
     retrofit_version = "2.9.0"
     interceptor_version = "4.9.3"
     glide_version = "4.13.0"
