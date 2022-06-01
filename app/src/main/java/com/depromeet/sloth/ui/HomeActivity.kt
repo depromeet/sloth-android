@@ -1,8 +1,6 @@
 package com.depromeet.sloth.ui
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -18,22 +16,23 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     private val viewModel: HomeViewModel by viewModels()
 
-    lateinit var fcmToken: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (::fcmToken.isInitialized.not()) {
-            registerFCMToken()
-        }
 
         initNavigation()
 
         viewModel.apply {
+            val fcmToken =  viewModel.getFCMToken()
+            Timber.d("fcmToken: $fcmToken")
+            if(fcmToken.isEmpty()) {
+                registerFCMToken()
+            }
+
             notificationRegisterState.observe(this@HomeActivity) { notificationRegisterState ->
                 when (notificationRegisterState) {
                     is NotificationRegisterState.Loading -> {
@@ -50,7 +49,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     }
 
                     is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {
-                        showToast("강의 상세 정보를 가져오지 못했어요")
+                        showToast("fcm 토큰을 저장하지 못했어요")
                     }
 
                     is NotificationRegisterState.Error -> {
@@ -75,13 +74,15 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                fcmToken = task.result ?: ""
-                mainScope {
-                    viewModel.registerFCMToken(NotificationRegisterRequest(fcmToken))
-                    viewModel.putFCMToken(fcmToken)
-                    Timber.tag("FCM Token").d(fcmToken)
-                }
+            if (!task.isSuccessful) {
+                Timber.w(task.exception, "Fetching FCM registration token failed")
+                return@addOnCompleteListener
+            }
+            val fcmToken = task.result
+            Timber.tag("FCM Token").d(fcmToken)
+            viewModel.putFCMToken(fcmToken)
+            mainScope {
+                viewModel.registerFCMToken(NotificationRegisterRequest(fcmToken))
             }
         }
     }

@@ -66,6 +66,14 @@ class PreferenceManager @Inject constructor(
     }
 
     /**
+     * 저장한 FCMToken 로드
+     *
+     */
+    fun getFCMToken(): String {
+        return prefs.getString(FCM_TOKEN, DEFAULT_STRING_VALUE) ?: DEFAULT_STRING_VALUE
+    }
+
+    /**
      * 저장한 accessToken 로드
      *
      * @return

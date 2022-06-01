@@ -74,4 +74,8 @@ class MemberRepository @Inject constructor(
     fun putFCMToken(fcmToken: String) {
         preferenceManager.putFCMToken(fcmToken)
     }
+
+    fun getFCMToken(): String {
+        return preferenceManager.getFCMToken()
+    }
 }
