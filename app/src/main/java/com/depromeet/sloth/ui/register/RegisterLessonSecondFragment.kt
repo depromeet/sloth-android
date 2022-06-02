@@ -443,11 +443,4 @@ class RegisterLessonSecondFragment :
             }
         }
     }
-
-    private fun clearFocus(editText: EditText) {
-        editText.apply {
-            clearFocus()
-            setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-        }
-    }
 }

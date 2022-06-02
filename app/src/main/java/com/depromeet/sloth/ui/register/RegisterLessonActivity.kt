@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityRegisterLessonBinding
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -13,7 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.layout.activity_register_lesson) {
+class RegisterLessonActivity :
+    BaseActivity<ActivityRegisterLessonBinding>(R.layout.activity_register_lesson) {
 
     private val viewModel: RegisterLessonViewModel by viewModels()
     lateinit var navController: NavController
@@ -33,6 +35,11 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.lay
             supportFragmentManager.findFragmentById(R.id.lesson_register_container) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.tbRegisterLesson.setNavigationOnClickListener { navController.navigateUp() }
+        binding.tbRegisterLesson.apply {
+            setSupportActionBar(this)
+            setNavigationOnClickListener {
+                if (!navController.navigateUp()) finish() else navController.navigateUp()
+            }
+        }
     }
 }
