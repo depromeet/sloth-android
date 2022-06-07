@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.update
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonRepository
@@ -13,15 +14,21 @@ import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
     memberRepository: MemberRepository,
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
+
+    val lessonDetail: LessonDetail = savedStateHandle.get(UpdateLessonActivity.LESSON_DETAIL)
+        ?: throw IllegalStateException("There is no value of the lesson id.")
 
     private val _lessonUpdateState = MutableLiveData<LessonUpdateState<LessonUpdateResponse>>()
     val lessonUpdateState: LiveData<LessonUpdateState<LessonUpdateResponse>> = _lessonUpdateState
@@ -34,13 +41,10 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
     val lessonSiteListState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteListState
 
-    private val _lessonDetail = MutableLiveData<LessonDetail>()
-    val lessonDetail: LiveData<LessonDetail> = _lessonDetail
-
-    private val _lessonCategoryList =  MutableLiveData<MutableList<String>>()
+    private val _lessonCategoryList = MutableLiveData<MutableList<String>>()
     val lessonCategoryList: LiveData<MutableList<String>> = _lessonCategoryList
 
-    private val _lessonSiteList =  MutableLiveData<MutableList<String>>()
+    private val _lessonSiteList = MutableLiveData<MutableList<String>>()
     val lessonSiteList: LiveData<MutableList<String>> = _lessonSiteList
 
     init {
@@ -48,27 +52,6 @@ class UpdateLessonViewModel @Inject constructor(
             fetchLessonCategoryList()
             fetchLessonSiteList()
         }
-    }
-
-    fun setLessonUpdateInfo(lessonDetail: LessonDetail) = with(lessonDetail) {
-        _lessonDetail.value = LessonDetail(
-            alertDays,
-            categoryName,
-            currentProgressRate,
-            endDate,
-            goalProgressRate,
-            isFinished,
-            lessonId,
-            lessonName,
-            message,
-            presentNumber,
-            price,
-            remainDay,
-            siteName,
-            startDate,
-            totalNumber,
-            wastePrice
-        )
     }
 
     fun updateLesson(

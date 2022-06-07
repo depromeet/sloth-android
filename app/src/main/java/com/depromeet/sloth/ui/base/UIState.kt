@@ -12,3 +12,15 @@ sealed class UIState<out T> {
     data class Unauthorized(val throwable: Throwable) : UIState<Nothing>()
     data class Error(val throwable: Throwable) : UIState<Nothing>()
 }
+
+fun <T> UIState<T>.successOrNull(): T? = if (this is UIState.Success<T>) {
+    data
+} else {
+    null
+}
+
+fun <T> UIState<T>.throwableOrNull(): Throwable? = if (this is UIState.Error) {
+    throwable
+} else {
+    null
+}

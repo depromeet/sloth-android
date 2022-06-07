@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.common
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
@@ -9,6 +10,7 @@ import com.depromeet.sloth.GlideApp
 import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
+import com.depromeet.sloth.ui.base.UIState
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 
@@ -170,4 +172,8 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
     }
 
 
+@BindingAdapter("show")
+fun ProgressBar.bindShow(uiState: UIState<*>) {
+    visibility = if (uiState is UIState.Loading) View.VISIBLE else View.GONE
+}
 

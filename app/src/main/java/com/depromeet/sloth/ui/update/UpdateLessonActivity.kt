@@ -27,11 +27,12 @@ import timber.log.Timber
 import java.text.DecimalFormat
 
 @AndroidEntryPoint
-class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
+class UpdateLessonActivity :
+    BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
 
     private val viewModel: UpdateLessonViewModel by viewModels()
 
-    lateinit var lessonDetailInfo: LessonDetail
+    //lateinit var lessonDetailInfo: LessonDetail
 
     lateinit var lessonCount: Number
     lateinit var lessonPrice: Number
@@ -48,8 +49,8 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        intent.apply {
-            lessonDetailInfo = getParcelableExtra("lessonDetail")!!
+        bind {
+            lessonDetail = viewModel.lessonDetail
         }
 
         viewModel.apply {
@@ -96,6 +97,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 카테고리를 가져오지 못했어요")
                     }
+                    else -> Unit
                 }
                 hideProgress()
             }
@@ -120,13 +122,10 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
+                    else -> Unit
                 }
                 hideProgress()
             }
-        }
-
-        viewModel.lessonDetail.observe(this@UpdateLessonActivity) { lessonDetail ->
-            binding.lessonDetail = lessonDetail
         }
     }
 
@@ -171,8 +170,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
         focusSpinnerForm(spnUpdateLessonSite, btnUpdateLesson)
         validatePriceInputForm(etUpdateLessonPrice, btnUpdateLesson)
 
-        viewModel.setLessonUpdateInfo(lessonDetailInfo)
-        setLessonUpdateInfo(lessonDetailInfo)
+        setLessonUpdateInfo()
 
         btnUpdateLesson.setOnClickListener {
             if ((lessonCount as Int) == 0) {
@@ -180,17 +178,17 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
                 return@setOnClickListener
             }
 
-            if ((lessonCount as Int) < lessonDetailInfo.presentNumber) {
+            if ((lessonCount as Int) < binding.lessonDetail!!.presentNumber) {
                 showToast("강의 개수가 들은 강의 개수보다 적어요")
                 return@setOnClickListener
             }
 
-            if(spnUpdateLessonCategory.selectedItemPosition == 0) {
+            if (spnUpdateLessonCategory.selectedItemPosition == 0) {
                 showToast("강의 카테고리를 선택해 주세요")
                 return@setOnClickListener
             }
 
-            if(spnUpdateLessonSite.selectedItemPosition == 0) {
+            if (spnUpdateLessonSite.selectedItemPosition == 0) {
                 showToast("강의 사이트를 선택해 주세요")
                 return@setOnClickListener
             }
@@ -201,7 +199,7 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
 
     private fun updateLesson() = with(binding) {
         viewModel.updateLesson(
-            lessonDetailInfo.lessonId.toString(),
+            lessonDetail!!.lessonId.toString(),
             LessonUpdateRequest(
                 categoryId =
                 lessonCategoryMap.filterValues
@@ -237,6 +235,14 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
     }
 
     private fun setLessonUpdateInfo(lessonDetail: LessonDetail) = with(lessonDetail) {
+        lessonCount = totalNumber
+        lessonPrice = price
+
+        bindAdapter()
+        setSpinner(categoryName, siteName)
+    }
+
+    private fun setLessonUpdateInfo() = with(binding.lessonDetail!!) {
         lessonCount = totalNumber
         lessonPrice = price
 
@@ -406,5 +412,9 @@ class UpdateLessonActivity : BaseActivity<ActivityUpdateLessonBinding>(R.layout.
         }
         tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
         tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+    }
+
+    companion object {
+        const val LESSON_DETAIL = "lessonDetail"
     }
 }

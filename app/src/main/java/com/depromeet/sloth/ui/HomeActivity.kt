@@ -2,7 +2,10 @@ package com.depromeet.sloth.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.notification.NotificationRegisterRequest
@@ -19,7 +22,10 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
+
     private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +70,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     }
 
     private fun initNavigation() {
-        val navController = supportFragmentManager.findFragmentById(R.id.nav_host_home_container)
-            ?.findNavController()
-        navController?.let {
-            binding.bnvHome.setupWithNavController(it)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_home_container) as NavHostFragment
+        navController = navHostFragment.findNavController()
+
+        binding.bnvHome.apply {
+            setupWithNavController(navController)
+            itemIconTintList = null
         }
-        binding.bnvHome.itemIconTintList = null
     }
+
 
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->

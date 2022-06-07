@@ -1,14 +1,11 @@
 package com.depromeet.sloth.extensions
 
 import android.content.Context
-import android.os.Build
 import android.text.Editable
-import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 
-@RequiresApi(Build.VERSION_CODES.M)
 fun unlockButton(button: AppCompatButton, context: Context) {
     button.apply {
         isEnabled = true
@@ -18,7 +15,6 @@ fun unlockButton(button: AppCompatButton, context: Context) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
 fun lockButton(button: AppCompatButton, context: Context) {
     button.apply {
         isEnabled = false
@@ -35,3 +31,5 @@ fun setButton(editable: Editable?, button: AppCompatButton, context: Context) {
         unlockButton(button, context)
     }
 }
+
+

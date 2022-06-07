@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.*
@@ -14,13 +15,18 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
     memberRepository: MemberRepository,
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
+
+    val lessonId: String = savedStateHandle.get(LessonDetailActivity.LESSON_ID)
+        ?: throw IllegalStateException("There is no value of the lesson id.")
 
     private val _lessonDetailState = MutableLiveData<LessonDetailState<LessonDetailResponse>>()
     val lessonDetailState: LiveData<LessonDetailState<LessonDetailResponse>> = _lessonDetailState
@@ -37,13 +43,15 @@ class LessonDetailViewModel @Inject constructor(
     private val _lessonDeleteEvent = MutableLiveData<Event<Boolean>>()
     val lessonDeleteEvent: LiveData<Event<Boolean>> = _lessonDeleteEvent
 
-    fun fetchLessonDetail(lessonId: String) = viewModelScope.launch {
+
+    fun fetchLessonDetail() = viewModelScope.launch {
         _lessonDetailState.value = LessonDetailState.Loading
         val lessonDetailResponse = lessonRepository.fetchLessonDetail(lessonId)
         _lessonDetailState.value = lessonDetailResponse
     }
 
-    fun deleteLesson(lessonId: String) = viewModelScope.launch {
+
+    fun deleteLesson() = viewModelScope.launch {
         _lessonDeleteState.value = LessonDeleteState.Loading
         val lessonDeleteResponse = lessonRepository.deleteLesson(lessonId)
         _lessonDeleteState.value = lessonDeleteResponse

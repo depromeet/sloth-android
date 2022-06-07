@@ -32,4 +32,8 @@ abstract class BaseActivity<B: ViewDataBinding>(
             block.invoke()
         }
     }
+
+    protected inline fun bind(block: B.() -> Unit) {
+        binding.apply(block)
+    }
 }

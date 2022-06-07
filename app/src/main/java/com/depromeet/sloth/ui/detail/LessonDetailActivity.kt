@@ -1,26 +1,25 @@
 package com.depromeet.sloth.ui.detail
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
-import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
+import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -30,28 +29,9 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
 
     private val viewModel: LessonDetailViewModel by viewModels()
 
-    lateinit var lessonId: String
-    lateinit var lesson: Lesson
-
-    companion object {
-        fun newIntent(context: Context, lessonId: String) =
-            Intent(context, LessonDetailActivity::class.java).apply {
-                putExtra(LESSON_ID, lessonId)
-            }
-
-        private const val LESSON_ID = "lessonId"
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        initViews()
-        binding.vm = viewModel
-
-        intent.apply {
-            lessonId = getStringExtra(LESSON_ID).toString()
-        }
 
         viewModel.apply {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
@@ -80,7 +60,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
 
             lessonDeleteState.observe(this@LessonDetailActivity) { lessonDeleteState ->
                 when (lessonDeleteState) {
-                    is LessonDeleteState.Loading -> handleLoadingState(this@LessonDetailActivity)
+                    is LessonDeleteState.Loading -> showProgress(this@LessonDetailActivity)
 
                     is LessonDeleteState.Success<LessonDeleteResponse> -> handleSuccessState(
                         lessonDeleteState.data)
@@ -114,13 +94,18 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                 showLessonDeleteDialog()
             })
         }
+
+        initViews()
+
+        bind {
+            vm = viewModel
+        }
     }
 
     override fun onStart() {
         super.onStart()
 
-        handleLoadingState(this@LessonDetailActivity)
-        viewModel.fetchLessonDetail(lessonId)
+        viewModel.fetchLessonDetail()
     }
 
     private fun <T> handleSuccessState(data: T) {
@@ -142,9 +127,14 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
         val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
-                viewModel.deleteLesson(lessonId)
+                //viewModel.deleteLesson(lessonId)
+                viewModel.deleteLesson()
             }
         }
         dlg.start()
+    }
+
+    companion object {
+        const val LESSON_ID = "lessonId"
     }
 }

@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.list
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
@@ -19,6 +20,7 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.LessonViewModel
 import com.depromeet.sloth.ui.base.UIState
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
+import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -91,7 +93,9 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
         startActivity(
-            LessonDetailActivity.newIntent(requireContext(), lessonInfo.lessonId.toString())
+            Intent(requireContext(), LessonDetailActivity::class.java).apply {
+                putExtra(LESSON_ID, lessonInfo.lessonId.toString())
+            }
         )
     }
 
