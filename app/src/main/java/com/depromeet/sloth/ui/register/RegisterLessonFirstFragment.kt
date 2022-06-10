@@ -7,7 +7,10 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
@@ -20,12 +23,20 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_TOTAL_NUMBER
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 
+//TODO button 관련은 mediatorLivedata 를 통해서
+//EditText, TextView, Button 는 style 만들어서 그걸로 재활용
+//데이터를 계속 뷰에서 담아서 이동하지말고 viewmodel 에서 관리
+//form 함수들이랑 button 분리시키기
+//category,site 비동기
+
 @AndroidEntryPoint
-class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
+class RegisterLessonFirstFragment :
+    BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
@@ -39,15 +50,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     lateinit var lessonSiteAdapter: ArrayAdapter<String>
 
     lateinit var lessonCount: Number
-
-    companion object {
-        const val LESSON_NAME = "lessonName"
-        const val LESSON_TOTAL_NUMBER = "lessonCount"
-        const val LESSON_CATEGORY_NAME = "lessonCategoryName"
-        const val LESSON_CATEGORY_ID = "lessonCategoryId"
-        const val LESSON_SITE_NAME = "lessonSiteName"
-        const val LESSON_SITE_ID = "lessonSiteId"
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,6 +94,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast("강의 사이트를 가져오지 못했어요")
                     }
+                    else -> Unit
                 }
                 hideProgress()
             })
@@ -194,20 +197,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
         viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
 
-        // 한꺼번에 저장ㄴ 하나씩 저장 ㅇㅇ
-        //TODO 양방향 바인딩을 통해 번들로 이동되는 뷰에 선언되는 변수가 존재하지 않도록
         findNavController().navigate(
             R.id.action_register_lesson_first_to_register_lesson_second, bundleOf(
-                LESSON_NAME to etRegisterLessonName.text.toString(),
-                LESSON_TOTAL_NUMBER to etRegisterLessonCount.text.toString().toInt(),
-                LESSON_CATEGORY_NAME to spnRegisterLessonCategory.selectedItem.toString(),
-                LESSON_CATEGORY_ID to lessonCategoryMap.filterValues
-                { it == spnRegisterLessonCategory.selectedItem.toString() }.keys.first(),
-                LESSON_SITE_NAME to spnRegisterLessonSite.selectedItem.toString(),
-                LESSON_SITE_ID to lessonSiteMap.filterValues
-                { it == spnRegisterLessonSite.selectedItem.toString() }.keys.first()
+                KEY_LESSON_TOTAL_NUMBER to etRegisterLessonCount.text.toString().toInt(),
             )
         )
+        //findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
     }
 
     private fun bindAdapter() = with(binding) {
@@ -229,6 +224,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     }
 
     @SuppressLint("ClickableViewAccessibility")
+    //두개의 spinner 를 하나의 listener 로 관리
+
     private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
         spinner.apply {
             setOnTouchListener { _, event ->
@@ -243,10 +240,24 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                     clearFocus(etRegisterLessonCount)
                     clearFocus(etRegisterLessonName)
 
+                    spnRegisterLessonCategory
+
                     val spinnerId = spinner.selectedItemPosition
                     if (spinnerId == 0) {
                         lockButton(button, requireContext())
                     } else {
+                        //viewModel 에는 안드로이드 의존성이 있으면 안되므로..
+                        // == 이 맞나
+                        if (spinner == spnRegisterLessonCategory) {
+                            viewModel.setCategoryId(lessonCategoryMap.filterValues
+                            { it == spnRegisterLessonCategory.selectedItem.toString() }.keys.first())
+                            viewModel.setCategoryName(spinner.selectedItem.toString())
+                        } else {
+                            viewModel.setSiteId(lessonSiteMap.filterValues
+                            { it == spnRegisterLessonSite.selectedItem.toString() }.keys.first())
+                            viewModel.setSiteName(spinner.selectedItem.toString())
+                        }
+
                         unlockButton(button, requireContext())
                     }
                 }
@@ -260,10 +271,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
     private fun focusInputForm(editText: EditText, button: AppCompatButton) {
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                viewModel.setLessonName(text.toString())
+            }
 
             override fun afterTextChanged(editable: Editable?) {
                 if (editable.isNullOrEmpty()) {
@@ -299,6 +312,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         lockButton(button, requireContext())
                     } else {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        //viewModel.setLessonTotalNumber(editText.toString().toInt())
                         unlockButton(button, requireContext())
                     }
                     editText.setText(result)

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class LessonRegisterRequest (
+data class LessonRegisterRequest(
     @SerializedName("alertDays")
     val alertDays: String?,
     @SerializedName("categoryId")
@@ -23,5 +23,5 @@ data class LessonRegisterRequest (
     @SerializedName("startDate")
     val startDate: String,
     @SerializedName("totalNumber")
-    val totalNumber: Int
-): Parcelable
+    val totalNumber: Int,
+) : Parcelable

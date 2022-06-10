@@ -11,14 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.databinding.FragmentListBinding
-import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.ui.*
-import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.custom.LessonItemDecoration
+import com.depromeet.sloth.ui.DialogState
 import com.depromeet.sloth.ui.LessonViewModel
+import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
@@ -77,7 +76,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
 
             ivLessonListRegister.setOnClickListener {
-                startActivity(RegisterLessonActivity.newIntent(requireActivity()))
+                moveRegisterActivity()
             }
 
             ivLessonListAlarm.setOnClickListener {
@@ -88,7 +87,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     }
 
     private fun moveRegisterActivity() {
-        startActivity(RegisterLessonActivity.newIntent(requireActivity()))
+        startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
     }
 
     private fun moveDetailActivity(lessonInfo: LessonAllResponse) {

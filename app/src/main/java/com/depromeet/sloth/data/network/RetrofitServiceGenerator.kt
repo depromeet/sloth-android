@@ -1,14 +1,11 @@
 package com.depromeet.sloth.data.network
 
+import com.depromeet.sloth.BuildConfig
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import com.depromeet.sloth.BuildConfig
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Inject
 
 class RetrofitServiceGenerator @Inject constructor(
@@ -45,7 +42,6 @@ class RetrofitServiceGenerator @Inject constructor(
                     false -> BuildConfig.SLOTH_BASE_URL
                 }
             )
-            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(provideHttpClient(accessToken))
             .build()

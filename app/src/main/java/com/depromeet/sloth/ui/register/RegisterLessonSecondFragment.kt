@@ -6,63 +6,35 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.Lesson
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_NAME
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_TOTAL_NUMBER
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_NAME
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_NAME
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_END_DATE
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_START_DATE
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_TOTAL_NUMBER
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import android.widget.TextView
-import android.widget.ArrayAdapter
-import android.view.MotionEvent
-import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_CATEGORY_ID
-import com.depromeet.sloth.ui.register.RegisterLessonFirstFragment.Companion.LESSON_SITE_ID
-import timber.log.Timber
 
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
-    companion object {
-        private const val DAY = 86400000L
-
-        private const val DEFAULT = 0
-        private const val ONE_WEEK = 1
-        private const val ONE_MONTH = 2
-        private const val TWO_MONTH = 3
-        private const val THREE_MONTH = 4
-        private const val CUSTOM_SETTING = 5
-
-        const val LESSON_START_DATE = "lessonStartDate"
-        const val LESSON_END_DATE = "lessonGoalDate"
-        const val LESSON_PRICE = "lessonPrice"
-        const val LESSON_ALERT_DAYS = "lessonAlertDays"
-        const val LESSON_MESSAGE = "lessonMessage"
-    }
-
-    //TODO 뷰에서 사용하는 변수 viewModel 에서 관리
-    lateinit var lessonName: String
     private lateinit var lessonTotalNumber: Number
-    private lateinit var lessonCategoryName: String
-    lateinit var lessonCategoryId: Number
-    private lateinit var lessonSiteName: String
-    lateinit var lessonSiteId: Number
     lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
@@ -86,16 +58,11 @@ class RegisterLessonSecondFragment :
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.d("$arguments")
 
         arguments?.apply {
-            lessonName = getString(LESSON_NAME).toString()
-            lessonTotalNumber = getInt(LESSON_TOTAL_NUMBER)
-            lessonCategoryName = getString(LESSON_CATEGORY_NAME).toString()
-            lessonCategoryId = getInt(LESSON_CATEGORY_ID)
-            lessonSiteName = getString(LESSON_SITE_NAME).toString()
-            lessonSiteId = getInt(LESSON_SITE_ID)
+            lessonTotalNumber = getInt(KEY_LESSON_TOTAL_NUMBER)
         }
+
         initViews()
     }
 
@@ -125,7 +92,7 @@ class RegisterLessonSecondFragment :
 
         if (::lessonStartDate.isInitialized.not()) {
             calendar.time = today
-            calendarToText(LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
+            calendarToText(KEY_LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
         } else {
             tvRegisterStartLessonDateInfo.text = changeDateFormat(lessonStartDate)
         }
@@ -172,22 +139,35 @@ class RegisterLessonSecondFragment :
         }
     }
 
-    private fun moveRegisterLessonCheck() = with(binding) {
-        findNavController().navigate(
-            R.id.action_register_lesson_second_to_register_lesson_check, bundleOf(
-                //"key" to "value"
-                LESSON_NAME to lessonName,
-                LESSON_TOTAL_NUMBER to lessonTotalNumber as Int,
-                LESSON_CATEGORY_NAME to lessonCategoryName,
-                LESSON_CATEGORY_ID to lessonCategoryId as Int,
-                LESSON_SITE_NAME to lessonSiteName,
-                LESSON_SITE_ID to lessonSiteId as Int,
-                LESSON_START_DATE to lessonStartDate,
-                LESSON_END_DATE to lessonEndDate,
-                LESSON_PRICE to lessonPrice.toInt(),
-                LESSON_MESSAGE to etRegisterLessonMessage.text.toString()
+    private fun moveRegisterLessonCheck() {
+        viewModel.setLessonCheckInfo(
+            Lesson(
+                categoryName = viewModel.lessonCategoryName.value!!,
+                endDate = changeDateStringToArrayList(lessonEndDate),
+                lessonName = viewModel.lessonName.value!!,
+                message = viewModel.lessonMessage.value,
+                price = lessonPrice as Int,
+                siteName = viewModel.lessonSiteName.value!!,
+                startDate = changeDateStringToArrayList(lessonStartDate),
+                totalNumber = lessonTotalNumber as Int,
             )
         )
+
+        viewModel.setLessonRegisterInfo(
+            LessonRegisterRequest(
+                alertDays = null,
+                categoryId = viewModel.lessonCategoryId.value!!,
+                endDate = lessonEndDate,
+                lessonName = viewModel.lessonName.value!!,
+                message = viewModel.lessonMessage.value!!,
+                price = lessonPrice as Int,
+                siteId = viewModel.lessonSiteId.value!!,
+                startDate = lessonStartDate,
+                totalNumber = lessonTotalNumber as Int
+            )
+        )
+
+        findNavController().navigate(R.id.action_register_lesson_second_to_register_lesson_check)
     }
 
     private fun isStartDateInitialized(calendar: Calendar) {
@@ -219,7 +199,7 @@ class RegisterLessonSecondFragment :
             addOnPositiveButtonClickListener {
                 startDate = Date(it)
                 calendar.time = Date(it)
-                calendarToText(LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
+                calendarToText(KEY_LESSON_START_DATE, calendar, tvRegisterStartLessonDateInfo)
 
                 if (isLessonGoalDateDecided) {
                     updateGoalLessonDate(calendar)
@@ -231,7 +211,7 @@ class RegisterLessonSecondFragment :
 
     private fun calendarToText(date: String, calendar: Calendar, textView: TextView? = null) =
         with(binding) {
-            if (date == LESSON_START_DATE) {
+            if (date == KEY_LESSON_START_DATE) {
                 startDay = calendar.timeInMillis
                 lessonStartDate = getPickerDateToDash(calendar.time)
             } else {
@@ -247,22 +227,22 @@ class RegisterLessonSecondFragment :
         when (selectedItem) {
             ONE_WEEK -> {
                 calendar.add(Calendar.DATE, 7)
-                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             ONE_MONTH -> {
                 calendar.add(Calendar.MONTH, 1)
-                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             TWO_MONTH -> {
                 calendar.add(Calendar.MONTH, 2)
-                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             THREE_MONTH -> {
                 calendar.add(Calendar.MONTH, 3)
-                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
             }
 
             else -> Unit
@@ -283,7 +263,7 @@ class RegisterLessonSecondFragment :
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
                 calendar.time = Date(it)
-                calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                 decideLessonGoalDate(true)
             }
         }
@@ -314,6 +294,7 @@ class RegisterLessonSecondFragment :
             false
         }
 
+        //zone
         spinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             @SuppressLint("SimpleDateFormat")
@@ -335,28 +316,28 @@ class RegisterLessonSecondFragment :
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.DATE, 7)
-                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     ONE_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 1)
-                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     TWO_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 2)
-                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     THREE_MONTH -> {
                         decideLessonGoalDate(true)
                         isStartDateInitialized(calendar)
                         calendar.add(Calendar.MONTH, 3)
-                        calendarToText(LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
+                        calendarToText(KEY_LESSON_END_DATE, calendar, tvRegisterGoalLessonDateInfo)
                     }
 
                     CUSTOM_SETTING -> {
@@ -425,10 +406,12 @@ class RegisterLessonSecondFragment :
 
     private fun focusInputFormOptional(editText: EditText) = with(binding) {
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+            override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                viewModel.setLessonMessage(text.toString())
+            }
 
             override fun afterTextChanged(editable: Editable?) {
                 clearFocus(etRegisterLessonPrice)
@@ -442,5 +425,16 @@ class RegisterLessonSecondFragment :
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
+    }
+
+    companion object {
+        private const val DAY = 86400000L
+
+        private const val DEFAULT = 0
+        private const val ONE_WEEK = 1
+        private const val ONE_MONTH = 2
+        private const val TWO_MONTH = 3
+        private const val THREE_MONTH = 4
+        private const val CUSTOM_SETTING = 5
     }
 }

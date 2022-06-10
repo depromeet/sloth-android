@@ -4,14 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Lesson (
-    val alertDays: String?,
-    val categoryName: String,
-    val endDate: ArrayList<String>,
-    val lessonName: String,
-    val message: String?,
-    val price: Int,
-    val siteName: String,
-    val startDate: ArrayList<String>,
-    val totalNumber: Int
-): Parcelable
+data class Lesson(
+    val alertDays: String? = "",
+    val categoryName: String = "",
+    val endDate: ArrayList<String> = arrayListOf(),
+    val lessonName: String = "",
+    val message: String? = "",
+    val price: Int = 0,
+    val siteName: String = "",
+    val startDate: ArrayList<String> = arrayListOf(),
+    val totalNumber: Int = 0,
+) : Parcelable

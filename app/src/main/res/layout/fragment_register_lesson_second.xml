@@ -41,13 +41,12 @@
 
                 <TextView
                     android:id="@+id/tv_register_start_lesson_date"
+                    style="@style/Widget.Sloth.TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_start_date"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -80,27 +79,24 @@
 
                 <TextView
                     android:id="@+id/tv_register_goal_lesson_date"
+                    style="@style/Widget.Sloth.TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_finish_date"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_register_start_lesson_date_info" />
 
                 <Spinner
                     android:id="@+id/spn_register_goal_lesson_date"
+                    style="@style/Widget.Sloth.Spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_rounded_spinner_gray"
                     android:entries="@array/lesson_goal_date_array"
-                    android:spinnerMode="dropdown"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date" />
@@ -124,37 +120,33 @@
 
                 <TextView
                     android:id="@+id/tv_register_lesson_price"
+                    style="@style/Widget.Sloth.TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_price"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date_info" />
 
                 <EditText
                     android:id="@+id/et_register_lesson_price"
+                    style="@style/Widget.Sloth.EditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:hint="@string/enter_lesson_price"
                     android:inputType="number"
                     android:maxLength="9"
                     android:paddingHorizontal="18dp"
                     android:visibility="visible"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
 
                 <TextView
                     android:id="@+id/tv_register_lesson_price_Info"
-                    android:textColor="@color/black"
-                    android:visibility="invisible"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -162,36 +154,36 @@
                     android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="18dp"
+                    android:textColor="@color/black"
                     android:textSize="16dp"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
 
                 <TextView
                     android:id="@+id/tv_register_lesson_message"
+                    style="@style/Widget.Sloth.TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_message"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price_Info" />
 
                 <EditText
                     android:id="@+id/et_register_lesson_message"
+                    style="@style/Widget.Sloth.EditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:hint="@string/max_30"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:maxLength="30"
                     android:paddingHorizontal="18dp"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_message" />
@@ -202,14 +194,12 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register_lesson"
+            style="@style/Widget.Sloth.Button"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_register_rounded_button_disabled"
             android:text="@string/finish"
-            android:textColor="@color/white"
-            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

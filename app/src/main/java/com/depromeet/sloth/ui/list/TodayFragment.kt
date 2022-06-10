@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
@@ -90,7 +91,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
     }
 
     private fun moveRegisterActivity() {
-        startActivity(RegisterLessonActivity.newIntent(requireActivity()))
+        startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
     }
 
     private fun moveDetailActivity(lessonToday: LessonTodayResponse) {
@@ -253,7 +254,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     }
                     is LessonState.Error -> {
                         showToast("강의 정보를 업데이트 하지 못했어요")
-                        Log.d("Error", "${it.throwable}")
+                        Timber.tag("Error").d(it.throwable)
                     }
                     else -> Unit
                 }
