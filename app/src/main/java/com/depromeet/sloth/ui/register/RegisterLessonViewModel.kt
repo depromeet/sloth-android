@@ -1,14 +1,13 @@
 package com.depromeet.sloth.ui.register
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.Lesson
-import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.member.MemberRepository
@@ -29,11 +28,14 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonCategoryListState: LiveData<Event<LessonState<List<LessonCategoryResponse>>>> =
         _lessonCategoryListState
 
-    private val _lessonSiteListState = MutableLiveData<Event<LessonState<List<LessonSiteResponse>>>>()
-    val lessonSiteListState: LiveData<Event<LessonState<List<LessonSiteResponse>>>> = _lessonSiteListState
+    private val _lessonSiteListState =
+        MutableLiveData<Event<LessonState<List<LessonSiteResponse>>>>()
+    val lessonSiteListState: LiveData<Event<LessonState<List<LessonSiteResponse>>>> =
+        _lessonSiteListState
 
     private val _lessonRegisterState = MutableLiveData<Event<LessonState<LessonRegisterResponse>>>()
-    val lessonRegisterState: LiveData<Event<LessonState<LessonRegisterResponse>>> = _lessonRegisterState
+    val lessonRegisterState: LiveData<Event<LessonState<LessonRegisterResponse>>> =
+        _lessonRegisterState
 
     private val _lessonRegister = MutableLiveData<Lesson>()
     val lessonRegister: LiveData<Lesson> = _lessonRegister
@@ -97,7 +99,7 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonCategorySelectedItemPosition.value = position
     }
 
-    fun setLessonSiteItemPosition(position:Int) {
+    fun setLessonSiteItemPosition(position: Int) {
         _lessonSiteSelectedItemPosition.value = position
     }
 }

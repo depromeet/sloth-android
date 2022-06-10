@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
-import com.depromeet.sloth.data.network.lesson.detail.LessonDetailResponse
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.handleLoadingState
@@ -40,7 +40,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                         handleLoadingState(this@LessonDetailActivity)
                     }
 
-                    is LessonDetailState.Success<LessonDetailResponse> -> {
+                    is LessonDetailState.Success<LessonDetail> -> {
                         Timber.tag("fetch Success").d("${lessonDetailState.data}")
 
                         handleSuccessState(lessonDetailState.data)
@@ -114,7 +114,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
             finish()
         }
 
-        if (data is LessonDetailResponse) {
+        if (data is LessonDetail) {
             viewModel.setLessonDetailInfo(data)
         }
     }
@@ -127,7 +127,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
         val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
-                //viewModel.deleteLesson(lessonId)
                 viewModel.deleteLesson()
             }
         }
