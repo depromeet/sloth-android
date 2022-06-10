@@ -1,6 +1,7 @@
 package com.depromeet.sloth.data.network.member
 
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class MemberRepositoryImpl @Inject constructor(
     //.onCompletion { emit(UIState.UnLoading) }
 
 
-    override suspend fun fetchMemberInfo(): MemberState<MemberInfoResponse> {
+    override suspend fun fetchMemberInfo(): MemberState<Member> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -53,7 +54,7 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        MemberState.Success(this.body() ?: MemberInfoResponse())
+                        MemberState.Success(this.body() ?: Member())
                     }
                     else -> MemberState.Error(Exception(message()))
                 }

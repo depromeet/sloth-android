@@ -9,9 +9,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
@@ -29,7 +30,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val viewModel: ManageViewModel by activityViewModels()
+    private val viewModel: ManageViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,7 +40,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 when (memberState) {
                     is MemberState.Loading -> handleLoadingState(requireContext())
 
-                    is MemberState.Success<MemberInfoResponse> -> {
+                    is MemberState.Success<Member> -> {
                         Timber.tag("fetch Success").d("${memberState.data}")
                         handleSuccessState(memberState.data)
                     }
@@ -79,6 +80,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 hideProgress()
             })
 
+            //화면 이동 관련은 Event Wrapper LiveData 유지
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
                     is MemberLogoutState.Loading -> handleLoadingState(requireContext())
@@ -98,13 +100,26 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 hideProgress()
             }
 
-            member.observe(viewLifecycleOwner) { memberInfoResponse ->
-                binding.member = memberInfoResponse
+            member.observe(viewLifecycleOwner) { member ->
+                binding.member = member
             }
         }
 
+        bind {
+            //member = viewModel.memberInfo.value.successOrNull()
+            vm = viewModel
+        }
+
+        //initObserver()
         initViews()
     }
+
+//    private fun initObserver() {
+//        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
+//            Timber.d("${memberInfo.successOrNull()}")
+//            binding.member = memberInfo.successOrNull()
+//        }
+//    }
 
     override fun initViews() = with(binding) {
         ivManageProfileImage.setOnClickListener {
@@ -137,7 +152,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     }
 
     private fun <T> handleSuccessState(data: T) {
-        if (data is MemberInfoResponse) {
+        if (data is Member) {
             viewModel.setMemberInfo(data)
         } else if (data is MemberUpdateInfoResponse) {
             showToast("닉네임이 변경되었어요")
@@ -176,10 +191,12 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
         nameEditText.hint = viewModel.member.value?.memberName ?: ""
+        //nameEditText.hint = viewModel.memberInfo.value.successOrNull()?.memberName ?: ""
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
             if (nameEditText.text.toString() != (viewModel.member.value?.memberName ?: "")) {
+//            if (nameEditText.text.toString() != (viewModel.memberInfo.value.successOrNull()?.memberName ?: "")) {
                 viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
