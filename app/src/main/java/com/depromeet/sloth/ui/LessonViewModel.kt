@@ -1,8 +1,7 @@
 package com.depromeet.sloth.ui
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.lesson.*
+import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
@@ -11,8 +10,10 @@ import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 

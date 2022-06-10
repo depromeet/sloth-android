@@ -13,7 +13,7 @@ open class BaseViewModel @Inject constructor(
     private val memberRepository: MemberRepository
 ) : ViewModel() {
 
-    open fun fetchData(): Job = viewModelScope.launch{ }
+    open fun fetchData(): Job = viewModelScope.launch { }
 
     fun removeAuthToken() = viewModelScope.launch {
         memberRepository.removeAuthToken()
