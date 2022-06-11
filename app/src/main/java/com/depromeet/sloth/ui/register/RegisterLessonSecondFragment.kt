@@ -58,12 +58,17 @@ class RegisterLessonSecondFragment :
 
     lateinit var selectedItem: Number
 
-    private lateinit var lessonEndDateAdapter: ArrayAdapter<String>
-
     //private val today = ZonedDateTime.now()
     private val today = Date()
+    private val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
 
-    private lateinit var calendar: Calendar
+    private val lessonEndDateAdapter: ArrayAdapter<String> by lazy {
+        ArrayAdapter<String>(
+            requireContext(),
+            R.layout.item_spinner,
+            resources.getStringArray(R.array.lesson_goal_date_array)
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,13 +95,7 @@ class RegisterLessonSecondFragment :
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun initViews() = with(binding) {
-        if (::lessonEndDateAdapter.isInitialized.not()) {
-            bindAdapter()
-        }
-
-        calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
-
-        bindSpinner(spnRegisterGoalLessonDate, calendar)
+        bindAdapter()
 
         lockButton(btnRegisterLesson, requireContext())
 
@@ -131,8 +130,6 @@ class RegisterLessonSecondFragment :
         }
 
         btnRegisterLesson.setOnClickListener {
-            clearFocus(etRegisterLessonPrice)
-
             if (::selectedItem.isInitialized.not() || selectedItem == DEFAULT) {
                 showToast("완강 목표일을 선택해 주세요")
                 return@setOnClickListener
@@ -283,19 +280,12 @@ class RegisterLessonSecondFragment :
         materialDatePicker.show(childFragmentManager, "calendar")
     }
 
-    private fun bindAdapter() {
-        lessonEndDateAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.item_spinner,
-            resources.getStringArray(R.array.lesson_goal_date_array)
-        ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    private fun bindAdapter() = with(binding) {
+        lessonEndDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnRegisterGoalLessonDate.apply {
+            adapter = lessonEndDateAdapter
+            setSpinnerListener(this, calendar)
         }
-    }
-
-    private fun bindSpinner(spinner: Spinner, calendar: Calendar) {
-        spinner.adapter = lessonEndDateAdapter
-        setSpinnerListener(spinner, calendar)
     }
 
     @SuppressLint("ClickableViewAccessibility")

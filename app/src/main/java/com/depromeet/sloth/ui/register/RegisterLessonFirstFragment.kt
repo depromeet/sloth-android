@@ -49,6 +49,10 @@ class RegisterLessonFirstFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bind {
+            vm = viewModel
+        }
+
         initListener()
         initNavigation()
     }
@@ -106,7 +110,7 @@ class RegisterLessonFirstFragment :
                         lockButton(binding.btnRegisterLesson, requireContext())
                     }
 
-                    else -> {
+                    true -> {
                         unlockButton(binding.btnRegisterLesson, requireContext())
                     }
                 }
@@ -127,10 +131,6 @@ class RegisterLessonFirstFragment :
         validateInputForm(etRegisterLessonCount)
         focusSpinnerForm(spnRegisterLessonCategory)
         focusSpinnerForm(spnRegisterLessonSite)
-
-        btnRegisterLesson.setOnClickListener {
-            viewModel.moveRegisterLessonSecond()
-        }
     }
 
     private fun moveRegisterLessonSecond() {
@@ -153,7 +153,7 @@ class RegisterLessonFirstFragment :
 
     //이거 animeReview 에서 했던 방법으로 변경 lint 없앨 수 있을듯?
     @SuppressLint("ClickableViewAccessibility")
-    private fun focusSpinnerForm(spinner: Spinner) = with(binding) {
+    private fun focusSpinnerForm(spinner: Spinner): Unit = with(binding) {
         spinner.apply {
             setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
