@@ -11,7 +11,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
@@ -25,10 +24,6 @@ import com.depromeet.sloth.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-//TODO button 관련은 mediatorLivedata 를 통해서
-// form 함수들이랑 button 분리시키기 - mediatorlivedata
-// category,site 비동기로 할 수는 있는데 그러면 iniView 타이밍을 잡기 어려움
-// 성공적으로 완료하면 updateLessonActivity 에 같은 방식 적용
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
@@ -104,6 +99,18 @@ class RegisterLessonFirstFragment :
                 }
                 hideProgress()
             }
+
+            isEnabledMoveLessonSecondButton.observe(viewLifecycleOwner) { isEnable ->
+                when (isEnable) {
+                    false -> {
+                        lockButton(binding.btnRegisterLesson, requireContext())
+                    }
+
+                    else -> {
+                        unlockButton(binding.btnRegisterLesson, requireContext())
+                    }
+                }
+            }
         }
     }
 
@@ -116,45 +123,12 @@ class RegisterLessonFirstFragment :
     override fun initViews() = with(binding) {
         bindAdapter()
 
-        lockButton(btnRegisterLesson, requireContext())
+        focusInputForm(etRegisterLessonName)
+        validateInputForm(etRegisterLessonCount)
+        focusSpinnerForm(spnRegisterLessonCategory)
+        focusSpinnerForm(spnRegisterLessonSite)
 
-        focusInputForm(etRegisterLessonName, btnRegisterLesson)
-        validateInputForm(etRegisterLessonCount, btnRegisterLesson)
-        focusSpinnerForm(spnRegisterLessonCategory, btnRegisterLesson)
-        focusSpinnerForm(spnRegisterLessonSite, btnRegisterLesson)
-
-        //validation 이 수행되는 버튼
         btnRegisterLesson.setOnClickListener {
-            clearFocus(etRegisterLessonCount)
-
-            //validation 도 뷰모델에서 event 로 전달하는 형식으로 할 수 있을 것 같은데
-            if (etRegisterLessonName.text.toString().isEmpty()) {
-                showToast("강의 이름을 입력해 주세요")
-                return@setOnClickListener
-            }
-
-            if (etRegisterLessonCount.text.toString().isEmpty()) {
-                showToast("강의 개수를 입력해 주세요")
-                return@setOnClickListener
-            }
-
-            if (etRegisterLessonCount.text.toString()[0] == '0'
-                || etRegisterLessonCount.text.toString().toInt() == 0
-            ) {
-                showToast("강의 개수가 올바르지 않아요")
-                return@setOnClickListener
-            }
-
-            if (spnRegisterLessonCategory.selectedItemPosition == 0) {
-                showToast("강의 카테고리를 선택해 주세요")
-                return@setOnClickListener
-            }
-
-            if (spnRegisterLessonSite.selectedItemPosition == 0) {
-                showToast("강의 사이트를 선택해 주세요")
-                return@setOnClickListener
-            }
-
             viewModel.moveRegisterLessonSecond()
         }
     }
@@ -179,7 +153,7 @@ class RegisterLessonFirstFragment :
 
     //이거 animeReview 에서 했던 방법으로 변경 lint 없앨 수 있을듯?
     @SuppressLint("ClickableViewAccessibility")
-    private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
+    private fun focusSpinnerForm(spinner: Spinner) = with(binding) {
         spinner.apply {
             setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
@@ -193,9 +167,12 @@ class RegisterLessonFirstFragment :
                     clearFocus(etRegisterLessonCount)
                     clearFocus(etRegisterLessonName)
 
-                    val spinnerId = spinner.selectedItemPosition
-                    if (spinnerId == 0) {
-                        lockButton(button, requireContext())
+                    if (spinner.selectedItemPosition == 0) {
+                        if (spinner == spnRegisterLessonCategory) {
+                            viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
+                        } else {
+                            viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                        }
                     } else {
                         if (spinner == spnRegisterLessonCategory) {
                             viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
@@ -208,34 +185,22 @@ class RegisterLessonFirstFragment :
                             viewModel.setSiteName(spinner.selectedItem.toString())
                             viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
-
-                        unlockButton(button, requireContext())
                     }
                 }
 
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    unlockButton(button, requireContext())
-                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
     }
 
-    private fun focusInputForm(editText: EditText, button: AppCompatButton) {
+    private fun focusInputForm(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
-
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 viewModel.setLessonName(text.toString())
             }
-
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty()) {
-                    lockButton(button, requireContext())
-                } else {
-                    unlockButton(button, requireContext())
-                }
-            }
+            override fun afterTextChanged(editable: Editable?) {}
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->
@@ -248,7 +213,7 @@ class RegisterLessonFirstFragment :
     }
 
     //다시 돌아왔을때 "개" 가 보이지 않음
-    private fun validateInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
+    private fun validateInputForm(editText: EditText) = with(binding) {
         var result = ""
 
         editText.addTextChangedListener(object : TextWatcher {
@@ -261,10 +226,8 @@ class RegisterLessonFirstFragment :
                     result = viewModel.lessonTotalNumber.value!!.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        lockButton(button, requireContext())
                     } else {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        unlockButton(button, requireContext())
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
@@ -284,14 +247,7 @@ class RegisterLessonFirstFragment :
                     }
                 }
             }
-
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable.isNullOrEmpty() || editable[0] == '0') {
-                    lockButton(button, requireContext())
-                } else {
-                    unlockButton(button, requireContext())
-                }
-            }
+            override fun afterTextChanged(editable: Editable?) {}
         })
 
         editText.setOnFocusChangeListener { _, gainFocus ->

@@ -1,9 +1,6 @@
 package com.depromeet.sloth.ui.register
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonSite
@@ -12,6 +9,7 @@ import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -110,9 +108,13 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
-    private val _lesson = MutableLiveData<Lesson>()
-    val lesson: LiveData<Lesson>
-        get() = _lesson
+//    private val _lessonStartDate = savedStateHandle.getLiveData<ZonedDateTime>(KEY_LESSON_START_DATE)
+//    val lessonStartDate: LiveData<ZonedDateTime>
+//        get() = _lessonStartDate
+//
+//    private val _lessonEndDate = savedStateHandle.getLiveData<ZonedDateTime>(KEY_LESSON_END_DATE)
+//    val lessonEndDate: LiveData<ZonedDateTime>
+//        get() = _lessonEndDate
 
     private val _moveRegisterLessonSecondEvent = MutableLiveData<Event<Boolean>>()
     val moveRegisterLessonSecondEvent: LiveData<Event<Boolean>>
@@ -147,8 +149,6 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-
-    //사이에 데이터 변환 과정이 필요한데..
 //    val lessonCategoryList: StateFlow<UIState<List<LessonCategory>>> =
 //        lessonRepository.fetchLessonCategoryList()
 //            .stateIn(
@@ -268,6 +268,20 @@ class RegisterLessonViewModel @Inject constructor(
         _moveRegisterLessonCheckEvent.value = Event(true)
     }
 
+    val isEnabledMoveLessonSecondButton = MediatorLiveData<Boolean>().apply {
+        addSourceList(_lessonName,
+            _lessonTotalNumber,
+            _lessonCategorySelectedItemPosition,
+            _lessonSiteSelectedItemPosition) {
+            isValidEnterInfo()
+        }
+    }
+
+    private fun isValidEnterInfo() =
+        !_lessonName.value.isNullOrBlank() && _lessonTotalNumber.value != 0 &&
+                _lessonCategorySelectedItemPosition.value != 0 && _lessonSiteSelectedItemPosition.value != 0
+
+
     companion object {
         const val KEY_LESSON_NAME = "lessonName"
         const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
@@ -285,5 +299,12 @@ class RegisterLessonViewModel @Inject constructor(
         const val KEY_LESSON_MESSAGE = "lessonMessage"
         const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
         const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        const val DAY = 86400000L
+        const val DEFAULT = 0
+        const val ONE_WEEK = 1
+        const val ONE_MONTH = 2
+        const val TWO_MONTH = 3
+        const val THREE_MONTH = 4
+        const val CUSTOM_SETTING = 5
     }
 }

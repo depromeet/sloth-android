@@ -20,13 +20,20 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.CUSTOM_SETTING
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DAY
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_END_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_START_DATE
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_TOTAL_NUMBER
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_MONTH
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_WEEK
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.THREE_MONTH
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.TWO_MONTH
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import org.threeten.bp.ZonedDateTime
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,8 +45,6 @@ class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
-
-    lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
     private var endDay: Long? = null
@@ -55,6 +60,7 @@ class RegisterLessonSecondFragment :
 
     private lateinit var lessonEndDateAdapter: ArrayAdapter<String>
 
+    //private val today = ZonedDateTime.now()
     private val today = Date()
 
     private lateinit var calendar: Calendar
@@ -146,31 +152,31 @@ class RegisterLessonSecondFragment :
         }
     }
 
-    private fun moveRegisterLessonCheck() {
+    private fun moveRegisterLessonCheck() = with(viewModel) {
         viewModel.setLessonCheckInfo(
             Lesson(
-                categoryName = viewModel.lessonCategoryName.value!!,
+                categoryName = lessonCategoryName.value!!,
                 endDate = changeDateStringToArrayList(lessonEndDate),
-                lessonName = viewModel.lessonName.value!!,
-                message = viewModel.lessonMessage.value,
-                price = lessonPrice as Int,
-                siteName = viewModel.lessonSiteName.value!!,
+                lessonName = lessonName.value!!,
+                message = lessonMessage.value,
+                price = lessonPrice.value!!,
+                siteName = lessonSiteName.value!!,
                 startDate = changeDateStringToArrayList(lessonStartDate),
-                totalNumber = viewModel.lessonTotalNumber.value!!
+                totalNumber = lessonTotalNumber.value!!
             )
         )
 
         viewModel.setLessonRegisterInfo(
             LessonRegisterRequest(
                 alertDays = null,
-                categoryId = viewModel.lessonCategoryId.value!!,
+                categoryId = lessonCategoryId.value!!,
                 endDate = lessonEndDate,
-                lessonName = viewModel.lessonName.value!!,
-                message = viewModel.lessonMessage.value!!,
-                price = lessonPrice as Int,
-                siteId = viewModel.lessonSiteId.value!!,
+                lessonName = lessonName.value!!,
+                message = lessonMessage.value!!,
+                price = lessonPrice.value!!,
+                siteId = lessonSiteId.value!!,
                 startDate = lessonStartDate,
-                totalNumber = viewModel.lessonTotalNumber.value!!
+                totalNumber = lessonTotalNumber.value!!
             )
         )
 
@@ -368,7 +374,7 @@ class RegisterLessonSecondFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
-                    lessonPrice = charSequence.toString().replace(",", "").toInt()
+                    viewModel.setLessonPrice(charSequence.toString().replace(",", "").toInt())
                     result =
                         decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
                     editText.setText(result)
@@ -431,15 +437,5 @@ class RegisterLessonSecondFragment :
                 editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
-    }
-
-    companion object {
-        private const val DAY = 86400000L
-        private const val DEFAULT = 0
-        private const val ONE_WEEK = 1
-        private const val ONE_MONTH = 2
-        private const val TWO_MONTH = 3
-        private const val THREE_MONTH = 4
-        private const val CUSTOM_SETTING = 5
     }
 }
