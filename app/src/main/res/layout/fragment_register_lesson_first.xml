@@ -48,7 +48,7 @@
 
                 <TextView
                     android:id="@+id/tv_register_lesson_name"
-                    style="@style/Widget.Sloth.TextView"
+                    style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -56,37 +56,6 @@
                     android:text="@string/lesson_name"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <!--                <EditText-->
-                <!--                    android:id="@+id/et_register_lesson_name"-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginHorizontal="16dp"-->
-                <!--                    android:layout_marginTop="8dp"-->
-                <!--                    android:background="@drawable/bg_register_rounded_edit_text_gray"-->
-                <!--                    android:text="@={vm.lessonName}"-->
-                <!--                    android:textSize="16dp"-->
-                <!--                    android:inputType="text"-->
-                <!--                    android:paddingHorizontal="18dp"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_name" />-->
-
-                <!--                <EditText-->
-                <!--                    android:id="@+id/et_register_lesson_name"-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginHorizontal="16dp"-->
-                <!--                    android:layout_marginTop="8dp"-->
-                <!--                    android:background="@drawable/bg_register_rounded_edit_text_gray"-->
-                <!--                    android:hint="@string/enter_lesson_name"-->
-                <!--                    android:text="@={vm.lessonName}"-->
-                <!--                    android:textSize="16dp"-->
-                <!--                    android:inputType="text"-->
-                <!--                    android:paddingHorizontal="18dp"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_name" />-->
 
                 <EditText
                     android:id="@+id/et_register_lesson_name"
@@ -104,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/tv_register_lesson_total_number"
-                    style="@style/Widget.Sloth.TextView"
+                    style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -149,7 +118,7 @@
 
                 <TextView
                     android:id="@+id/tv_register_lesson_category"
-                    style="@style/Widget.Sloth.TextView"
+                    style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -172,7 +141,7 @@
 
                 <TextView
                     android:id="@+id/tv_register_lesson_site"
-                    style="@style/Widget.Sloth.TextView"
+                    style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -196,9 +165,22 @@
 
         </ScrollView>
 
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/btn_register_lesson"-->
+<!--            style="@style/Widget.Sloth.Button.Register"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="56dp"-->
+<!--            android:layout_marginHorizontal="16dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:text="@string/next"-->
+<!--            android:onClick="@{()-> vm.moveRegisterLessonSecond()}"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register_lesson"
-            style="@style/Widget.Sloth.Button"
+            style="@style/Widget.Sloth.Button.Register"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"

@@ -50,30 +50,26 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_name"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="34dp"
                     android:text="@string/lesson_name"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/et_update_lesson_name"
+                    style="@style/Widget.Sloth.EditText.Gray"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:paddingHorizontal="16dp"
                     android:text="@{lessonDetail.lessonName}"
-                    android:textColor="@color/gray_500"
-                    android:textColorHint="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_name"
@@ -81,31 +77,27 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_count"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_count"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_update_lesson_name" />
 
                 <EditText
                     android:id="@+id/et_update_lesson_count"
+                    style="@style/Widget.Sloth.EditText.Gray"
                     totalNumber="@{lessonDetail.totalNumber}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="3"
                     android:paddingHorizontal="18dp"
-                    android:textColor="@color/gray_500"
-                    android:textColorHint="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_count"
@@ -131,13 +123,12 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_category"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_category"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_update_lesson_count" />
 
@@ -156,13 +147,12 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_site"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_site"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/spn_update_lesson_category" />
 
@@ -181,13 +171,12 @@
 
                 <TextView
                     android:id="@+id/tv_update_start_lesson"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_start_date"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/spn_update_lesson_site" />
 
@@ -209,18 +198,18 @@
 
                 <TextView
                     android:id="@+id/tv_update_end_lesson"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_finish_date"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson_date" />
 
                 <TextView
                     android:id="@+id/tv_update_end_lesson_date"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     lessonDate="@{lessonDetail.endDate}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
@@ -229,39 +218,33 @@
                     android:background="@drawable/bg_update_rounded_spinner_disabled"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson" />
 
                 <TextView
                     android:id="@+id/tv_update_lesson_price"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_price"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson_date" />
 
                 <EditText
                     android:id="@+id/et_update_lesson_price"
+                    style="@style/Widget.Sloth.EditText.Gray"
                     priceFormatHint="@{lessonDetail.price}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:inputType="number"
                     android:maxLength="9"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
-                    android:textColor="@color/gray_500"
-                    android:textColorHint="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price"
@@ -269,6 +252,7 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_price_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -277,8 +261,6 @@
                     android:gravity="center_vertical"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -287,18 +269,18 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_message"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_message"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/et_update_lesson_price" />
 
                 <TextView
                     android:id="@+id/tv_update_lesson_message_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -310,8 +292,6 @@
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
                     android:text="@{lessonDetail.message}"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message"
@@ -319,14 +299,13 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_update_lesson"
+                    style="@style/Widget.Sloth.Button.Update"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_update_rounded_gray"
                     android:text="@string/finish"
-                    android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
