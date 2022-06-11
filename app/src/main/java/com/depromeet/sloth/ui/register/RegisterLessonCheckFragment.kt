@@ -23,6 +23,16 @@ class RegisterLessonCheckFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bind {
+            vm = viewModel
+            lesson = viewModel.lessonCheck.value
+        }
+
+        initListener()
+        initNavigation()
+    }
+
+    private fun initListener() {
         viewModel.apply {
             lessonRegisterState.observe(viewLifecycleOwner,
                 EventObserver { lessonRegisterResponse ->
@@ -51,18 +61,15 @@ class RegisterLessonCheckFragment :
                     hideProgress()
                 })
         }
-
-        bind {
-            vm = viewModel
-            lesson = viewModel.lessonCheck.value
-        }
-
-        initViews()
     }
 
-    override fun initViews() = with(binding) {
-        btnRegisterLessonUpdate.setOnClickListener {
-            findNavController().navigateUp()
-        }
+    private fun initNavigation() {
+        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
+            moveRegisterLessonSecond()
+        })
+    }
+
+    private fun moveRegisterLessonSecond() {
+        findNavController().navigateUp()
     }
 }

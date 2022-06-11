@@ -12,55 +12,60 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
+import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_TOTAL_NUMBER
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
 //TODO button 관련은 mediatorLivedata 를 통해서
-//EditText, TextView, Button 는 style 만들어서 그걸로 재활용
-//데이터를 계속 뷰에서 담아서 이동하지말고 viewmodel 에서 관리
-//form 함수들이랑 button 분리시키기
-//category,site 비동기
-
+// form 함수들이랑 button 분리시키기 - mediatorlivedata
+// category,site 비동기로 할 수는 있는데 그러면 iniView 타이밍을 잡기 어려움
+// 성공적으로 완료하면 updateLessonActivity 에 같은 방식 적용
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
-    lateinit var lessonCategoryMap: HashMap<Int, String>
-    private var lessonCategoryList: MutableList<String> = mutableListOf()
+    private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
+        ArrayAdapter<String>(
+            requireContext(),
+            R.layout.item_spinner,
+            viewModel.lessonCategoryList.value!!
+        )
+    }
 
-    lateinit var lessonSiteMap: HashMap<Int, String>
-    private var lessonSiteList: MutableList<String> = mutableListOf()
-
-    lateinit var lessonCategoryAdapter: ArrayAdapter<String>
-    lateinit var lessonSiteAdapter: ArrayAdapter<String>
-
-    lateinit var lessonCount: Number
+    private val lessonSiteAdapter: ArrayAdapter<String> by lazy {
+        ArrayAdapter<String>(
+            requireContext(),
+            R.layout.item_spinner,
+            viewModel.lessonSiteList.value!!
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initListener()
+        initNavigation()
+    }
+
+    private fun initListener() {
         viewModel.apply {
-            lessonCategoryListState.observe(viewLifecycleOwner, EventObserver { lessonState ->
+            lessonCategoryListState.observe(viewLifecycleOwner) { lessonState ->
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
 
-                    is LessonState.Success<List<LessonCategoryResponse>> -> {
-                        setLessonCategoryList(lessonState.data)
+                    is LessonState.Success<List<LessonCategory>> -> {
+                        viewModel.setLessonCategoryList(lessonState.data)
                     }
 
                     is LessonState.Unauthorized -> {
@@ -75,14 +80,15 @@ class RegisterLessonFirstFragment :
                     else -> Unit
                 }
                 hideProgress()
-            })
+            }
 
-            lessonSiteListState.observe(viewLifecycleOwner, EventObserver { lessonState ->
+            lessonSiteListState.observe(viewLifecycleOwner) { lessonState ->
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(requireContext())
 
-                    is LessonState.Success<List<LessonSiteResponse>> -> {
-                        setLessonSiteList(lessonState.data)
+                    is LessonState.Success<List<LessonSite>> -> {
+                        viewModel.setLessonSiteList(lessonState.data)
+                        initViews()
                     }
 
                     is LessonState.Unauthorized -> {
@@ -97,60 +103,18 @@ class RegisterLessonFirstFragment :
                     else -> Unit
                 }
                 hideProgress()
-            })
-
-            lessonCategorySelectedItemPosition.observe(viewLifecycleOwner) { position ->
-                initViews()
-                lessonCategoryAdapter = ArrayAdapter<String>(
-                    requireContext(),
-                    R.layout.item_spinner,
-                    lessonCategoryList
-                )
-                lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-                binding.spnRegisterLessonCategory.adapter = lessonCategoryAdapter
-
-                binding.spnRegisterLessonCategory.setSelection(position)
-            }
-
-            lessonSiteSelectedItemPosition.observe(viewLifecycleOwner) { position ->
-                lessonSiteAdapter = ArrayAdapter<String>(
-                    requireContext(),
-                    R.layout.item_spinner,
-                    lessonSiteList
-                )
-                lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-                binding.spnRegisterLessonSite.adapter = lessonSiteAdapter
-
-                binding.spnRegisterLessonSite.setSelection(position)
             }
         }
     }
 
-    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
-        lessonCategoryMap =
-                //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-            data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
-        lessonCategoryList = data.map { it.categoryName }.toMutableList()
-        lessonCategoryList.add(0, "강의 카테고리를 선택해 주세요")
-    }
-
-    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
-        //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-        lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
-        lessonSiteList = data.map { it.siteName }.toMutableList()
-        lessonSiteList.add(0, "강의 사이트를 선택해 주세요")
-        initViews()
+    private fun initNavigation() {
+        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
+            moveRegisterLessonSecond()
+        })
     }
 
     override fun initViews() = with(binding) {
-        if (etRegisterLessonCount.hasFocus()) {
-            clearFocus(etRegisterLessonCount)
-        }
-        if (::lessonCategoryAdapter.isInitialized.not() && ::lessonSiteAdapter.isInitialized.not()) {
-            bindAdapter()
-        }
+        bindAdapter()
 
         lockButton(btnRegisterLesson, requireContext())
 
@@ -159,9 +123,11 @@ class RegisterLessonFirstFragment :
         focusSpinnerForm(spnRegisterLessonCategory, btnRegisterLesson)
         focusSpinnerForm(spnRegisterLessonSite, btnRegisterLesson)
 
+        //validation 이 수행되는 버튼
         btnRegisterLesson.setOnClickListener {
             clearFocus(etRegisterLessonCount)
 
+            //validation 도 뷰모델에서 event 로 전달하는 형식으로 할 수 있을 것 같은데
             if (etRegisterLessonName.text.toString().isEmpty()) {
                 showToast("강의 이름을 입력해 주세요")
                 return@setOnClickListener
@@ -189,43 +155,30 @@ class RegisterLessonFirstFragment :
                 return@setOnClickListener
             }
 
-            moveRegisterLessonSecond()
+            viewModel.moveRegisterLessonSecond()
         }
     }
 
-    private fun moveRegisterLessonSecond() = with(binding) {
-        viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
-        viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
-
-        findNavController().navigate(
-            R.id.action_register_lesson_first_to_register_lesson_second, bundleOf(
-                KEY_LESSON_TOTAL_NUMBER to etRegisterLessonCount.text.toString().toInt(),
-            )
-        )
-        //findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
+    private fun moveRegisterLessonSecond() {
+        findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
     }
 
     private fun bindAdapter() = with(binding) {
-        lessonCategoryAdapter = ArrayAdapter<String>(
-            requireContext(),
-            R.layout.item_spinner,
-            lessonCategoryList
-        )
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonCategory.adapter = lessonCategoryAdapter
+        spnRegisterLessonCategory.apply {
+            adapter = lessonCategoryAdapter
+            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
+        }
 
-        lessonSiteAdapter = ArrayAdapter<String>(
-            requireContext(),
-            R.layout.item_spinner,
-            lessonSiteList
-        )
         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonSite.adapter = lessonSiteAdapter
+        spnRegisterLessonSite.apply {
+            adapter = lessonSiteAdapter
+            spnRegisterLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
+        }
     }
 
+    //이거 animeReview 에서 했던 방법으로 변경 lint 없앨 수 있을듯?
     @SuppressLint("ClickableViewAccessibility")
-    //두개의 spinner 를 하나의 listener 로 관리
-
     private fun focusSpinnerForm(spinner: Spinner, button: AppCompatButton) = with(binding) {
         spinner.apply {
             setOnTouchListener { _, event ->
@@ -240,22 +193,20 @@ class RegisterLessonFirstFragment :
                     clearFocus(etRegisterLessonCount)
                     clearFocus(etRegisterLessonName)
 
-                    spnRegisterLessonCategory
-
                     val spinnerId = spinner.selectedItemPosition
                     if (spinnerId == 0) {
                         lockButton(button, requireContext())
                     } else {
-                        //viewModel 에는 안드로이드 의존성이 있으면 안되므로..
-                        // == 이 맞나
                         if (spinner == spnRegisterLessonCategory) {
-                            viewModel.setCategoryId(lessonCategoryMap.filterValues
-                            { it == spnRegisterLessonCategory.selectedItem.toString() }.keys.first())
+                            viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
+                            { it == spnRegisterLessonCategory.selectedItem }.keys.first())
                             viewModel.setCategoryName(spinner.selectedItem.toString())
+                            viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
                         } else {
-                            viewModel.setSiteId(lessonSiteMap.filterValues
-                            { it == spnRegisterLessonSite.selectedItem.toString() }.keys.first())
+                            viewModel.setSiteId(viewModel.lessonSiteMap.value!!.filterValues
+                            { it == spnRegisterLessonSite.selectedItem }.keys.first())
                             viewModel.setSiteName(spinner.selectedItem.toString())
+                            viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
 
                         unlockButton(button, requireContext())
@@ -296,6 +247,7 @@ class RegisterLessonFirstFragment :
         }
     }
 
+    //다시 돌아왔을때 "개" 가 보이지 않음
     private fun validateInputForm(editText: EditText, button: AppCompatButton) = with(binding) {
         var result = ""
 
@@ -305,14 +257,13 @@ class RegisterLessonFirstFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    lessonCount = charSequence.toString().toInt()
-                    result = lessonCount.toString()
+                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = viewModel.lessonTotalNumber.value!!.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                         lockButton(button, requireContext())
                     } else {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        //viewModel.setLessonTotalNumber(editText.toString().toInt())
                         unlockButton(button, requireContext())
                     }
                     editText.setText(result)

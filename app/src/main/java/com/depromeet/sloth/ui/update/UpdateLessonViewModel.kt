@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
@@ -32,12 +32,12 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonUpdateState: LiveData<LessonUpdateState<LessonUpdateResponse>> = _lessonUpdateState
 
     private val _lessonCategoryListState =
-        MutableLiveData<LessonState<List<LessonCategoryResponse>>>()
-    val lessonCategoryListState: LiveData<LessonState<List<LessonCategoryResponse>>> =
+        MutableLiveData<LessonState<List<LessonCategory>>>()
+    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>> =
         _lessonCategoryListState
 
-    private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSiteResponse>>>()
-    val lessonSiteListState: LiveData<LessonState<List<LessonSiteResponse>>> = _lessonSiteListState
+    private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSite>>>()
+    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>> = _lessonSiteListState
 
     private val _lessonCategoryList = MutableLiveData<MutableList<String>>()
     val lessonCategoryList: LiveData<MutableList<String>> = _lessonCategoryList

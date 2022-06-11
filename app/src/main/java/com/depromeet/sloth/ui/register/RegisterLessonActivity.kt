@@ -29,7 +29,6 @@ class RegisterLessonActivity :
         navController = navHostFragment.navController
 
         binding.tbRegisterLesson.apply {
-            setSupportActionBar(this)
             setNavigationOnClickListener {
                 if (!navController.navigateUp()) finish() else navController.navigateUp()
             }

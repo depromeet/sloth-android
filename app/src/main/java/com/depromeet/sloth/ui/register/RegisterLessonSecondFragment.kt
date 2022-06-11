@@ -19,22 +19,26 @@ import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_END_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_START_DATE
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.KEY_LESSON_TOTAL_NUMBER
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+//TODO zoneDateTime 으로 변경?
+// 변수 viewModel 에서 관리
+@AndroidEntryPoint
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val viewModel: RegisterLessonViewModel by activityViewModels()
 
-    private lateinit var lessonTotalNumber: Number
     lateinit var lessonPrice: Number
 
     private var startDay: Long? = null
@@ -59,11 +63,14 @@ class RegisterLessonSecondFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.apply {
-            lessonTotalNumber = getInt(KEY_LESSON_TOTAL_NUMBER)
-        }
-
         initViews()
+        initNavigation()
+    }
+
+    private fun initNavigation() {
+        viewModel.moveRegisterLessonCheckEvent.observe(viewLifecycleOwner, EventObserver {
+            moveRegisterLessonCheck()
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -135,7 +142,7 @@ class RegisterLessonSecondFragment :
                 return@setOnClickListener
             }
 
-            moveRegisterLessonCheck()
+            viewModel.moveRegisterLessonCheck()
         }
     }
 
@@ -149,7 +156,7 @@ class RegisterLessonSecondFragment :
                 price = lessonPrice as Int,
                 siteName = viewModel.lessonSiteName.value!!,
                 startDate = changeDateStringToArrayList(lessonStartDate),
-                totalNumber = lessonTotalNumber as Int,
+                totalNumber = viewModel.lessonTotalNumber.value!!
             )
         )
 
@@ -163,7 +170,7 @@ class RegisterLessonSecondFragment :
                 price = lessonPrice as Int,
                 siteId = viewModel.lessonSiteId.value!!,
                 startDate = lessonStartDate,
-                totalNumber = lessonTotalNumber as Int
+                totalNumber = viewModel.lessonTotalNumber.value!!
             )
         )
 
@@ -294,7 +301,6 @@ class RegisterLessonSecondFragment :
             false
         }
 
-        //zone
         spinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             @SuppressLint("SimpleDateFormat")
@@ -429,7 +435,6 @@ class RegisterLessonSecondFragment :
 
     companion object {
         private const val DAY = 86400000L
-
         private const val DEFAULT = 0
         private const val ONE_WEEK = 1
         private const val ONE_MONTH = 2

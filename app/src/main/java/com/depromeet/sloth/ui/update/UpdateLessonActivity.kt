@@ -11,10 +11,10 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
@@ -83,7 +83,7 @@ class UpdateLessonActivity :
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
-                    is LessonState.Success<List<LessonCategoryResponse>> -> {
+                    is LessonState.Success<List<LessonCategory>> -> {
                         //handleSuccessState(lessonState.data)
                         setLessonCategoryList(lessonState.data)
                     }
@@ -106,7 +106,7 @@ class UpdateLessonActivity :
                 when (lessonState) {
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
-                    is LessonState.Success<List<LessonSiteResponse>> -> {
+                    is LessonState.Success<List<LessonSite>> -> {
                         //handleSuccessState(lessonState.data)
                         setLessonSiteList(lessonState.data)
 
@@ -143,7 +143,7 @@ class UpdateLessonActivity :
 //        }
 //    }
 
-    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+    private fun setLessonCategoryList(data: List<LessonCategory>) {
         lessonCategoryMap =
                 //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
             data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
@@ -152,7 +152,7 @@ class UpdateLessonActivity :
         lessonCategoryList.add(0, "인강 카테고리를 선택해 주세요")
     }
 
-    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
+    private fun setLessonSiteList(data: List<LessonSite>) {
         lessonSiteMap =
                 //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
             data.associate { it.siteId to it.siteName } as HashMap<Int, String>

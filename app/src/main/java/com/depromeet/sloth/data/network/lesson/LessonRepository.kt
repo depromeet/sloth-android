@@ -1,7 +1,8 @@
 package com.depromeet.sloth.data.network.lesson
 
+import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.category.LessonCategoryResponse
+import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
@@ -11,7 +12,6 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
-import com.depromeet.sloth.data.network.lesson.site.LessonSiteResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
@@ -32,9 +32,13 @@ interface LessonRepository {
 
     suspend fun deleteLesson(lessonId: String): LessonDeleteState<LessonDeleteResponse>
 
-    suspend fun fetchLessonCategoryList(): LessonState<List<LessonCategoryResponse>>
+    suspend fun fetchLessonCategoryList(): LessonState<List<LessonCategory>>
 
-    suspend fun fetchLessonSiteList(): LessonState<List<LessonSiteResponse>>
+    //fun fetchLessonCategoryList(): Flow<UIState<List<LessonCategory>>>
+
+    suspend fun fetchLessonSiteList(): LessonState<List<LessonSite>>
+
+    //fun fetchLessonSiteList(): Flow<UIState<List<LessonSite>>>
 
     suspend fun updateLesson(
         lessonId: String,
