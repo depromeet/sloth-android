@@ -21,22 +21,22 @@ class HealthRepository @Inject constructor(
 //                )
 //            } ?: return HealthState.Error(Exception("Retrofit Exception"))
 //    }
-
-    suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
-            .create(LessonService::class.java)
-            .fetchTodayLessonList()?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if(newAccessToken.isNotEmpty()) preferenceManager.updateAccessToken(newAccessToken)
-
-                        LessonState.Success(body() ?: listOf(LessonTodayResponse.EMPTY))
-                    }
-                    else -> LessonState.Error(Exception(message()))
-                }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
-    }
+//
+//    suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
+//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+//            .build(preferenceManager.getAccessToken())
+//            .create(LessonService::class.java)
+//            .fetchTodayLessonList()?.run {
+//                return when (this.code()) {
+//                    200 -> {
+//                        val newAccessToken = headers()["Authorization"] ?: ""
+//                        if(newAccessToken.isNotEmpty()) preferenceManager.updateAccessToken(newAccessToken)
+//
+//                        LessonState.Success(body() ?: listOf(LessonTodayResponse.EMPTY))
+//                    }
+//                    else -> LessonState.Error(Exception(message()))
+//                }
+//            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+//    }
 }
 

@@ -33,6 +33,14 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        bind {
+            vm = viewModel
+        }
+        initListener()
+        initViews()
+    }
+
+    private fun initListener() {
         viewModel.apply {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
                 when (lessonDetailState) {
@@ -93,12 +101,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
             lessonDeleteEvent.observe(this@LessonDetailActivity, EventObserver {
                 showLessonDeleteDialog()
             })
-        }
-
-        initViews()
-
-        bind {
-            vm = viewModel
         }
     }
 

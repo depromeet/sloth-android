@@ -3,6 +3,7 @@ package com.depromeet.sloth.ui.test
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.network.health.HealthState
 import com.depromeet.sloth.data.network.lesson.list.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.ActivityTestBinding
@@ -20,27 +21,27 @@ class TestActivity : BaseActivity<ActivityTestBinding>(R.layout.activity_test) {
         mainScope {
 //            viewModel.processHealthWork().let {
 //                when (it) {
-//                    iealthResponse> -> Log.e("Success", "${it.data}")
-//                    is HealthState.Error -> Log.e("Error", "${it.exception}")
+//                    is HealthState.Success -> Timber.tag("Success").d("${it.data}")
+//                    is HealthState.Error -> Timber.tag("Error").d(it.exception)
 //                }
 //            }
-
-            viewModel.fetchTodayLessonList().let {
-                when (it) {
-                    is LessonState.Loading -> {
-                        Timber.d("Loading")
-                    }
-
-                    is LessonState.Success<List<LessonTodayResponse>> -> {
-                        Timber.tag("Success").d("${it.data}")
-                        //setLessonList(it.data)
-                    }
-
-                    is LessonState.Error -> {
-                        Timber.tag("Error").d(it.throwable)
-                    }
-                }
-            }
+//
+//            viewModel.fetchTodayLessonList().let {
+//                when (it) {
+//                    is LessonState.Loading -> {
+//                        Timber.d("Loading")
+//                    }
+//
+//                    is LessonState.Success<List<LessonTodayResponse>> -> {
+//                        Timber.tag("Success").d("${it.data}")
+//                        //setLessonList(it.data)
+//                    }
+//
+//                    is LessonState.Error -> {
+//                        Timber.tag("Error").d(it.throwable)
+//                    }
+//                }
+//            }
         }
     }
 }

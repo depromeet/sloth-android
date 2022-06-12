@@ -1,8 +1,6 @@
 package com.depromeet.sloth.data.network.lesson
 
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.model.*
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
 import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
@@ -13,7 +11,6 @@ import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
 import com.depromeet.sloth.ui.base.UIState
 import kotlinx.coroutines.flow.Flow
@@ -43,5 +40,5 @@ interface LessonRepository {
     suspend fun updateLesson(
         lessonId: String,
         updateLessonRequest: LessonUpdateRequest,
-    ): LessonUpdateState<LessonUpdateResponse>
+    ): LessonUpdateState<LessonUpdate>
 }

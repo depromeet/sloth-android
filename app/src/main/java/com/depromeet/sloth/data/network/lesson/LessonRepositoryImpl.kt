@@ -1,9 +1,7 @@
 package com.depromeet.sloth.data.network.lesson
 
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.model.*
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
@@ -13,7 +11,6 @@ import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
 import com.depromeet.sloth.ui.base.UIState
 import kotlinx.coroutines.flow.catch
@@ -348,7 +345,7 @@ class LessonRepositoryImpl @Inject constructor(
     override suspend fun updateLesson(
         lessonId: String,
         updateLessonRequest: LessonUpdateRequest,
-    ): LessonUpdateState<LessonUpdateResponse> {
+    ): LessonUpdateState<LessonUpdate> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -360,7 +357,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonUpdateState.Success(this.body() ?: LessonUpdateResponse())
+                        LessonUpdateState.Success(this.body() ?: LessonUpdate())
                     }
                     else -> LessonUpdateState.Error(Exception(message()))
                 }

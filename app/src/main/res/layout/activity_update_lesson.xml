@@ -4,9 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="lessonDetail"
             type="com.depromeet.sloth.data.model.LessonDetail" />
+
+        <variable
+            name="vm"
+            type="com.depromeet.sloth.ui.update.UpdateLessonViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -305,6 +311,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
+                    android:onClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
