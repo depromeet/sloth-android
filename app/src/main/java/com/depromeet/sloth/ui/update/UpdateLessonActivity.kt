@@ -54,11 +54,11 @@ class UpdateLessonActivity :
             vm = viewModel
         }
 
-        initListener()
+        initObserver()
         initNavigation()
     }
 
-    private fun initListener() {
+    private fun initObserver() {
         viewModel.apply {
             lessonUpdateState.observe(
                 this@UpdateLessonActivity,
@@ -75,10 +75,7 @@ class UpdateLessonActivity :
                         }
 
                         is LessonUpdateState.Unauthorized -> {
-                            showLogoutDialog(
-                                this@UpdateLessonActivity,
-                                this@UpdateLessonActivity
-                            ) { viewModel.removeAuthToken() }
+                            showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                         }
 
                         is LessonUpdateState.Error -> {
@@ -100,10 +97,7 @@ class UpdateLessonActivity :
                     }
 
                     is LessonState.Unauthorized -> {
-                        showLogoutDialog(
-                            this@UpdateLessonActivity,
-                            this@UpdateLessonActivity
-                        ) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
@@ -128,9 +122,7 @@ class UpdateLessonActivity :
 
                     is LessonState.Unauthorized -> {
                         showLogoutDialog(
-                            this@UpdateLessonActivity,
-                            this@UpdateLessonActivity
-                        ) { viewModel.removeAuthToken() }
+                            this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
@@ -157,7 +149,7 @@ class UpdateLessonActivity :
             lessonNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
                 when (isEnable) {
                     false -> {
-                        showToast("수정된 강의 개수가 이미 수강한 강의 개수보다 적어요")
+                        showToast("강의 개수가 수강한 강의 개수보다 적어요")
                         lockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
                     }
 

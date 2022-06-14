@@ -36,11 +36,12 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
         bind {
             vm = viewModel
         }
-        initListener()
+
+        initObserver()
         initViews()
     }
 
-    private fun initListener() {
+    private fun initObserver() {
         viewModel.apply {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
                 when (lessonDetailState) {
@@ -55,8 +56,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     }
 
                     is LessonDetailState.Unauthorized -> {
-                        showLogoutDialog(this@LessonDetailActivity,
-                            this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonDetailState.Error -> {
@@ -74,8 +74,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                         lessonDeleteState.data)
 
                     is LessonDeleteState.Unauthorized -> {
-                        showLogoutDialog(this@LessonDetailActivity,
-                            this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
                     is LessonDeleteState.Error -> {

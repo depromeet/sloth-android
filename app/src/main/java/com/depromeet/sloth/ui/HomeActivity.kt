@@ -5,7 +5,6 @@ import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.notification.NotificationRegisterRequest
@@ -50,8 +49,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     }
 
                     is NotificationRegisterState.Unauthorized -> {
-                        showLogoutDialog(this@HomeActivity,
-                            this@HomeActivity) { viewModel.removeAuthToken() }
+                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
                     }
 
                     is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {

@@ -28,8 +28,16 @@ interface LessonService {
     @DELETE("api/lesson/{lessonId}")
     suspend fun deleteLesson(@Path("lessonId") lessonId: String): Response<LessonDeleteResponse>?
 
+//    @POST("api/lesson")
+//    suspend fun registerLesson(
+//        @Header("Authorization") authToken: String?,
+//        @Body lessonRegisterRequest: LessonRegisterRequest
+//    ): Response<LessonRegisterResponse>?
+
     @POST("api/lesson")
-    suspend fun registerLesson(@Body request: LessonRegisterRequest): Response<LessonRegisterResponse>?
+    suspend fun registerLesson(
+        @Body lessonRegisterRequest: LessonRegisterRequest
+    ): Response<LessonRegisterResponse>?
 
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateRequest): Response<LessonUpdate>?

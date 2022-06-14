@@ -46,8 +46,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
 
                     is MemberState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
+                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
                     is MemberState.Error -> {
@@ -68,8 +67,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
 
                     is MemberUpdateState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
+                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
                     is MemberUpdateState.Error -> {
@@ -80,7 +78,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 hideProgress()
             })
 
-            //화면 이동 관련은 Event Wrapper LiveData 유지
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
                     is MemberLogoutState.Loading -> handleLoadingState(requireContext())
@@ -88,8 +85,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     is MemberLogoutState.Success<String> -> handleSuccessState(memberLogoutState.data)
 
                     is MemberLogoutState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
+                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
                     is MemberLogoutState.Error -> {
@@ -158,7 +154,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             showToast("닉네임이 변경되었어요")
             viewModel.fetchMemberInfo()
         } else {
-            logout(requireContext(), requireActivity()) { viewModel.removeAuthToken() }
+            logout(requireContext()) { viewModel.removeAuthToken() }
         }
     }
 
