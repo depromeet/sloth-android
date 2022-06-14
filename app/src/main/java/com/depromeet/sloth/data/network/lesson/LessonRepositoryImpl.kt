@@ -201,12 +201,12 @@ class LessonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun registerLesson(
-        request: LessonRegisterRequest,
+        lessonRegisterRequest: LessonRegisterRequest,
     ): LessonState<LessonRegisterResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
-            .registerLesson(request)?.run {
+            .registerLesson(lessonRegisterRequest)?. run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""

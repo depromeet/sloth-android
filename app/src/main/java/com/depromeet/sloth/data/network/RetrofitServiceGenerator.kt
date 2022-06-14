@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class RetrofitServiceGenerator @Inject constructor(
     private val timeoutConnect = 30L
 
     private fun provideHttpClient(
-        authToken: String? = null
+        authToken: String? = null,
     ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         return httpClient.apply {
@@ -33,7 +34,7 @@ class RetrofitServiceGenerator @Inject constructor(
 
     fun build(
         accessToken: String? = null,
-        isGoogleLogin: Boolean = false
+        isGoogleLogin: Boolean = false,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(
@@ -42,6 +43,7 @@ class RetrofitServiceGenerator @Inject constructor(
                     false -> BuildConfig.SLOTH_BASE_URL
                 }
             )
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(provideHttpClient(accessToken))
             .build()

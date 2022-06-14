@@ -28,11 +28,11 @@ class RegisterLessonCheckFragment :
             lesson = viewModel.lessonCheck.value
         }
 
-        initListener()
+        initObserver()
         initNavigation()
     }
 
-    private fun initListener() {
+    private fun initObserver() {
         viewModel.apply {
             lessonRegisterState.observe(viewLifecycleOwner,
                 EventObserver { lessonRegisterResponse ->
@@ -46,10 +46,7 @@ class RegisterLessonCheckFragment :
                         }
 
                         is LessonState.Unauthorized -> {
-                            showLogoutDialog(
-                                requireContext(),
-                                requireActivity()
-                            ) { viewModel.removeAuthToken() }
+                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         }
 
                         is LessonState.Error -> {

@@ -25,6 +25,12 @@
         <item name="android:textColorHint">@color/gray_500</item>
     </style>
 
+    <style name="Widget.Sloth.TextView.HeadLine" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Widget.Sloth.TextView" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">16dp</item>
     </style>

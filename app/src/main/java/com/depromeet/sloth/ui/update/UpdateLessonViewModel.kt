@@ -135,10 +135,10 @@ class UpdateLessonViewModel @Inject constructor(
 
     fun updateLesson() = viewModelScope.launch {
         if(lessonTotalNumber.value!! < lessonDetail.presentNumber) {
-            _lessonNumberValidation.value = (false)
+            _lessonNumberValidation.value = false
         }
         else {
-            _lessonNumberValidation.value = (true)
+            _lessonNumberValidation.value = true
             _lessonUpdateState.value = Event(LessonUpdateState.Loading)
             val lessonUpdateResponse =
                 lessonRepository.updateLesson(

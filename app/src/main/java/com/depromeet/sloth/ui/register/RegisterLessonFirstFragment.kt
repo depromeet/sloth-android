@@ -21,6 +21,7 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -53,11 +54,11 @@ class RegisterLessonFirstFragment :
             vm = viewModel
         }
 
-        initListener()
+        initObserver()
         initNavigation()
     }
 
-    private fun initListener() {
+    private fun initObserver() {
         viewModel.apply {
             lessonCategoryListState.observe(viewLifecycleOwner) { lessonState ->
                 when (lessonState) {
@@ -68,8 +69,7 @@ class RegisterLessonFirstFragment :
                     }
 
                     is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
+                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
@@ -91,8 +91,7 @@ class RegisterLessonFirstFragment :
                     }
 
                     is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext(),
-                            requireActivity()) { viewModel.removeAuthToken() }
+                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
@@ -128,7 +127,7 @@ class RegisterLessonFirstFragment :
         bindAdapter()
 
         focusInputForm(etRegisterLessonName)
-        validateInputForm(etRegisterLessonCount)
+        validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)
         focusSpinnerForm(spnRegisterLessonSite)
     }
@@ -151,7 +150,6 @@ class RegisterLessonFirstFragment :
         }
     }
 
-    //이거 animeReview 에서 했던 방법으로 변경 lint 없앨 수 있을듯?
     @SuppressLint("ClickableViewAccessibility")
     private fun focusSpinnerForm(spinner: Spinner): Unit = with(binding) {
         spinner.apply {
@@ -164,7 +162,7 @@ class RegisterLessonFirstFragment :
 
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    clearFocus(etRegisterLessonCount)
+                    clearFocus(etRegisterLessonTotalNumber)
                     clearFocus(etRegisterLessonName)
 
                     if (spinner.selectedItemPosition == 0) {
@@ -214,7 +212,7 @@ class RegisterLessonFirstFragment :
 
     //다시 돌아왔을때 "개" 가 보이지 않음
     private fun validateInputForm(editText: EditText) = with(binding) {
-        var result = ""
+        var result = DEFAULT_STRING_VALUE
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
@@ -239,7 +237,7 @@ class RegisterLessonFirstFragment :
                 }
 
                 if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = ""
+                    result = DEFAULT_STRING_VALUE
                     editText.setText(result)
                     tvRegisterLessonTotalNumberInfo.apply {
                         text = result

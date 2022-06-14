@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
@@ -18,15 +20,13 @@
 
         <TextView
             android:id="@+id/tv_register_guide"
+            style="@style/Widget.Sloth.TextView.HeadLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="42dp"
             android:layout_marginBottom="16dp"
             android:text="@string/setup_goal"
-            android:textColor="@color/black"
-            android:textSize="24dp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/sv_register_lesson"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +48,7 @@
                 android:paddingVertical="16dp">
 
                 <TextView
-                    android:id="@+id/tv_register_start_lesson_date"
+                    android:id="@+id/tv_register_lesson_start_date"
                     style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,24 +66,25 @@
                     android:text="@string/lesson_start_date_caution"
                     android:textColor="@color/error"
                     android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_register_start_lesson_date"
-                    app:layout_constraintStart_toEndOf="@+id/tv_register_start_lesson_date"
-                    app:layout_constraintTop_toTopOf="@+id/tv_register_start_lesson_date" />
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_register_lesson_start_date"
+                    app:layout_constraintStart_toEndOf="@+id/tv_register_lesson_start_date"
+                    app:layout_constraintTop_toTopOf="@+id/tv_register_lesson_start_date" />
 
                 <TextView
-                    android:id="@+id/tv_register_start_lesson_date_info"
+                    android:id="@+id/tv_register_lesson_start_date_info"
+                    style="@style/Widget.Sloth.TextView.Black"
+                    lessonDate="@{String.valueOf(vm.lessonStartDate)}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:onClick="@{()->vm.navigateToStartDate()}"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_register_start_lesson_date" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_start_date" />
 
                 <TextView
                     android:id="@+id/tv_register_goal_lesson_date"
@@ -94,7 +95,7 @@
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_finish_date"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_register_start_lesson_date_info" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_start_date_info" />
 
                 <Spinner
                     android:id="@+id/spn_register_goal_lesson_date"
@@ -104,13 +105,15 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_rounded_spinner_gray"
-                    android:entries="@array/lesson_goal_date_array"
+                    android:entries="@array/lesson_end_date_array"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date" />
 
                 <TextView
-                    android:id="@+id/tv_register_goal_lesson_date_info"
+                    android:id="@+id/tv_register_lesson_end_date_info"
+                    style="@style/Widget.Sloth.TextView.Black"
+                    lessonDate="@{String.valueOf(vm.lessonEndDate)}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -118,9 +121,7 @@
                     android:background="@drawable/bg_register_rounded_spinner_gray"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    android:visibility="gone"
+                    android:visibility="@{vm.lessonEndDateSelectedItemPosition == 0 ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/spn_register_goal_lesson_date"
@@ -135,7 +136,8 @@
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_price"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_register_goal_lesson_date_info" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_end_date_info" />
+
 
                 <EditText
                     android:id="@+id/et_register_lesson_price"
@@ -148,13 +150,16 @@
                     android:inputType="number"
                     android:maxLength="9"
                     android:paddingHorizontal="18dp"
+                    android:text="@{String.valueOf(vm.lessonPrice)}"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_price" />
 
+
                 <TextView
                     android:id="@+id/tv_register_lesson_price_Info"
+                    style="@style/Widget.Sloth.TextView.Black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -162,8 +167,6 @@
                     android:background="@drawable/bg_register_rounded_edit_text_gray"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="18dp"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -192,6 +195,7 @@
                     android:inputType="text"
                     android:maxLength="30"
                     android:paddingHorizontal="18dp"
+                    android:text="@{String.valueOf(vm.lessonMessage)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_register_lesson_message" />
@@ -200,19 +204,6 @@
 
         </ScrollView>
 
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/btn_register_lesson"-->
-<!--            style="@style/Widget.Sloth.Button.Register"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="56dp"-->
-<!--            android:layout_marginHorizontal="16dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:onClick="@{()-> vm.moveRegisterLessonCheck()}"-->
-<!--            android:text="@string/finish"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register_lesson"
             style="@style/Widget.Sloth.Button.Register"
@@ -220,6 +211,7 @@
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
+            android:onClick="@{()-> vm.moveRegisterLessonCheck()}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

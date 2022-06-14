@@ -10,10 +10,13 @@ import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.extensions.addSourceList
+import com.depromeet.sloth.extensions.changeDateStringToArrayList
+import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +26,18 @@ class RegisterLessonViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
 
-    private val _lessonName = savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, "")
+    private val _lessonCategoryListState =
+        MutableLiveData<LessonState<List<LessonCategory>>>()
+    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>>
+        get() = _lessonCategoryListState
+
+    private val _lessonSiteListState =
+        MutableLiveData<LessonState<List<LessonSite>>>()
+    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>>
+        get() = _lessonSiteListState
+
+    private val _lessonName =
+        savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
     val lessonName: LiveData<String>
         get() = _lessonName
 
@@ -36,7 +50,7 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonCategoryId
 
     private val _lessonCategoryName =
-        savedStateHandle.getLiveData<String>(KEY_LESSON_CATEGORY_NAME, "")
+        savedStateHandle.getLiveData<String>(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
     val lessonCategoryName: LiveData<String>
         get() = _lessonCategoryName
 
@@ -44,15 +58,17 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
-    private val _lessonSiteName = savedStateHandle.getLiveData<String>(KEY_LESSON_SITE_NAME, "")
+    private val _lessonSiteName =
+        savedStateHandle.getLiveData<String>(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
-    private val _lessonPrice = savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, 0)
+    private val _lessonPrice = savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, null)
     val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 
-    private val _lessonMessage = savedStateHandle.getLiveData<String>(KEY_LESSON_MESSAGE, "")
+    private val _lessonMessage =
+        savedStateHandle.getLiveData<String>(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: LiveData<String>
         get() = _lessonMessage
 
@@ -76,16 +92,6 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
-    private val _lessonCategoryListState =
-        MutableLiveData<LessonState<List<LessonCategory>>>()
-    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>>
-        get() = _lessonCategoryListState
-
-    private val _lessonSiteListState =
-        MutableLiveData<LessonState<List<LessonSite>>>()
-    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>>
-        get() = _lessonSiteListState
-
     private val _lessonRegisterState = MutableLiveData<Event<LessonState<LessonRegisterResponse>>>()
     val lessonRegisterState: LiveData<Event<LessonState<LessonRegisterResponse>>>
         get() = _lessonRegisterState
@@ -108,13 +114,30 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
-//    private val _lessonStartDate = savedStateHandle.getLiveData<ZonedDateTime>(KEY_LESSON_START_DATE)
-//    val lessonStartDate: LiveData<ZonedDateTime>
-//        get() = _lessonStartDate
-//
-//    private val _lessonEndDate = savedStateHandle.getLiveData<ZonedDateTime>(KEY_LESSON_END_DATE)
-//    val lessonEndDate: LiveData<ZonedDateTime>
-//        get() = _lessonEndDate
+    private val _startDate = savedStateHandle.getLiveData<Date>(
+        KEY_START_DATE)
+    val startDate: LiveData<Date>
+        get() = _startDate
+
+    private val _endDate = savedStateHandle.getLiveData<Date>(
+        KEY_END_DATE)
+    val endDate: LiveData<Date>
+        get() = _endDate
+
+    private val _lessonStartDate = savedStateHandle.getLiveData<String>(
+        KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
+    val lessonStartDate: LiveData<String>
+        get() = _lessonStartDate
+
+    private val _lessonEndDate = savedStateHandle.getLiveData<String>(
+        KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
+    val lessonEndDate: LiveData<String>
+        get() = _lessonEndDate
+
+    private val _lessonEndDateSelectedItemPosition = savedStateHandle.getLiveData<Int>(
+        KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0)
+    val lessonEndDateSelectedItemPosition: LiveData<Int>
+        get() = _lessonEndDateSelectedItemPosition
 
     private val _moveRegisterLessonSecondEvent = MutableLiveData<Event<Boolean>>()
     val moveRegisterLessonSecondEvent: LiveData<Event<Boolean>>
@@ -124,12 +147,81 @@ class RegisterLessonViewModel @Inject constructor(
     val moveRegisterLessonCheckEvent: LiveData<Event<Boolean>>
         get() = _moveRegisterLessonCheckEvent
 
+    private val _lessonDateValidation = MutableLiveData<Boolean>()
+    val lessonDateValidation: LiveData<Boolean>
+        get() = _lessonDateValidation
+
+    private val _navigateToStartDate = MutableLiveData<Event<Date>>()
+    val navigateToStartDate: LiveData<Event<Date>>
+        get() = _navigateToStartDate
+
+    private val _navigateToEndDate = MutableLiveData<Event<Date>>()
+    val navigateToEndDate: LiveData<Event<Date>>
+        get() = _navigateToEndDate
+
+    private suspend fun fetchLessonCategoryList() {
+        _lessonCategoryListState.value = LessonState.Loading
+        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
+        _lessonCategoryListState.value = lessonCategoryListResponse
+    }
+
+    private suspend fun fetchLessonSiteList() {
+        _lessonSiteListState.value = LessonState.Loading
+        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
+        _lessonSiteListState.value = lessonSiteListResponse
+    }
+
+    private fun initLessonStartDate() {
+        val today = Date()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+        calendar.time = today
+        _startDate.value = calendar.time
+        _lessonStartDate.value = getPickerDateToDash(calendar.time)
+    }
+
     init {
         viewModelScope.launch {
             fetchLessonCategoryList()
             fetchLessonSiteList()
         }
+        initLessonStartDate()
     }
+
+    fun updateLessonStartDate(calendar: Calendar) {
+        setStartDate(calendar.time)
+        setLessonStartDate(getPickerDateToDash(startDate.value!!))
+    }
+
+    fun updateLessonEndDateBySpinner(position: Int?) {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+        calendar.time = startDate.value!!
+        when (position) {
+            ONE_WEEK -> {
+                calendar.add(Calendar.DATE, 7)
+            }
+
+            ONE_MONTH -> {
+                calendar.add(Calendar.MONTH, 1)
+            }
+
+            TWO_MONTH -> {
+                calendar.add(Calendar.MONTH, 2)
+            }
+
+            THREE_MONTH -> {
+                calendar.add(Calendar.MONTH, 3)
+            }
+            else -> Unit
+        }
+        setEndDate(calendar.time)
+        setLessonEndDate(getPickerDateToDash(calendar.time))
+    }
+
+    fun updateLessonEndDateByCalendar(calendar: Calendar) {
+        setEndDate(calendar.time)
+        setLessonEndDate(getPickerDateToDash(calendar.time))
+    }
+
 
     fun setLessonCategoryList(data: List<LessonCategory>) {
         _lessonCategoryMap.value =
@@ -165,12 +257,32 @@ class RegisterLessonViewModel @Inject constructor(
 //                initialValue = UIState.Loading
 //            )
 
-    fun setLessonCheckInfo(lesson: Lesson) {
-        _lessonCheck.value = lesson
-    }
+    fun setLessonInfo() {
+        if (startDate.value!! > endDate.value!!) {
+            _lessonDateValidation.value = false
+        }
+        _lessonCheck.value = Lesson(
+            categoryName = lessonCategoryName.value!!,
+            endDate = changeDateStringToArrayList(lessonEndDate.value!!),
+            lessonName = lessonName.value!!,
+            message = lessonMessage.value,
+            price = lessonPrice.value!!,
+            siteName = lessonSiteName.value!!,
+            startDate = changeDateStringToArrayList(lessonStartDate.value!!),
+            totalNumber = lessonTotalNumber.value!!
+        )
 
-    fun setLessonRegisterInfo(lessonRegisterInfo: LessonRegisterRequest) {
-        _lessonRegister.value = lessonRegisterInfo
+        _lessonRegister.value = LessonRegisterRequest(
+            alertDays = null,
+            categoryId = lessonCategoryId.value!!,
+            endDate = lessonEndDate.value!!,
+            lessonName = lessonName.value!!,
+            message = lessonMessage.value!!,
+            price = lessonPrice.value!!,
+            siteId = lessonSiteId.value!!,
+            startDate = lessonStartDate.value!!,
+            totalNumber = lessonTotalNumber.value!!
+        )
     }
 
     fun registerLesson(
@@ -180,24 +292,25 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonRegisterState.value = Event(lessonRegisterResponse)
     }
 
-    private suspend fun fetchLessonCategoryList() {
-        _lessonCategoryListState.value = LessonState.Loading
-        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
-        _lessonCategoryListState.value = lessonCategoryListResponse
-    }
-
-    private suspend fun fetchLessonSiteList() {
-        _lessonSiteListState.value = LessonState.Loading
-        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
-        _lessonSiteListState.value = lessonSiteListResponse
-    }
-
-    fun setLessonCategoryItemPosition(position: Int) {
+    fun setLessonCategoryItemPosition(position: Int?) {
+        if (this.lessonCategorySelectedItemPosition.value == position || position == null) {
+            return
+        }
         _lessonCategorySelectedItemPosition.value = position
     }
 
-    fun setLessonSiteItemPosition(position: Int) {
+    fun setLessonSiteItemPosition(position: Int?) {
+        if (this.lessonSiteSelectedItemPosition.value == position || position == null) {
+            return
+        }
         _lessonSiteSelectedItemPosition.value = position
+    }
+
+    fun setLessonEndDateSelectedItemPosition(position: Int?) {
+        if (this.lessonEndDateSelectedItemPosition.value == position || position == null) {
+            return
+        }
+        _lessonEndDateSelectedItemPosition.value = position
     }
 
     fun setLessonName(lessonName: String?) {
@@ -260,6 +373,20 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle.set(KEY_LESSON_MESSAGE, lessonMessage)
     }
 
+    private fun setLessonStartDate(lessonStartDate: String?) {
+        if (this.lessonStartDate.value == lessonStartDate || lessonStartDate == null) {
+            return
+        }
+        savedStateHandle.set(KEY_LESSON_START_DATE, lessonStartDate)
+    }
+
+    private fun setLessonEndDate(lessonEndDate: String?) {
+        if (this.lessonEndDate.value == lessonEndDate || lessonEndDate == null) {
+            return
+        }
+        savedStateHandle.set(KEY_LESSON_END_DATE, lessonEndDate)
+    }
+
     fun moveRegisterLessonSecond() {
         _moveRegisterLessonSecondEvent.value = Event(true)
     }
@@ -268,19 +395,45 @@ class RegisterLessonViewModel @Inject constructor(
         _moveRegisterLessonCheckEvent.value = Event(true)
     }
 
+    fun navigateToStartDate() {
+        _navigateToStartDate.value = Event(startDate.value ?: Date())
+    }
+
+    fun navigateToEndDate() {
+        _navigateToStartDate.value = Event(endDate.value ?: Date())
+    }
+
     val isEnabledMoveLessonSecondButton = MediatorLiveData<Boolean>().apply {
-        addSourceList(_lessonName,
+        addSourceList(
+            _lessonName,
             _lessonTotalNumber,
             _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition) {
-            isValidEnterInfo()
+            _lessonSiteSelectedItemPosition
+        ) {
+            isValidLessonFirstEnterInfo()
         }
     }
 
-    private fun isValidEnterInfo() =
+    private fun isValidLessonFirstEnterInfo() =
         !_lessonName.value.isNullOrBlank() && _lessonTotalNumber.value != 0 &&
                 _lessonCategorySelectedItemPosition.value != 0 && _lessonSiteSelectedItemPosition.value != 0
 
+    private fun isValidLessonSecondEnterInfo() =
+        _lessonEndDateSelectedItemPosition.value != 0
+
+    private fun setStartDate(startDate: Date?) {
+        if (this.startDate.value == startDate || startDate == null) {
+            return
+        }
+        savedStateHandle.set(KEY_START_DATE, startDate)
+    }
+
+    private fun setEndDate(endDate: Date?) {
+        if (this.endDate.value == endDate || endDate == null) {
+            return
+        }
+        savedStateHandle.set(KEY_END_DATE, endDate)
+    }
 
     companion object {
         const val KEY_LESSON_NAME = "lessonName"
@@ -289,16 +442,20 @@ class RegisterLessonViewModel @Inject constructor(
         const val KEY_LESSON_CATEGORY_LIST = "lessonCategoryList"
         const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
         const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
+        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
         const val KEY_LESSON_SITE_MAP = "lessonSiteMap"
         const val KEY_LESSON_SITE_LIST = "lessonSiteList"
         const val KEY_LESSON_SITE_NAME = "lessonSiteName"
         const val KEY_LESSON_SITE_ID = "lessonSiteId"
+        const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        const val KEY_START_DATE = "startDate"
+        const val KEY_END_DATE = "endDate"
         const val KEY_LESSON_START_DATE = "lessonStartDate"
         const val KEY_LESSON_END_DATE = "lessonEndDate"
+        const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
         const val KEY_LESSON_PRICE = "lessonPrice"
         const val KEY_LESSON_MESSAGE = "lessonMessage"
-        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
-        const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+
         const val DAY = 86400000L
         const val DEFAULT = 0
         const val ONE_WEEK = 1
@@ -306,5 +463,6 @@ class RegisterLessonViewModel @Inject constructor(
         const val TWO_MONTH = 3
         const val THREE_MONTH = 4
         const val CUSTOM_SETTING = 5
+        const val DEFAULT_STRING_VALUE = ""
     }
 }

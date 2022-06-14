@@ -30,8 +30,12 @@ class RegisterLessonActivity :
 
         binding.tbRegisterLesson.apply {
             setNavigationOnClickListener {
-                if (!navController.navigateUp()) finish() else navController.navigateUp()
+                if (!navController.navigateUp()) {
+                    finish()
+                }
             }
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
 }

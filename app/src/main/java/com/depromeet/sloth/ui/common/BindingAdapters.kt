@@ -8,6 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import com.depromeet.sloth.GlideApp
 import com.depromeet.sloth.R
+import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
 import com.depromeet.sloth.ui.base.UIState
@@ -94,6 +95,24 @@ fun setPrice(view: TextView, price: Int) = with(view) {
     text = decimalFormat.format(price)
 }
 
+//@BindingAdapter("lessonPrice")
+//fun setLessonPrice(view: EditText, price: Int?) {
+//    if(price == null) {
+//        view.text.clear()
+//    }
+//    else {
+//        view.setText(price.toString())
+//    }
+//}
+
+@BindingAdapter("lessonDate")
+fun setLessonDate(view: TextView, lessonDate: String?) {
+    if (lessonDate.isNullOrBlank()) {
+        view.visibility = View.GONE
+    } else {
+        view.text = changeDateFormat(lessonDate)
+    }
+}
 
 @BindingAdapter("goalProgressRate","d_day")
 fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = with(view) {
