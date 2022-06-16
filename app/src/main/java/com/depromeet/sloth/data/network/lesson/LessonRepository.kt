@@ -131,6 +131,36 @@ class LessonRepository @Inject constructor(
         .catch { throwable -> emit(UIState.Error(throwable)) }
         .onCompletion { emit(UIState.UnLoading) }
 
+    fun finishLesson(lessonId: String) = flow {
+        emit(UIState.Loading)
+
+        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+            .build(preferenceManager.getAccessToken())
+            .create(LessonService::class.java)
+            .finishLesson(lessonId) ?: run {
+            emit(UIState.Error(Exception("Response is null")))
+            return@flow
+        }
+
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()["Authorization"] ?: ""
+                if (newAccessToken.isNotEmpty()) {
+                    preferenceManager.updateAccessToken(newAccessToken)
+                }
+
+                emit(UIState.Success(response.body() ?: LessonFinishResponse.EMPTY))
+            }
+            401 -> {
+                preferenceManager.removeAuthToken()
+                emit(UIState.Error(Exception(response.message())))
+            }
+            else -> emit(UIState.Error(Exception(response.message())))
+        }
+    }
+        .catch { throwable -> emit(UIState.Error(throwable)) }
+        .onCompletion { emit(UIState.UnLoading) }
+
 //    suspend fun fetchAllLessonList(): LessonState<List<LessonAllResponse>> {
 //        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
 //            .build(preferenceManager.getAccessToken())

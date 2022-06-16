@@ -3,10 +3,7 @@ package com.depromeet.sloth.ui
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.lesson.*
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.base.UIState
@@ -47,6 +44,9 @@ class LessonViewModel @Inject constructor(
 //    ) {
 //        lessonRepository.fetchAllLessonList()
 //    }.await()
+
+    fun finishLesson(lessonId: String): Flow<UIState<LessonFinishResponse>> =
+        lessonRepository.finishLesson(lessonId)
 
     suspend fun updateLessonCount(
         count: Int,
