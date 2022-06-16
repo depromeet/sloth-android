@@ -6,14 +6,12 @@
     <data>
 
         <variable
-            name="vm"
-            type="com.depromeet.sloth.ui.detail.LessonDetailViewModel" />
-
-
-        <variable
             name="lessonDetail"
             type="com.depromeet.sloth.data.model.LessonDetail" />
 
+        <variable
+            name="vm"
+            type="com.depromeet.sloth.ui.detail.LessonDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,8 +36,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                android:text="@string/update"
                 android:onClick="@{() -> vm.onClickLessonUpdateEvent(vm.lessonDetail)}"
+                android:text="@string/update"
                 android:textColor="@color/gray_600"
                 android:textSize="16dp" />
 
@@ -537,8 +535,8 @@
                         android:layout_marginTop="36dp"
                         android:layout_marginBottom="36dp"
                         android:background="@drawable/bg_detail_rounded_gray"
-                        android:text="@string/remove"
                         android:onClick="@{() -> vm.onClickLessonDeleteEvent()}"
+                        android:text="@string/remove"
                         android:textColor="@color/gray_500"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"

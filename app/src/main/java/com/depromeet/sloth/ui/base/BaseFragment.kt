@@ -41,6 +41,10 @@ abstract class BaseFragment<B : ViewDataBinding>(
         }
     }
 
+    protected inline fun bind(block: B.() -> Unit) {
+        binding.apply(block)
+    }
+
     open fun initViews() = Unit
 
     open fun observeData() = Unit

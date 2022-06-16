@@ -1,7 +1,5 @@
 package com.depromeet.sloth.ui.register
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.NavController
@@ -13,15 +11,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.layout.activity_register_lesson) {
+class RegisterLessonActivity :
+    BaseActivity<ActivityRegisterLessonBinding>(R.layout.activity_register_lesson) {
 
     private val viewModel: RegisterLessonViewModel by viewModels()
-    lateinit var navController: NavController
 
-    companion object {
-        fun newIntent(activity: Activity) =
-            Intent(activity, RegisterLessonActivity::class.java)
-    }
+    lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +28,14 @@ class RegisterLessonActivity : BaseActivity<ActivityRegisterLessonBinding>(R.lay
             supportFragmentManager.findFragmentById(R.id.lesson_register_container) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.tbRegisterLesson.setNavigationOnClickListener { navController.navigateUp() }
+        binding.tbRegisterLesson.apply {
+            setNavigationOnClickListener {
+                if (!navController.navigateUp()) {
+                    finish()
+                }
+            }
+        }
     }
+
+    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
 }

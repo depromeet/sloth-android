@@ -1,9 +1,9 @@
 package com.depromeet.sloth.data.network
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import timber.log.Timber
 
 class AuthenticationInterceptor(
     private val accessToken: String? = null
@@ -19,7 +19,7 @@ class AuthenticationInterceptor(
             .apply {
                 accessToken?.run {
                     header("Authorization", this)
-                } ?: Log.e("AuthenticationInterceptor", "token is empty")
+                } ?: Timber.tag("AuthenticationInterceptor").e("token is empty")
             }
 
         val request: Request = builder.build()

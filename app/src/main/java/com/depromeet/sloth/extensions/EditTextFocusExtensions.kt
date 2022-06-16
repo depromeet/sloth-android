@@ -12,7 +12,6 @@ import com.depromeet.sloth.R
 
 fun focusInputForm(editText: EditText, button: AppCompatButton, context: Context) {
     editText.addTextChangedListener(object : TextWatcher {
-        @RequiresApi(Build.VERSION_CODES.M)
         override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
         }
 
@@ -20,7 +19,6 @@ fun focusInputForm(editText: EditText, button: AppCompatButton, context: Context
 
         }
 
-        @RequiresApi(Build.VERSION_CODES.M)
         override fun afterTextChanged(editable: Editable?) {
             setButton(editable, button, context)
         }
@@ -45,5 +43,12 @@ fun clearEditTextFocus(editText: EditText) {
             editText.clearFocus()
         }
         false
+    }
+}
+
+fun clearFocus(editText: EditText) {
+    editText.apply {
+        clearFocus()
+        setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
     }
 }

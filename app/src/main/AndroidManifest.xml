@@ -14,8 +14,7 @@
         android:roundIcon="@mipmap/ic_sloth_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sloth.NoActionBar.Splash"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
@@ -29,7 +28,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher" />
+            android:resource="@mipmap/ic_sloth_logo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/sloth" />
@@ -59,10 +58,11 @@
             android:name=".ui.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.test.TestActivity"
-            android:screenOrientation="portrait"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true"
@@ -88,6 +88,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

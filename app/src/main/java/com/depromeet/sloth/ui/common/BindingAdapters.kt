@@ -1,14 +1,35 @@
 package com.depromeet.sloth.ui.common
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
+import com.depromeet.sloth.GlideApp
 import com.depromeet.sloth.R
+import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
+import com.depromeet.sloth.ui.base.UIState
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
+
+@BindingAdapter("currentProgressRate", "goalProgressRate")
+fun setLessonSummaryImage(view: ImageView, currentProgressRate: Float, goalProgressRate: Float) {
+    // 시작 하지 않음
+    if(goalProgressRate == 0F) {
+        GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_not_started_yet).into(view)
+    }
+    // 시작함
+    else {
+        if (currentProgressRate >= goalProgressRate) {
+            GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_steadily_listen).into(view)
+        } else {
+            GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_fail_goal).into(view)
+        }
+    }
+}
 
 @BindingAdapter("isVisible")
 fun isVisible(view: TextView, goalProgressRate: Float) = with(view) {
@@ -74,6 +95,24 @@ fun setPrice(view: TextView, price: Int) = with(view) {
     text = decimalFormat.format(price)
 }
 
+//@BindingAdapter("lessonPrice")
+//fun setLessonPrice(view: EditText, price: Int?) {
+//    if(price == null) {
+//        view.text.clear()
+//    }
+//    else {
+//        view.setText(price.toString())
+//    }
+//}
+
+@BindingAdapter("lessonDate")
+fun setLessonDate(view: TextView, lessonDate: String?) {
+    if (lessonDate.isNullOrBlank()) {
+        view.visibility = View.GONE
+    } else {
+        view.text = changeDateFormat(lessonDate)
+    }
+}
 
 @BindingAdapter("goalProgressRate","d_day")
 fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = with(view) {
@@ -151,4 +190,9 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
             endDate?.let { changeDateFormatToDot(it) })
     }
 
+
+@BindingAdapter("show")
+fun ProgressBar.bindShow(uiState: UIState<*>) {
+    visibility = if (uiState is UIState.Loading) View.VISIBLE else View.GONE
+}
 

@@ -6,8 +6,13 @@
     <data>
 
         <variable
-            name="lessonRegister"
+            name="lesson"
             type="com.depromeet.sloth.data.model.Lesson" />
+
+        <variable
+            name="vm"
+            type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,7 +95,7 @@
                             android:maxLines="2"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
-                            android:text="@{lessonRegister.lessonName}"
+                            android:text="@{lesson.lessonName}"
                             android:textColor="@color/gray_600"
                             android:textSize="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="28dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{@string/unit_lesson_total_number(lessonRegister.totalNumber)}"
+                            android:text="@{@string/unit_lesson_total_number(lesson.totalNumber)}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -154,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{lessonRegister.categoryName}"
+                            android:text="@{lesson.categoryName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -179,7 +184,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{lessonRegister.siteName}"
+                            android:text="@{lesson.siteName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -200,7 +205,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_price_info"
-                            priceFormat="@{lessonRegister.price}"
+                            priceFormat="@{lesson.price}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -253,7 +258,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_start_date_info"
-                            checkLessonDate="@{lessonRegister.startDate}"
+                            checkLessonDate="@{lesson.startDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -291,7 +296,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_end_date_info"
-                            checkLessonDate="@{lessonRegister.endDate}"
+                            checkLessonDate="@{lesson.endDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -335,15 +340,14 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_register_lesson_update"
+                style="@style/Widget.Sloth.Button.RegisterUpdate"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_register_check_rounded_button_gray"
+                android:onClick="@{()-> vm.moveRegisterLessonSecond()}"
                 android:text="@string/lesson_update"
-                android:textColor="@color/gray_600"
-                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btn_register_lesson_accept"
                 app:layout_constraintHorizontal_weight="1"
@@ -351,20 +355,18 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_register_lesson_accept"
+                style="@style/Widget.Sloth.Button.Check"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_register_check_rounded_button_sloth"
+                android:onClick="@{()->vm.registerLesson()}"
                 android:text="@string/accept"
-                android:textColor="@color/white"
-                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintStart_toEndOf="@id/btn_register_lesson_update" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
