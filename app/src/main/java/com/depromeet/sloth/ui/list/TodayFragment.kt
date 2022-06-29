@@ -21,8 +21,7 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -274,7 +273,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 9,
                 siteName = "TEST1",
                 untilTodayFinished = false,
-                untilTodayNumber = 8
+                untilTodayNumber = 8,
+                totalNumber = 8
             ),
             LessonTodayResponse(
                 categoryName = "디자인",
@@ -284,7 +284,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 19,
                 siteName = "TEST2",
                 untilTodayFinished = true,
-                untilTodayNumber = 5
+                untilTodayNumber = 5,
+                totalNumber = 8
             ),
             LessonTodayResponse(
                 categoryName = "기획",
@@ -294,7 +295,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 10,
                 siteName = "TEST3",
                 untilTodayFinished = false,
-                untilTodayNumber = 6
+                untilTodayNumber = 6,
+                totalNumber = 8
             ),
             LessonTodayResponse(
                 categoryName = "개발",
@@ -304,7 +306,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 7,
                 siteName = "TEST4",
                 untilTodayFinished = true,
-                untilTodayNumber = 6
+                untilTodayNumber = 6,
+                totalNumber = 8
             ),
             LessonTodayResponse(
                 categoryName = "디자인",
@@ -314,7 +317,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 11,
                 siteName = "TEST5",
                 untilTodayFinished = false,
-                untilTodayNumber = 4
+                untilTodayNumber = 4,
+                totalNumber = 8
             ),
             LessonTodayResponse(
                 categoryName = "기획",
@@ -324,7 +328,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 remainDay = 1,
                 siteName = "TEST6",
                 untilTodayFinished = false,
-                untilTodayNumber = 3
+                untilTodayNumber = 3,
+                totalNumber = 8
             )
         )
 
