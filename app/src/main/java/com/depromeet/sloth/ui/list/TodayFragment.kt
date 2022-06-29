@@ -120,6 +120,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             }
 
             false -> {
+                Timber.d("lessonTodayList: $lessonTodayList")
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->
@@ -271,6 +272,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 1,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
                 presentNumber = 4,
+                totalNumber = 32,
                 remainDay = 9,
                 siteName = "TEST1",
                 untilTodayFinished = false,
@@ -281,6 +283,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 2,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
                 presentNumber = 5,
+                totalNumber = 32,
                 remainDay = 19,
                 siteName = "TEST2",
                 untilTodayFinished = true,
@@ -291,6 +294,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 3,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
                 presentNumber = 4,
+                totalNumber = 32,
                 remainDay = 10,
                 siteName = "TEST3",
                 untilTodayFinished = false,
@@ -301,6 +305,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 4,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
                 presentNumber = 6,
+                totalNumber = 32,
                 remainDay = 7,
                 siteName = "TEST4",
                 untilTodayFinished = true,
@@ -311,6 +316,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 5,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
                 presentNumber = 1,
+                totalNumber = 32,
                 remainDay = 11,
                 siteName = "TEST5",
                 untilTodayFinished = false,
@@ -321,6 +327,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 lessonId = 6,
                 lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
                 presentNumber = 2,
+                totalNumber = 32,
                 remainDay = 1,
                 siteName = "TEST6",
                 untilTodayFinished = false,
