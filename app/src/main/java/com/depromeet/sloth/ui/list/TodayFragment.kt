@@ -119,6 +119,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             }
 
             false -> {
+                Timber.d("lessonTodayList: $lessonTodayList")
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->

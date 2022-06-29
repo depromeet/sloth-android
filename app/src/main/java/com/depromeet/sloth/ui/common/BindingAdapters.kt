@@ -172,6 +172,8 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
 
 @BindingAdapter("lessonDate")
 fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
+    if(date.isNullOrEmpty()) return
+    
     text = context.getString(R.string.lesson_end_date_info,
         date?.let { changeDateFormatToDot(it) })
 }
@@ -183,13 +185,15 @@ fun checkLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
 }
 
 @BindingAdapter("startDate", "endDate")
-fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) =
+fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) {
+    if(startDate.isNullOrEmpty() or endDate.isNullOrEmpty()) return
+
     with(view) {
         text = context.getString(R.string.lesson_period_info,
             startDate?.let { changeDateFormatToDot(it) },
             endDate?.let { changeDateFormatToDot(it) })
     }
-
+}
 
 @BindingAdapter("show")
 fun ProgressBar.bindShow(uiState: UIState<*>) {

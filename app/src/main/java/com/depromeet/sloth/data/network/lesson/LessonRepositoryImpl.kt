@@ -1,5 +1,6 @@
 package com.depromeet.sloth.data.network.lesson
 
+import android.util.Log
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.model.*
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator

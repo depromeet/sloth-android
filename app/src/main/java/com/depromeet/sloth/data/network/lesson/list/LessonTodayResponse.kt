@@ -7,6 +7,7 @@ package com.depromeet.sloth.data.network.lesson.list
  *   "lessonId": 0,
  *   "lessonName": "string",
  *   "presentNumber": 0,
+ *   "totalNumber": 0,
  *   "remainDay": 0,
  *   "siteName": "string",
  *   "untilTodayFinished": false,
