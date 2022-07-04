@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
-import com.depromeet.sloth.ui.DialogState
+import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.LessonViewModel
-import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.base.UIState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration

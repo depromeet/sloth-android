@@ -32,9 +32,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         initNavigation()
 
         viewModel.apply {
-            val fcmToken =  viewModel.getFCMToken()
+            val fcmToken = viewModel.getFCMToken()
             Timber.d("fcmToken: $fcmToken")
-            if(fcmToken.isEmpty()) {
+            if (fcmToken.isEmpty()) {
                 registerFCMToken()
             }
 

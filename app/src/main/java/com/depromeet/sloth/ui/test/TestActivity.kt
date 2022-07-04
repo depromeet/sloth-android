@@ -3,13 +3,9 @@ package com.depromeet.sloth.ui.test
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.health.HealthState
-import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.ActivityTestBinding
 import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class TestActivity : BaseActivity<ActivityTestBinding>(R.layout.activity_test) {

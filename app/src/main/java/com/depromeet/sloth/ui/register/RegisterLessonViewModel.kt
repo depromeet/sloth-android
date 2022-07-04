@@ -5,7 +5,7 @@ import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.member.MemberRepository

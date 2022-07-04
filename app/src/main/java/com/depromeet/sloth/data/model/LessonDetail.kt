@@ -1,8 +1,10 @@
 package com.depromeet.sloth.data.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class LessonDetail (
     var alertDays: String? = "",
@@ -21,4 +23,8 @@ data class LessonDetail (
     var startDate: ArrayList<String> = ArrayList(),
     var totalNumber: Int = 0,
     var wastePrice: Int = 0,
-): Parcelable
+): Parcelable {
+    companion object {
+        val EMPTY = LessonDetail("", "", 0, ArrayList(),  0,false, 0, "", "", 0,0,0,"",ArrayList(),0,0)
+    }
+}
