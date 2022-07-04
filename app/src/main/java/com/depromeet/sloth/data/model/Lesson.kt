@@ -1,8 +1,10 @@
 package com.depromeet.sloth.data.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class Lesson(
     val alertDays: String? = "",

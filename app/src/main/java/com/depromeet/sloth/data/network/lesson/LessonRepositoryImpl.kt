@@ -202,7 +202,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonDetail())
+                        LessonState.Success(this.body() ?: LessonDetail.EMPTY)
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -223,7 +223,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonRegisterResponse())
+                        LessonState.Success(this.body() ?: LessonRegisterResponse.EMPTY)
                     }
                     401 -> {
                         preferenceManager.removeAuthToken()
@@ -246,7 +246,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonDeleteResponse())
+                        LessonState.Success(this.body() ?: LessonDeleteResponse.EMPTY)
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -265,7 +265,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: listOf())
+                        LessonState.Success(this.body() ?: listOf(LessonCategory.EMPTY))
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -284,7 +284,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: listOf())
+                        LessonState.Success(this.body() ?: listOf(LessonSite.EMPTY))
                     }
                     else -> LessonState.Error(Exception(message()))
                 }
@@ -366,7 +366,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonUpdate())
+                        LessonState.Success(this.body() ?: LessonUpdate.EMPTY)
                     }
                     else -> LessonState.Error(Exception(message()))
                 }

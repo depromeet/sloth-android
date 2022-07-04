@@ -9,5 +9,9 @@ package com.depromeet.sloth.data.network.lesson.delete
 
 data class LessonDeleteResponse(
     var code: String = "",
-    var message: String =""
-)
+    var message: String = "",
+) {
+    companion object {
+        val EMPTY = LessonDeleteResponse("", "")
+    }
+}
