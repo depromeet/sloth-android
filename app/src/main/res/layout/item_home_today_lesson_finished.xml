@@ -11,7 +11,7 @@
         android:id="@+id/cl_today_finished_top"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@drawable/bg_home_today_finished_top"
+        android:background="@drawable/bg_home_today_not_finished_top"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView

@@ -51,32 +51,41 @@ class TodayLessonAdapter(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
-        private val tvTodayLessonRemain =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
-        private val tvTodayLessonCategory =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
+        private val clTodayFinishedTop = itemView.findViewById<ConstraintLayout>(R.id.cl_today_finished_top)
+        private val clTodayFinishedBottom = itemView.findViewById<ConstraintLayout>(R.id.cl_today_finished_bottom)
+        private val tvTodayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
+        private val tvTodayLessonCategory = itemView.findViewById<TextView>(R.id.tv_today_lesson_category)
         private val tvTodayLessonSite = itemView.findViewById<TextView>(R.id.tv_today_lesson_site)
         private val tvTodayLessonName = itemView.findViewById<TextView>(R.id.tv_today_lesson_name)
-        private val tvTodayLessonCurrentNum =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
-        private val tvTodayLessonTotalNum =
-            itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
+        private val tvTodayLessonCurrentNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_current_num)
+        private val tvTodayLessonTotalNum = itemView.findViewById<TextView>(R.id.tv_today_lesson_total_num)
         private val pbTodayLessonBar = itemView.findViewById<ArcProgressBar>(R.id.pb_today_lesson_bar)
         private val btnTodayLessonMinus = itemView.findViewById<Button>(R.id.btn_today_lesson_minus)
         private val btnTodayLessonPlus = itemView.findViewById<Button>(R.id.btn_today_lesson_plus)
         private val viewTodayLessonLottie = itemView.findViewById<LottieAnimationView>(R.id.view_today_lesson_lottie)
-        private val clTodayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
 
         fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    clTodayLesson.setOnClickListener {
+                    clTodayFinishedTop.setOnClickListener {
                         onClick(ClickType.CLICK_NORMAL, lessonToday)
                     }
                 }
 
                 BodyType.FINISHED -> {
                     init(lessonToday)
+
+                    if(lessonToday.totalNumber == lessonToday.presentNumber) {
+                        clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_finished_top)
+                        clTodayFinishedBottom.visibility = View.VISIBLE
+                    } else {
+                        clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_not_finished_top)
+                        clTodayFinishedBottom.visibility = View.GONE
+                    }
+
+                    clTodayFinishedBottom.setOnClickListener {
+                        onClick(ClickType.CLICK_COMPLETE, lessonToday)
+                    }
 
                     btnTodayLessonPlus.setOnClickListener {
                         updateLessonCountOnServer(true, lessonToday)
@@ -110,14 +119,14 @@ class TodayLessonAdapter(
             }
         }
 
-        private fun init(allLessonToday: LessonTodayResponse) {
-            tvTodayLessonRemain.text = if (allLessonToday.remainDay == 0) "D-Day" else "D-${allLessonToday.remainDay}"
-            tvTodayLessonCategory.text = allLessonToday.categoryName
-            tvTodayLessonSite.text = allLessonToday.siteName
-            tvTodayLessonName.text = allLessonToday.lessonName
-            tvTodayLessonCurrentNum.text = allLessonToday.presentNumber.toString()
-            tvTodayLessonTotalNum.text = allLessonToday.untilTodayNumber.toString()
-            nowProgress = allLessonToday.presentNumber
+        private fun init(lessonToday: LessonTodayResponse) {
+            tvTodayLessonRemain.text = if (lessonToday.remainDay == 0) "D-Day" else "D-${lessonToday.remainDay}"
+            tvTodayLessonCategory.text = lessonToday.categoryName
+            tvTodayLessonSite.text = lessonToday.siteName
+            tvTodayLessonName.text = lessonToday.lessonName
+            tvTodayLessonCurrentNum.text = lessonToday.presentNumber.toString()
+            tvTodayLessonTotalNum.text = lessonToday.untilTodayNumber.toString()
+            nowProgress = lessonToday.presentNumber
 
 //            pbTodayLessonBar.let {
 //                it.max = allLessonToday.untilTodayNumber * 1000
@@ -125,14 +134,14 @@ class TodayLessonAdapter(
 //            }
 
             pbTodayLessonBar?.let {
-                it.max = allLessonToday.untilTodayNumber * 1000
-                it.progress = allLessonToday.presentNumber * 1000
+                it.max = lessonToday.untilTodayNumber * 1000
+                it.progress = lessonToday.presentNumber * 1000
             }
 
-            if (allLessonToday.untilTodayFinished) {
+            if (lessonToday.untilTodayFinished) {
                 tvTodayLessonRemain.setTextColor(Color.WHITE)
             } else {
-                when (allLessonToday.remainDay) {
+                when (lessonToday.remainDay) {
                     in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
                     else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
                 }
@@ -200,7 +209,8 @@ class TodayLessonAdapter(
     enum class ClickType(val value: Int) {
         CLICK_PLUS(1),
         CLICK_MINUS(-1),
-        CLICK_NORMAL(0)
+        CLICK_NORMAL(0),
+        CLICK_COMPLETE(2)
     }
 }
 
