@@ -7,8 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
-import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
@@ -26,11 +25,11 @@ class LessonDetailViewModel @Inject constructor(
     val lessonId: String = savedStateHandle.get(LessonDetailActivity.LESSON_ID)
         ?: throw IllegalStateException("There is no value of the lesson id.")
 
-    private val _lessonDetailState = MutableLiveData<LessonDetailState<LessonDetail>>()
-    val lessonDetailState: LiveData<LessonDetailState<LessonDetail>> = _lessonDetailState
+    private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
+    val lessonDetailState: LiveData<LessonState<LessonDetail>> = _lessonDetailState
 
-    private val _lessonDeleteState = MutableLiveData<LessonDeleteState<LessonDeleteResponse>>()
-    val lessonDeleteState: LiveData<LessonDeleteState<LessonDeleteResponse>> = _lessonDeleteState
+    private val _lessonDeleteState = MutableLiveData<LessonState<LessonDeleteResponse>>()
+    val lessonDeleteState: LiveData<LessonState<LessonDeleteResponse>> = _lessonDeleteState
 
     private val _lessonDetail = MutableLiveData<LessonDetail>()
     val lessonDetail: LiveData<LessonDetail> = _lessonDetail
@@ -43,14 +42,14 @@ class LessonDetailViewModel @Inject constructor(
 
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailState.value = LessonDetailState.Loading
+        _lessonDetailState.value = LessonState.Loading
         val lessonDetail = lessonRepository.fetchLessonDetail(lessonId)
         _lessonDetailState.value = lessonDetail
     }
 
 
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.value = LessonDeleteState.Loading
+        _lessonDeleteState.value = LessonState.Loading
         val lessonDeleteResponse = lessonRepository.deleteLesson(lessonId)
         _lessonDeleteState.value = lessonDeleteResponse
     }

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.showLogoutDialog

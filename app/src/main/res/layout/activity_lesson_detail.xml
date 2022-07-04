@@ -64,7 +64,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_detail_sloth"
                         currentProgressRate="@{lessonDetail.currentProgressRate}"
                         goalProgressRate="@{lessonDetail.goalProgressRate}"

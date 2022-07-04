@@ -1,12 +1,11 @@
 package com.depromeet.sloth.extensions
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.ui.custom.DialogState
+import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.util.LoadingDialogUtil
 import kotlinx.coroutines.Job

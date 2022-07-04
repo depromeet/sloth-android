@@ -16,8 +16,8 @@ import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.*
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
+import com.depromeet.sloth.ui.custom.DialogState
+import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.login.LoginActivity
@@ -42,7 +42,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberState.Success<Member> -> {
                         Timber.tag("fetch Success").d("${memberState.data}")
-                        handleSuccessState(memberState.data)
+                        viewModel.setMemberInfo(memberState.data)
                     }
 
                     is MemberState.Unauthorized -> {
@@ -63,7 +63,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
                         Timber.tag("update Success").d("${memberUpdateState.data}")
-                        handleSuccessState(memberUpdateState.data)
+                        showToast("닉네임이 변경되었어요")
+                        viewModel.fetchMemberInfo()
                     }
 
                     is MemberUpdateState.Unauthorized -> {
@@ -82,7 +83,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 when (memberLogoutState) {
                     is MemberLogoutState.Loading -> handleLoadingState(requireContext())
 
-                    is MemberLogoutState.Success<String> -> handleSuccessState(memberLogoutState.data)
+                    is MemberLogoutState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
 
                     is MemberLogoutState.Unauthorized -> {
                         showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
@@ -144,17 +145,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
         clManageWithdraw.setOnClickListener {
             showWithdrawDialog()
-        }
-    }
-
-    private fun <T> handleSuccessState(data: T) {
-        if (data is Member) {
-            viewModel.setMemberInfo(data)
-        } else if (data is MemberUpdateInfoResponse) {
-            showToast("닉네임이 변경되었어요")
-            viewModel.fetchMemberInfo()
-        } else {
-            logout(requireContext()) { viewModel.removeAuthToken() }
         }
     }
 

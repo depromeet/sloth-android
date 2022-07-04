@@ -6,9 +6,8 @@ import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.model.LessonUpdate
 import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.list.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
@@ -28,19 +27,22 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonDetail: LessonDetail = savedStateHandle.get(KEY_LESSON_DETAIL)
         ?: throw IllegalStateException("There is no value of the lesson id.")
 
-    private val _lessonUpdateState = MutableLiveData<Event<LessonUpdateState<LessonUpdate>>>()
-    val lessonUpdateState: LiveData<Event<LessonUpdateState<LessonUpdate>>>
+    private val _lessonUpdateState = MutableLiveData<Event<LessonState<LessonUpdate>>>()
+    val lessonUpdateState: LiveData<Event<LessonState<LessonUpdate>>>
         get() = _lessonUpdateState
 
-    private val _lessonName = savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_NAME, "")
+    private val _lessonName =
+        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_NAME, "")
     val lessonName: LiveData<String>
         get() = _lessonName
 
-    private val _lessonTotalNumber = savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER, 0)
+    private val _lessonTotalNumber =
+        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: LiveData<Int>
         get() = _lessonTotalNumber
 
-    private val _lessonPrice = savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_PRICE, 0)
+    private val _lessonPrice =
+        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_PRICE, 0)
     val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 
@@ -63,7 +65,8 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonCategoryList: LiveData<MutableList<String>>
         get() = _lessonCategoryList
 
-    private val _lessonCategoryId = savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID, 0)
+    private val _lessonCategoryId =
+        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: LiveData<Int>
         get() = _lessonCategoryId
 
@@ -87,11 +90,13 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
-    private val _lessonSiteId = savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_SITE_ID, 0)
+    private val _lessonSiteId =
+        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_SITE_ID, 0)
     val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
-    private val _lessonSiteName = savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, "")
+    private val _lessonSiteName =
+        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, "")
     val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
@@ -134,12 +139,11 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     fun updateLesson() = viewModelScope.launch {
-        if(lessonTotalNumber.value!! < lessonDetail.presentNumber) {
+        if (lessonTotalNumber.value!! < lessonDetail.presentNumber) {
             _lessonNumberValidation.value = false
-        }
-        else {
+        } else {
             _lessonNumberValidation.value = true
-            _lessonUpdateState.value = Event(LessonUpdateState.Loading)
+            _lessonUpdateState.value = Event(LessonState.Loading)
             val lessonUpdateResponse =
                 lessonRepository.updateLesson(
                     lessonDetail.lessonId.toString(),
@@ -243,10 +247,13 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonName.value = lessonName
         _lessonTotalNumber.value = totalNumber
         _lessonPrice.value = price
-        _lessonCategoryId.value = lessonCategoryMap.value!!.filterValues { it == categoryName }.keys.first()
+        _lessonCategoryId.value =
+            lessonCategoryMap.value!!.filterValues { it == categoryName }.keys.first()
         _lessonSiteId.value = lessonSiteMap.value!!.filterValues { it == siteName }.keys.first()
-        _lessonCategorySelectedItemPosition.value = lessonCategoryList.value!!.indexOf(lessonCategoryMap.value!![lessonCategoryId.value!!])
-        _lessonSiteSelectedItemPosition.value = lessonSiteList.value!!.indexOf(lessonSiteMap.value!![lessonSiteId.value!!])
+        _lessonCategorySelectedItemPosition.value =
+            lessonCategoryList.value!!.indexOf(lessonCategoryMap.value!![lessonCategoryId.value!!])
+        _lessonSiteSelectedItemPosition.value =
+            lessonSiteList.value!!.indexOf(lessonSiteMap.value!![lessonSiteId.value!!])
     }
 
     companion object {

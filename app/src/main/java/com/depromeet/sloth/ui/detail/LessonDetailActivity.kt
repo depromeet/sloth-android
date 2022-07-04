@@ -8,15 +8,14 @@ import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteState
-import com.depromeet.sloth.data.network.lesson.detail.LessonDetailState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.showLogoutDialog
-import com.depromeet.sloth.ui.DialogState
-import com.depromeet.sloth.ui.SlothDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.ui.custom.DialogState
+import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
@@ -45,22 +44,21 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
         viewModel.apply {
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
                 when (lessonDetailState) {
-                    is LessonDetailState.Loading -> {
+                    is LessonState.Loading -> {
                         handleLoadingState(this@LessonDetailActivity)
                     }
 
-                    is LessonDetailState.Success<LessonDetail> -> {
+                    is LessonState.Success<LessonDetail> -> {
                         Timber.tag("fetch Success").d("${lessonDetailState.data}")
-
-                        handleSuccessState(lessonDetailState.data)
+                        viewModel.setLessonDetailInfo(lessonDetailState.data)
                     }
 
-                    is LessonDetailState.Unauthorized -> {
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonDetailState.Error -> {
-                        Timber.tag("Error").d(lessonDetailState.exception)
+                    is LessonState.Error -> {
+                        Timber.tag("Error").d(lessonDetailState.throwable)
                     }
                 }
                 hideProgress()
@@ -68,17 +66,19 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
 
             lessonDeleteState.observe(this@LessonDetailActivity) { lessonDeleteState ->
                 when (lessonDeleteState) {
-                    is LessonDeleteState.Loading -> showProgress(this@LessonDetailActivity)
+                    is LessonState.Loading -> showProgress(this@LessonDetailActivity)
 
-                    is LessonDeleteState.Success<LessonDeleteResponse> -> handleSuccessState(
-                        lessonDeleteState.data)
+                    is LessonState.Success<LessonDeleteResponse> -> {
+                        showToast("강의가 삭제 되었어요")
+                        finish()
+                    }
 
-                    is LessonDeleteState.Unauthorized -> {
+                    is LessonState.Unauthorized -> {
                         showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonDeleteState.Error -> {
-                        Timber.tag("fetch Error").d(lessonDeleteState.exception)
+                    is LessonState.Error -> {
+                        Timber.tag("fetch Error").d(lessonDeleteState.throwable)
                         showToast("강의를 삭제하지 못했어요")
                     }
                 }
@@ -107,17 +107,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
         super.onStart()
 
         viewModel.fetchLessonDetail()
-    }
-
-    private fun <T> handleSuccessState(data: T) {
-        if (data is LessonDeleteResponse) {
-            showToast("강의가 삭제 되었어요")
-            finish()
-        }
-
-        if (data is LessonDetail) {
-            viewModel.setLessonDetailInfo(data)
-        }
     }
 
     override fun initViews() = with(binding) {

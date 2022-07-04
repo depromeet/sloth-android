@@ -13,8 +13,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.model.LessonUpdate
-import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateState
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -34,7 +33,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value!!
+            viewModel.lessonCategoryList.value?: listOf()
         )
     }
 
@@ -42,7 +41,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value!!
+            viewModel.lessonSiteList.value?: listOf()
         )
     }
 
@@ -64,22 +63,21 @@ class UpdateLessonActivity :
                 this@UpdateLessonActivity,
                 EventObserver { lessonUpdateState ->
                     when (lessonUpdateState) {
-                        is LessonUpdateState.Loading ->
+                        is LessonState.Loading ->
                             handleLoadingState(this@UpdateLessonActivity)
 
-                        is LessonUpdateState.Success<LessonUpdate> -> {
-                            //handleSuccessState(lessonUpdateState.data)
+                        is LessonState.Success<LessonUpdate> -> {
                             Timber.tag("Update Success").d("${lessonUpdateState.data}")
                             showToast("강의 정보가 수정되었어요")
                             finish()
                         }
 
-                        is LessonUpdateState.Unauthorized -> {
+                        is LessonState.Unauthorized -> {
                             showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                         }
 
-                        is LessonUpdateState.Error -> {
-                            Timber.tag("fetch Error").d(lessonUpdateState.exception)
+                        is LessonState.Error -> {
+                            Timber.tag("fetch Error").d(lessonUpdateState.throwable)
                             showToast("강의를 수정하지 못했어요")
                         }
                     }
@@ -92,7 +90,6 @@ class UpdateLessonActivity :
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonCategory>> -> {
-                        //handleSuccessState(lessonState.data)
                         viewModel.setLessonCategoryList(lessonState.data)
                     }
 
@@ -114,7 +111,6 @@ class UpdateLessonActivity :
                     is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonSite>> -> {
-                        //handleSuccessState(lessonState.data)
                         viewModel.setLessonSiteList(lessonState.data)
                         viewModel.setLessonUpdateInfo()
                         initViews()
@@ -165,23 +161,6 @@ class UpdateLessonActivity :
         tbUpdateLesson.setNavigationOnClickListener { finish() }
     }
 
-//    private fun <T> handleSuccessState(data: T) {
-//        when (data) {
-//            is LessonUpdateResponse -> {
-//                Timber.tag("Update Success").d(data)
-//                showToast("강의 정보가 수정되었어요")
-//                finish()
-//            }
-//            is List<LessonCategory> -> {
-//                Timber.tag("UpdateLessonActivity").d("LessonCategoryResponse: %s", data)
-//                setLessonCategoryList(data)
-//            }
-//            is List<LessonSite> -> {
-//                Timber.tag("UpdateLessonActivity").d("LessonSiteResponse: %s", data)
-//                setLessonSiteList(data)
-//            }
-//        }
-//    }
 
     override fun initViews() = with(binding) {
         bindAdapter()

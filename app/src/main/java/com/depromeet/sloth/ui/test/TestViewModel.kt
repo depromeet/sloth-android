@@ -1,18 +1,9 @@
 package com.depromeet.sloth.ui.test
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.network.health.HealthRepository
-import com.depromeet.sloth.data.network.health.HealthResponse
-import com.depromeet.sloth.data.network.health.HealthState
-import com.depromeet.sloth.data.network.lesson.list.LessonState
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class TestViewModel @Inject constructor(
