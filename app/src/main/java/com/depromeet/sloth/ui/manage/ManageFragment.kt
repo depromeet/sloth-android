@@ -35,6 +35,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bind {
+            //member = viewModel.memberInfo.value.successOrNull()
+            vm = viewModel
+        }
+
+        initObserver()
+        initViews()
+    }
+
+    private fun initObserver() {
         viewModel.apply {
             memberState.observe(viewLifecycleOwner) { memberState ->
                 when (memberState) {
@@ -102,21 +112,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
         }
 
-        bind {
-            //member = viewModel.memberInfo.value.successOrNull()
-            vm = viewModel
-        }
-
-        //initObserver()
-        initViews()
-    }
-
-//    private fun initObserver() {
 //        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
 //            Timber.d("${memberInfo.successOrNull()}")
 //            binding.member = memberInfo.successOrNull()
 //        }
-//    }
+    }
 
     override fun initViews() = with(binding) {
         ivManageProfileImage.setOnClickListener {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 fun getPickerDateToDash(date: Date): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)

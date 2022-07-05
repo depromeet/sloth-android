@@ -63,7 +63,7 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
-    private val _lessonPrice = savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, null)
+    private val _lessonPrice = savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, 0)
     val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 

@@ -18,7 +18,7 @@ import java.text.DecimalFormat
 @BindingAdapter("currentProgressRate", "goalProgressRate")
 fun setLessonSummaryImage(view: ImageView, currentProgressRate: Float, goalProgressRate: Float) {
     // 시작 하지 않음
-    if(goalProgressRate == 0F) {
+    if (goalProgressRate == 0F) {
         GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_not_started_yet).into(view)
     }
     // 시작함
@@ -44,7 +44,6 @@ fun isVisible(view: TextView, goalProgressRate: Float) = with(view) {
 fun setLessonSummaryText(view: TextView, currentProgressRate: Float, goalProgressRate: Float) =
     with(view) {
         text = if (goalProgressRate == 0F) view.context.getString(R.string.not_started_yet)
-
         else {
             if (currentProgressRate >= goalProgressRate) {
                 view.context.getString(R.string.mission_success)
@@ -64,8 +63,7 @@ fun setLessonTotalNumberFormat(view: TextView, totalNumber: Int) = with(view) {
 fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = with(view) {
     if (goalProgressRate == 0F) {
         visibility = View.GONE
-    }
-    else {
+    } else {
         visibility = View.VISIBLE
         val decimalFormat = DecimalFormat("#,###")
         text = view.context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
@@ -114,12 +112,11 @@ fun setLessonDate(view: TextView, lessonDate: String?) {
     }
 }
 
-@BindingAdapter("goalProgressRate","d_day")
+@BindingAdapter("goalProgressRate", "d_day")
 fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = with(view) {
     if (goalProgressRate == 0F) {
         visibility = View.GONE
-    }
-    else {
+    } else {
         if (d_day < 0) {
             visibility = View.VISIBLE
             text = view.context.getString(R.string.d_day_plus_format, d_day * -1)
@@ -136,7 +133,7 @@ fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = wi
 }
 
 @BindingAdapter("setProgressRate")
-fun setProgressRate(view: ProgressView, progressRate: Float) = with(view)  {
+fun setProgressRate(view: ProgressView, progressRate: Float) = with(view) {
     labelText = view.context.getString(R.string.unit_lesson_take_rate, progressRate.toInt())
     progress = progressRate
 }
@@ -150,17 +147,18 @@ fun setPresentLessonProgress(view: TextView, total: Int, present: Int) = with(vi
 fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = with(view) {
     if (goalProgressRate == 0f) {
         visibility = View.GONE
-    }
-    else {
+    } else {
         when {
             remainDay in 0..10 -> {
                 visibility = View.VISIBLE
-                background = AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_caution)
+                background =
+                    AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_caution)
                 text = view.context.getString(R.string.lesson_warning)
             }
             remainDay < 0 -> {
                 visibility = View.VISIBLE
-                background = AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_black)
+                background =
+                    AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_black)
                 text = view.context.getString(R.string.lesson_close)
             }
             else -> {
@@ -172,28 +170,31 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
 
 @BindingAdapter("lessonDate")
 fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
-    if(date.isNullOrEmpty()) return
-    
-    text = context.getString(R.string.lesson_end_date_info,
-        date?.let { changeDateFormatToDot(it) })
+    if (date.isNullOrEmpty()) return
+    else {
+        text = context.getString(R.string.lesson_end_date_info,
+            changeDateFormatToDot(date))
+    }
 }
 
 @BindingAdapter("checkLessonDate")
 fun checkLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
-    text = date?.let { changeListToDot(it) }
-
+    if (date.isNullOrEmpty()) return
+    else {
+        text = changeListToDot(date)
+    }
 }
 
 @BindingAdapter("startDate", "endDate")
-fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) {
-    if(startDate.isNullOrEmpty() or endDate.isNullOrEmpty()) return
-
+fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) =
     with(view) {
-        text = context.getString(R.string.lesson_period_info,
-            startDate?.let { changeDateFormatToDot(it) },
-            endDate?.let { changeDateFormatToDot(it) })
+        if (!startDate.isNullOrEmpty() and !endDate.isNullOrEmpty()) {
+            text = context.getString(R.string.lesson_period_info,
+                changeDateFormatToDot(startDate!!),
+                changeDateFormatToDot(endDate!!)
+            )
+        } else return
     }
-}
 
 @BindingAdapter("show")
 fun ProgressBar.bindShow(uiState: UIState<*>) {
