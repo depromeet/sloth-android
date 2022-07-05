@@ -22,7 +22,7 @@ class GlobalApplication : Application() {
     }
 
     private fun initSdk() {
-        KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
+        KakaoSdk.init(this, getString(R.string.kakao_app_key))
     }
 
     private fun initMode() {

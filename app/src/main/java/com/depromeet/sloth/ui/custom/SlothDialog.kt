@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.custom
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 
 class SlothDialog(private val context: Context, private val state: DialogState) {
@@ -91,7 +93,20 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 }
             }
 
+            DialogState.COMPLETE -> {
+                tvDialogMessage.text = "모든 강의를 다 들으셨나요?"
+                ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
+                btnDialogCheck.apply {
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
+                    text = "완강했어요"
+                    setOnClickListener {
+                        onItemClickListener.onItemClicked()
+                        dlg.dismiss()
+                    }
+                }
+            }
         }
+
         btnDialogCancel.setOnClickListener {
             dlg.dismiss()
         }
@@ -101,5 +116,5 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 }
 
 enum class DialogState {
-    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT
+    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, COMPLETE
 }

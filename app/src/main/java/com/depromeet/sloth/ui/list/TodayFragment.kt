@@ -149,10 +149,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
-
-                            TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
-                                finishLesson(lessonToday.lessonId.toString())
-                            }
                         }
                     }
                 val finishedHeader =
@@ -178,7 +174,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                 )
                             }
 
-                            TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
+                            TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
+                                showCompleteDialog(lessonToday.lessonId.toString())
                             }
                         }
                     }
@@ -265,6 +262,16 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         }
     }
 
+    private fun showCompleteDialog(lessonId: String) {
+        val dlg = SlothDialog(requireContext(), DialogState.COMPLETE)
+        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+            override fun onItemClicked() {
+                finishLesson(lessonId)
+            }
+        }
+        dlg.start()
+    }
+
     private fun finishLesson(lessonId: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             lessonViewModel.finishLesson(lessonId)
@@ -277,10 +284,10 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success -> {
                             fetchLessonList()
-                            showToast("강의가 완료처리 되었습니다.")
+                            showToast("해당 강의가 완료처리 되었습니다.")
                         }
                         is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
+                        is UIState.Error -> showToast("강의 완료처리에 실패하였습니다")
                     }
                 }
         }
