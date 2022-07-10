@@ -43,7 +43,7 @@ android {
         }
 
         release {
-            debuggable false
+            debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "SLOTH_BASE_URL", RELEASE_BASE_URL)

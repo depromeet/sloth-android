@@ -51,6 +51,7 @@ class TodayLessonAdapter(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
         private var nowProgress = 0
+        private val clTodayLesson = itemView.findViewById<ConstraintLayout>(R.id.cl_today_lesson)
         private val clTodayFinishedTop = itemView.findViewById<ConstraintLayout>(R.id.cl_today_finished_top)
         private val clTodayFinishedBottom = itemView.findViewById<ConstraintLayout>(R.id.cl_today_finished_bottom)
         private val tvTodayLessonRemain = itemView.findViewById<TextView>(R.id.tv_today_lesson_remain)
@@ -67,7 +68,7 @@ class TodayLessonAdapter(
         fun onBind(lessonToday: LessonTodayResponse) {
             when (bodyType) {
                 BodyType.NOTHING -> {
-                    clTodayFinishedTop.setOnClickListener {
+                    clTodayLesson.setOnClickListener {
                         onClick(ClickType.CLICK_NORMAL, lessonToday)
                     }
                 }
@@ -89,8 +90,8 @@ class TodayLessonAdapter(
 
                     btnTodayLessonPlus.setOnClickListener {
                         updateLessonCountOnServer(true, lessonToday)
-                        updateProgress(true, lessonToday.untilTodayNumber)
-                        updateText(true, lessonToday.untilTodayNumber)
+                        updateProgress(true, lessonToday.totalNumber)
+                        updateText(true, lessonToday.totalNumber)
                     }
 
                     btnTodayLessonMinus.setOnClickListener {
@@ -187,8 +188,12 @@ class TodayLessonAdapter(
 //            }.start()
         }
 
-        private fun updateLessonCountOnServer(isUp: Boolean, lessonToday: LessonTodayResponse) {
-            if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lessonToday.untilTodayNumber) && isUp)) return
+        private fun updateLessonCountOnServer(
+            isUp: Boolean,
+            lessonToday: LessonTodayResponse
+        ) {
+            //if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lessonToday.untilTodayNumber) && isUp)) return
+            if (((nowProgress <= 0) && isUp.not()) || ((lessonToday.presentNumber == lessonToday.totalNumber) && isUp)) return
 
             if (isUp) {
                 currentList[bindingAdapterPosition].presentNumber++

@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -102,6 +103,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
+                Log.e("testtest", "empty")
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
@@ -113,8 +115,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
-                    tvTodayTitleMessage.text =
-                        getString(R.string.home_today_title_not_register)
+                    tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
                 }
             }
 
@@ -245,7 +246,9 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                 ) fetchLessonList() else Unit
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (it.data.presentNumber < lesson.untilTodayNumber) fetchLessonList() else Unit
+                                if (it.data.presentNumber < lesson.untilTodayNumber ||
+                                    it.data.presentNumber == lesson.totalNumber ||
+                                    it.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)) fetchLessonList() else Unit
                             }
                             else -> Unit
                         }
