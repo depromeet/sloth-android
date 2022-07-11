@@ -1,22 +1,17 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.list
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.LessonRepository
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.member.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class LessonViewModel @Inject constructor(
@@ -53,18 +48,12 @@ class LessonViewModel @Inject constructor(
     fun finishLesson(lessonId: String): Flow<UIState<LessonFinishResponse>> =
         lessonRepository.finishLesson(lessonId)
 
-    suspend fun updateLessonCount(
-        count: Int,
-        lessonId: Int,
-        context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-    ): LessonState<LessonUpdateCountResponse> = viewModelScope.async(
-        context = context,
-        start = start
-    ) {
-        lessonRepository.updateLessonCount(
-            count = count,
-            lessonId = lessonId
-        )
-    }.await()
+    suspend fun updateLessonCount(count: Int, lessonId: Int) = withContext(viewModelScope.coroutineContext) {
+        lessonRepository.updateLessonCount(count = count, lessonId = lessonId)
+    }
+
+    companion object {
+        const val CURRENT = "CURRENT"
+        const val PAST = "PAST"
+    }
 }
