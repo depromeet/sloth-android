@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">나나공</string>
-    <string name="KAKAO_API_KEY">kakaoab1d0113948e1326561f451a275f5f38</string>
 
     <string name="category">카테고리</string>
     <string name="category_hint">카테고리 힌트</string>
@@ -39,6 +38,8 @@
 
     <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다 </font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부 열심히 한다</font></string>
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
+    <string name="choose_login_method">로그인 방법 선택</string>
+    <string name="agree_and_start">동의하고 시작하기</string>
     <string name="login_google">구글 아이디로 로그인</string>
     <string name="login_kakao">카카오 아이디로 로그인</string>
     <string name="register_title"><font color="#000000">나나공을 이용하시려면\n개인정보 동의가 필요해요</font></string>
@@ -62,8 +63,8 @@
     <string name="lesson_period">수강 기간</string>
     <string name="lesson_count_info">24강</string>
     <string name="lesson_name_info">프로그래밍 시작하기 : 파이썬 입문(Inflearn Original)</string>
-    <string name="mission_fail">목표를 채우지 못했어요!</string>
-    <string name="mission_success">꾸준히 듣고 있는 중이에요!</string>
+    <string name="mission_fail">목표를 채우지\n못했어요!</string>
+    <string name="mission_success">꾸준히 듣고\n있는 중이에요!</string>
     <string name="waste_money">현재 내가 날린 돈</string>
     <string name="waste_money_info">50,000원</string>
     <string name="lesson_warning">마감 임박</string>
@@ -76,6 +77,7 @@
     <string name="sloth_image">sloth_image</string>
     <string name="detail_lesson_summray_win">꾸준히 듣고 있는 중이에요!</string>
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
+    <string name="not_started_yet">결투를 기다리고\n있다구!</string>
     <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
     <string name="delete_lesson_dialog_message_check">포기하기</string>
     <string name="cancel">취소</string>
@@ -87,7 +89,7 @@
     <string name="home_today_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
     <string name="home_today_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
     <string name="home_today_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
-    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요?</font></string>
+    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는 강의가 없네요?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
@@ -101,7 +103,7 @@
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
     <string name="right_arrow">right arrow</string>
-    <string name="wait_dialog_message">아직 준비중인 기능입니다</string>
+    <string name="wait_dialog_message">아직 준비중인 기능이에요</string>
     <string name="dialog_default_message">안내 메세지</string>
     <string name="forbidden_dialog_message">다시 로그인 해주세요</string>
     <string name="privacy">개인정보 처리방침</string>
@@ -110,10 +112,24 @@
     <string name="accept">수락하기</string>
     <string name="lesson_update">수정하기</string>
     <string name="lesson_start_date_caution">(생성 후 시작일 변경 불가능)</string>
-    <string name="push_noti_cycle">푸시 알림 주기</string>
-    <string name="push_noti_cycle_info">월, 수, 목</string>
+    <string name="alert_days">푸시 알림 주기</string>
+    <string name="alert_days_info">월, 수, 목</string>
     <string name="cannot_update">*수정불가</string>
     <string name="one_hundred_percent">100%</string>
     <string name="input_lesson_count">%1$s개</string>
     <string name="input_lesson_price">%1$s원</string>
+
+    <string name="current_lesson_progress">&#160;%d개 중 %d개</string>
+
+    <string name="d_day_plus_format">D+%d</string>
+    <string name="d_day_minus_format">D-%d</string>
+
+    <string name="lesson_end_date_info">&#160;%s</string>
+    <string name="lesson_period_info">&#160;%s - %s</string>
+
+    <string name="unit_lesson_number">%d강</string>
+    <string name="unit_lesson_take_rate">%d%%</string>
+    <string name="unit_lesson_total_number">%d개</string>
+    <string name="unit_lesson_price">%s원</string>
+
 </resources>

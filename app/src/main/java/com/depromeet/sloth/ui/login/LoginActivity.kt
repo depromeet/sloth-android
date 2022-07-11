@@ -13,15 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginActivity : BaseActivity<ActivityLoginBinding>() {
+class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
     @Inject
     lateinit var preferenceManager: PreferenceManager
 
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
-
-    override fun getViewBinding(): ActivityLoginBinding =
-        ActivityLoginBinding.inflate(layoutInflater)
 
     companion object {
         fun newIntent(activity: Activity) =
@@ -31,7 +28,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
         if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
             nextActivity()

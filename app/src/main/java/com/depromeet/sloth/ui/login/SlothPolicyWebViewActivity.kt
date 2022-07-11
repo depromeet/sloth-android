@@ -4,32 +4,30 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
+import com.depromeet.sloth.BuildConfig
+import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivitySlothPolicyWebViewBinding
+import com.depromeet.sloth.ui.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class SlothPolicyWebViewActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class SlothPolicyWebViewActivity :
+    BaseActivity<ActivitySlothPolicyWebViewBinding>(R.layout.activity_sloth_policy_web_view) {
+
     companion object {
         fun newIntent(context: Context) = Intent(context, SlothPolicyWebViewActivity::class.java)
-
-        private const val DEFAULT_URL = "https://yonezu-kenshi-3068.notion.site/c9edcf0b426941b4844a196407c0cc06"
     }
-
-    lateinit var binding: ActivitySlothPolicyWebViewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySlothPolicyWebViewBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        initViews()
+        initWebView()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initViews() = with(binding) {
+    private fun initWebView() = with(binding) {
         tbSlothPolicy.setNavigationOnClickListener { finish() }
 
         wvWebView.apply {
@@ -37,11 +35,11 @@ class SlothPolicyWebViewActivity : AppCompatActivity() {
             webChromeClient = WebChromeClient()
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
-            loadUrl(DEFAULT_URL)
+            loadUrl(BuildConfig.POLICY_WEB_VIEW_URL)
         }
     }
 
-    inner class WebViewClient: android.webkit.WebViewClient() {
+    inner class WebViewClient : android.webkit.WebViewClient() {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
@@ -54,12 +52,12 @@ class SlothPolicyWebViewActivity : AppCompatActivity() {
 
             with(binding) {
                 pbSlothPolicyContentLoading.hide()
-                etSlothPolicyAddressBar.setText(DEFAULT_URL)
+                etSlothPolicyAddressBar.setText(BuildConfig.POLICY_WEB_VIEW_URL)
             }
         }
     }
 
-    inner class WebChromeClient: android.webkit.WebChromeClient() {
+    inner class WebChromeClient : android.webkit.WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
 

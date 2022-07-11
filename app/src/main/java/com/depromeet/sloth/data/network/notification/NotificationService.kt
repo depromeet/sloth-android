@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface NotificationService {
     @POST("api/fcmtoken")
-    suspend fun saveFCMToken(@Body notificationSaveRequest: NotificationSaveRequest): Response<String>?
+    suspend fun registerFCMToken(@Body notificationRegisterRequest: NotificationRegisterRequest): Response<String>?
 
     @PATCH("api/fcmtoken/use")
     suspend fun updateFCMTokenUse(@Body notificationUseRequest: NotificationUseRequest): Response<NotificationUseResponse>?

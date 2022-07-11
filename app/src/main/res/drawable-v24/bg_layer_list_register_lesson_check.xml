@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <padding
+                android:bottom="2dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+            <corners
+                android:radius="12dp"/>
+            <solid android:color="#32CCCCCC" />
+        </shape>
+    </item>
+    <!-- Background -->
+    <item android:drawable="@drawable/bg_register_lesson_cv_check" />
+
+
+</layer-list>

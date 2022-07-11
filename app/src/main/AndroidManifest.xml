@@ -4,75 +4,71 @@
     package="com.depromeet.sloth">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".GlobalApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_sloth_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_sloth_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Sloth.NoActionBar"
+        android:theme="@style/Theme.Sloth.NoActionBar.Splash"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:targetApi="s">
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher" />
-
+            android:resource="@mipmap/ic_sloth_logo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/sloth" />
 
         <activity
             android:name=".ui.register.RegisterLessonActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".ui.detail.LessonDetailActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.update.UpdateLessonActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.login.SlothPolicyWebViewActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.HomeActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.test.TestActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -81,16 +77,16 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="@string/KAKAO_API_KEY" />
+                    android:scheme="@string/kakao_native_key" />
             </intent-filter>
-
         </activity>
 
-        <service android:name=".service.FirebaseService"
-            android:permission="com.google.android.c2dm.permission.SEND"
-            android:exported="true">
+        <service
+            android:name=".service.FirebaseService"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>

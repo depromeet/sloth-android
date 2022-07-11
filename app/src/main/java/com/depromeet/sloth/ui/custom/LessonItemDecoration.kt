@@ -2,26 +2,17 @@ package com.depromeet.sloth.ui.custom
 
 import android.content.Context
 import android.graphics.Rect
-import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.depromeet.sloth.util.ContextUtil
 
 class LessonItemDecoration(
     context: Context,
     dp: Int
 ) : RecyclerView.ItemDecoration() {
 
-    private var fullDp = dpToPx(context, dp)
-    private var halfDp = dpToPx(context, fullDp / 2)
-
-    private fun dpToPx(context: Context, dp: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
-            context.resources.displayMetrics
-        )
-            .toInt()
-    }
+    private var fullDp = ContextUtil.dpToPx(context, dp)
+    private var halfDp = ContextUtil.dpToPx(context, fullDp / 2)
 
     override fun getItemOffsets(
         outRect: Rect,

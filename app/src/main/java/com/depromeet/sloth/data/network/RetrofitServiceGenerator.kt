@@ -1,40 +1,40 @@
 package com.depromeet.sloth.data.network
 
+import com.depromeet.sloth.BuildConfig
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-import com.depromeet.sloth.BuildConfig
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-object RetrofitServiceGenerator {
-    private const val timeoutRead = 30
-    private const val timeoutConnect = 30
+class RetrofitServiceGenerator @Inject constructor(
+    private val accessTokenAuthenticator: AccessTokenAuthenticator,
+) {
+    private val timeoutRead = 30L
+    private val timeoutConnect = 30L
 
-    private fun setClient(authToken: String? = null): OkHttpClient {
+    private fun provideHttpClient(
+        authToken: String? = null,
+    ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         return httpClient.apply {
+            authenticator(accessTokenAuthenticator)
             addInterceptor(AuthenticationInterceptor(authToken))
             addInterceptor(HttpLoggingInterceptor().apply {
                 if (BuildConfig.DEBUG) {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
             })
-            connectTimeout(timeoutConnect.toLong(), TimeUnit.SECONDS)
-            readTimeout(timeoutRead.toLong(), TimeUnit.SECONDS)
+            connectTimeout(timeoutConnect, TimeUnit.SECONDS)
+            readTimeout(timeoutRead, TimeUnit.SECONDS)
         }.build()
     }
 
-    val gson: Gson = GsonBuilder()
-        .setLenient()
-        .create()
-
     fun build(
         accessToken: String? = null,
-        isGoogleLogin: Boolean = false
+        isGoogleLogin: Boolean = false,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(
@@ -44,9 +44,11 @@ object RetrofitServiceGenerator {
                 }
             )
             .addConverterFactory(ScalarsConverterFactory.create())
-//            .addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(GsonConverterFactory.create())
-            .client(setClient(accessToken))
+            .client(provideHttpClient(accessToken))
             .build()
     }
 }
+
+
+

@@ -95,6 +95,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
+.idea/deploymentTargetDropDown.xml
 
 # OS-specific files
 .DS_Store
@@ -141,5 +142,7 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+
+app/src/main/res/values/kakao_app_key.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_today"
+        android:id="@+id/navigation_today"
         android:enabled="true"
         android:icon="@drawable/selector_home_today"
         android:title="@string/menu_today"/>
     <item
-        android:id="@+id/menu_class"
+        android:id="@+id/navigation_list"
         android:enabled="true"
         android:icon="@drawable/selector_home_lesson_list"
         android:title="@string/menu_class"/>
     <item
-        android:id="@+id/menu_mypage"
+        android:id="@+id/navigation_manage"
         android:enabled="true"
         android:icon="@drawable/selector_home_mypage"
         android:title="@string/menu_mypage"/>
