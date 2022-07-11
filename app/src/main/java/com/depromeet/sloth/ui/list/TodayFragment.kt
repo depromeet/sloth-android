@@ -14,7 +14,6 @@ import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
-import com.depromeet.sloth.ui.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.base.UIState
 import com.depromeet.sloth.ui.custom.DialogState
@@ -103,7 +102,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
-                Log.e("testtest", "empty")
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
@@ -287,10 +285,10 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success -> {
                             fetchLessonList()
-                            showToast("해당 강의가 완료처리 되었습니다.")
+                            showToast("해당 강의가 완료처리 되었어요")
                         }
                         is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 완료처리에 실패하였습니다")
+                        is UIState.Error -> showToast("강의 완료처리에 실패하였어요")
                     }
                 }
         }
