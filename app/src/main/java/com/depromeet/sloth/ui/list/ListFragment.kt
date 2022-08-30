@@ -40,22 +40,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     }
 
     private fun fetchLessonList() {
-//        mainScope {
-//            showProgress()
-//            viewModel.fetchAllLessonList().let {
-//                when (it) {
-//                    is LessonState.Loading -> handleLoadingState(requireContext())
-//                    is LessonState.Success<List<LessonAllResponse>> -> setLessonList(it.data)
-//                    is LessonState.Error -> {
-//                        showToast("강의 정보를 가져오지 못했어요")
-//                        Log.d("Error", "${it.throwable}")
-//                    }
-//                    else -> Unit
-//                }
-//            }
-//
-//            hideProgress()
-//        }
         viewLifecycleOwner.lifecycleScope.launch {
             lessonViewModel.allLessonList
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -181,7 +165,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         val startDate = dateFormat.parse(lessonInfo.startDate)
         val todayDate = Calendar.getInstance()
         val isPassed = lessonInfo.isFinished || lessonInfo.lessonStatus == PAST
-        val isPlanning = (todayDate.time.time - startDate.time) < 0L
+        val isPlanning = (todayDate.time.time - startDate!!.time) < 0L
 
         return when {
             isPassed -> LessonListAdapter.BodyType.PASSED
@@ -189,151 +173,4 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             else -> LessonListAdapter.BodyType.DOING
         }
     }
-
-//    @SuppressLint("SimpleDateFormat")
-//    private fun setTestData() {
-//        val dummyList = listOf<LessonAllResponse>(
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nScala 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 8,
-//                goalProgressRate = 8,
-//                totalNumber = 60,
-//                price = 50000,
-//                startDate = "2021-08-19 10:12:14",
-//                endDate = "2021-11-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nKotlin 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 0,
-//                goalProgressRate = 20,
-//                totalNumber = 50,
-//                price = 30000,
-//                startDate = "2021-12-22 10:12:14",
-//                endDate = "2022-11-11 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nC++ 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 0,
-//                goalProgressRate = 12,
-//                totalNumber = 22,
-//                price = 150000,
-//                startDate = "2022-01-12 10:12:14",
-//                endDate = "2022-11-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nPython 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 6,
-//                goalProgressRate = 8,
-//                totalNumber = 16,
-//                price = 25000,
-//                startDate = "2021-11-10 10:12:14",
-//                endDate = "2021-12-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nGolang 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 8,
-//                goalProgressRate = 8,
-//                totalNumber = 42,
-//                price = 55000,
-//                startDate = "2021-09-19 10:12:14",
-//                endDate = "2021-10-22 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nRuby 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 4,
-//                goalProgressRate = 4,
-//                totalNumber = 40,
-//                price = 68000,
-//                startDate = "2021-11-15 10:12:14",
-//                endDate = "2021-11-30 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nJava 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 1,
-//                goalProgressRate = 4,
-//                totalNumber = 30,
-//                price = 33000,
-//                startDate = "2021-10-19 10:12:14",
-//                endDate = "2021-12-31 10:12:14"
-//            )
-//        )
-//
-//        val doingHeader = HeaderAdapter(HeaderAdapter.HeaderType.DOING)
-//        val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
-//        val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
-//
-//        val doingLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-//            moveDetailActivity(lesson)
-//        }
-//        val planningLessonAdapter =
-//            LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-//                moveDetailActivity(lesson)
-//            }
-//        val passedLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-//            moveDetailActivity(lesson)
-//        }
-//
-//        val concatAdapter = ConcatAdapter(
-//            doingHeader,
-//            doingLessonAdapter,
-//            planningHeader,
-//            planningLessonAdapter,
-//            passedHeader,
-//            passedLessonAdapter
-//        )
-//
-//        dummyList.let {
-//            doingLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val startDateString = it.startDate
-//                    val endDateString = it.endDate
-//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//                    val startDate = dateFormat.parse(startDateString)
-//                    val endDate = dateFormat.parse(endDateString)
-//                    val todayDate = Calendar.getInstance()
-//                    val startDiffTime =
-//                        (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val endDiffTime =
-//                        (endDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val progressRatio = it.currentProgressRate / it.goalProgressRate.toDouble()
-//                    val inValidData =
-//                        startDiffTime < 0.0 && endDiffTime >= 0.0 && progressRatio < 1.0
-//                    inValidData
-//                }
-//            )
-//
-//            planningLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val startDateString = it.startDate
-//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//                    val startDate = dateFormat.parse(startDateString)
-//                    val todayDate = Calendar.getInstance()
-//                    val endDiffTime =
-//                        (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val inValidData = endDiffTime > 0.0
-//                    inValidData
-//                }
-//            )
-//
-//            passedLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val progressRatio = it.currentProgressRate / it.goalProgressRate
-//                    val inValidData = (progressRatio == 1)
-//                    inValidData
-//                }
-//            )
-//        }
-//
-//        binding.rvLessonList.let {
-//            it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-//            it.adapter = concatAdapter
-//        }
-//    }
 }

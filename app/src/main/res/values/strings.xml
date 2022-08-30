@@ -131,5 +131,6 @@
     <string name="unit_lesson_take_rate">%d%%</string>
     <string name="unit_lesson_total_number">%d개</string>
     <string name="unit_lesson_price">%s원</string>
+    <string name="finish_lesson">완강하기</string>
 
 </resources>
