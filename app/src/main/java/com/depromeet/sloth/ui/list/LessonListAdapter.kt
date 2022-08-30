@@ -10,6 +10,10 @@ import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListNothingBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListPlanningBinding
+import com.depromeet.sloth.ui.list.viewholder.LessonListDoingViewHolder
+import com.depromeet.sloth.ui.list.viewholder.LessonListNothingViewHolder
+import com.depromeet.sloth.ui.list.viewholder.LessonListPassedViewHolder
+import com.depromeet.sloth.ui.list.viewholder.LessonListPlanningViewHolder
 
 class LessonListAdapter(
     private val bodyType: BodyType,
@@ -69,10 +73,6 @@ object LessonListDiffCallback : DiffUtil.ItemCallback<LessonAllResponse>() {
         oldItem: LessonAllResponse,
         newItem: LessonAllResponse,
     ): Boolean {
-        return oldItem.categoryName == newItem.categoryName &&
-                oldItem.lessonName == newItem.lessonName &&
-                oldItem.startDate == newItem.startDate &&
-                oldItem.endDate == newItem.endDate &&
-                oldItem.siteName == newItem.siteName
+        return oldItem == newItem
     }
 }

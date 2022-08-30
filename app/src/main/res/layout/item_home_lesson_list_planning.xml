@@ -116,20 +116,5 @@
             app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_text"
             tools:ignore="HardcodedText" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_price_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:lineSpacingExtra="2sp"
-            android:text="원"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            android:textStyle="bold"
-            android:translationY="-1.2sp"
-            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_text"
-            tools:ignore="HardcodedText" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

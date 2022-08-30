@@ -64,16 +64,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:maxLines="2"
-            android:ellipsize="end"
-            tools:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
             android:textColor="#222222"
             android:textSize="18dp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_remain"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            tools:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_lesson_list_price_start"
@@ -105,21 +105,6 @@
             app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price_start"
             app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
             tools:ignore="HardcodedText" />
-
-<!--        <androidx.appcompat.widget.AppCompatTextView-->
-<!--            android:id="@+id/tv_lesson_list_price_end"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:lineSpacingExtra="2sp"-->
-<!--            android:text="원"-->
-<!--            android:textColor="#222222"-->
-<!--            android:textSize="12sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:translationY="-1.2sp"-->
-<!--            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"-->
-<!--            tools:ignore="HardcodedText" />-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/vw_lesson_list_goal_text"

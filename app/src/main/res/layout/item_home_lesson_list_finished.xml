@@ -49,10 +49,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:maxLines="2"
-            android:ellipsize="end"
             android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
             android:textColor="@color/black"
             android:textSize="18dp"
@@ -126,21 +126,6 @@
             android:textStyle="bold"
             android:translationY="-1.2sp"
             app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price_start"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_total_count_start"
-            tools:ignore="HardcodedText" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_price_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:lineSpacingExtra="2sp"
-            android:text="원"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            android:textStyle="bold"
-            android:translationY="-1.2sp"
-            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price"
             app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_total_count_start"
             tools:ignore="HardcodedText" />
 

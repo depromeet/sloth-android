@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.list
+package com.depromeet.sloth.ui.list.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse

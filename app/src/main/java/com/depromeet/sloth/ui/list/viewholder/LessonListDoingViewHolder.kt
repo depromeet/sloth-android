@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.list
+package com.depromeet.sloth.ui.list.viewholder
 
 import android.animation.ObjectAnimator
 import android.view.View
