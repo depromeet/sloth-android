@@ -27,7 +27,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
     fun start() {
         // 타이틀바 제거
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        // 커스텀 다이얼로그 radius 적용
+        // custom view 영역 size 적용
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dlg.setContentView(R.layout.dialog_sloth)
 
@@ -94,11 +94,11 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
             }
 
             DialogState.COMPLETE -> {
-                tvDialogMessage.text = "모든 강의를 다 들으셨나요?"
+                tvDialogMessage.setText(R.string.check_all_lesson_finished)
                 ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
                 btnDialogCheck.apply {
                     backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
-                    text = "완강했어요"
+                    text = context.getString(R.string.finished)
                     setOnClickListener {
                         onItemClickListener.onItemClicked()
                         dlg.dismiss()
