@@ -24,17 +24,17 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
         fun onItemClicked()
     }
 
-    fun start() {
+    fun start() = with(dlg) {
         // 타이틀바 제거
-        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         // custom view 영역 size 적용
-        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dlg.setContentView(R.layout.dialog_sloth)
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setContentView(R.layout.dialog_sloth)
 
-        val ivDialogState = dlg.findViewById<ImageView>(R.id.iv_dialog_state)
-        val btnDialogCheck = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_check)
-        val btnDialogCancel = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
-        val tvDialogMessage = dlg.findViewById<TextView>(R.id.tv_dialog_message)
+        val ivDialogState = findViewById<ImageView>(R.id.iv_dialog_state)
+        val btnDialogCheck = findViewById<AppCompatButton>(R.id.btn_dialog_check)
+        val btnDialogCancel = findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
+        val tvDialogMessage = findViewById<TextView>(R.id.tv_dialog_message)
 
         when (state) {
             DialogState.FORBIDDEN -> {
@@ -47,7 +47,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -56,7 +56,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -65,7 +65,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
 
             }
@@ -76,7 +76,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -89,7 +89,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 )
 
                 btnDialogCheck.setOnClickListener {
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -101,17 +101,17 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                     text = context.getString(R.string.finished)
                     setOnClickListener {
                         onItemClickListener.onItemClicked()
-                        dlg.dismiss()
+                        dismiss()
                     }
                 }
             }
         }
 
         btnDialogCancel.setOnClickListener {
-            dlg.dismiss()
+            dismiss()
         }
 
-        dlg.show()
+        show()
     }
 }
 

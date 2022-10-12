@@ -400,7 +400,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun navigateToEndDate() {
-        _navigateToStartDate.value = Event(endDate.value ?: Date())
+        _navigateToEndDate.value = Event(endDate.value ?: Date())
     }
 
     val isEnabledMoveLessonSecondButton = MediatorLiveData<Boolean>().apply {
@@ -425,14 +425,14 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.startDate.value == startDate || startDate == null) {
             return
         }
-        savedStateHandle.set(KEY_START_DATE, startDate)
+        savedStateHandle[KEY_START_DATE] = startDate
     }
 
     private fun setEndDate(endDate: Date?) {
         if (this.endDate.value == endDate || endDate == null) {
             return
         }
-        savedStateHandle.set(KEY_END_DATE, endDate)
+        savedStateHandle[KEY_END_DATE] = endDate
     }
 
     companion object {

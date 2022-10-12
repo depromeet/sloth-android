@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import com.depromeet.sloth.R
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.LoginActivity
@@ -26,7 +27,7 @@ fun showLogoutDialog(context: Context, removeAuthToken: () -> Job) {
 
 fun logout(context: Context, removeAuthToken: () -> Job) {
     removeAuthToken()
-    Toast.makeText(context, "로그아웃 되었어요", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.logout_complete), Toast.LENGTH_SHORT).show()
     startActivity(
         context,
         Intent(context, LoginActivity::class.java).apply {

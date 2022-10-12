@@ -74,7 +74,7 @@ class RegisterLessonFirstFragment :
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 카테고리를 가져오지 못했어요")
+                        showToast(getString(R.string.cannot_get_lesson_category))
                     }
                     else -> Unit
                 }
@@ -96,7 +96,7 @@ class RegisterLessonFirstFragment :
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 사이트를 가져오지 못했어요")
+                        showToast(getString(R.string.cannot_get_lesson_site))
                     }
                     else -> Unit
                 }
@@ -174,12 +174,14 @@ class RegisterLessonFirstFragment :
                     } else {
                         if (spinner == spnRegisterLessonCategory) {
                             viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
-                            { it == spnRegisterLessonCategory.selectedItem }.keys.first())
+                            { it == spnRegisterLessonCategory.selectedItem }.keys.first()
+                            )
                             viewModel.setCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
                         } else {
                             viewModel.setSiteId(viewModel.lessonSiteMap.value!!.filterValues
-                            { it == spnRegisterLessonSite.selectedItem }.keys.first())
+                            { it == spnRegisterLessonSite.selectedItem }.keys.first()
+                            )
                             viewModel.setSiteName(spinner.selectedItem.toString())
                             viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
@@ -195,9 +197,11 @@ class RegisterLessonFirstFragment :
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
             }
+
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 viewModel.setLessonName(text.toString())
             }
+
             override fun afterTextChanged(editable: Editable?) {}
         })
 
@@ -245,6 +249,7 @@ class RegisterLessonFirstFragment :
                     }
                 }
             }
+
             override fun afterTextChanged(editable: Editable?) {}
         })
 

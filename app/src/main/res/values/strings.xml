@@ -33,6 +33,7 @@
     <string name="enter_lesson_price">강의 금액을 입력해 주세요</string>
     <string name="lesson_price">강의 금액</string>
     <string name="alert_cycle">푸시 알람 주기</string>
+    <string name="lesson_start_date_is_later_than_lesson_finish_date">"강의 시작일은 완강 목표일 이전이어야 해요"</string>
     <string name="max_30">최대 30자 까지 입력 가능합니다</string>
     <string name="lesson_message">각오 한마디(선택)</string>
 
@@ -134,5 +135,8 @@
     <string name="finish_lesson">완강하기</string>
     <string name="check_all_lesson_finished">모든 강의를 다 들으셨나요?</string>
     <string name="finished">완강했어요</string>
+    <string name="cannot_get_lesson_category">강의 카테고리를 가져오지 못했어요</string>
+    <string name="cannot_get_lesson_site">강의 사이트를 가져오지 못했어요</string>
+    <string name="logout_complete">로그아웃 되었어요</string>
 
 </resources>

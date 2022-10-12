@@ -25,6 +25,8 @@ import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_MON
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_WEEK
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.THREE_MONTH
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.TWO_MONTH
+import com.depromeet.sloth.util.CALENDAR_TAG
+import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -81,9 +83,9 @@ class RegisterLessonSecondFragment :
             }
 
             lessonDateValidation.observe(viewLifecycleOwner) { isEnable ->
-                when(isEnable) {
+                when (isEnable) {
                     false -> {
-                        showToast("강의 시작일은 완강 목표일 이전이어야 해요")
+                        showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
                         lockButton(binding.btnRegisterLesson, requireContext())
                     }
 
@@ -120,13 +122,13 @@ class RegisterLessonSecondFragment :
 
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
                 viewModel.updateLessonStartDate(calendar)
                 viewModel.updateLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value!!)
             }
         }
-        materialDatePicker.show(childFragmentManager, "calendar")
+        materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
     private fun registerLessonEndDate() = with(binding) {
@@ -142,12 +144,12 @@ class RegisterLessonSecondFragment :
 
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
                 viewModel.updateLessonEndDateByCalendar(calendar)
             }
         }
-        materialDatePicker.show(childFragmentManager, "calendar")
+        materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
     private fun bindAdapter() = with(binding) {
@@ -203,7 +205,8 @@ class RegisterLessonSecondFragment :
                 i1: Int,
                 i2: Int,
                 i3: Int,
-            ) {}
+            ) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
@@ -248,7 +251,8 @@ class RegisterLessonSecondFragment :
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                viewModel.setLessonMessage(text.toString()) }
+                viewModel.setLessonMessage(text.toString())
+            }
 
             override fun afterTextChanged(editable: Editable?) {}
         })
