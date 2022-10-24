@@ -1,4 +1,8 @@
-package com.depromeet.sloth.data.network.login
+package com.depromeet.sloth.data.repository
+
+import com.depromeet.sloth.data.network.login.LoginGoogleResponse
+import com.depromeet.sloth.data.network.login.LoginSlothResponse
+import com.depromeet.sloth.data.network.login.LoginState
 
 interface LoginRepository {
 

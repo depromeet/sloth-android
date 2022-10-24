@@ -1,14 +1,20 @@
-package com.depromeet.sloth.data.network.member
+package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import com.depromeet.sloth.data.network.member.MemberLogoutState
+import com.depromeet.sloth.data.network.member.MemberService
+import com.depromeet.sloth.data.network.member.MemberState
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
+import com.depromeet.sloth.data.network.member.MemberUpdateState
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
-):MemberRepository {
+): MemberRepository {
 //    fun fetchMemberInfo(): Flow<UIState<Member>> = flow<UIState<Member>> {
 //
 //        emit(UIState.Loading)

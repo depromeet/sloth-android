@@ -1,8 +1,10 @@
-package com.depromeet.sloth.data.network.notification
+package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import com.depromeet.sloth.data.network.notification.NotificationService
+import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.data.network.notification.update.NotificationUseResponse

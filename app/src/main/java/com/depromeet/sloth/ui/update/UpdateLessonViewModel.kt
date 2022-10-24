@@ -5,10 +5,10 @@ import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.model.LessonUpdate
-import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event

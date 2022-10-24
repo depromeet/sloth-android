@@ -3,8 +3,8 @@ package com.depromeet.sloth.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.data.network.notification.NotificationRepository
+import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest

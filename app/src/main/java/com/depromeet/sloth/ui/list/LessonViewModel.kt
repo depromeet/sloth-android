@@ -1,11 +1,11 @@
 package com.depromeet.sloth.ui.list
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel

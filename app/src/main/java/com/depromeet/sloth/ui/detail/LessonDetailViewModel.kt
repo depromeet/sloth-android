@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.LessonRepository
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel

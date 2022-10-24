@@ -1,9 +1,10 @@
-package com.depromeet.sloth.data.network.lesson
+package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.model.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.model.LessonSite
 import com.depromeet.sloth.data.model.LessonUpdate
+import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest

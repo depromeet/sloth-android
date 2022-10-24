@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.*
+import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel

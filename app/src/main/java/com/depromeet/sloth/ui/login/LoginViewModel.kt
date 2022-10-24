@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.login.LoginRepository
+import com.depromeet.sloth.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

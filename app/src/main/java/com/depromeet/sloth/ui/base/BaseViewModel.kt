@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
