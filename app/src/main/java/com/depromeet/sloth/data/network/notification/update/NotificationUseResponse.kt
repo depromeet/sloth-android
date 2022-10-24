@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.network.notification
+package com.depromeet.sloth.data.network.notification.update
 
 /**
  *  NotificationUseResponse

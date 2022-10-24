@@ -1,19 +1,21 @@
 package com.depromeet.sloth.ui
 
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.notification.NotificationRegisterRequest
-import com.depromeet.sloth.data.network.notification.NotificationRegisterState
+import com.depromeet.sloth.data.network.notification.NotificationState
+import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
+import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.util.LoadingDialogUtil
+import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -26,44 +28,21 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     private lateinit var navController: NavController
 
+    private val deviceId: String by lazy {
+        Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initNavigation()
+        initObserver()
 
         viewModel.apply {
-            val fcmToken = viewModel.getFCMToken()
-            Timber.d("fcmToken: $fcmToken")
-            if (fcmToken.isEmpty()) {
-                registerFCMToken()
-            }
-
-            notificationRegisterState.observe(this@HomeActivity) { notificationRegisterState ->
-                when (notificationRegisterState) {
-                    is NotificationRegisterState.Loading -> {
-                        handleLoadingState(this@HomeActivity)
-                    }
-
-                    is NotificationRegisterState.Success<String> -> {
-                        Timber.tag("fetch Success").d(notificationRegisterState.data)
-                    }
-
-                    is NotificationRegisterState.Unauthorized -> {
-                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
-                    }
-
-                    is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {
-                        showToast(getString(R.string.fcm_token_save_fail))
-                    }
-
-                    is NotificationRegisterState.Error -> {
-                        Timber.tag("Error").d(notificationRegisterState.exception)
-                    }
-
-                    else -> Unit
-                }
-                LoadingDialogUtil.hideProgress()
-            }
+            // 서버에 저장된 FCM 토큰이 있는지 조회 후
+            // 존재하지 않는다면 토큰을 생성하여 서버에 저장
+            // 이미 존재한다면 토큰을 재 생성하지 않음
+            fetchFCMToken(deviceId)
         }
     }
 
@@ -78,6 +57,64 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         }
     }
 
+    private fun initObserver() {
+        viewModel.apply {
+            notificationFetchState.observe(this@HomeActivity) { notificationState ->
+                when (notificationState) {
+                    is NotificationState.Loading -> {
+                        handleLoadingState(this@HomeActivity)
+                    }
+
+                    is NotificationState.Success<NotificationFetchResponse> -> {
+                        Timber.tag("fetch Success").d("${notificationState.data}")
+                        if (notificationState.data.fcmToken == null) {
+                            Timber.d("fcmToken not existed")
+                            registerFCMToken()
+                        } else {
+                            Timber.d("fcmToken already existed")
+                        }
+                    }
+
+                    is NotificationState.Unauthorized -> {
+                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                    }
+
+                    is NotificationState.Error -> {
+                        Timber.tag("Error").d(notificationState.exception)
+                    }
+
+                    else -> {}
+
+                }
+                hideProgress()
+            }
+
+
+            notificationRegisterState.observe(this@HomeActivity) { notificationState ->
+                when (notificationState) {
+                    is NotificationState.Loading -> {
+                        handleLoadingState(this@HomeActivity)
+                    }
+
+                    is NotificationState.Success<String> -> {
+                        Timber.tag("fetch Success").d(notificationState.data)
+                    }
+
+                    is NotificationState.Unauthorized -> {
+                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                    }
+
+                    is NotificationState.Error -> {
+                        Timber.tag("Error").d(notificationState.exception)
+                    }
+
+                    else -> {}
+                }
+                hideProgress()
+            }
+        }
+    }
+
 
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -86,11 +123,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                 return@addOnCompleteListener
             }
             val fcmToken = task.result
-            Timber.tag("FCM Token").d(fcmToken)
-            viewModel.putFCMToken(fcmToken)
-            mainScope {
-                viewModel.registerFCMToken(NotificationRegisterRequest(fcmToken))
-            }
+            Timber.tag("FCM Token is created").d(fcmToken)
+            viewModel.registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken))
         }
     }
 }

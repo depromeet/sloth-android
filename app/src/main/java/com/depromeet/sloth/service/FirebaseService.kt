@@ -18,8 +18,6 @@ import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
 import kotlin.random.Random
 
-private const val CHANNEL_ID = "fcm_default_channel"
-
 class FirebaseService : FirebaseMessagingService() {
 
     val preferenceManager: PreferenceManager = PreferenceManager(this)
@@ -48,7 +46,12 @@ class FirebaseService : FirebaseMessagingService() {
         if (remoteMessage.data.isEmpty()) {
             Timber.tag("onMessageReceived").d("Message data payload: %s", remoteMessage.data)
 
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+            val pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(remoteMessage.data["title"])
                 .setContentText(remoteMessage.data["message"])
@@ -70,5 +73,9 @@ class FirebaseService : FirebaseMessagingService() {
             lightColor = Color.GREEN
         }
         notificationManager.createNotificationChannel(channel)
+    }
+
+    companion object {
+        const val CHANNEL_ID = "fcm_default_channel"
     }
 }
