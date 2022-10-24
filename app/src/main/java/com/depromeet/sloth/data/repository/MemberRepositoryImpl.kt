@@ -141,12 +141,4 @@ class MemberRepositoryImpl @Inject constructor(
     override fun removeAuthToken() {
         preferenceManager.removeAuthToken()
     }
-
-    override fun putFCMToken(fcmToken: String) {
-        preferenceManager.putFCMToken(fcmToken)
-    }
-
-    override fun getFCMToken(): String {
-        return preferenceManager.getFCMToken()
-    }
 }

@@ -18,8 +18,4 @@ interface MemberRepository {
     suspend fun logout(): MemberLogoutState<String>
 
     fun removeAuthToken()
-
-    fun putFCMToken(fcmToken: String)
-
-    fun getFCMToken(): String
 }
