@@ -25,7 +25,6 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
     }
 
     fun start() = with(dlg) {
-        // 타이틀바 제거
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         // custom view 영역 size 적용
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

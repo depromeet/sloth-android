@@ -1,14 +1,12 @@
 package com.depromeet.sloth.ui.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.depromeet.sloth.databinding.ActivityLoginBinding
-import android.widget.Button
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.databinding.ActivityLoginBinding
 import com.depromeet.sloth.ui.HomeActivity
+import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,28 +18,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
 
-    companion object {
-        fun newIntent(activity: Activity) =
-            Intent(activity, LoginActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
             nextActivity()
         } else {
-            findViewById<Button>(R.id.btn_login_start).setOnClickListener {
+            binding.btnLoginStart.setOnClickListener {
                 openLoginBottomSheet()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeLoginBottomSheet()
-        closeRegisterBottomSheet()
     }
 
     private fun openLoginBottomSheet() {
@@ -105,5 +90,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        closeLoginBottomSheet()
+        closeRegisterBottomSheet()
     }
 }

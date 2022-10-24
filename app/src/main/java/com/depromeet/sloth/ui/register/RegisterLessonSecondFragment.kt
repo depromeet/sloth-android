@@ -27,6 +27,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.THREE_M
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.TWO_MONTH
 import com.depromeet.sloth.util.CALENDAR_TAG
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
+import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -197,7 +198,7 @@ class RegisterLessonSecondFragment :
 
     private fun validateInputForm(editText: EditText) = with(binding) {
         var result = DEFAULT_STRING_VALUE
-        val decimalFormat = DecimalFormat("#,###")
+        val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(

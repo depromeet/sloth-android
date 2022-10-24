@@ -21,6 +21,7 @@ import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
 import com.depromeet.sloth.ui.list.LessonViewModel.Companion.PAST
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
+import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -48,8 +49,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
                         is UIState.Loading -> showProgress()
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
+                        is UIState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UIState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                     }
                 }
         }
@@ -161,7 +162,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     private fun getLessonType(
         lessonInfo: LessonAllResponse,
     ): LessonListAdapter.BodyType {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
         val startDate = dateFormat.parse(lessonInfo.startDate)
         val todayDate = Calendar.getInstance()
         val isPassed = lessonInfo.isFinished || lessonInfo.lessonStatus == PAST

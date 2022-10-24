@@ -18,7 +18,6 @@ import com.depromeet.sloth.ui.base.UIState
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onCompletion
@@ -60,8 +59,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is UIState.Loading -> showProgress()
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success -> setLessonList(uiState.data)
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
+                        is UIState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UIState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                     }
                 }
         }
@@ -120,6 +119,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     TodayLessonAdapter.ClickType.CLICK_MINUS
                                 )
                             }
+
+                            else -> {}
                         }
                     }
                 val finishedHeader =
@@ -148,6 +149,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
                                 showCompleteDialog(lessonToday.lessonId.toString())
                             }
+
+                            else -> {}
                         }
                     }
                 val concatAdapter = ConcatAdapter(
@@ -225,7 +228,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         }
                     }
                     is LessonState.Error -> {
-                        showToast("강의 정보를 업데이트 하지 못했어요")
+                        showToast(getString(R.string.lesson_info_update_fail))
                         Timber.tag("Error").d(it.throwable)
                     }
                     else -> Unit
@@ -258,10 +261,10 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is UIState.UnLoading -> hideProgress()
                         is UIState.Success -> {
                             fetchLessonList()
-                            showToast("해당 강의가 완료처리 되었어요")
+                            showToast(getString(R.string.lesson_finish_complete))
                         }
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 완료처리에 실패하였어요")
+                        is UIState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UIState.Error -> showToast(getString(R.string.lesson_finish_fail))
                     }
                 }
         }

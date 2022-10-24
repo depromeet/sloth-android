@@ -53,7 +53,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     }
 
                     is NotificationRegisterState.NotFound, NotificationRegisterState.Forbidden -> {
-                        showToast("fcm 토큰을 저장하지 못했어요")
+                        showToast(getString(R.string.fcm_token_save_fail))
                     }
 
                     is NotificationRegisterState.Error -> {

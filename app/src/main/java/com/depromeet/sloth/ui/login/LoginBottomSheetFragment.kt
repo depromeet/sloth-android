@@ -118,7 +118,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     ).let {
                         when (it) {
                             is LoginState.Success<LoginSlothResponse> -> {
-                                Timber.tag("인증정보 수신 성공").d(it.data.toString())
+                                Timber.tag("인증 정보 수신 성공").d(it.data.toString())
                                 if (it.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
@@ -127,7 +127,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
 
                             }
                             is LoginState.Error -> {
-                                Timber.tag("인증정보 수신 실패").d(it.exception)
+                                Timber.tag("인증 정보 수신 실패").d(it.exception)
                                 loginListener.onError()
                             }
                         }

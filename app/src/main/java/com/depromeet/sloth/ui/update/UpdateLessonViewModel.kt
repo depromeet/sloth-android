@@ -56,12 +56,14 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonSiteListState
 
     private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>())
+        RegisterLessonViewModel.KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>()
+    )
     val lessonCategoryMap: LiveData<HashMap<Int, String>>
         get() = _lessonCategoryMap
 
     private val _lessonCategoryList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_LIST, mutableListOf())
+        RegisterLessonViewModel.KEY_LESSON_CATEGORY_LIST, mutableListOf()
+    )
     val lessonCategoryList: LiveData<MutableList<String>>
         get() = _lessonCategoryList
 
@@ -76,17 +78,20 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonCategoryName
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0)
+        RegisterLessonViewModel.KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
+    )
     val lessonCategorySelectedItemPosition: LiveData<Int>
         get() = _lessonCategorySelectedItemPosition
 
     private val _lessonSiteMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_MAP, HashMap<Int, String>())
+        RegisterLessonViewModel.KEY_LESSON_SITE_MAP, HashMap<Int, String>()
+    )
     val lessonSiteMap: LiveData<HashMap<Int, String>>
         get() = _lessonSiteMap
 
     private val _lessonSiteList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_LIST, mutableListOf())
+        RegisterLessonViewModel.KEY_LESSON_SITE_LIST, mutableListOf()
+    )
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
@@ -101,7 +106,8 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonSiteName
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0)
+        RegisterLessonViewModel.KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
+    )
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
@@ -211,7 +217,8 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     val isEnabledLessonUpdateButton = MediatorLiveData<Boolean>().apply {
-        addSourceList(_lessonName,
+        addSourceList(
+            _lessonName,
             _lessonTotalNumber,
             _lessonPrice,
             _lessonCategorySelectedItemPosition,
@@ -230,7 +237,7 @@ class UpdateLessonViewModel @Inject constructor(
                 //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
             data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
-            add(0, "강의 카테고리를 선택해 주세요")
+            add(0, PLEASE_CHOOSE_LESSON_CATEGORY)
         }
     }
 
@@ -239,7 +246,7 @@ class UpdateLessonViewModel @Inject constructor(
                 //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
             data.associate { it.siteId to it.siteName } as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
-            add(0, "강의 사이트를 선택해 주세요")
+            add(0, PLEASE_CHOOSE_LESSON_SITE)
         }
     }
 
@@ -258,5 +265,7 @@ class UpdateLessonViewModel @Inject constructor(
 
     companion object {
         const val KEY_LESSON_DETAIL = "lessonDetail"
+        const val PLEASE_CHOOSE_LESSON_CATEGORY = "강의 사이트를 선택해 주세요"
+        const val PLEASE_CHOOSE_LESSON_SITE = "강의 사이트를 선택해 주세요"
     }
 }

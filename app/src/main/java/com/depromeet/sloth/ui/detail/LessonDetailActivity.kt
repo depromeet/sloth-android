@@ -58,8 +58,10 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     }
 
                     is LessonState.Error -> {
-                        Timber.tag("Error").d(lessonDetailState.throwable)
+                        Timber.tag("fetch Error").d(lessonDetailState.throwable)
                     }
+
+                    else -> {}
                 }
                 hideProgress()
             }
@@ -69,7 +71,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
                     is LessonState.Loading -> showProgress(this@LessonDetailActivity)
 
                     is LessonState.Success<LessonDeleteResponse> -> {
-                        showToast("강의가 삭제 되었어요")
+                        showToast(getString(R.string.lesson_delete_complete))
                         finish()
                     }
 
@@ -79,8 +81,10 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonDeleteState.throwable)
-                        showToast("강의를 삭제하지 못했어요")
+                        showToast(getString(R.string.lesson_delete_fail))
                     }
+
+                    else -> {}
                 }
                 hideProgress()
             }

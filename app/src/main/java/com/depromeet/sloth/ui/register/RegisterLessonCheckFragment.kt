@@ -41,7 +41,7 @@ class RegisterLessonCheckFragment :
 
                         is LessonState.Success -> {
                             Timber.tag("Register Success").d("${lessonRegisterResponse.data}")
-                            showToast("강의가 등록되었어요")
+                            showToast(getString(R.string.lesson_register_complete))
                             (activity as RegisterLessonActivity).finish()
                         }
 
@@ -51,7 +51,7 @@ class RegisterLessonCheckFragment :
 
                         is LessonState.Error -> {
                             Timber.tag("Register Error").d(lessonRegisterResponse.throwable)
-                            showToast("강의 등록을 실패했어요")
+                            showToast(getString(R.string.lesson_register_fail))
                         }
                         else -> Unit
                     }

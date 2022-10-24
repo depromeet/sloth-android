@@ -18,6 +18,7 @@ import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -68,7 +69,7 @@ class UpdateLessonActivity :
 
                         is LessonState.Success<LessonUpdate> -> {
                             Timber.tag("Update Success").d("${lessonUpdateState.data}")
-                            showToast("강의 정보가 수정되었어요")
+                            showToast(getString(R.string.lesson_info_update_complete))
                             finish()
                         }
 
@@ -78,8 +79,10 @@ class UpdateLessonActivity :
 
                         is LessonState.Error -> {
                             Timber.tag("fetch Error").d(lessonUpdateState.throwable)
-                            showToast("강의를 수정하지 못했어요")
+                            showToast(getString(R.string.lesson_info_update_fail))
                         }
+
+                        else -> {}
                     }
                     hideProgress()
 
@@ -99,7 +102,7 @@ class UpdateLessonActivity :
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 카테고리를 가져오지 못했어요")
+                        showToast(getString(R.string.lesson_category_fetch_fail))
                     }
                     else -> Unit
                 }
@@ -123,7 +126,7 @@ class UpdateLessonActivity :
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 사이트를 가져오지 못했어요")
+                        showToast(getString(R.string.lesson_site_fetch_fail))
                     }
                     else -> Unit
                 }
@@ -145,7 +148,7 @@ class UpdateLessonActivity :
             lessonNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
                 when (isEnable) {
                     false -> {
-                        showToast("강의 개수가 수강한 강의 개수보다 적어요")
+                        showToast(getString(R.string.lesson_number_validation_error))
                         lockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
                     }
 
@@ -259,7 +262,7 @@ class UpdateLessonActivity :
     private fun validatePriceInputForm(editText: EditText) =
         with(binding) {
             var result = ""
-            val decimalFormat = DecimalFormat("#,###")
+            val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
 
             editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(

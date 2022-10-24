@@ -13,14 +13,22 @@ import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.*
+import com.depromeet.sloth.data.network.member.MemberLogoutState
+import com.depromeet.sloth.data.network.member.MemberState
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
+import com.depromeet.sloth.data.network.member.MemberUpdateState
 import com.depromeet.sloth.databinding.FragmentManageBinding
-import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.ui.custom.DialogState
-import com.depromeet.sloth.ui.custom.SlothDialog
+import com.depromeet.sloth.extensions.focusInputForm
+import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.hideKeyBoard
+import com.depromeet.sloth.extensions.logout
+import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showWithdrawalDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.EventObserver
-import com.depromeet.sloth.ui.login.LoginActivity
+import com.depromeet.sloth.ui.custom.DialogState
+import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
@@ -61,7 +69,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberState.Error -> {
                         Timber.tag("fetch Error").d(memberState.exception)
-                        showToast("회원 정보를 가져오지 못했어요")
+                        showToast(getString(R.string.member_info_fetch_fail))
                     }
                 }
                 hideProgress()
@@ -73,7 +81,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
                         Timber.tag("update Success").d("${memberUpdateState.data}")
-                        showToast("닉네임이 변경되었어요")
+                        showToast(getString(R.string.member_update_success))
                         viewModel.fetchMemberInfo()
                     }
 
@@ -83,7 +91,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberUpdateState.Error -> {
                         Timber.tag("update Error").d(memberUpdateState.exception)
-                        showToast("회원 정보를 변경하지 못했어요")
+                        showToast(getString(R.string.member_update_fail))
                     }
                 }
                 hideProgress()
@@ -101,7 +109,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
                     is MemberLogoutState.Error -> {
                         Timber.tag("update Error").d(memberLogoutState.exception)
-                        showToast("로그아웃 하지 못했어요")
+                        showToast(getString(R.string.logout_fail))
                     }
                 }
                 hideProgress()
@@ -143,26 +151,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             dlg.start()
         }
 
-        clManageWithdraw.setOnClickListener {
-            showWithdrawDialog()
+        clManageWithdrawal.setOnClickListener {
+            showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
         }
-    }
-
-    private fun showWithdrawDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                withdraw()
-            }
-        }
-        dlg.start()
-    }
-
-    //회원 탈퇴 api 필요
-    private fun withdraw() {
-        viewModel.removeAuthToken()
-        showToast("회원탈퇴 되었어요")
-        startActivity(LoginActivity.newIntent(requireActivity()))
     }
 
     private fun showUpdateDialog() {
@@ -186,7 +177,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
-                showToast("현재 닉네임과 동일한 닉네임이에요")
+                showToast(getString(R.string.input_same_nickname))
             }
             updateDialog.dismiss()
         }
