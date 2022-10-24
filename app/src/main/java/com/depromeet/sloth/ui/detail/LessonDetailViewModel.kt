@@ -26,19 +26,24 @@ class LessonDetailViewModel @Inject constructor(
         ?: throw IllegalStateException("There is no value of the lesson id.")
 
     private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
-    val lessonDetailState: LiveData<LessonState<LessonDetail>> = _lessonDetailState
+    val lessonDetailState: LiveData<LessonState<LessonDetail>>
+        get() = _lessonDetailState
 
     private val _lessonDeleteState = MutableLiveData<LessonState<LessonDeleteResponse>>()
-    val lessonDeleteState: LiveData<LessonState<LessonDeleteResponse>> = _lessonDeleteState
+    val lessonDeleteState: LiveData<LessonState<LessonDeleteResponse>>
+        get() = _lessonDeleteState
 
     private val _lessonDetail = MutableLiveData<LessonDetail>()
-    val lessonDetail: LiveData<LessonDetail> = _lessonDetail
+    val lessonDetail: LiveData<LessonDetail>
+        get() = _lessonDetail
 
     private val _lessonUpdateEvent = MutableLiveData<Event<LessonDetail>>()
-    val lessonUpdateEvent: LiveData<Event<LessonDetail>> = _lessonUpdateEvent
+    val lessonUpdateEvent: LiveData<Event<LessonDetail>>
+        get() = _lessonUpdateEvent
 
     private val _lessonDeleteEvent = MutableLiveData<Event<Boolean>>()
-    val lessonDeleteEvent: LiveData<Event<Boolean>> = _lessonDeleteEvent
+    val lessonDeleteEvent: LiveData<Event<Boolean>>
+        get() = _lessonDeleteEvent
 
 
     fun fetchLessonDetail() = viewModelScope.launch {

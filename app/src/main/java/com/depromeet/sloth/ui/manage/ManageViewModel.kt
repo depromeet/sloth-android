@@ -18,24 +18,27 @@ class ManageViewModel @Inject constructor(
 ) : BaseViewModel(memberRepository) {
 
     private val _memberState = MutableLiveData<MemberState<Member>>()
-    val memberState: LiveData<MemberState<Member>> = _memberState
+    val memberState: LiveData<MemberState<Member>>
+        get() = _memberState
 
 //    private val _member = MutableStateFlow<Member>(Member())
 //    val member: StateFlow<Member> = _member
 
     private val _memberUpdateState =
         MutableLiveData<Event<MemberUpdateState<MemberUpdateInfoResponse>>>()
-    val memberUpdateState: LiveData<Event<MemberUpdateState<MemberUpdateInfoResponse>>> =
-        _memberUpdateState
+    val memberUpdateState: LiveData<Event<MemberUpdateState<MemberUpdateInfoResponse>>>
+        get() = _memberUpdateState
 
 //    private val _memberUpdateState = MutableStateFlow<MemberUpdateInfoResponse>(MemberUpdateInfoResponse())
 //    val memberUpdateState: StateFlow<MemberUpdateInfoResponse> = _memberUpdateState.asStateFlow()
 
     private val _memberLogoutState = MutableLiveData<MemberLogoutState<String>>()
-    val memberLogoutState: LiveData<MemberLogoutState<String>> = _memberLogoutState
+    val memberLogoutState: LiveData<MemberLogoutState<String>>
+        get() = _memberLogoutState
 
     private val _member = MutableLiveData<Member>()
-    val member: LiveData<Member> = _member
+    val member: LiveData<Member>
+        get() = _member
 
     init {
         fetchMemberInfo()

@@ -55,12 +55,12 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonCategoryName
 
     private val _lessonSiteId = savedStateHandle.getLiveData<Int>(KEY_LESSON_SITE_ID, 0)
-    val lessonSiteId: LiveData<Int>
+    private val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
     private val _lessonSiteName =
         savedStateHandle.getLiveData<String>(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
-    val lessonSiteName: LiveData<String>
+    private val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
     private val _lessonPrice = savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, 0)
@@ -101,7 +101,7 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonCheck
 
     private val _lessonRegister = MutableLiveData<LessonRegisterRequest>()
-    val lessonRegister: LiveData<LessonRegisterRequest>
+    private val lessonRegister: LiveData<LessonRegisterRequest>
         get() = _lessonRegister
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
@@ -317,21 +317,21 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.lessonName.value == lessonName || lessonName == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_NAME, lessonName)
+        savedStateHandle[KEY_LESSON_NAME] = lessonName
     }
 
     fun setLessonTotalNumber(lessonTotalNumber: Int?) {
         if (this.lessonTotalNumber.value == lessonTotalNumber || lessonTotalNumber == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_TOTAL_NUMBER, lessonTotalNumber)
+        savedStateHandle[KEY_LESSON_TOTAL_NUMBER] = lessonTotalNumber
     }
 
     fun setCategoryId(lessonCategoryId: Int?) {
         if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_CATEGORY_ID, lessonCategoryId)
+        savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
     }
 
     fun setCategoryName(lessonCategoryName: String?) {
@@ -339,7 +339,7 @@ class RegisterLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle.set(KEY_LESSON_CATEGORY_NAME, lessonCategoryName)
+        savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
     }
 
     fun setSiteId(lessonSiteId: Int?) {
@@ -347,7 +347,7 @@ class RegisterLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle.set(KEY_LESSON_SITE_ID, lessonSiteId)
+        savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
     }
 
     fun setSiteName(lessonSiteName: String?) {
@@ -355,7 +355,7 @@ class RegisterLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle.set(KEY_LESSON_SITE_NAME, lessonSiteName)
+        savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
     }
 
     fun setLessonPrice(lessonPrice: Int?) {
@@ -363,28 +363,28 @@ class RegisterLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle.set(KEY_LESSON_PRICE, lessonPrice)
+        savedStateHandle[KEY_LESSON_PRICE] = lessonPrice
     }
 
     fun setLessonMessage(lessonMessage: String?) {
         if (this.lessonMessage.value == lessonMessage || lessonMessage == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_MESSAGE, lessonMessage)
+        savedStateHandle[KEY_LESSON_MESSAGE] = lessonMessage
     }
 
     private fun setLessonStartDate(lessonStartDate: String?) {
         if (this.lessonStartDate.value == lessonStartDate || lessonStartDate == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_START_DATE, lessonStartDate)
+        savedStateHandle[KEY_LESSON_START_DATE] = lessonStartDate
     }
 
     private fun setLessonEndDate(lessonEndDate: String?) {
         if (this.lessonEndDate.value == lessonEndDate || lessonEndDate == null) {
             return
         }
-        savedStateHandle.set(KEY_LESSON_END_DATE, lessonEndDate)
+        savedStateHandle[KEY_LESSON_END_DATE] = lessonEndDate
     }
 
     fun moveRegisterLessonSecond() {

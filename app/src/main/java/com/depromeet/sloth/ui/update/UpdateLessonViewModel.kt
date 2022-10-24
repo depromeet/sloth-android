@@ -43,7 +43,7 @@ class UpdateLessonViewModel @Inject constructor(
 
     private val _lessonPrice =
         savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_PRICE, 0)
-    val lessonPrice: LiveData<Int>
+    private val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 
     private val _lessonCategoryListState =
@@ -97,12 +97,12 @@ class UpdateLessonViewModel @Inject constructor(
 
     private val _lessonSiteId =
         savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_SITE_ID, 0)
-    val lessonSiteId: LiveData<Int>
+    private val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
     private val _lessonSiteName =
         savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, "")
-    val lessonSiteName: LiveData<String>
+    private val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(

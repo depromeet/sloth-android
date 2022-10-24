@@ -36,7 +36,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-
         fetchLessonList()
     }
 
