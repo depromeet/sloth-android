@@ -16,6 +16,10 @@ class LoginRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager
 ): LoginRepository {
 
+    override fun checkedLoggedIn(): Boolean {
+        return preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()
+    }
+
     override suspend fun fetchSlothAuthInfo(
         authToken: String,
         socialType: String

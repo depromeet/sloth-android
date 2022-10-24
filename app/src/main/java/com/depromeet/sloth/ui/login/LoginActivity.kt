@@ -2,30 +2,47 @@ package com.depromeet.sloth.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import com.depromeet.sloth.ui.HomeActivity
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
+
+    private val viewModel: LoginViewModel by viewModels()
 
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
-            moveHomeActivity()
-        } else {
-            binding.btnLoginStart.setOnClickListener {
-                openLoginBottomSheet()
-            }
+
+        bind {
+            vm = viewModel
+        }
+
+        initListener()
+        initObserver()
+    }
+
+    private fun initListener() {
+        binding.btnLoginStart.setOnClickListener {
+            openLoginBottomSheet()
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.apply {
+            loginState.observe(this@LoginActivity, EventObserver { isLoggedIn ->
+                when (isLoggedIn) {
+                    true -> moveHomeActivity()
+                    else -> {}
+                }
+            })
         }
     }
 

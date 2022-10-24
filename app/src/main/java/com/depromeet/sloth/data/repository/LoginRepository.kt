@@ -6,6 +6,8 @@ import com.depromeet.sloth.data.network.login.LoginState
 
 interface LoginRepository {
 
+    fun checkedLoggedIn(): Boolean
+
     suspend fun fetchSlothAuthInfo(
         authToken: String,
         socialType: String,
