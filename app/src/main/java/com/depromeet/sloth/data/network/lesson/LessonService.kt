@@ -41,7 +41,10 @@ interface LessonService {
     ): Response<LessonRegisterResponse>?
 
     @PATCH("api/lesson/{lessonId}")
-    suspend fun updateLesson(@Path("lessonId") lessonId: String, @Body request: LessonUpdateRequest): Response<LessonUpdate>?
+    suspend fun updateLesson(
+        @Path("lessonId") lessonId: String,
+        @Body request: LessonUpdateRequest
+    ): Response<LessonUpdate>?
 
     @PATCH("api/lesson/{lessonId}/finish")
     suspend fun finishLesson(@Path("lessonId") lessonId: String): Response<LessonFinishResponse>?

@@ -21,7 +21,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
-            nextActivity()
+            moveHomeActivity()
         } else {
             binding.btnLoginStart.setOnClickListener {
                 openLoginBottomSheet()
@@ -34,7 +34,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             val loginListener = object : LoginListener {
                 override fun onSuccessWithRegisteredMember() {
                     closeLoginBottomSheet()
-                    nextActivity()
+                    moveHomeActivity()
                 }
 
                 override fun onSuccessWithNewMember() {
@@ -60,7 +60,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             val registerListener = object : RegisterListener {
                 override fun onAgree() {
                     closeRegisterBottomSheet()
-                    nextActivity()
+                    moveHomeActivity()
                 }
 
                 override fun onCancel() {
@@ -86,7 +86,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         registerBottomSheet = null
     }
 
-    private fun nextActivity() {
+    private fun moveHomeActivity() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
