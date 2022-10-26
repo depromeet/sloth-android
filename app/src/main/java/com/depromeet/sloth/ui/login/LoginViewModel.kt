@@ -19,12 +19,20 @@ class LoginViewModel @Inject constructor(
     val loginState: LiveData<Event<Boolean>>
         get() = _loginState
 
+    private val _openLoginBottomSheetEvent = MutableLiveData<Event<Unit>>()
+    val openLoginBottomSheetEvent: LiveData<Event<Unit>>
+        get() = _openLoginBottomSheetEvent
+
     init {
         checkLoggedIn()
     }
 
     private fun checkLoggedIn() {
         _loginState.value = Event(loginRepository.checkedLoggedIn())
+    }
+
+    fun clickLoginBtn() {
+        _openLoginBottomSheetEvent.value = Event(Unit)
     }
 
     suspend fun fetchSlothAuthInfo(accessToken: String, socialType: String) =

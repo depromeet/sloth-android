@@ -25,14 +25,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             vm = viewModel
         }
 
-        initListener()
         initObserver()
-    }
-
-    private fun initListener() {
-        binding.btnLoginStart.setOnClickListener {
-            openLoginBottomSheet()
-        }
     }
 
     private fun initObserver() {
@@ -42,6 +35,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     true -> moveHomeActivity()
                     else -> {}
                 }
+            })
+
+            openLoginBottomSheetEvent.observe(this@LoginActivity, EventObserver {
+                openLoginBottomSheet()
             })
         }
     }
