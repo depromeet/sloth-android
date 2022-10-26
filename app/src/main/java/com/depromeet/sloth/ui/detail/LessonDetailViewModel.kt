@@ -41,8 +41,8 @@ class LessonDetailViewModel @Inject constructor(
     val lessonUpdateEvent: LiveData<Event<LessonDetail>>
         get() = _lessonUpdateEvent
 
-    private val _lessonDeleteEvent = MutableLiveData<Event<Boolean>>()
-    val lessonDeleteEvent: LiveData<Event<Boolean>>
+    private val _lessonDeleteEvent = MutableLiveData<Event<Unit>>()
+    val lessonDeleteEvent: LiveData<Event<Unit>>
         get() = _lessonDeleteEvent
 
 
@@ -63,11 +63,11 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDetail.value = lessonDetail
     }
 
-    fun onClickLessonUpdateEvent(lessonDetail: LessonDetail) {
+    fun clickLessonUpdateBtn(lessonDetail: LessonDetail) {
         _lessonUpdateEvent.value = Event(lessonDetail)
     }
 
-    fun onClickLessonDeleteEvent() {
-        _lessonDeleteEvent.value = Event(true)
+    fun clickLessonDeleteBtn() {
+        _lessonDeleteEvent.value = Event(Unit)
     }
 }

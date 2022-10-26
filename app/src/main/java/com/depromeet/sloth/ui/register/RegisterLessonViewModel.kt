@@ -139,12 +139,12 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonEndDateSelectedItemPosition: LiveData<Int>
         get() = _lessonEndDateSelectedItemPosition
 
-    private val _moveRegisterLessonSecondEvent = MutableLiveData<Event<Boolean>>()
-    val moveRegisterLessonSecondEvent: LiveData<Event<Boolean>>
+    private val _moveRegisterLessonSecondEvent = MutableLiveData<Event<Unit>>()
+    val moveRegisterLessonSecondEvent: LiveData<Event<Unit>>
         get() = _moveRegisterLessonSecondEvent
 
-    private val _moveRegisterLessonCheckEvent = MutableLiveData<Event<Boolean>>()
-    val moveRegisterLessonCheckEvent: LiveData<Event<Boolean>>
+    private val _moveRegisterLessonCheckEvent = MutableLiveData<Event<Unit>>()
+    val moveRegisterLessonCheckEvent: LiveData<Event<Unit>>
         get() = _moveRegisterLessonCheckEvent
 
     private val _lessonDateValidation = MutableLiveData<Boolean>()
@@ -387,12 +387,12 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_END_DATE] = lessonEndDate
     }
 
-    fun moveRegisterLessonSecond() {
-        _moveRegisterLessonSecondEvent.value = Event(true)
+    fun clickBtnToMoveRegisterLessonSecond() {
+        _moveRegisterLessonSecondEvent.value = Event(Unit)
     }
 
-    fun moveRegisterLessonCheck() {
-        _moveRegisterLessonCheckEvent.value = Event(true)
+    fun clickBtnToMoveRegisterLessonCheck() {
+        _moveRegisterLessonCheckEvent.value = Event(Unit)
     }
 
     fun navigateToStartDate() {
@@ -417,9 +417,6 @@ class RegisterLessonViewModel @Inject constructor(
     private fun isValidLessonFirstEnterInfo() =
         !_lessonName.value.isNullOrBlank() && _lessonTotalNumber.value != 0 &&
                 _lessonCategorySelectedItemPosition.value != 0 && _lessonSiteSelectedItemPosition.value != 0
-
-    private fun isValidLessonSecondEnterInfo() =
-        _lessonEndDateSelectedItemPosition.value != 0
 
     private fun setStartDate(startDate: Date?) {
         if (this.startDate.value == startDate || startDate == null) {
@@ -457,7 +454,6 @@ class RegisterLessonViewModel @Inject constructor(
         const val KEY_LESSON_MESSAGE = "lessonMessage"
 
         const val DAY = 86400000L
-        const val DEFAULT = 0
         const val ONE_WEEK = 1
         const val ONE_MONTH = 2
         const val TWO_MONTH = 3
