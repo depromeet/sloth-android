@@ -216,6 +216,63 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_manage_push_notification"
+                android:layout_width="0dp"
+                android:layout_height="96dp"
+                android:layout_marginTop="1dp"
+                android:background="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_manage_push_noti_sloth"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_marginStart="18dp"
+                    android:contentDescription="@string/profile_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_manage_push_noti_sloth" />
+
+                <TextView
+                    android:id="@+id/tv_manage_push_noti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/push_noti"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
+                    app:layout_constraintTop_toTopOf="@id/iv_manage_push_noti_sloth"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/please_push_noti_on"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti"
+                    app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
+                    android:layout_marginStart="10dp"
+                    android:textSize="12dp"/>
+                
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sc_manage"
+                    android:layout_width="56dp"
+                    android:layout_height="28dp"
+                    app:switchMinWidth="52dp"
+                    android:thumb="@drawable/selector_thumb"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:track="@drawable/selector_switch"
+                    android:layout_marginEnd="18dp"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

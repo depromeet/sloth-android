@@ -154,6 +154,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         clManageWithdrawal.setOnClickListener {
             showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
         }
+
+        scManage.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Timber.tag("scManage").d("true")
+            } else {
+                Timber.tag("scManage").d("false")
+            }
+        }
     }
 
     private fun showUpdateDialog() {
