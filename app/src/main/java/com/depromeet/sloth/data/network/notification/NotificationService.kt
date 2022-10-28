@@ -2,8 +2,7 @@ package com.depromeet.sloth.data.network.notification
 
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
-import com.depromeet.sloth.data.network.notification.update.NotificationUseResponse
-import com.depromeet.sloth.data.network.notification.update.NotificationUseRequest
+import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,7 +15,7 @@ interface NotificationService {
     suspend fun registerFCMToken(@Body notificationRegisterRequest: NotificationRegisterRequest): Response<String>?
 
     @PATCH("api/fcmtoken/use")
-    suspend fun updateFCMToken(@Body notificationUseRequest: NotificationUseRequest): Response<NotificationUseResponse>?
+    suspend fun updateFCMTokenUse(@Body notificationUpdateRequest: NotificationUpdateRequest): Response<String>?
 
     @GET("api/fcmtoken/device/{deviceId}")
     suspend fun fetchFCMToken(@Path("deviceId") deviceId: String): Response<NotificationFetchResponse>?

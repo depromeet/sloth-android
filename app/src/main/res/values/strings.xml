@@ -162,5 +162,7 @@
     <string name="please_push_noti_on">알림을 받는 회원들이\n나무늘보를 많이 이기고 있어요!</string>
     <string name="check_internet_connection">인터넷 연결을 확인해주세요</string>
     <string name="refresh">새로 고침</string>
+    <string name="noti_update_fail">알림 수신 여부를 변경하지 못했어요</string>
+    <string name="noti_update_complete">알림 수신 여부가 변경되었어요</string>
 
 </resources>

@@ -6,13 +6,14 @@ import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-data class Member (
+data class Member(
     var email: String? = "",
     var memberId: Int? = 0,
     var memberName: String? = "",
-    var isEmailProvided: Boolean? = false
-): Parcelable {
+    var isEmailProvided: Boolean? = false,
+    var isPushAlarmUse: Boolean? = false,
+) : Parcelable {
     companion object {
-        val EMPTY = Member("", 0, "", false)
+        val EMPTY = Member("", 0, "", false, false)
     }
 }

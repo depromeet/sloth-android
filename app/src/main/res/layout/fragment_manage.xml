@@ -37,6 +37,7 @@
                 android:layout_marginTop="56dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/profile_image"
+                android:onClick="@{()-> vm.profileClick()}"
                 android:scaleType="centerInside"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +89,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
                 android:background="@color/white"
+                android:onClick="@{()-> vm.contactClick()}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -121,6 +123,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
+                android:onClick="@{()-> vm.privacyPolicyClick()}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_manage_contact">
@@ -154,6 +157,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
+                android:onClick="@{()->vm.logoutClick()}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_manage_privacy">
@@ -188,6 +192,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
+                android:onClick="@{()->vm.withdrawalClick()}"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -259,18 +264,18 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/sc_manage"
+                    android:id="@+id/sc_manage_noti_status"
                     android:layout_width="56dp"
                     android:layout_height="28dp"
                     android:layout_marginEnd="18dp"
                     android:background="@null"
+                    android:onCheckedChanged="@{(_, isCheck) -> vm.notiSwitchBtnClick(isCheck)}"
                     android:thumb="@drawable/selector_thumb"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:switchMinWidth="52dp"
                     app:track="@drawable/selector_switch" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

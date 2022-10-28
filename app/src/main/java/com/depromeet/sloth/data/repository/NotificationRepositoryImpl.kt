@@ -7,13 +7,12 @@ import com.depromeet.sloth.data.network.notification.NotificationService
 import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
-import com.depromeet.sloth.data.network.notification.update.NotificationUseResponse
-import com.depromeet.sloth.data.network.notification.update.NotificationUseRequest
+import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager
-): NotificationRepository {
+) : NotificationRepository {
     override suspend fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ): NotificationState<String> {
@@ -30,18 +29,17 @@ class NotificationRepositoryImpl @Inject constructor(
 
                         NotificationState.Success(this.body() ?: "")
                     }
+
                     else -> NotificationState.Error(Exception(message()))
                 }
             } ?: return NotificationState.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun updateFCMTokenUse(
-        notificationUseRequest: NotificationUseRequest
-    ): NotificationState<NotificationUseResponse> {
+    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): NotificationState<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
-            .updateFCMToken(notificationUseRequest)?.run {
+            .updateFCMTokenUse(notificationUpdateRequest)?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""
@@ -49,8 +47,9 @@ class NotificationRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        NotificationState.Success(this.body() ?: NotificationUseResponse())
+                        NotificationState.Success(this.body() ?: "")
                     }
+
                     else -> NotificationState.Error(Exception(message()))
                 }
             } ?: return NotificationState.Error(Exception("Retrofit Exception"))

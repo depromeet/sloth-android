@@ -18,6 +18,7 @@ import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
 import com.depromeet.sloth.data.network.member.MemberUpdateState
+import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
 import com.depromeet.sloth.extensions.handleLoadingState
@@ -44,12 +45,12 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            //member = viewModel.memberInfo.value.successOrNull()
             vm = viewModel
+            // member = viewModel.memberInfo.value.successOrNull()
+            // member = viewModel.member.value
+            // 상태가 바로 반영 되지 않음
         }
-
         initObserver()
-        initViews()
     }
 
     private fun initObserver() {
@@ -97,6 +98,28 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 hideProgress()
             })
 
+            notificationReceiveState.observe(
+                viewLifecycleOwner,
+                EventObserver { notificationReceiveState ->
+                    when (notificationReceiveState) {
+                        is NotificationState.Loading -> handleLoadingState(requireContext())
+
+                        is NotificationState.Success<String> -> {
+                            showToast(getString(R.string.noti_update_complete))
+                            viewModel.fetchMemberInfo()
+                        }
+
+                        is NotificationState.Unauthorized -> {
+                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                        }
+
+                        is NotificationState.Error -> {
+                            Timber.tag("update Error").d(notificationReceiveState.exception)
+                            showToast(getString(R.string.noti_update_fail))
+                        }
+                    }
+                })
+
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
                     is MemberLogoutState.Loading -> handleLoadingState(requireContext())
@@ -118,6 +141,32 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             member.observe(viewLifecycleOwner) { member ->
                 binding.member = member
             }
+
+            profileClick.observe(viewLifecycleOwner, EventObserver {
+                showProfileUpdateDialog()
+            })
+
+            contactButtonClick.observe(viewLifecycleOwner, EventObserver {
+                sendEmail()
+            })
+
+            privatePolicyClick.observe(viewLifecycleOwner, EventObserver {
+                startActivity(Intent(requireContext(), SlothPolicyWebViewActivity::class.java))
+            })
+
+            logoutClick.observe(viewLifecycleOwner, EventObserver {
+                val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
+                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                    override fun onItemClicked() {
+                        viewModel.logout()
+                    }
+                }
+                dlg.start()
+            })
+
+            withdrawalClick.observe(viewLifecycleOwner, EventObserver {
+                showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
+            })
         }
 
 //        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
@@ -126,45 +175,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 //        }
     }
 
-    override fun initViews() = with(binding) {
-        ivManageProfileImage.setOnClickListener {
-            showUpdateDialog()
-        }
-
-        clManageContact.setOnClickListener {
-            sendEmail()
-        }
-
-        clManagePrivacy.setOnClickListener {
-            startActivity(
-                SlothPolicyWebViewActivity.newIntent(requireContext())
-            )
-        }
-
-        clManageLogout.setOnClickListener {
-            val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
-            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                override fun onItemClicked() {
-                    viewModel.logout()
-                }
-            }
-            dlg.start()
-        }
-
-        clManageWithdrawal.setOnClickListener {
-            showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
-        }
-
-        scManage.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                Timber.tag("scManage").d("true")
-            } else {
-                Timber.tag("scManage").d("false")
-            }
-        }
-    }
-
-    private fun showUpdateDialog() {
+    private fun showProfileUpdateDialog() {
         val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
         updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
