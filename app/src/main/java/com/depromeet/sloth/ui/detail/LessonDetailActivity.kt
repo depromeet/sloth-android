@@ -17,6 +17,7 @@ import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
+import com.depromeet.sloth.util.LESSON_DETAIL
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +25,8 @@ import timber.log.Timber
 
 
 @AndroidEntryPoint
-class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.activity_lesson_detail) {
+class LessonDetailActivity :
+    BaseActivity<ActivityLessonDetailBinding>(R.layout.activity_lesson_detail) {
 
     private val viewModel: LessonDetailViewModel by viewModels()
 
@@ -96,7 +98,7 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
             lessonUpdateEvent.observe(this@LessonDetailActivity, EventObserver { lessonDetail ->
                 startActivity(
                     Intent(this@LessonDetailActivity, UpdateLessonActivity::class.java).apply {
-                        putExtra("lessonDetail", lessonDetail)
+                        putExtra(LESSON_DETAIL, lessonDetail)
                     }
                 )
             })
@@ -109,7 +111,6 @@ class LessonDetailActivity : BaseActivity<ActivityLessonDetailBinding>(R.layout.
 
     override fun onStart() {
         super.onStart()
-
         viewModel.fetchLessonDetail()
     }
 

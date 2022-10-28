@@ -1,8 +1,6 @@
 package com.depromeet.sloth.ui.login
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.webkit.WebView
@@ -15,10 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SlothPolicyWebViewActivity :
     BaseActivity<ActivitySlothPolicyWebViewBinding>(R.layout.activity_sloth_policy_web_view) {
-
-    companion object {
-        fun newIntent(context: Context) = Intent(context, SlothPolicyWebViewActivity::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

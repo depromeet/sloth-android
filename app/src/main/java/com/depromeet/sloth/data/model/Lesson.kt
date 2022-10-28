@@ -16,4 +16,8 @@ data class Lesson(
     val siteName: String = "",
     val startDate: ArrayList<String> = arrayListOf(),
     val totalNumber: Int = 0,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        val EMPTY = Lesson("", "", ArrayList(), "", "", 0, "", ArrayList(), 0)
+    }
+}

@@ -7,7 +7,7 @@ import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.ui.base.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -19,7 +19,7 @@ class LessonViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    val todayLessonList: Flow<UIState<List<LessonTodayResponse>>> =
+    val todayLessonList: Flow<UiState<List<LessonTodayResponse>>> =
         lessonRepository.fetchTodayLessonList()
 
 //        suspend fun fetchTodayLessonList(
@@ -32,7 +32,7 @@ class LessonViewModel @Inject constructor(
 //        lessonRepository.fetchTodayLessonList()
 //    }.await()
 
-    val allLessonList: Flow<UIState<List<LessonAllResponse>>> =
+    val allLessonList: Flow<UiState<List<LessonAllResponse>>> =
         lessonRepository.fetchAllLessonList()
 //
 //    suspend fun fetchAllLessonList(
@@ -45,7 +45,7 @@ class LessonViewModel @Inject constructor(
 //        lessonRepository.fetchAllLessonList()
 //    }.await()
 
-    fun finishLesson(lessonId: String): Flow<UIState<LessonFinishResponse>> =
+    fun finishLesson(lessonId: String): Flow<UiState<LessonFinishResponse>> =
         lessonRepository.finishLesson(lessonId)
 
     suspend fun updateLessonCount(count: Int, lessonId: Int) = withContext(viewModelScope.coroutineContext) {

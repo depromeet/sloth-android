@@ -56,6 +56,7 @@ class RegisterLessonFirstFragment :
 
         initObserver()
         initNavigation()
+        initViews()
     }
 
     private fun initObserver() {
@@ -66,6 +67,11 @@ class RegisterLessonFirstFragment :
 
                     is LessonState.Success<List<LessonCategory>> -> {
                         viewModel.setLessonCategoryList(lessonState.data)
+                        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        binding.spnRegisterLessonCategory.apply {
+                            adapter = lessonCategoryAdapter
+                            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
+                        }
                     }
 
                     is LessonState.Unauthorized -> {
@@ -87,7 +93,11 @@ class RegisterLessonFirstFragment :
 
                     is LessonState.Success<List<LessonSite>> -> {
                         viewModel.setLessonSiteList(lessonState.data)
-                        initViews()
+                        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        binding.spnRegisterLessonSite.apply {
+                            adapter = lessonSiteAdapter
+                            setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
+                        }
                     }
 
                     is LessonState.Unauthorized -> {
@@ -124,8 +134,6 @@ class RegisterLessonFirstFragment :
     }
 
     override fun initViews() = with(binding) {
-        bindAdapter()
-
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)
@@ -134,20 +142,6 @@ class RegisterLessonFirstFragment :
 
     private fun moveRegisterLessonSecond() {
         findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
-    }
-
-    private fun bindAdapter() = with(binding) {
-        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonCategory.apply {
-            adapter = lessonCategoryAdapter
-            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
-        }
-
-        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonSite.apply {
-            adapter = lessonSiteAdapter
-            spnRegisterLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

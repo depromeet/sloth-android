@@ -160,5 +160,7 @@
     <string name="lesson_number_validation_error">강의 개수가 수강한 강의 개수보다 적어요</string>
     <string name="push_noti">푸시 알림</string>
     <string name="please_push_noti_on">알림을 받는 회원들이\n나무늘보를 많이 이기고 있어요!</string>
+    <string name="check_internet_connection">인터넷 연결을 확인해주세요</string>
+    <string name="refresh">새로 고침</string>
 
 </resources>

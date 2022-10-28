@@ -8,3 +8,5 @@ const val CALENDAR_TAG = "calendar"
 
 const val DATE_FORMAT_PATTERN = "yyyy-MM-dd"
 const val DECIMAL_FORMAT_PATTERN = "#,###"
+
+const val LESSON_DETAIL = "lessonDetail"

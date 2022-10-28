@@ -45,7 +45,6 @@ class LessonDetailViewModel @Inject constructor(
     val lessonDeleteEvent: LiveData<Event<Unit>>
         get() = _lessonDeleteEvent
 
-
     fun fetchLessonDetail() = viewModelScope.launch {
         _lessonDetailState.value = LessonState.Loading
         val lessonDetail = lessonRepository.fetchLessonDetail(lessonId)

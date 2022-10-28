@@ -77,6 +77,7 @@ class RegisterLessonSecondFragment :
                     0 -> {
                         lockButton(binding.btnRegisterLesson, requireContext())
                     }
+
                     else -> {
                         unlockButton(binding.btnRegisterLesson, requireContext())
                     }
@@ -159,7 +160,6 @@ class RegisterLessonSecondFragment :
             adapter = lessonEndDateAdapter
             setSelection(viewModel.lessonEndDateSelectedItemPosition.value!!, false)
             setSpinnerListener(this)
-
         }
     }
 

@@ -1,9 +1,8 @@
 package com.depromeet.sloth.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.depromeet.sloth.R
+import androidx.appcompat.app.AppCompatActivity
 import com.depromeet.sloth.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {

@@ -19,7 +19,8 @@ class HomeViewModel @Inject constructor(
     memberRepository: MemberRepository
 ) : BaseViewModel(memberRepository) {
 
-    private val _notificationFetchState = MutableLiveData<NotificationState<NotificationFetchResponse>>()
+    private val _notificationFetchState =
+        MutableLiveData<NotificationState<NotificationFetchResponse>>()
     val notificationFetchState: LiveData<NotificationState<NotificationFetchResponse>>
         get() = _notificationFetchState
 
@@ -33,7 +34,6 @@ class HomeViewModel @Inject constructor(
         val notificationFetchResponse = notificationRepository.fetchFCMToken(deviceId)
         _notificationFetchState.value = notificationFetchResponse
     }
-
 
     fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest

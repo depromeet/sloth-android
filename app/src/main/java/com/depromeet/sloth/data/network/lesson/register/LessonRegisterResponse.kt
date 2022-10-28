@@ -1,7 +1,5 @@
 package com.depromeet.sloth.data.network.lesson.register
 
-import com.depromeet.sloth.data.model.LessonUpdate
-
 /**
  * RegisterLessonResponse
  *

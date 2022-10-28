@@ -15,6 +15,7 @@ import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -46,12 +47,12 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonTotalNumber
 
     private val _lessonCategoryId = savedStateHandle.getLiveData<Int>(KEY_LESSON_CATEGORY_ID, 0)
-    val lessonCategoryId: LiveData<Int>
+    private val lessonCategoryId: LiveData<Int>
         get() = _lessonCategoryId
 
     private val _lessonCategoryName =
         savedStateHandle.getLiveData<String>(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
-    val lessonCategoryName: LiveData<String>
+    private val lessonCategoryName: LiveData<String>
         get() = _lessonCategoryName
 
     private val _lessonSiteId = savedStateHandle.getLiveData<Int>(KEY_LESSON_SITE_ID, 0)
@@ -73,22 +74,26 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonMessage
 
     private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>())
+        KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>()
+    )
     val lessonCategoryMap: LiveData<HashMap<Int, String>>
         get() = _lessonCategoryMap
 
     private val _lessonCategoryList = savedStateHandle.getLiveData<MutableList<String>>(
-        KEY_LESSON_CATEGORY_LIST, mutableListOf())
+        KEY_LESSON_CATEGORY_LIST, mutableListOf()
+    )
     val lessonCategoryList: LiveData<MutableList<String>>
         get() = _lessonCategoryList
 
     private val _lessonSiteMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        KEY_LESSON_SITE_MAP, HashMap<Int, String>())
+        KEY_LESSON_SITE_MAP, HashMap<Int, String>()
+    )
     val lessonSiteMap: LiveData<HashMap<Int, String>>
         get() = _lessonSiteMap
 
     private val _lessonSiteList = savedStateHandle.getLiveData<MutableList<String>>(
-        KEY_LESSON_SITE_LIST, mutableListOf())
+        KEY_LESSON_SITE_LIST, mutableListOf()
+    )
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
@@ -105,37 +110,44 @@ class RegisterLessonViewModel @Inject constructor(
         get() = _lessonRegister
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0)
+        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
+    )
     val lessonCategorySelectedItemPosition: LiveData<Int>
         get() = _lessonCategorySelectedItemPosition
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0)
+        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
+    )
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
     private val _startDate = savedStateHandle.getLiveData<Date>(
-        KEY_START_DATE)
+        KEY_START_DATE
+    )
     val startDate: LiveData<Date>
         get() = _startDate
 
     private val _endDate = savedStateHandle.getLiveData<Date>(
-        KEY_END_DATE)
+        KEY_END_DATE
+    )
     val endDate: LiveData<Date>
         get() = _endDate
 
     private val _lessonStartDate = savedStateHandle.getLiveData<String>(
-        KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
+        KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE
+    )
     val lessonStartDate: LiveData<String>
         get() = _lessonStartDate
 
     private val _lessonEndDate = savedStateHandle.getLiveData<String>(
-        KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
+        KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE
+    )
     val lessonEndDate: LiveData<String>
         get() = _lessonEndDate
 
     private val _lessonEndDateSelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0)
+        KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0
+    )
     val lessonEndDateSelectedItemPosition: LiveData<Int>
         get() = _lessonEndDateSelectedItemPosition
 
@@ -159,18 +171,6 @@ class RegisterLessonViewModel @Inject constructor(
     val navigateToEndDate: LiveData<Event<Date>>
         get() = _navigateToEndDate
 
-    private suspend fun fetchLessonCategoryList() {
-        _lessonCategoryListState.value = LessonState.Loading
-        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
-        _lessonCategoryListState.value = lessonCategoryListResponse
-    }
-
-    private suspend fun fetchLessonSiteList() {
-        _lessonSiteListState.value = LessonState.Loading
-        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
-        _lessonSiteListState.value = lessonSiteListResponse
-    }
-
     private fun initLessonStartDate() {
         val today = Date()
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
@@ -181,8 +181,14 @@ class RegisterLessonViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fetchLessonCategoryList()
-            fetchLessonSiteList()
+            val lessonCategoryListResponse = async {
+                lessonRepository.fetchLessonCategoryList()
+            }
+            val lessonSiteListResponse = async {
+                lessonRepository.fetchLessonSiteList()
+            }
+            _lessonCategoryListState.value = lessonCategoryListResponse.await()
+            _lessonSiteListState.value = lessonSiteListResponse.await()
         }
         initLessonStartDate()
     }
@@ -211,6 +217,7 @@ class RegisterLessonViewModel @Inject constructor(
             THREE_MONTH -> {
                 calendar.add(Calendar.MONTH, 3)
             }
+
             else -> Unit
         }
         setEndDate(calendar.time)
@@ -228,7 +235,7 @@ class RegisterLessonViewModel @Inject constructor(
                 //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
             data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
-            add(0, "강의 카테고리를 선택해 주세요")
+            add(0, CHOOSE_LESSON_CATEGORY)
         }
     }
 
@@ -237,7 +244,7 @@ class RegisterLessonViewModel @Inject constructor(
                 //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
             data.associate { it.siteId to it.siteName } as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
-            add(0, "강의 사이트를 선택해 주세요")
+            add(0, CHOOSE_LESSON_SITE)
         }
     }
 
@@ -460,5 +467,8 @@ class RegisterLessonViewModel @Inject constructor(
         const val THREE_MONTH = 4
         const val CUSTOM_SETTING = 5
         const val DEFAULT_STRING_VALUE = ""
+
+        const val CHOOSE_LESSON_CATEGORY = "강의 카테고리를 선택해 주세요"
+        const val CHOOSE_LESSON_SITE = "강의 사이트를 선택해 주세요"
     }
 }
