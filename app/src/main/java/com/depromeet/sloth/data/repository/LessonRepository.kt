@@ -10,16 +10,16 @@ import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.ui.base.UiState
 import kotlinx.coroutines.flow.Flow
 
 interface LessonRepository {
 
-    fun fetchTodayLessonList(): Flow<UIState<List<LessonTodayResponse>>>
+    fun fetchTodayLessonList(): Flow<UiState<List<LessonTodayResponse>>>
 
-    fun fetchAllLessonList(): Flow<UIState<List<LessonAllResponse>>>
+    fun fetchAllLessonList(): Flow<UiState<List<LessonAllResponse>>>
 
-    fun finishLesson(lessonId: String): Flow<UIState<LessonFinishResponse>>
+    fun finishLesson(lessonId: String): Flow<UiState<LessonFinishResponse>>
 
     suspend fun updateLessonCount(count: Int, lessonId: Int): LessonState<LessonUpdateCountResponse>
 
@@ -31,9 +31,11 @@ interface LessonRepository {
 
     suspend fun fetchLessonCategoryList(): LessonState<List<LessonCategory>>
 
-    //fun fetchLessonCategoryList(): Flow<UIState<List<LessonCategory>>>
+    //fun fetchLessonCategoryList(): Flow<UiState<List<LessonCategory>>>
 
     suspend fun fetchLessonSiteList(): LessonState<List<LessonSite>>
+
+    //fun fetchLessonSiteList(): Flow<UiState<List<LessonSite>>>
 
     suspend fun updateLesson(lessonId: String, updateLessonRequest: LessonUpdateRequest): LessonState<LessonUpdate>
 }

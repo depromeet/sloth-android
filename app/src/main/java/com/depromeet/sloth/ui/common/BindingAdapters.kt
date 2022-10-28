@@ -11,7 +11,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
-import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.ui.base.UiState
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 
@@ -197,7 +197,7 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
     }
 
 @BindingAdapter("show")
-fun ProgressBar.bindShow(uiState: UIState<*>) {
-    visibility = if (uiState is UIState.Loading) View.VISIBLE else View.GONE
+fun ProgressBar.bindShow(uiState: UiState<*>) {
+    visibility = if (uiState is UiState.Loading) View.VISIBLE else View.GONE
 }
 

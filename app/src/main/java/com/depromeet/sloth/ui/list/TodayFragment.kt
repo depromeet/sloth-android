@@ -14,7 +14,7 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.ui.base.UiState
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
@@ -56,11 +56,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {
-                        is UIState.Loading -> showProgress()
-                        is UIState.UnLoading -> hideProgress()
-                        is UIState.Success -> setLessonList(uiState.data)
-                        is UIState.Unauthorized -> showToast(getString(R.string.please_login_again))
-                        is UIState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        is UiState.Loading -> showProgress()
+                        is UiState.UnLoading -> hideProgress()
+                        is UiState.Success -> setLessonList(uiState.data)
+                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                     }
                 }
         }
@@ -257,14 +257,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {
-                        is UIState.Loading -> showProgress()
-                        is UIState.UnLoading -> hideProgress()
-                        is UIState.Success -> {
+                        is UiState.Loading -> showProgress()
+                        is UiState.UnLoading -> hideProgress()
+                        is UiState.Success -> {
                             fetchLessonList()
                             showToast(getString(R.string.lesson_finish_complete))
                         }
-                        is UIState.Unauthorized -> showToast(getString(R.string.please_login_again))
-                        is UIState.Error -> showToast(getString(R.string.lesson_finish_fail))
+                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UiState.Error -> showToast(getString(R.string.lesson_finish_fail))
                     }
                 }
         }
