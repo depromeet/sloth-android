@@ -1,26 +1,32 @@
 package com.depromeet.sloth.ui.register
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 
 //TODO saveStateHandle 에 담아야 할 변수와 담지 않아도 될 변수 구분
@@ -35,13 +41,13 @@ class RegisterLessonViewModel @Inject constructor(
 ) : BaseViewModel(memberRepository) {
 
     private val _lessonCategoryListState =
-        MutableLiveData<LessonState<List<LessonCategory>>>()
-    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>>
+        MutableLiveData<UiState<List<LessonCategory>>>()
+    val lessonCategoryListState: LiveData<UiState<List<LessonCategory>>>
         get() = _lessonCategoryListState
 
     private val _lessonSiteListState =
-        MutableLiveData<LessonState<List<LessonSite>>>()
-    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>>
+        MutableLiveData<UiState<List<LessonSite>>>()
+    val lessonSiteListState: LiveData<UiState<List<LessonSite>>>
         get() = _lessonSiteListState
 
     private val _lessonName =
@@ -104,8 +110,8 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
-    private val _lessonRegisterState = MutableSharedFlow<LessonState<LessonRegisterResponse>>()
-    val lessonRegisterState: SharedFlow<LessonState<LessonRegisterResponse>>
+    private val _lessonRegisterState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
+    val lessonRegisterState: SharedFlow<UiState<LessonRegisterResponse>>
         get() = _lessonRegisterState
 
     private val _lessonCheck = MutableLiveData<Lesson>()
@@ -300,7 +306,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun registerLesson() = viewModelScope.launch {
-        _lessonRegisterState.emit(LessonState.Loading)
+        _lessonRegisterState.emit(UiState.Loading)
         _lessonRegisterState.emit(lessonRepository.registerLesson(lessonRegister.value!!))
     }
 

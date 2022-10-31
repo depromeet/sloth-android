@@ -11,7 +11,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
-import com.depromeet.sloth.ui.base.UiState
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 

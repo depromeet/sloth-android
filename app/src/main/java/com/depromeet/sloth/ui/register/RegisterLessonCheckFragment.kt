@@ -8,11 +8,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,22 +38,22 @@ class RegisterLessonCheckFragment :
     private fun initObserver() {
         viewModel.apply {
             repeatOnStarted {
-                lessonRegisterState.collect { lessonRegisterResponse ->
-                    when (lessonRegisterResponse) {
-                        is LessonState.Loading -> showProgress()
+                lessonRegisterState.collect { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> showProgress()
 
-                        is LessonState.Success -> {
-                            Timber.tag("Register Success").d("${lessonRegisterResponse.data}")
+                        is UiState.Success -> {
+                            Timber.tag("Register Success").d("${uiState.data}")
                             showToast(getString(R.string.lesson_register_complete))
                             requireActivity().finish()
                         }
 
-                        is LessonState.Unauthorized -> {
+                        is UiState.Unauthorized -> {
                             showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         }
 
-                        is LessonState.Error -> {
-                            Timber.tag("Register Error").d(lessonRegisterResponse.throwable)
+                        is UiState.Error -> {
+                            Timber.tag("Register Error").d(uiState.throwable)
                             showToast(getString(R.string.lesson_register_fail))
                         }
                         else -> Unit

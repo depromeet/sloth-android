@@ -1,14 +1,12 @@
 package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
+import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonService
-import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.LessonSite
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
@@ -18,7 +16,8 @@ import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.ui.base.UiState
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
+import com.depromeet.sloth.ui.common.UiState
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -177,7 +176,7 @@ class LessonRepositoryImpl @Inject constructor(
     override suspend fun updateLessonCount(
         count: Int,
         lessonId: Int,
-    ): LessonState<LessonUpdateCountResponse> {
+    ): UiState<LessonUpdateCountResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -189,22 +188,22 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
+                        UiState.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                     }
 
                     401 -> {
                         preferenceManager.removeAuthToken()
-                        LessonState.Error(Exception(message()))
+                        UiState.Error(Exception(message()))
                     }
 
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
     override suspend fun fetchLessonDetail(
         lessonId: String,
-    ): LessonState<LessonDetail> {
+    ): UiState<LessonDetail> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -216,17 +215,17 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonDetail.EMPTY)
+                        UiState.Success(this.body() ?: LessonDetail.EMPTY)
                     }
 
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
     override suspend fun registerLesson(
         lessonRegisterRequest: LessonRegisterRequest,
-    ): LessonState<LessonRegisterResponse> {
+    ): UiState<LessonRegisterResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -238,20 +237,20 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonRegisterResponse.EMPTY)
+                        UiState.Success(this.body() ?: LessonRegisterResponse.EMPTY)
                     }
 
                     401 -> {
                         preferenceManager.removeAuthToken()
-                        LessonState.Error(Exception(message()))
+                        UiState.Error(Exception(message()))
                     }
 
-                    else -> LessonState.Error(java.lang.Exception(message()))
+                    else -> UiState.Error(java.lang.Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Register Exception"))
+            } ?: return UiState.Error(Exception("Register Exception"))
     }
 
-    override suspend fun deleteLesson(lessonId: String): LessonState<LessonDeleteResponse> {
+    override suspend fun deleteLesson(lessonId: String): UiState<LessonDeleteResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -263,15 +262,15 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonDeleteResponse.EMPTY)
+                        UiState.Success(this.body() ?: LessonDeleteResponse.EMPTY)
                     }
 
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun fetchLessonCategoryList(): LessonState<List<LessonCategory>> {
+    override suspend fun fetchLessonCategoryList(): UiState<List<LessonCategory>> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -283,14 +282,14 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: listOf(LessonCategory.EMPTY))
+                        UiState.Success(this.body() ?: listOf(LessonCategory.EMPTY))
                     }
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun fetchLessonSiteList(): LessonState<List<LessonSite>> {
+    override suspend fun fetchLessonSiteList(): UiState<List<LessonSite>> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -302,11 +301,11 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: listOf(LessonSite.EMPTY))
+                        UiState.Success(this.body() ?: listOf(LessonSite.EMPTY))
                     }
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
 //    override fun fetchLessonCategoryList(): Flow<UiState<List<LessonCategory>>> =
@@ -378,7 +377,7 @@ class LessonRepositoryImpl @Inject constructor(
     override suspend fun updateLesson(
         lessonId: String,
         updateLessonRequest: LessonUpdateRequest,
-    ): LessonState<LessonUpdateResponse> {
+    ): UiState<LessonUpdateResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -390,11 +389,11 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        LessonState.Success(this.body() ?: LessonUpdateResponse.EMPTY)
+                        UiState.Success(this.body() ?: LessonUpdateResponse.EMPTY)
                     }
 
-                    else -> LessonState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return LessonState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 }

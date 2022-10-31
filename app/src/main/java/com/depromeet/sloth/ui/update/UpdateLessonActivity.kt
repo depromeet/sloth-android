@@ -12,11 +12,11 @@ import androidx.activity.viewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
@@ -62,23 +62,23 @@ class UpdateLessonActivity :
     private fun initObserver() {
         viewModel.apply {
             repeatOnStarted {
-                lessonUpdateState.collect { lessonUpdateState ->
-                    when (lessonUpdateState) {
-                        is LessonState.Loading ->
+                lessonUpdateState.collect { uiState ->
+                    when (uiState) {
+                        is UiState.Loading ->
                             showProgress(this@UpdateLessonActivity)
 
-                        is LessonState.Success<LessonUpdateResponse> -> {
-                            Timber.tag("Update Success").d("${lessonUpdateState.data}")
+                        is UiState.Success<LessonUpdateResponse> -> {
+                            Timber.tag("Update Success").d("${uiState.data}")
                             showToast(getString(R.string.lesson_info_update_complete))
                             finish()
                         }
 
-                        is LessonState.Unauthorized -> {
+                        is UiState.Unauthorized -> {
                             showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                         }
 
-                        is LessonState.Error -> {
-                            Timber.tag("fetch Error").d(lessonUpdateState.throwable)
+                        is UiState.Error -> {
+                            Timber.tag("fetch Error").d(uiState.throwable)
                             showToast(getString(R.string.lesson_info_update_fail))
                         }
 
@@ -88,12 +88,12 @@ class UpdateLessonActivity :
                 }
             }
 
-            lessonCategoryListState.observe(this@UpdateLessonActivity) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> showProgress(this@UpdateLessonActivity)
+            lessonCategoryListState.observe(this@UpdateLessonActivity) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress(this@UpdateLessonActivity)
 
-                    is LessonState.Success<List<LessonCategory>> -> {
-                        viewModel.setLessonCategoryList(lessonState.data)
+                    is UiState.Success<List<LessonCategory>> -> {
+                        viewModel.setLessonCategoryList(uiState.data)
 //                        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 //                        binding.spnUpdateLessonCategory.apply {
 //                            adapter = lessonCategoryAdapter
@@ -101,12 +101,12 @@ class UpdateLessonActivity :
 //                        }
                     }
 
-                    is LessonState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
+                    is UiState.Error -> {
+                        Timber.tag("fetch Error").d(uiState.throwable)
                         showToast(getString(R.string.lesson_category_fetch_fail))
                     }
 
@@ -115,12 +115,12 @@ class UpdateLessonActivity :
                 hideProgress()
             }
 
-            lessonSiteListState.observe(this@UpdateLessonActivity) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> showProgress(this@UpdateLessonActivity)
+            lessonSiteListState.observe(this@UpdateLessonActivity) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress(this@UpdateLessonActivity)
 
-                    is LessonState.Success<List<LessonSite>> -> {
-                        viewModel.setLessonSiteList(lessonState.data)
+                    is UiState.Success<List<LessonSite>> -> {
+                        viewModel.setLessonSiteList(uiState.data)
 //                        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 //                        binding.spnUpdateLessonSite.apply {
 //                            adapter = lessonSiteAdapter
@@ -131,14 +131,14 @@ class UpdateLessonActivity :
                         bindAdapter()
                     }
 
-                    is LessonState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(
                             this@UpdateLessonActivity
                         ) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
+                    is UiState.Error -> {
+                        Timber.tag("fetch Error").d(uiState.throwable)
                         showToast(getString(R.string.lesson_site_fetch_fail))
                     }
 

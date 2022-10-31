@@ -1,21 +1,19 @@
 package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.MemberLogoutState
-import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.data.network.member.MemberUpdateState
+import com.depromeet.sloth.ui.common.UiState
 
 interface MemberRepository {
 
-    suspend fun fetchMemberInfo(): MemberState<Member>
+    suspend fun fetchMemberInfo(): UiState<Member>
 
     suspend fun updateMemberInfo(
         memberUpdateRequest: MemberUpdateRequest,
-    ): MemberUpdateState<MemberUpdateResponse>
+    ): UiState<MemberUpdateResponse>
 
-    suspend fun logout(): MemberLogoutState<String>
+    suspend fun logout(): UiState<String>
 
     fun removeAuthToken()
 }

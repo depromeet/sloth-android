@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,12 +25,12 @@ class LessonDetailViewModel @Inject constructor(
 
     val lessonId: String = checkNotNull(savedStateHandle[LessonDetailActivity.LESSON_ID])
 
-    private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
-    val lessonDetailState: LiveData<LessonState<LessonDetail>>
+    private val _lessonDetailState = MutableLiveData<UiState<LessonDetail>>()
+    val lessonDetailState: LiveData<UiState<LessonDetail>>
         get() = _lessonDetailState
 
-    private val _lessonDeleteState = MutableLiveData<LessonState<LessonDeleteResponse>>()
-    val lessonDeleteState: LiveData<LessonState<LessonDeleteResponse>>
+    private val _lessonDeleteState = MutableLiveData<UiState<LessonDeleteResponse>>()
+    val lessonDeleteState: LiveData<UiState<LessonDeleteResponse>>
         get() = _lessonDeleteState
 
     private val _lessonDetail = MutableLiveData<LessonDetail>()
@@ -46,12 +46,12 @@ class LessonDetailViewModel @Inject constructor(
         get() = _lessonDeleteClick
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailState.value = LessonState.Loading
+        _lessonDetailState.value = UiState.Loading
         _lessonDetailState.value = lessonRepository.fetchLessonDetail(lessonId)
     }
 
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.value = LessonState.Loading
+        _lessonDeleteState.value = UiState.Loading
         _lessonDeleteState.value = lessonRepository.deleteLesson(lessonId)
     }
 

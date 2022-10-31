@@ -4,16 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.MemberLogoutState
-import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.data.network.member.MemberUpdateState
-import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,21 +23,21 @@ class ManageViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) : BaseViewModel(memberRepository) {
 
-    private val _memberState = MutableLiveData<MemberState<Member>>()
-    val memberState: LiveData<MemberState<Member>>
+    private val _memberState = MutableLiveData<UiState<Member>>()
+    val memberState: LiveData<UiState<Member>>
         get() = _memberState
 
     private val _memberUpdateState =
-        MutableSharedFlow<MemberUpdateState<MemberUpdateResponse>>()
-    val memberUpdateState: SharedFlow<MemberUpdateState<MemberUpdateResponse>>
+        MutableSharedFlow<UiState<MemberUpdateResponse>>()
+    val memberUpdateState: SharedFlow<UiState<MemberUpdateResponse>>
         get() = _memberUpdateState
 
-    private val _notificationReceiveState = MutableSharedFlow<NotificationState<String>>()
-    val notificationReceiveState: SharedFlow<NotificationState<String>>
+    private val _notificationReceiveState = MutableSharedFlow<UiState<String>>()
+    val notificationReceiveState: SharedFlow<UiState<String>>
         get() = _notificationReceiveState
 
-    private val _memberLogoutState = MutableLiveData<MemberLogoutState<String>>()
-    val memberLogoutState: LiveData<MemberLogoutState<String>>
+    private val _memberLogoutState = MutableLiveData<UiState<String>>()
+    val memberLogoutState: LiveData<UiState<String>>
         get() = _memberLogoutState
 
     private val _member = MutableLiveData<Member>()
@@ -72,18 +69,18 @@ class ManageViewModel @Inject constructor(
     }
 
     fun fetchMemberInfo() = viewModelScope.launch {
-        _memberState.value = MemberState.Loading
+        _memberState.value = UiState.Loading
         _memberState.value = memberRepository.fetchMemberInfo()
     }
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
-        _memberUpdateState.emit(MemberUpdateState.Loading)
+        _memberUpdateState.emit(UiState.Loading)
         _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
     }
 
     fun notiSwitchBtnClick(check: Boolean) = viewModelScope.launch {
         if (check != _member.value!!.isPushAlarmUse) {
-            _notificationReceiveState.emit(NotificationState.Loading)
+            _notificationReceiveState.emit(UiState.Loading)
             _notificationReceiveState.emit(
                 notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
             )
@@ -115,7 +112,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        _memberLogoutState.value = MemberLogoutState.Loading
+        _memberLogoutState.value = UiState.Loading
         _memberLogoutState.value = memberRepository.logout()
     }
 }

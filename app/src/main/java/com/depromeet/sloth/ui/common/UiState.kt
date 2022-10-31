@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.base
+package com.depromeet.sloth.ui.common
 
 /**
  * @author 최철훈
@@ -13,14 +13,14 @@ sealed class UiState<out T> {
     data class Error(val throwable: Throwable) : UiState<Nothing>()
 }
 
-fun <T> UiState<T>.successOrNull(): T? = if (this is UiState.Success<T>) {
-    data
-} else {
-    null
-}
-
-fun <T> UiState<T>.throwableOrNull(): Throwable? = if (this is UiState.Error) {
-    throwable
-} else {
-    null
-}
+//fun <T> UiState<T>.successOrNull(): T? = if (this is UiState.Success<T>) {
+//    data
+//} else {
+//    null
+//}
+//
+//fun <T> UiState<T>.throwableOrNull(): Throwable? = if (this is UiState.Error) {
+//    throwable
+//} else {
+//    null
+//}

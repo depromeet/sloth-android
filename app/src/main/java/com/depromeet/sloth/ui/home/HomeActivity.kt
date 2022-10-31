@@ -8,12 +8,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import com.google.firebase.messaging.FirebaseMessaging
@@ -59,15 +59,15 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     private fun initObserver() {
         viewModel.apply {
-            notificationFetchState.observe(this@HomeActivity) { notificationState ->
-                when (notificationState) {
-                    is NotificationState.Loading -> {
+            notificationFetchState.observe(this@HomeActivity) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> {
                         showProgress(this@HomeActivity)
                     }
 
-                    is NotificationState.Success<NotificationFetchResponse> -> {
-                        Timber.tag("fetch Success").d("${notificationState.data}")
-                        if (notificationState.data.fcmToken == null) {
+                    is UiState.Success<NotificationFetchResponse> -> {
+                        Timber.tag("fetch Success").d("${uiState.data}")
+                        if (uiState.data.fcmToken == null) {
                             Timber.d("fcmToken not existed")
                             registerFCMToken()
                         } else {
@@ -75,12 +75,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                         }
                     }
 
-                    is NotificationState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is NotificationState.Error -> {
-                        Timber.tag("Error").d(notificationState.exception)
+                    is UiState.Error -> {
+                        Timber.tag("Error").d(uiState.throwable)
                     }
 
                     else -> {}
@@ -90,22 +90,22 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             }
 
 
-            notificationRegisterState.observe(this@HomeActivity) { notificationState ->
-                when (notificationState) {
-                    is NotificationState.Loading -> {
+            notificationRegisterState.observe(this@HomeActivity) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> {
                         showProgress(this@HomeActivity)
                     }
 
-                    is NotificationState.Success<String> -> {
-                        Timber.tag("fetch Success").d(notificationState.data)
+                    is UiState.Success<String> -> {
+                        Timber.tag("fetch Success").d(uiState.data)
                     }
 
-                    is NotificationState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
                     }
 
-                    is NotificationState.Error -> {
-                        Timber.tag("Error").d(notificationState.exception)
+                    is UiState.Error -> {
+                        Timber.tag("Error").d(uiState.throwable)
                     }
 
                     else -> {}

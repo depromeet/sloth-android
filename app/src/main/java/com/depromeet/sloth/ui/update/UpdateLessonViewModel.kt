@@ -9,7 +9,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.repository.LessonRepository
@@ -17,6 +16,7 @@ import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,8 +34,8 @@ class UpdateLessonViewModel @Inject constructor(
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _lessonUpdateResponseState = MutableSharedFlow<LessonState<LessonUpdateResponse>>()
-    val lessonUpdateState: SharedFlow<LessonState<LessonUpdateResponse>>
+    private val _lessonUpdateResponseState = MutableSharedFlow<UiState<LessonUpdateResponse>>()
+    val lessonUpdateState: SharedFlow<UiState<LessonUpdateResponse>>
         get() = _lessonUpdateResponseState
 
     private val _lessonName =
@@ -54,12 +54,12 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonPrice
 
     private val _lessonCategoryListState =
-        MutableLiveData<LessonState<List<LessonCategory>>>()
-    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>>
+        MutableLiveData<UiState<List<LessonCategory>>>()
+    val lessonCategoryListState: LiveData<UiState<List<LessonCategory>>>
         get() = _lessonCategoryListState
 
-    private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSite>>>()
-    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>>
+    private val _lessonSiteListState = MutableLiveData<UiState<List<LessonSite>>>()
+    val lessonSiteListState: LiveData<UiState<List<LessonSite>>>
         get() = _lessonSiteListState
 
     private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
@@ -122,11 +122,11 @@ class UpdateLessonViewModel @Inject constructor(
         viewModelScope.launch {
             // 두 api를 병렬적으로 호출
             val lessonCategoryListResponse = async {
-                _lessonCategoryListState.value = LessonState.Loading
+                _lessonCategoryListState.value = UiState.Loading
                 lessonRepository.fetchLessonCategoryList()
             }
             val lessonSiteListResponse = async {
-                _lessonSiteListState.value = LessonState.Loading
+                _lessonSiteListState.value = UiState.Loading
                 lessonRepository.fetchLessonSiteList()
             }
             _lessonCategoryListState.value = lessonCategoryListResponse.await()
@@ -165,7 +165,7 @@ class UpdateLessonViewModel @Inject constructor(
             _lessonNumberValidation.value = false
         } else {
             _lessonNumberValidation.value = true
-            _lessonUpdateResponseState.emit(LessonState.Loading)
+            _lessonUpdateResponseState.emit(UiState.Loading)
             val lessonUpdateResponse =
                 lessonRepository.updateLesson(
                     lessonDetail.lessonId.toString(),

@@ -2,7 +2,7 @@ package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 import com.depromeet.sloth.data.network.login.LoginSlothResponse
-import com.depromeet.sloth.data.network.login.LoginState
+import com.depromeet.sloth.ui.common.UiState
 
 interface LoginRepository {
 
@@ -11,7 +11,7 @@ interface LoginRepository {
     suspend fun fetchSlothAuthInfo(
         authToken: String,
         socialType: String,
-    ): LoginState<LoginSlothResponse>
+    ): UiState<LoginSlothResponse>
 
-    suspend fun fetchGoogleAuthInfo(authCode: String): LoginState<LoginGoogleResponse>
+    suspend fun fetchGoogleAuthInfo(authCode: String): UiState<LoginGoogleResponse>
 }

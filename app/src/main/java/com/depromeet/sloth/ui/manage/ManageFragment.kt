@@ -13,12 +13,8 @@ import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.MemberLogoutState
-import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.data.network.member.MemberUpdateState
-import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
 import com.depromeet.sloth.extensions.hideKeyBoard
@@ -27,6 +23,7 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.extensions.showWithdrawalDialog
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
@@ -54,21 +51,21 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     private fun initObserver() {
         viewModel.apply {
-            memberState.observe(viewLifecycleOwner) { memberState ->
-                when (memberState) {
-                    is MemberState.Loading -> showProgress()
+            memberState.observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress()
 
-                    is MemberState.Success<Member> -> {
-                        Timber.tag("fetch Success").d("${memberState.data}")
-                        viewModel.setMemberInfo(memberState.data)
+                    is UiState.Success<Member> -> {
+                        Timber.tag("fetch Success").d("${uiState.data}")
+                        viewModel.setMemberInfo(uiState.data)
                     }
 
-                    is MemberState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
-                    is MemberState.Error -> {
-                        Timber.tag("fetch Error").d(memberState.exception)
+                    is UiState.Error -> {
+                        Timber.tag("fetch Error").d(uiState.throwable)
                         showToast(getString(R.string.member_info_fetch_fail))
                     }
                 }
@@ -76,22 +73,22 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             repeatOnStarted {
-                memberUpdateState.collect { memberUpdateState ->
-                    when (memberUpdateState) {
-                        is MemberUpdateState.Loading -> showProgress()
+                memberUpdateState.collect { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> showProgress()
 
-                        is MemberUpdateState.Success<MemberUpdateResponse> -> {
-                            Timber.tag("update Success").d("${memberUpdateState.data}")
+                        is UiState.Success<MemberUpdateResponse> -> {
+                            Timber.tag("update Success").d("${uiState.data}")
                             showToast(getString(R.string.member_update_success))
                             viewModel.fetchMemberInfo()
                         }
 
-                        is MemberUpdateState.Unauthorized -> {
+                        is UiState.Unauthorized -> {
                             showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         }
 
-                        is MemberUpdateState.Error -> {
-                            Timber.tag("update Error").d(memberUpdateState.exception)
+                        is UiState.Error -> {
+                            Timber.tag("update Error").d(uiState.throwable)
                             showToast(getString(R.string.member_update_fail))
                         }
                     }
@@ -100,39 +97,39 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             repeatOnStarted {
-                notificationReceiveState.collect { notificationState ->
-                    when (notificationState) {
-                        is NotificationState.Loading -> showProgress()
+                notificationReceiveState.collect { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> showProgress()
 
-                        is NotificationState.Success<String> -> {
+                        is UiState.Success<String> -> {
                             showToast(getString(R.string.noti_update_complete))
                             viewModel.fetchMemberInfo()
                         }
 
-                        is NotificationState.Unauthorized -> {
+                        is UiState.Unauthorized -> {
                             showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         }
 
-                        is NotificationState.Error -> {
-                            Timber.tag("update Error").d(notificationState.exception)
+                        is UiState.Error -> {
+                            Timber.tag("update Error").d(uiState.throwable)
                             showToast(getString(R.string.noti_update_fail))
                         }
                     }
                 }
             }
 
-            memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
-                when (memberLogoutState) {
-                    is MemberLogoutState.Loading -> showProgress()
+            memberLogoutState.observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress()
 
-                    is MemberLogoutState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
+                    is UiState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
 
-                    is MemberLogoutState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
-                    is MemberLogoutState.Error -> {
-                        Timber.tag("update Error").d(memberLogoutState.exception)
+                    is UiState.Error -> {
+                        Timber.tag("update Error").d(uiState.throwable)
                         showToast(getString(R.string.logout_fail))
                     }
                 }

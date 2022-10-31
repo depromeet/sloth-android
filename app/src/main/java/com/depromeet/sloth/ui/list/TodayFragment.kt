@@ -9,12 +9,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.base.UiState
+import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
@@ -210,8 +209,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
             lessonViewModel.updateLessonCount(count, lesson.lessonId).let {
                 when (it) {
-                    is LessonState.Loading -> showProgress()
-                    is LessonState.Success<LessonUpdateCountResponse> -> {
+                    is UiState.Loading -> showProgress()
+                    is UiState.Success<LessonUpdateCountResponse> -> {
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (it.data.presentNumber == lesson.untilTodayNumber ||
@@ -227,7 +226,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             else -> Unit
                         }
                     }
-                    is LessonState.Error -> {
+                    is UiState.Error -> {
                         showToast(getString(R.string.lesson_info_update_fail))
                         Timber.tag("Error").d(it.throwable)
                     }

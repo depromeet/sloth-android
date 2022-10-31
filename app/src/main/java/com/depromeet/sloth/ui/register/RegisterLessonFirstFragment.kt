@@ -19,10 +19,10 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -64,12 +64,12 @@ class RegisterLessonFirstFragment :
 
     private fun initObserver() {
         viewModel.apply {
-            lessonCategoryListState.observe(viewLifecycleOwner) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> showProgress()
+            lessonCategoryListState.observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress()
 
-                    is LessonState.Success<List<LessonCategory>> -> {
-                        viewModel.setLessonCategoryList(lessonState.data)
+                    is UiState.Success<List<LessonCategory>> -> {
+                        viewModel.setLessonCategoryList(uiState.data)
                         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         binding.spnRegisterLessonCategory.apply {
                             adapter = lessonCategoryAdapter
@@ -77,12 +77,12 @@ class RegisterLessonFirstFragment :
                         }
                     }
 
-                    is LessonState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
+                    is UiState.Error -> {
+                        Timber.tag("fetch Error").d(uiState.throwable)
                         showToast(getString(R.string.cannot_get_lesson_category))
                     }
 
@@ -91,12 +91,12 @@ class RegisterLessonFirstFragment :
                 hideProgress()
             }
 
-            lessonSiteListState.observe(viewLifecycleOwner) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> showProgress()
+            lessonSiteListState.observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> showProgress()
 
-                    is LessonState.Success<List<LessonSite>> -> {
-                        viewModel.setLessonSiteList(lessonState.data)
+                    is UiState.Success<List<LessonSite>> -> {
+                        viewModel.setLessonSiteList(uiState.data)
                         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         binding.spnRegisterLessonSite.apply {
                             adapter = lessonSiteAdapter
@@ -104,12 +104,12 @@ class RegisterLessonFirstFragment :
                         }
                     }
 
-                    is LessonState.Unauthorized -> {
+                    is UiState.Unauthorized -> {
                         showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
 
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
+                    is UiState.Error -> {
+                        Timber.tag("fetch Error").d(uiState.throwable)
                         showToast(getString(R.string.cannot_get_lesson_site))
                     }
 

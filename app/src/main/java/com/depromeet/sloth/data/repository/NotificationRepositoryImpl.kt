@@ -4,10 +4,10 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.notification.NotificationService
-import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
+import com.depromeet.sloth.ui.common.UiState
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -15,7 +15,7 @@ class NotificationRepositoryImpl @Inject constructor(
 ) : NotificationRepository {
     override suspend fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
-    ): NotificationState<String> {
+    ): UiState<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
@@ -27,15 +27,15 @@ class NotificationRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        NotificationState.Success(this.body() ?: "")
+                        UiState.Success(this.body() ?: "")
                     }
 
-                    else -> NotificationState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return NotificationState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): NotificationState<String> {
+    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): UiState<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
@@ -47,17 +47,17 @@ class NotificationRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        NotificationState.Success(this.body() ?: "")
+                        UiState.Success(this.body() ?: "")
                     }
 
-                    else -> NotificationState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return NotificationState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
     override suspend fun fetchFCMToken(
         deviceId: String
-    ): NotificationState<NotificationFetchResponse> {
+    ): UiState<NotificationFetchResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(NotificationService::class.java)
@@ -69,11 +69,11 @@ class NotificationRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        NotificationState.Success(this.body() ?: NotificationFetchResponse())
+                        UiState.Success(this.body() ?: NotificationFetchResponse())
                     }
 
-                    else -> NotificationState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return NotificationState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 }

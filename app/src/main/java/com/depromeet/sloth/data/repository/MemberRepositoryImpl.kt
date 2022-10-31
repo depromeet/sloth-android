@@ -4,12 +4,10 @@ import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
-import com.depromeet.sloth.data.network.member.MemberLogoutState
 import com.depromeet.sloth.data.network.member.MemberService
-import com.depromeet.sloth.data.network.member.MemberState
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.data.network.member.MemberUpdateState
+import com.depromeet.sloth.ui.common.UiState
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
@@ -49,7 +47,7 @@ class MemberRepositoryImpl @Inject constructor(
     //.onCompletion { emit(UIState.UnLoading) }
 
 
-    override suspend fun fetchMemberInfo(): MemberState<Member> {
+    override suspend fun fetchMemberInfo(): UiState<Member> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -61,16 +59,16 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        MemberState.Success(this.body() ?: Member())
+                        UiState.Success(this.body() ?: Member())
                     }
-                    else -> MemberState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return MemberState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
     override suspend fun updateMemberInfo(
         memberUpdateRequest: MemberUpdateRequest,
-    ): MemberUpdateState<MemberUpdateResponse> {
+    ): UiState<MemberUpdateResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -82,11 +80,11 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        MemberUpdateState.Success(this.body() ?: MemberUpdateResponse())
+                        UiState.Success(this.body() ?: MemberUpdateResponse())
                     }
-                    else -> MemberUpdateState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return MemberUpdateState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
 //    fun updateMemberInfo(memberUpdateInfoRequest: MemberUpdateInfoRequest): Flow<UIState<MemberUpdateInfoResponse>> =
@@ -120,7 +118,7 @@ class MemberRepositoryImpl @Inject constructor(
 //            .catch { throwable -> emit(UIState.Error(throwable)) }
 //            .onCompletion { emit(UIState.UnLoading) }
 
-    override suspend fun logout(): MemberLogoutState<String> {
+    override suspend fun logout(): UiState<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -132,11 +130,11 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        MemberLogoutState.Success(this.body() ?: "")
+                        UiState.Success(this.body() ?: "")
                     }
-                    else -> MemberLogoutState.Error(Exception(message()))
+                    else -> UiState.Error(Exception(message()))
                 }
-            } ?: return MemberLogoutState.Error(Exception("Retrofit Exception"))
+            } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
     override fun removeAuthToken() {
