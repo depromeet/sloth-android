@@ -12,8 +12,8 @@ import androidx.activity.viewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
@@ -178,7 +178,6 @@ class UpdateLessonActivity :
         tbUpdateLesson.setNavigationOnClickListener { finish() }
     }
 
-
     override fun initViews() = with(binding) {
         focusInputForm(etUpdateLessonName)
         validateCountInputForm(etUpdateLessonCount)
@@ -225,8 +224,7 @@ class UpdateLessonActivity :
         }
     }
 
-    private fun validateCountInputForm(editText: EditText) =
-        with(binding) {
+    private fun validateCountInputForm(editText: EditText) = with(binding) {
             var result = ""
 
             editText.addTextChangedListener(object : TextWatcher {
@@ -270,8 +268,7 @@ class UpdateLessonActivity :
             setValidateEditTextFocus(editText, tvUpdateLessonCountInfo)
         }
 
-    private fun validatePriceInputForm(editText: EditText) =
-        with(binding) {
+    private fun validatePriceInputForm(editText: EditText) = with(binding) {
             var result = ""
             val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
 
@@ -281,8 +278,7 @@ class UpdateLessonActivity :
                     i1: Int,
                     i2: Int,
                     i3: Int,
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
@@ -325,7 +321,10 @@ class UpdateLessonActivity :
                 textView.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
             }
         }
+
+        // 이 함수에 with(binding)을 호출하면 initViews 함수에 에러 발생 - 이유 확인
         clearEditTextFocus(editText)
+        binding.clUpdateLesson.clearFocus()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -340,10 +339,6 @@ class UpdateLessonActivity :
 
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    clearFocus(etUpdateLessonName)
-                    clearFocus(etUpdateLessonCount)
-                    clearFocus(etUpdateLessonPrice)
-
                     if (spinner.selectedItemPosition == 0) {
                         if (spinner == spnUpdateLessonCategory) {
                             viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
@@ -367,19 +362,11 @@ class UpdateLessonActivity :
                             viewModel.setLessonSiteItemPosition(spnUpdateLessonSite.selectedItemPosition)
                         }
                     }
+                    clUpdateLesson.clearFocus()
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
-    }
-
-    private fun clearFocus(editText: EditText) = with(binding) {
-        editText.apply {
-            clearFocus()
-            setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-        }
-        tvUpdateLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
     }
 }

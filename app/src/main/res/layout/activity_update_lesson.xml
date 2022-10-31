@@ -16,9 +16,12 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_update_lesson"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.update.UpdateLessonActivity">
+        tools:context=".ui.update.UpdateLessonActivity"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tb_update_lesson"
@@ -247,6 +250,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="9"
                     android:padding="16dp"
