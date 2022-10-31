@@ -21,9 +21,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-//TODO saveStateHandle 에 담아야할 변수와 담지 않아도 될 변수 구분
+//TODO saveStateHandle 에 담아야 할 변수와 담지 않아도 될 변수 구분
 //TODO saveStateHandle wrapping
-//!! 처리한 변수들 보안 처리
+//TODO !! 처리한 변수들 보안 처리
+//TODO viewModel 내에 StringResource 관리
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -155,11 +156,11 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonEndDateSelectedItemPosition: LiveData<Int>
         get() = _lessonEndDateSelectedItemPosition
 
-    private val _navigateToRegisterLessonSecond = MutableSharedFlow<Unit>(replay = 0)
+    private val _navigateToRegisterLessonSecond = MutableSharedFlow<Unit>()
     val navigateToRegisterLessonSecond: SharedFlow<Unit>
         get() = _navigateToRegisterLessonSecond
 
-    private val _navigateToRegisterLessonCheck = MutableSharedFlow<Unit>(replay = 0)
+    private val _navigateToRegisterLessonCheck = MutableSharedFlow<Unit>()
 
     val navigateToRegisterLessonCheck: SharedFlow<Unit>
         get() = _navigateToRegisterLessonCheck

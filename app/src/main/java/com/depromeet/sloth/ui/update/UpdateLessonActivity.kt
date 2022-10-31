@@ -10,16 +10,16 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
-import com.depromeet.sloth.data.model.LessonUpdate
+import com.depromeet.sloth.data.network.lesson.LessonCategory
+import com.depromeet.sloth.data.network.lesson.LessonSite
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
+import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -34,7 +34,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value?: listOf()
+            viewModel.lessonCategoryList.value ?: listOf()
         )
     }
 
@@ -42,7 +42,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value?: listOf()
+            viewModel.lessonSiteList.value ?: listOf()
         )
     }
 
@@ -56,18 +56,18 @@ class UpdateLessonActivity :
 
         initObserver()
         initNavigation()
+        initViews()
     }
 
     private fun initObserver() {
         viewModel.apply {
-            lessonUpdateState.observe(
-                this@UpdateLessonActivity,
-                EventObserver { lessonUpdateState ->
+            repeatOnStarted {
+                lessonUpdateState.collect { lessonUpdateState ->
                     when (lessonUpdateState) {
                         is LessonState.Loading ->
-                            handleLoadingState(this@UpdateLessonActivity)
+                            showProgress(this@UpdateLessonActivity)
 
-                        is LessonState.Success<LessonUpdate> -> {
+                        is LessonState.Success<LessonUpdateResponse> -> {
                             Timber.tag("Update Success").d("${lessonUpdateState.data}")
                             showToast(getString(R.string.lesson_info_update_complete))
                             finish()
@@ -85,15 +85,20 @@ class UpdateLessonActivity :
                         else -> {}
                     }
                     hideProgress()
-
-                })
+                }
+            }
 
             lessonCategoryListState.observe(this@UpdateLessonActivity) { lessonState ->
                 when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
+                    is LessonState.Loading -> showProgress(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonCategory>> -> {
                         viewModel.setLessonCategoryList(lessonState.data)
+//                        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                        binding.spnUpdateLessonCategory.apply {
+//                            adapter = lessonCategoryAdapter
+//                            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
+//                        }
                     }
 
                     is LessonState.Unauthorized -> {
@@ -104,6 +109,7 @@ class UpdateLessonActivity :
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast(getString(R.string.lesson_category_fetch_fail))
                     }
+
                     else -> Unit
                 }
                 hideProgress()
@@ -111,23 +117,31 @@ class UpdateLessonActivity :
 
             lessonSiteListState.observe(this@UpdateLessonActivity) { lessonState ->
                 when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(this@UpdateLessonActivity)
+                    is LessonState.Loading -> showProgress(this@UpdateLessonActivity)
 
                     is LessonState.Success<List<LessonSite>> -> {
                         viewModel.setLessonSiteList(lessonState.data)
+//                        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                        binding.spnUpdateLessonSite.apply {
+//                            adapter = lessonSiteAdapter
+//                            setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
+//                        }
+
                         viewModel.setLessonUpdateInfo()
-                        initViews()
+                        bindAdapter()
                     }
 
                     is LessonState.Unauthorized -> {
                         showLogoutDialog(
-                            this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            this@UpdateLessonActivity
+                        ) { viewModel.removeAuthToken() }
                     }
 
                     is LessonState.Error -> {
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast(getString(R.string.lesson_site_fetch_fail))
                     }
+
                     else -> Unit
                 }
                 hideProgress()
@@ -166,8 +180,6 @@ class UpdateLessonActivity :
 
 
     override fun initViews() = with(binding) {
-        bindAdapter()
-
         focusInputForm(etUpdateLessonName)
         validateCountInputForm(etUpdateLessonCount)
         focusSpinnerForm(spnUpdateLessonCategory)
@@ -189,7 +201,7 @@ class UpdateLessonActivity :
         )
     }
 
-    //간헐적으로 clearFocus 가 되지 않는 문제
+    // LessonName clearFocus 가 되지 않는 문제
     private fun focusInputForm(editText: EditText) {
         editText.apply {
             addTextChangedListener(object : TextWatcher {
@@ -223,8 +235,7 @@ class UpdateLessonActivity :
                     i1: Int,
                     i2: Int,
                     i3: Int,
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
@@ -341,13 +352,17 @@ class UpdateLessonActivity :
                         }
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
-                            viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
-                            { it == spnUpdateLessonCategory.selectedItem }.keys.first())
+                            viewModel.setCategoryId(
+                                viewModel.lessonCategoryMap.value!!.filterValues
+                                { it == spnUpdateLessonCategory.selectedItem }.keys.first()
+                            )
                             viewModel.setCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
-                            viewModel.setSiteId(viewModel.lessonSiteMap.value!!.filterValues
-                            { it == spnUpdateLessonSite.selectedItem }.keys.first())
+                            viewModel.setSiteId(
+                                viewModel.lessonSiteMap.value!!.filterValues
+                                { it == spnUpdateLessonSite.selectedItem }.keys.first()
+                            )
                             viewModel.setSiteName(spinner.selectedItem.toString())
                             viewModel.setLessonSiteItemPosition(spnUpdateLessonSite.selectedItemPosition)
                         }
