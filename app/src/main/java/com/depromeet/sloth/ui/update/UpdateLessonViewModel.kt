@@ -33,8 +33,7 @@ class UpdateLessonViewModel @Inject constructor(
     private val stringResourcesProvider: StringResourcesProvider
 ) : BaseViewModel(memberRepository) {
 
-    val lessonDetail: LessonDetail = savedStateHandle[KEY_LESSON_DETAIL]
-        ?: throw IllegalStateException("There is no value of the lesson id.")
+    val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
     private val _lessonUpdateResponseState = MutableSharedFlow<LessonState<LessonUpdateResponse>>()
     val lessonUpdateState: SharedFlow<LessonState<LessonUpdateResponse>>

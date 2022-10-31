@@ -23,8 +23,7 @@ class LessonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonId: String = savedStateHandle[LessonDetailActivity.LESSON_ID]
-        ?: throw IllegalStateException("There is no value of the lesson id.")
+    val lessonId: String = checkNotNull(savedStateHandle[LessonDetailActivity.LESSON_ID])
 
     private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
     val lessonDetailState: LiveData<LessonState<LessonDetail>>
