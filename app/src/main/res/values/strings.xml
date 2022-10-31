@@ -164,5 +164,7 @@
     <string name="refresh">새로 고침</string>
     <string name="noti_update_fail">알림 수신 여부를 변경하지 못했어요</string>
     <string name="noti_update_complete">알림 수신 여부가 변경되었어요</string>
+    <string name="choose_lesson_category">강의 카테고리를 선택해 주세요</string>
+    <string name="choose_lesosn_site">강의 사이트를 선택해 주세요</string>
 
 </resources>

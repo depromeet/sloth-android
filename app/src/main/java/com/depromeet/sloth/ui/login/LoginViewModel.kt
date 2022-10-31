@@ -31,7 +31,6 @@ class LoginViewModel @Inject constructor(
         _loginState.emit(loginRepository.checkedLoggedIn())
     }
 
-
     fun clickLoginBtn() = viewModelScope.launch {
         _openLoginBottomSheetEvent.emit(Unit)
     }
@@ -45,10 +44,4 @@ class LoginViewModel @Inject constructor(
         withContext(viewModelScope.coroutineContext) {
             loginRepository.fetchGoogleAuthInfo(authCode = authCode)
         }
-
-//    sealed class LoginUiState {
-//        object Success : LoginUiState()
-//        data class Error(val message: String) : LoginUiState()
-//        object Loading : LoginUiState()
-//    }
 }

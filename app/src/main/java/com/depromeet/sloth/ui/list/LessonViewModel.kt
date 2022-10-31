@@ -22,28 +22,8 @@ class LessonViewModel @Inject constructor(
     val todayLessonList: Flow<UiState<List<LessonTodayResponse>>> =
         lessonRepository.fetchTodayLessonList()
 
-//        suspend fun fetchTodayLessonList(
-//        context: CoroutineContext = Dispatchers.IO,
-//        start: CoroutineStart = CoroutineStart.DEFAULT,
-//    ): LessonState<List<LessonTodayResponse>> = viewModelScope.async(
-//        context = context,
-//        start = start
-//    ) {
-//        lessonRepository.fetchTodayLessonList()
-//    }.await()
-
     val allLessonList: Flow<UiState<List<LessonAllResponse>>> =
         lessonRepository.fetchAllLessonList()
-//
-//    suspend fun fetchAllLessonList(
-//        context: CoroutineContext = Dispatchers.IO,
-//        start: CoroutineStart = CoroutineStart.DEFAULT,
-//    ): LessonState<List<LessonAllResponse>> = viewModelScope.async(
-//        context = context,
-//        start = start
-//    ) {
-//        lessonRepository.fetchAllLessonList()
-//    }.await()
 
     fun finishLesson(lessonId: String): Flow<UiState<LessonFinishResponse>> =
         lessonRepository.finishLesson(lessonId)
