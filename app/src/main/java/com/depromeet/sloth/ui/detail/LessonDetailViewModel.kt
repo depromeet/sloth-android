@@ -47,14 +47,12 @@ class LessonDetailViewModel @Inject constructor(
 
     fun fetchLessonDetail() = viewModelScope.launch {
         _lessonDetailState.value = LessonState.Loading
-        val lessonDetail = lessonRepository.fetchLessonDetail(lessonId)
-        _lessonDetailState.value = lessonDetail
+        _lessonDetailState.value = lessonRepository.fetchLessonDetail(lessonId)
     }
 
     fun deleteLesson() = viewModelScope.launch {
         _lessonDeleteState.value = LessonState.Loading
-        val lessonDeleteResponse = lessonRepository.deleteLesson(lessonId)
-        _lessonDeleteState.value = lessonDeleteResponse
+        _lessonDeleteState.value = lessonRepository.deleteLesson(lessonId)
     }
 
     fun setLessonDetailInfo(lessonDetail: LessonDetail) {

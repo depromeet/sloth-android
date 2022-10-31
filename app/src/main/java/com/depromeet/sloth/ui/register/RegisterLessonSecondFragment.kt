@@ -221,8 +221,7 @@ class RegisterLessonSecondFragment :
                 i1: Int,
                 i2: Int,
                 i3: Int,
-            ) {
-            }
+            ) {}
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {

@@ -301,8 +301,7 @@ class RegisterLessonViewModel @Inject constructor(
 
     fun registerLesson() = viewModelScope.launch {
         _lessonRegisterState.emit(LessonState.Loading)
-        val lessonRegisterResponse = lessonRepository.registerLesson(lessonRegister.value!!)
-        _lessonRegisterState.emit(lessonRegisterResponse)
+        _lessonRegisterState.emit(lessonRepository.registerLesson(lessonRegister.value!!))
     }
 
     fun setLessonCategoryItemPosition(position: Int?) {

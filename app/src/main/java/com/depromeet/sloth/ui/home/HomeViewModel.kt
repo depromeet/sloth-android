@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,19 +28,15 @@ class HomeViewModel @Inject constructor(
     val notificationRegisterState: LiveData<NotificationState<String>>
         get() = _notificationRegisterState
 
-
     fun fetchFCMToken(deviceId: String) = viewModelScope.launch {
         _notificationFetchState.value = NotificationState.Loading
-        val notificationFetchResponse = notificationRepository.fetchFCMToken(deviceId)
-        _notificationFetchState.value = notificationFetchResponse
+        _notificationFetchState.value = notificationRepository.fetchFCMToken(deviceId)
     }
 
     fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
         _notificationRegisterState.value = NotificationState.Loading
-        val notificationRegisterResponse =
-            notificationRepository.registerFCMToken(notificationRegisterRequest)
-        _notificationRegisterState.value = notificationRegisterResponse
+        _notificationRegisterState.value = notificationRepository.registerFCMToken(notificationRegisterRequest)
     }
 }

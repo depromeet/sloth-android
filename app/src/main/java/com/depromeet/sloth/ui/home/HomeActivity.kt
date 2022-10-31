@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui
+package com.depromeet.sloth.ui.home
 
 import android.os.Bundle
 import android.provider.Settings
@@ -116,6 +116,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     }
 
 
+    //TODO 싱글톤으로 변경
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {

@@ -73,24 +73,20 @@ class ManageViewModel @Inject constructor(
 
     fun fetchMemberInfo() = viewModelScope.launch {
         _memberState.value = MemberState.Loading
-        val memberInfoResponse = memberRepository.fetchMemberInfo()
-        _memberState.value = memberInfoResponse
+        _memberState.value = memberRepository.fetchMemberInfo()
     }
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         _memberUpdateState.emit(MemberUpdateState.Loading)
-        val memberUpdateInfoResponse =
-            memberRepository.updateMemberInfo(memberUpdateRequest)
-        _memberUpdateState.emit(memberUpdateInfoResponse)
+        _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
     }
 
     fun notiSwitchBtnClick(check: Boolean) = viewModelScope.launch {
         if (check != _member.value!!.isPushAlarmUse) {
             _notificationReceiveState.emit(NotificationState.Loading)
-            val notificationUpdateResponse = notificationRepository.updateNotificationStatus(
-                NotificationUpdateRequest(check)
+            _notificationReceiveState.emit(
+                notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
             )
-            _notificationReceiveState.emit(notificationUpdateResponse)
         }
     }
 
@@ -120,7 +116,6 @@ class ManageViewModel @Inject constructor(
 
     fun logout() = viewModelScope.launch {
         _memberLogoutState.value = MemberLogoutState.Loading
-        val memberLogoutState = memberRepository.logout()
-        _memberLogoutState.value = memberLogoutState
+        _memberLogoutState.value = memberRepository.logout()
     }
 }

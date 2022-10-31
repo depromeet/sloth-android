@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityLoginBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.ui.HomeActivity
+import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 

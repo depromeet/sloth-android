@@ -183,14 +183,12 @@ class UpdateLessonViewModel @Inject constructor(
 
 //    private suspend fun fetchLessonCategoryList() {
 //        _lessonCategoryListState.value = LessonState.Loading
-//        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
-//        _lessonCategoryListState.value = lessonCategoryListResponse
+//        _lessonCategoryListState.value = lessonRepository.fetchLessonCategoryList()
 //    }
 //
 //    private suspend fun fetchLessonSiteList() {
 //        _lessonSiteListState.value = LessonState.Loading
-//        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
-//        _lessonSiteListState.value = lessonSiteListResponse
+//        _lessonSiteListState.value = lessonRepository.fetchLessonSiteList()
 //    }
 
     fun setLessonCategoryItemPosition(position: Int) {

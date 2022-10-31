@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.ui.HomeActivity
+import com.depromeet.sloth.ui.home.HomeActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
