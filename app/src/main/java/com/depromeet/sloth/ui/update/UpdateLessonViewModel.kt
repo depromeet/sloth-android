@@ -17,7 +17,6 @@ import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,17 +39,17 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonUpdateResponseState
 
     private val _lessonName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_NAME, "")
+        savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, "")
     val lessonName: LiveData<String>
         get() = _lessonName
 
     private val _lessonTotalNumber =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER, 0)
+        savedStateHandle.getLiveData<Int>(KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: LiveData<Int>
         get() = _lessonTotalNumber
 
     private val _lessonPrice =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_PRICE, 0)
+        savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, 0)
     private val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 
@@ -64,57 +63,57 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonSiteListState
 
     private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>()
+        KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>()
     )
     val lessonCategoryMap: LiveData<HashMap<Int, String>>
         get() = _lessonCategoryMap
 
     private val _lessonCategoryList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_LIST, mutableListOf()
+        KEY_LESSON_CATEGORY_LIST, mutableListOf()
     )
     val lessonCategoryList: LiveData<MutableList<String>>
         get() = _lessonCategoryList
 
     private val _lessonCategoryId =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID, 0)
+        savedStateHandle.getLiveData<Int>(KEY_LESSON_CATEGORY_ID, 0)
     private val lessonCategoryId: LiveData<Int>
         get() = _lessonCategoryId
 
     private val _lessonCategoryName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_NAME, "")
+        savedStateHandle.getLiveData<String>(KEY_LESSON_CATEGORY_NAME, "")
     private val lessonCategoryName: LiveData<String>
         get() = _lessonCategoryName
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
+        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
     val lessonCategorySelectedItemPosition: LiveData<Int>
         get() = _lessonCategorySelectedItemPosition
 
     private val _lessonSiteMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_MAP, HashMap<Int, String>()
+        KEY_LESSON_SITE_MAP, HashMap<Int, String>()
     )
     val lessonSiteMap: LiveData<HashMap<Int, String>>
         get() = _lessonSiteMap
 
     private val _lessonSiteList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_LIST, mutableListOf()
+        KEY_LESSON_SITE_LIST, mutableListOf()
     )
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
     private val _lessonSiteId =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_SITE_ID, 0)
+        savedStateHandle.getLiveData<Int>(KEY_LESSON_SITE_ID, 0)
     private val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
     private val _lessonSiteName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, "")
+        savedStateHandle.getLiveData<String>(KEY_LESSON_SITE_NAME, "")
     private val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
+        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
@@ -144,21 +143,21 @@ class UpdateLessonViewModel @Inject constructor(
         if (this.lessonName.value == lessonName || lessonName == null) {
             return
         }
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_NAME] = lessonName
+        savedStateHandle[KEY_LESSON_NAME] = lessonName
     }
 
     fun setLessonPrice(lessonPrice: Int?) {
         if (this.lessonPrice.value == lessonPrice || lessonPrice == null) {
             return
         }
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_PRICE] = lessonPrice
+        savedStateHandle[KEY_LESSON_PRICE] = lessonPrice
     }
 
     fun setLessonTotalNumber(lessonTotalNumber: Int?) {
         if (this.lessonTotalNumber.value == lessonTotalNumber || lessonTotalNumber == null) {
             return
         }
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER] = lessonTotalNumber
+        savedStateHandle[KEY_LESSON_TOTAL_NUMBER] = lessonTotalNumber
     }
 
     fun updateLesson() = viewModelScope.launch {
@@ -206,7 +205,7 @@ class UpdateLessonViewModel @Inject constructor(
         if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
             return
         }
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID] = lessonCategoryId
+        savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
     }
 
     fun setCategoryName(lessonCategoryName: String?) {
@@ -214,7 +213,7 @@ class UpdateLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
+        savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
     }
 
     fun setSiteId(lessonSiteId: Int?) {
@@ -222,7 +221,7 @@ class UpdateLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_SITE_ID] = lessonSiteId
+        savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
     }
 
     fun setSiteName(lessonSiteName: String?) {
@@ -230,7 +229,7 @@ class UpdateLessonViewModel @Inject constructor(
             return
         }
 
-        savedStateHandle[RegisterLessonViewModel.KEY_LESSON_SITE_NAME] = lessonSiteName
+        savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
     }
 
     val isEnabledLessonUpdateButton = MediatorLiveData<Boolean>().apply {
@@ -282,5 +281,19 @@ class UpdateLessonViewModel @Inject constructor(
 
     companion object {
         const val KEY_LESSON_DETAIL = "lessonDetail"
+
+        const val KEY_LESSON_NAME = "lessonName"
+        const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
+        const val KEY_LESSON_CATEGORY_MAP = "lessonCategoryMap"
+        const val KEY_LESSON_CATEGORY_LIST = "lessonCategoryList"
+        const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
+        const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
+        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
+        const val KEY_LESSON_SITE_MAP = "lessonSiteMap"
+        const val KEY_LESSON_SITE_LIST = "lessonSiteList"
+        const val KEY_LESSON_SITE_NAME = "lessonSiteName"
+        const val KEY_LESSON_SITE_ID = "lessonSiteId"
+        const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        const val KEY_LESSON_PRICE = "lessonPrice"
     }
 }
