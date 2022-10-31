@@ -12,7 +12,7 @@ interface MemberService {
     suspend fun fetchMemberInfo(): Response<Member>?
 
     @PATCH("api/member")
-    suspend fun updateMemberInfo(@Body requestUpdate: MemberUpdateInfoRequest): Response<MemberUpdateInfoResponse>?
+    suspend fun updateMemberInfo(@Body memberUpdateRequest: MemberUpdateRequest): Response<MemberUpdateResponse>?
 
     @POST("api/logout")
     suspend fun logout(): Response<String>?

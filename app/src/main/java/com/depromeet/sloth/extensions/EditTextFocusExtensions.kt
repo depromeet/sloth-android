@@ -1,12 +1,10 @@
 package com.depromeet.sloth.extensions
 
 import android.content.Context
-import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 

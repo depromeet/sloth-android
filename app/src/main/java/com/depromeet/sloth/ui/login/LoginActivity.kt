@@ -5,9 +5,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityLoginBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.ui.HomeActivity
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,16 +30,20 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
 
     private fun initObserver() {
         viewModel.apply {
-            loginState.observe(this@LoginActivity, EventObserver { isLoggedIn ->
-                when (isLoggedIn) {
-                    true -> moveHomeActivity()
-                    else -> {}
+            repeatOnStarted {
+                loginState.collect { loginState ->
+                    when (loginState) {
+                        true -> moveHomeActivity()
+                        else -> Unit
+                    }
                 }
-            })
+            }
 
-            openLoginBottomSheetEvent.observe(this@LoginActivity, EventObserver {
-                openLoginBottomSheet()
-            })
+            repeatOnStarted {
+                openLoginBottomSheetEvent.collect {
+                    openLoginBottomSheet()
+                }
+            }
         }
     }
 
@@ -101,8 +105,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
     }
 
     private fun moveHomeActivity() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
+        startActivity(
+            Intent(this, HomeActivity::class.java)
+        )
         finish()
     }
 

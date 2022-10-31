@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.model
+package com.depromeet.sloth.data.network.lesson
 
 import androidx.annotation.Keep
 

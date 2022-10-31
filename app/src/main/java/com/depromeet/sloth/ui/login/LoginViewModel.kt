@@ -1,12 +1,12 @@
 package com.depromeet.sloth.ui.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.repository.LoginRepository
-import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,24 +15,25 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
 ) : ViewModel() {
 
-    private val _loginState = MutableLiveData<Event<Boolean>>()
-    val loginState: LiveData<Event<Boolean>>
+    private val _loginState = MutableSharedFlow<Boolean>(replay = 1)
+    val loginState: SharedFlow<Boolean>
         get() = _loginState
 
-    private val _openLoginBottomSheetEvent = MutableLiveData<Event<Unit>>()
-    val openLoginBottomSheetEvent: LiveData<Event<Unit>>
+    private val _openLoginBottomSheetEvent = MutableSharedFlow<Unit>()
+    val openLoginBottomSheetEvent: SharedFlow<Unit>
         get() = _openLoginBottomSheetEvent
 
     init {
         checkLoggedIn()
     }
 
-    private fun checkLoggedIn() {
-        _loginState.value = Event(loginRepository.checkedLoggedIn())
+    private fun checkLoggedIn() = viewModelScope.launch {
+        _loginState.emit(loginRepository.checkedLoggedIn())
     }
 
-    fun clickLoginBtn() {
-        _openLoginBottomSheetEvent.value = Event(Unit)
+
+    fun clickLoginBtn() = viewModelScope.launch {
+        _openLoginBottomSheetEvent.emit(Unit)
     }
 
     suspend fun fetchSlothAuthInfo(accessToken: String, socialType: String) =
@@ -44,4 +45,10 @@ class LoginViewModel @Inject constructor(
         withContext(viewModelScope.coroutineContext) {
             loginRepository.fetchGoogleAuthInfo(authCode = authCode)
         }
+
+//    sealed class LoginUiState {
+//        object Success : LoginUiState()
+//        data class Error(val message: String) : LoginUiState()
+//        object Loading : LoginUiState()
+//    }
 }

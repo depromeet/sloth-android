@@ -15,19 +15,18 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.MemberLogoutState
 import com.depromeet.sloth.data.network.member.MemberState
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
+import com.depromeet.sloth.data.network.member.MemberUpdateRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.member.MemberUpdateState
 import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.focusInputForm
-import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.hideKeyBoard
 import com.depromeet.sloth.extensions.logout
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.extensions.showWithdrawalDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
@@ -46,9 +45,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
         bind {
             vm = viewModel
+            // 상태가 바로 반영 되지 않음
             // member = viewModel.memberInfo.value.successOrNull()
             // member = viewModel.member.value
-            // 상태가 바로 반영 되지 않음
         }
         initObserver()
     }
@@ -57,7 +56,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         viewModel.apply {
             memberState.observe(viewLifecycleOwner) { memberState ->
                 when (memberState) {
-                    is MemberState.Loading -> handleLoadingState(requireContext())
+                    is MemberState.Loading -> showProgress()
 
                     is MemberState.Success<Member> -> {
                         Timber.tag("fetch Success").d("${memberState.data}")
@@ -76,33 +75,34 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 hideProgress()
             }
 
-            memberUpdateState.observe(viewLifecycleOwner, EventObserver { memberUpdateState ->
-                when (memberUpdateState) {
-                    is MemberUpdateState.Loading -> handleLoadingState(requireContext())
+            repeatOnStarted {
+                memberUpdateState.collect { memberUpdateState ->
+                    when (memberUpdateState) {
+                        is MemberUpdateState.Loading -> showProgress()
 
-                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
-                        Timber.tag("update Success").d("${memberUpdateState.data}")
-                        showToast(getString(R.string.member_update_success))
-                        viewModel.fetchMemberInfo()
-                    }
+                        is MemberUpdateState.Success<MemberUpdateResponse> -> {
+                            Timber.tag("update Success").d("${memberUpdateState.data}")
+                            showToast(getString(R.string.member_update_success))
+                            viewModel.fetchMemberInfo()
+                        }
 
-                    is MemberUpdateState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
+                        is MemberUpdateState.Unauthorized -> {
+                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                        }
 
-                    is MemberUpdateState.Error -> {
-                        Timber.tag("update Error").d(memberUpdateState.exception)
-                        showToast(getString(R.string.member_update_fail))
+                        is MemberUpdateState.Error -> {
+                            Timber.tag("update Error").d(memberUpdateState.exception)
+                            showToast(getString(R.string.member_update_fail))
+                        }
                     }
+                    hideProgress()
                 }
-                hideProgress()
-            })
+            }
 
-            notificationReceiveState.observe(
-                viewLifecycleOwner,
-                EventObserver { notificationReceiveState ->
-                    when (notificationReceiveState) {
-                        is NotificationState.Loading -> handleLoadingState(requireContext())
+            repeatOnStarted {
+                notificationReceiveState.collect { notificationState ->
+                    when (notificationState) {
+                        is NotificationState.Loading -> showProgress()
 
                         is NotificationState.Success<String> -> {
                             showToast(getString(R.string.noti_update_complete))
@@ -114,15 +114,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         }
 
                         is NotificationState.Error -> {
-                            Timber.tag("update Error").d(notificationReceiveState.exception)
+                            Timber.tag("update Error").d(notificationState.exception)
                             showToast(getString(R.string.noti_update_fail))
                         }
                     }
-                })
+                }
+            }
 
             memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
                 when (memberLogoutState) {
-                    is MemberLogoutState.Loading -> handleLoadingState(requireContext())
+                    is MemberLogoutState.Loading -> showProgress()
 
                     is MemberLogoutState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
 
@@ -142,31 +143,37 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 binding.member = member
             }
 
-            profileClick.observe(viewLifecycleOwner, EventObserver {
-                showProfileUpdateDialog()
-            })
+            repeatOnStarted {
+                profileClick.collect { showProfileUpdateDialog() }
+            }
 
-            contactButtonClick.observe(viewLifecycleOwner, EventObserver {
-                sendEmail()
-            })
+            repeatOnStarted {
+                contactButtonClick.collect { sendEmail() }
+            }
 
-            privatePolicyClick.observe(viewLifecycleOwner, EventObserver {
-                startActivity(Intent(requireContext(), SlothPolicyWebViewActivity::class.java))
-            })
-
-            logoutClick.observe(viewLifecycleOwner, EventObserver {
-                val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
-                dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                    override fun onItemClicked() {
-                        viewModel.logout()
-                    }
+            repeatOnStarted {
+                privatePolicyClick.collect {
+                    startActivity(Intent(requireContext(), SlothPolicyWebViewActivity::class.java))
                 }
-                dlg.start()
-            })
+            }
 
-            withdrawalClick.observe(viewLifecycleOwner, EventObserver {
-                showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
-            })
+            repeatOnStarted {
+                logoutClick.collect {
+                    val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
+                    dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+                        override fun onItemClicked() {
+                            viewModel.logout()
+                        }
+                    }
+                    dlg.start()
+                }
+            }
+
+            repeatOnStarted {
+                withdrawalClick.collect {
+                    showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
+                }
+            }
         }
 
 //        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
@@ -193,7 +200,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         updateButton.setOnClickListener {
             if (nameEditText.text.toString() != (viewModel.member.value?.memberName ?: "")) {
 //            if (nameEditText.text.toString() != (viewModel.memberInfo.value.successOrNull()?.memberName ?: "")) {
-                viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
+                viewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
                 showToast(getString(R.string.input_same_nickname))

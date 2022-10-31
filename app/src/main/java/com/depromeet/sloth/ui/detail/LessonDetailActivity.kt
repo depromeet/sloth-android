@@ -7,13 +7,12 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
-import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
@@ -47,7 +46,7 @@ class LessonDetailActivity :
             lessonDetailState.observe(this@LessonDetailActivity) { lessonDetailState ->
                 when (lessonDetailState) {
                     is LessonState.Loading -> {
-                        handleLoadingState(this@LessonDetailActivity)
+                        showProgress(this@LessonDetailActivity)
                     }
 
                     is LessonState.Success<LessonDetail> -> {
@@ -95,17 +94,21 @@ class LessonDetailActivity :
                 binding.lessonDetail = lessonDetail
             }
 
-            lessonUpdateEvent.observe(this@LessonDetailActivity, EventObserver { lessonDetail ->
-                startActivity(
-                    Intent(this@LessonDetailActivity, UpdateLessonActivity::class.java).apply {
-                        putExtra(LESSON_DETAIL, lessonDetail)
-                    }
-                )
-            })
+            repeatOnStarted {
+                lessonUpdateClick.collect { lessonDetail ->
+                    startActivity(
+                        Intent(this@LessonDetailActivity, UpdateLessonActivity::class.java).apply {
+                            putExtra(LESSON_DETAIL, lessonDetail)
+                        }
+                    )
+                }
+            }
 
-            lessonDeleteEvent.observe(this@LessonDetailActivity, EventObserver {
-                showLessonDeleteDialog()
-            })
+            repeatOnStarted {
+                lessonDeleteClick.collect {
+                    showLessonDeleteDialog()
+                }
+            }
         }
     }
 

@@ -1,9 +1,9 @@
 package com.depromeet.sloth.data.repository
 
-import com.depromeet.sloth.data.model.LessonCategory
+import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.model.LessonSite
-import com.depromeet.sloth.data.model.LessonUpdate
+import com.depromeet.sloth.data.network.lesson.LessonSite
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.list.*
@@ -37,5 +37,5 @@ interface LessonRepository {
 
     //fun fetchLessonSiteList(): Flow<UiState<List<LessonSite>>>
 
-    suspend fun updateLesson(lessonId: String, updateLessonRequest: LessonUpdateRequest): LessonState<LessonUpdate>
+    suspend fun updateLesson(lessonId: String, updateLessonRequest: LessonUpdateRequest): LessonState<LessonUpdateResponse>
 }

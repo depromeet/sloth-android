@@ -8,12 +8,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.LoginActivity
-import com.depromeet.sloth.util.LoadingDialogUtil
 import kotlinx.coroutines.Job
 
-fun handleLoadingState(context: Context) {
-    LoadingDialogUtil.showProgress(context)
-}
 
 fun showLogoutDialog(context: Context, removeAuthToken: () -> Job) {
     val dlg = SlothDialog(context, DialogState.FORBIDDEN)
@@ -51,7 +47,8 @@ fun showWithdrawalDialog(context: Context, removeAuthToken: () -> Job) {
 // 회원 탈퇴 api 필요
 fun withdrawal(context: Context, removeAuthToken: () -> Job) {
     removeAuthToken()
-    Toast.makeText(context, context.getString(R.string.withdrawal_complete), Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.withdrawal_complete), Toast.LENGTH_SHORT)
+        .show()
     startActivity(
         context,
         Intent(context, LoginActivity::class.java).apply {

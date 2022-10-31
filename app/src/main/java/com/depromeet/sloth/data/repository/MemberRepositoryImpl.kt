@@ -7,14 +7,15 @@ import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.member.MemberLogoutState
 import com.depromeet.sloth.data.network.member.MemberService
 import com.depromeet.sloth.data.network.member.MemberState
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoRequest
-import com.depromeet.sloth.data.network.member.MemberUpdateInfoResponse
+import com.depromeet.sloth.data.network.member.MemberUpdateRequest
+import com.depromeet.sloth.data.network.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.member.MemberUpdateState
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
 ): MemberRepository {
+
 //    fun fetchMemberInfo(): Flow<UIState<Member>> = flow<UIState<Member>> {
 //
 //        emit(UIState.Loading)
@@ -68,12 +69,12 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateMemberInfo(
-        memberUpdateInfoRequest: MemberUpdateInfoRequest,
-    ): MemberUpdateState<MemberUpdateInfoResponse> {
+        memberUpdateRequest: MemberUpdateRequest,
+    ): MemberUpdateState<MemberUpdateResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
-            .updateMemberInfo(memberUpdateInfoRequest)?.run {
+            .updateMemberInfo(memberUpdateRequest)?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""
@@ -81,7 +82,7 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        MemberUpdateState.Success(this.body() ?: MemberUpdateInfoResponse())
+                        MemberUpdateState.Success(this.body() ?: MemberUpdateResponse())
                     }
                     else -> MemberUpdateState.Error(Exception(message()))
                 }

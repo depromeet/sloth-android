@@ -3,15 +3,18 @@ package com.depromeet.sloth.ui.register
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
-import com.depromeet.sloth.extensions.handleLoadingState
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -34,15 +37,15 @@ class RegisterLessonCheckFragment :
 
     private fun initObserver() {
         viewModel.apply {
-            lessonRegisterState.observe(viewLifecycleOwner,
-                EventObserver { lessonRegisterResponse ->
+            repeatOnStarted {
+                lessonRegisterState.collect { lessonRegisterResponse ->
                     when (lessonRegisterResponse) {
-                        is LessonState.Loading -> handleLoadingState(requireContext())
+                        is LessonState.Loading -> showProgress()
 
                         is LessonState.Success -> {
                             Timber.tag("Register Success").d("${lessonRegisterResponse.data}")
                             showToast(getString(R.string.lesson_register_complete))
-                            (activity as RegisterLessonActivity).finish()
+                            requireActivity().finish()
                         }
 
                         is LessonState.Unauthorized -> {
@@ -56,17 +59,23 @@ class RegisterLessonCheckFragment :
                         else -> Unit
                     }
                     hideProgress()
-                })
+                }
+            }
         }
     }
 
     private fun initNavigation() {
-        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
-            moveRegisterLessonSecond()
-        })
+        // navigation 은 repeatOnStarted 확장 함수를 통해 구독할 경우 에러 발생
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToRegisterLessonSecond.collect {
+                    navigateToRegisterLessonSecond()
+                }
+            }
+        }
     }
 
-    private fun moveRegisterLessonSecond() {
+    private fun navigateToRegisterLessonSecond() {
         findNavController().navigateUp()
     }
 }

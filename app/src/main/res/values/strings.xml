@@ -37,7 +37,7 @@
     <string name="max_30">최대 30자 까지 입력 가능합니다</string>
     <string name="lesson_message">각오 한마디(선택)</string>
 
-    <string name="title_main"><font color="#53E183">나</font><font color="#000000">보다 </font><font color="#53E183">나</font><font color="#000000">무늘보가</font>\n<font color="#53E183">공</font><font color="#000000">부 열심히 한다</font></string>
+    <string name="title_main"><font color="#53E183">나</font>보다<font color="#53E183"> 나</font>무늘보가\n<font color="#53E183">공</font>부 열심히 한다</string>
     <string name="title_sub"><font color="#565656">나무늘보도 못 이기나요?</font></string>
     <string name="choose_login_method">로그인 방법 선택</string>
     <string name="agree_and_start">동의하고 시작하기</string>

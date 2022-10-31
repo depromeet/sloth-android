@@ -6,6 +6,6 @@ package com.depromeet.sloth.data.network.member
  * memberName: "String",
  */
 
-data class MemberUpdateInfoResponse(
+data class MemberUpdateResponse(
     var memberName: String = ""
 )

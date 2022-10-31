@@ -2,8 +2,8 @@ package com.depromeet.sloth.ui.register
 
 import androidx.lifecycle.*
 import com.depromeet.sloth.data.model.Lesson
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.network.lesson.LessonCategory
+import com.depromeet.sloth.data.network.lesson.LessonSite
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
@@ -13,13 +13,17 @@ import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+//TODO saveStateHandle 에 담아야할 변수와 담지 않아도 될 변수 구분
+//TODO saveStateHandle wrapping
+//!! 처리한 변수들 보안 처리
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -97,8 +101,8 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteList: LiveData<MutableList<String>>
         get() = _lessonSiteList
 
-    private val _lessonRegisterState = MutableLiveData<Event<LessonState<LessonRegisterResponse>>>()
-    val lessonRegisterState: LiveData<Event<LessonState<LessonRegisterResponse>>>
+    private val _lessonRegisterState = MutableSharedFlow<LessonState<LessonRegisterResponse>>()
+    val lessonRegisterState: SharedFlow<LessonState<LessonRegisterResponse>>
         get() = _lessonRegisterState
 
     private val _lessonCheck = MutableLiveData<Lesson>()
@@ -151,25 +155,26 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonEndDateSelectedItemPosition: LiveData<Int>
         get() = _lessonEndDateSelectedItemPosition
 
-    private val _moveRegisterLessonSecondEvent = MutableLiveData<Event<Unit>>()
-    val moveRegisterLessonSecondEvent: LiveData<Event<Unit>>
-        get() = _moveRegisterLessonSecondEvent
+    private val _navigateToRegisterLessonSecond = MutableSharedFlow<Unit>(replay = 0)
+    val navigateToRegisterLessonSecond: SharedFlow<Unit>
+        get() = _navigateToRegisterLessonSecond
 
-    private val _moveRegisterLessonCheckEvent = MutableLiveData<Event<Unit>>()
-    val moveRegisterLessonCheckEvent: LiveData<Event<Unit>>
-        get() = _moveRegisterLessonCheckEvent
+    private val _navigateToRegisterLessonCheck = MutableSharedFlow<Unit>(replay = 0)
+
+    val navigateToRegisterLessonCheck: SharedFlow<Unit>
+        get() = _navigateToRegisterLessonCheck
 
     private val _lessonDateValidation = MutableLiveData<Boolean>()
     val lessonDateValidation: LiveData<Boolean>
         get() = _lessonDateValidation
 
-    private val _navigateToStartDate = MutableLiveData<Event<Date>>()
-    val navigateToStartDate: LiveData<Event<Date>>
-        get() = _navigateToStartDate
+    private val _registerLessonStartDate = MutableSharedFlow<Date>()
+    val registerLessonStartDate: SharedFlow<Date>
+        get() = _registerLessonStartDate
 
-    private val _navigateToEndDate = MutableLiveData<Event<Date>>()
-    val navigateToEndDate: LiveData<Event<Date>>
-        get() = _navigateToEndDate
+    private val _registerLessonEndDate = MutableSharedFlow<Date>()
+    val registerLessonEndDate: SharedFlow<Date>
+        get() = _registerLessonEndDate
 
     private fun initLessonStartDate() {
         val today = Date()
@@ -228,7 +233,6 @@ class RegisterLessonViewModel @Inject constructor(
         setEndDate(calendar.time)
         setLessonEndDate(getPickerDateToDash(calendar.time))
     }
-
 
     fun setLessonCategoryList(data: List<LessonCategory>) {
         _lessonCategoryMap.value =
@@ -292,11 +296,10 @@ class RegisterLessonViewModel @Inject constructor(
         )
     }
 
-    fun registerLesson(
-    ) = viewModelScope.launch {
-        _lessonRegisterState.value = Event(LessonState.Loading)
+    fun registerLesson() = viewModelScope.launch {
+        _lessonRegisterState.emit(LessonState.Loading)
         val lessonRegisterResponse = lessonRepository.registerLesson(lessonRegister.value!!)
-        _lessonRegisterState.value = Event(lessonRegisterResponse)
+        _lessonRegisterState.emit(lessonRegisterResponse)
     }
 
     fun setLessonCategoryItemPosition(position: Int?) {
@@ -394,20 +397,20 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_END_DATE] = lessonEndDate
     }
 
-    fun clickBtnToMoveRegisterLessonSecond() {
-        _moveRegisterLessonSecondEvent.value = Event(Unit)
+    fun navigateToRegisterLessonSecond() = viewModelScope.launch {
+        _navigateToRegisterLessonSecond.emit(Unit)
     }
 
-    fun clickBtnToMoveRegisterLessonCheck() {
-        _moveRegisterLessonCheckEvent.value = Event(Unit)
+    fun navigateToRegisterLessonCheck() = viewModelScope.launch {
+        _navigateToRegisterLessonCheck.emit(Unit)
     }
 
-    fun navigateToStartDate() {
-        _navigateToStartDate.value = Event(startDate.value ?: Date())
+    fun registerLessonStartDate() = viewModelScope.launch {
+        _registerLessonStartDate.emit(startDate.value ?: Date())
     }
 
-    fun navigateToEndDate() {
-        _navigateToEndDate.value = Event(endDate.value ?: Date())
+    fun registerLessonEndDate() = viewModelScope.launch {
+        _registerLessonEndDate.emit(endDate.value ?: Date())
     }
 
     val isEnabledMoveLessonSecondButton = MediatorLiveData<Boolean>().apply {
@@ -439,6 +442,7 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle[KEY_END_DATE] = endDate
     }
 
+    //TODO viewModel 내부의 String Resource 관리
     companion object {
         const val KEY_LESSON_NAME = "lessonName"
         const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"

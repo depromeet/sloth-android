@@ -12,10 +12,10 @@ import com.depromeet.sloth.data.network.notification.NotificationState
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.databinding.ActivityHomeBinding
-import com.depromeet.sloth.extensions.handleLoadingState
 import com.depromeet.sloth.extensions.showLogoutDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
+import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -62,7 +62,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             notificationFetchState.observe(this@HomeActivity) { notificationState ->
                 when (notificationState) {
                     is NotificationState.Loading -> {
-                        handleLoadingState(this@HomeActivity)
+                        showProgress(this@HomeActivity)
                     }
 
                     is NotificationState.Success<NotificationFetchResponse> -> {
@@ -93,7 +93,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             notificationRegisterState.observe(this@HomeActivity) { notificationState ->
                 when (notificationState) {
                     is NotificationState.Loading -> {
-                        handleLoadingState(this@HomeActivity)
+                        showProgress(this@HomeActivity)
                     }
 
                     is NotificationState.Success<String> -> {

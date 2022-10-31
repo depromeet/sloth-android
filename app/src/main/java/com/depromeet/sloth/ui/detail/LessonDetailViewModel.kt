@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.LessonState
+import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class LessonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonId: String = savedStateHandle.get(LessonDetailActivity.LESSON_ID)
+    val lessonId: String = savedStateHandle[LessonDetailActivity.LESSON_ID]
         ?: throw IllegalStateException("There is no value of the lesson id.")
 
     private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
@@ -37,20 +38,19 @@ class LessonDetailViewModel @Inject constructor(
     val lessonDetail: LiveData<LessonDetail>
         get() = _lessonDetail
 
-    private val _lessonUpdateEvent = MutableLiveData<Event<LessonDetail>>()
-    val lessonUpdateEvent: LiveData<Event<LessonDetail>>
-        get() = _lessonUpdateEvent
+    private val _lessonUpdateClick = MutableSharedFlow<LessonDetail>()
+    val lessonUpdateClick: SharedFlow<LessonDetail>
+        get() = _lessonUpdateClick
 
-    private val _lessonDeleteEvent = MutableLiveData<Event<Unit>>()
-    val lessonDeleteEvent: LiveData<Event<Unit>>
-        get() = _lessonDeleteEvent
+    private val _lessonDeleteClick = MutableSharedFlow<Unit>()
+    val lessonDeleteClick: SharedFlow<Unit>
+        get() = _lessonDeleteClick
 
     fun fetchLessonDetail() = viewModelScope.launch {
         _lessonDetailState.value = LessonState.Loading
         val lessonDetail = lessonRepository.fetchLessonDetail(lessonId)
         _lessonDetailState.value = lessonDetail
     }
-
 
     fun deleteLesson() = viewModelScope.launch {
         _lessonDeleteState.value = LessonState.Loading
@@ -62,11 +62,11 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDetail.value = lessonDetail
     }
 
-    fun clickLessonUpdateBtn(lessonDetail: LessonDetail) {
-        _lessonUpdateEvent.value = Event(lessonDetail)
+    fun lessonUpdateClick(lessonDetail: LessonDetail) = viewModelScope.launch {
+        _lessonUpdateClick.emit(lessonDetail)
     }
 
-    fun clickLessonDeleteBtn() {
-        _lessonDeleteEvent.value = Event(Unit)
+    fun lessonDeleteClick() = viewModelScope.launch {
+        _lessonDeleteClick.emit(Unit)
     }
 }

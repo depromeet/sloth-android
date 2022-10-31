@@ -12,17 +12,20 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
+import com.depromeet.sloth.data.network.lesson.LessonCategory
+import com.depromeet.sloth.data.network.lesson.LessonSite
 import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -63,7 +66,7 @@ class RegisterLessonFirstFragment :
         viewModel.apply {
             lessonCategoryListState.observe(viewLifecycleOwner) { lessonState ->
                 when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
+                    is LessonState.Loading -> showProgress()
 
                     is LessonState.Success<List<LessonCategory>> -> {
                         viewModel.setLessonCategoryList(lessonState.data)
@@ -82,6 +85,7 @@ class RegisterLessonFirstFragment :
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast(getString(R.string.cannot_get_lesson_category))
                     }
+
                     else -> Unit
                 }
                 hideProgress()
@@ -89,7 +93,7 @@ class RegisterLessonFirstFragment :
 
             lessonSiteListState.observe(viewLifecycleOwner) { lessonState ->
                 when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
+                    is LessonState.Loading -> showProgress()
 
                     is LessonState.Success<List<LessonSite>> -> {
                         viewModel.setLessonSiteList(lessonState.data)
@@ -108,6 +112,7 @@ class RegisterLessonFirstFragment :
                         Timber.tag("fetch Error").d(lessonState.throwable)
                         showToast(getString(R.string.cannot_get_lesson_site))
                     }
+
                     else -> Unit
                 }
                 hideProgress()
@@ -128,9 +133,16 @@ class RegisterLessonFirstFragment :
     }
 
     private fun initNavigation() {
-        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
-            moveRegisterLessonSecond()
-        })
+        // navigation 의 경우 repeatOnStarted 확장 함수를 통해 구독할 경우 에러 발생
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToRegisterLessonSecond.collect { navigateToRegisterLessonSecond() }
+            }
+        }
+
+//        repeatOnStarted {
+//            viewModel.navigateToRegisterLessonSecond.collect { event -> handleEvent(event) }
+//        }
     }
 
     override fun initViews() = with(binding) {
@@ -140,7 +152,7 @@ class RegisterLessonFirstFragment :
         focusSpinnerForm(spnRegisterLessonSite)
     }
 
-    private fun moveRegisterLessonSecond() {
+    private fun navigateToRegisterLessonSecond() {
         findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
     }
 
@@ -167,14 +179,16 @@ class RegisterLessonFirstFragment :
                         }
                     } else {
                         if (spinner == spnRegisterLessonCategory) {
-                            viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
-                            { it == spnRegisterLessonCategory.selectedItem }.keys.first()
+                            viewModel.setCategoryId(
+                                viewModel.lessonCategoryMap.value!!.filterValues
+                                { it == spnRegisterLessonCategory.selectedItem }.keys.first()
                             )
                             viewModel.setCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
                         } else {
-                            viewModel.setSiteId(viewModel.lessonSiteMap.value!!.filterValues
-                            { it == spnRegisterLessonSite.selectedItem }.keys.first()
+                            viewModel.setSiteId(
+                                viewModel.lessonSiteMap.value!!.filterValues
+                                { it == spnRegisterLessonSite.selectedItem }.keys.first()
                             )
                             viewModel.setSiteName(spinner.selectedItem.toString())
                             viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
@@ -208,7 +222,7 @@ class RegisterLessonFirstFragment :
         }
     }
 
-    //다시 돌아왔을때 "개" 가 보이지 않음
+    //다시 돌아오면 "개" 가 보이지 않음
     private fun validateInputForm(editText: EditText) = with(binding) {
         var result = DEFAULT_STRING_VALUE
 

@@ -1,10 +1,9 @@
-package com.depromeet.sloth.data.model
+package com.depromeet.sloth.data.network.lesson.update
 
 import androidx.annotation.Keep
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 
 @Keep
-data class LessonUpdate (
+data class LessonUpdateResponse (
     var categoryId: Int = 0,
     var lessonId: Int = 0,
     var lessonName: String = "",
@@ -12,7 +11,7 @@ data class LessonUpdate (
     var totalNumber: Int = 0
 ) {
     companion object {
-        val EMPTY = LessonUpdate(0, 0, "", 0,  0)
+        val EMPTY = LessonUpdateResponse(0, 0, "", 0,  0)
     }
 }
 

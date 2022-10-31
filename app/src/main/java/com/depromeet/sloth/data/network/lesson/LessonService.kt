@@ -10,6 +10,7 @@ import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountRequest
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
+import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -44,7 +45,7 @@ interface LessonService {
     suspend fun updateLesson(
         @Path("lessonId") lessonId: String,
         @Body request: LessonUpdateRequest
-    ): Response<LessonUpdate>?
+    ): Response<LessonUpdateResponse>?
 
     @PATCH("api/lesson/{lessonId}/finish")
     suspend fun finishLesson(@Path("lessonId") lessonId: String): Response<LessonFinishResponse>?

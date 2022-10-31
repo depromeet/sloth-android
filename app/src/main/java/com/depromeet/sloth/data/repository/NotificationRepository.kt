@@ -13,7 +13,5 @@ interface NotificationRepository {
 
     suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): NotificationState<String>
 
-    suspend fun fetchFCMToken(
-        deviceId: String
-    ): NotificationState<NotificationFetchResponse>
+    suspend fun fetchFCMToken(deviceId: String): NotificationState<NotificationFetchResponse>
 }
