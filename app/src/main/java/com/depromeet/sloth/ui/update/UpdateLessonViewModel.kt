@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//TODO ViewModel 내에서 UiState 핸들링할 수 있게 변경
 //TODO !! 제거
 
 @HiltViewModel

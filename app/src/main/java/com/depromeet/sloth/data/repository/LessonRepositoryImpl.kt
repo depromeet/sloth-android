@@ -223,6 +223,15 @@ class LessonRepositoryImpl @Inject constructor(
             } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
 
+//    override suspend fun registerLesson(
+//        lessonRegisterRequest: LessonRegisterRequest,
+//    ): LessonRegisterResponse? {
+//        return RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
+//            .build(preferenceManager.getAccessToken())
+//            .create(LessonService::class.java)
+//            .registerLesson(lessonRegisterRequest).awaitResponse().body()
+//    }
+
     override suspend fun registerLesson(
         lessonRegisterRequest: LessonRegisterRequest,
     ): UiState<LessonRegisterResponse> {

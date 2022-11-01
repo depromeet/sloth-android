@@ -89,6 +89,7 @@ class UpdateLessonActivity :
                 }
             }
 
+            //TODO flow zip 으로 migration
             lessonCategoryListState.observe(this@UpdateLessonActivity) { uiState ->
                 when (uiState) {
                     is UiState.Loading -> showProgress(this@UpdateLessonActivity)

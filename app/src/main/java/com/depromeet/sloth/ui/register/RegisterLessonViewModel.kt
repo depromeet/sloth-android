@@ -30,6 +30,7 @@ import java.util.Date
 import java.util.TimeZone
 import javax.inject.Inject
 
+//TODO repository 를 flow 로 감쌀 필요가 없다 뷰모델에서 liveData -> StateFlow 바꿔 주면 된다 viewModel 에서는 suspend 그대로
 //TODO !! 처리한 변수들 보안 처리
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
@@ -175,7 +176,7 @@ class RegisterLessonViewModel @Inject constructor(
     val navigateToLessonCheckButtonState = MediatorLiveData<Boolean>().apply {
         addSourceList(
             _lessonEndDateSelectedState,
-//            _lessonDateRangeValidation
+            _lessonDateRangeValidation
         ) {
             canNavigateToLessonCheck()
         }

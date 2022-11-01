@@ -5,10 +5,6 @@ import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountRequest
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import retrofit2.Response
@@ -40,6 +36,11 @@ interface LessonService {
     suspend fun registerLesson(
         @Body lessonRegisterRequest: LessonRegisterRequest
     ): Response<LessonRegisterResponse>?
+
+//    @POST("api/lesson")
+//    fun registerLesson(
+//        @Body lessonRegisterRequest: LessonRegisterRequest
+//    ): Call<LessonRegisterResponse?>
 
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(

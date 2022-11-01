@@ -29,6 +29,8 @@ interface LessonRepository {
 
     suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): UiState<LessonRegisterResponse>
 
+    // suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): LessonRegisterResponse?
+
     suspend fun deleteLesson(lessonId: String): UiState<LessonDeleteResponse>
 
     suspend fun fetchLessonCategoryList(): UiState<List<LessonCategory>>
