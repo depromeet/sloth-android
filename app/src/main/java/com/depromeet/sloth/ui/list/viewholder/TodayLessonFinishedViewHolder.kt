@@ -11,7 +11,7 @@ import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 class TodayLessonFinishedViewHolder(
     private val binding: ItemHomeTodayLessonFinishedBinding,
     private val currentList: List<LessonTodayResponse>,
-    val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse) -> Unit,
+    val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var nowProgress = 0
@@ -30,7 +30,7 @@ class TodayLessonFinishedViewHolder(
                 }
 
                 clTodayFinishedBottom.setOnClickListener {
-                    onClick(TodayLessonAdapter.ClickType.CLICK_COMPLETE, lessonToday)
+                    onClick(TodayLessonAdapter.ClickType.CLICK_COMPLETE, lessonToday, DELAY_TIME)
                 }
 
                 btnTodayLessonPlus.setOnClickListener {
@@ -85,10 +85,10 @@ class TodayLessonFinishedViewHolder(
 
         if (isUp) {
             currentList[bindingAdapterPosition].presentNumber++
-            onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday)
+            onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
         } else {
             currentList[bindingAdapterPosition].presentNumber--
-            onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday)
+            onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday, DELAY_TIME)
         }
     }
 
@@ -98,4 +98,7 @@ class TodayLessonFinishedViewHolder(
         tvTodayLessonCurrentNum.text = nowProgress.toString()
     }
 
+    companion object {
+        const val DELAY_TIME = 200L
+    }
 }

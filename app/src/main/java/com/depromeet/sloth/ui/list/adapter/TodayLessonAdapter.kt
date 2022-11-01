@@ -16,10 +16,8 @@ import com.depromeet.sloth.ui.list.viewholder.TodayLessonNothingViewHolder
 
 class TodayLessonAdapter(
     private val bodyType: BodyType,
-    val onClick: (ClickType, LessonTodayResponse) -> Unit
-) : ListAdapter<LessonTodayResponse, RecyclerView.ViewHolder>(
-    TodayLessonDiffCallback
-) {
+    val onClick: (ClickType, LessonTodayResponse, Long) -> Unit
+) : ListAdapter<LessonTodayResponse, RecyclerView.ViewHolder>(diffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -63,20 +61,23 @@ class TodayLessonAdapter(
         CLICK_NORMAL(0),
         CLICK_COMPLETE(2)
     }
+
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<LessonTodayResponse>() {
+            override fun areItemsTheSame(
+                oldItem: LessonTodayResponse,
+                newItem: LessonTodayResponse,
+            ): Boolean {
+                return oldItem.lessonId == newItem.lessonId
+            }
+
+            override fun areContentsTheSame(
+                oldItem: LessonTodayResponse,
+                newItem: LessonTodayResponse,
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }
 
-object TodayLessonDiffCallback : DiffUtil.ItemCallback<LessonTodayResponse>() {
-    override fun areItemsTheSame(
-        oldItem: LessonTodayResponse,
-        newItem: LessonTodayResponse,
-    ): Boolean {
-        return oldItem.lessonId == newItem.lessonId
-    }
-
-    override fun areContentsTheSame(
-        oldItem: LessonTodayResponse,
-        newItem: LessonTodayResponse,
-    ): Boolean {
-        return oldItem == newItem
-    }
-}

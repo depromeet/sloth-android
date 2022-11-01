@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,7 @@ import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -35,12 +37,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        fetchLessonList()
+        observe()
     }
 
     override fun initViews() {
         with(binding) {
-            rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            rvTodayLesson.apply {
+                if(itemDecorationCount == 0) addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            }
 
             ivTodayAlarm.setOnClickListener {
                 val dlg = SlothDialog(requireContext(), DialogState.WAIT)
@@ -49,11 +53,29 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         }
     }
 
+    private fun observe() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lessonListViewModel.todayLessonList
+//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> showProgress()
+                        is UiState.UnLoading -> hideProgress()
+                        is UiState.Success -> setLessonList(uiState.data)
+                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                    }
+                }
+        }
+    }
+
     private fun fetchLessonList() {
         viewLifecycleOwner.lifecycleScope.launch {
             lessonListViewModel.todayLessonList
-                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {
@@ -76,7 +98,9 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _, _ ->
+                        moveRegisterActivity()
+                    }
                 val concatAdapter = ConcatAdapter(
                     nothingHeader,
                     nothingLessonAdapter
@@ -101,14 +125,15 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 val notFinishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
                 val notFinishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday ->
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
                                 updateLessonCount(
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
                                     TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
+                                    delayTime
                                 )
                             }
 
@@ -117,24 +142,26 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
                                     TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
+                                    delayTime
                                 )
                             }
 
-                            else -> {}
+                            else -> Unit
                         }
                     }
                 val finishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
                 val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday ->
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
                                 updateLessonCount(
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
                                     TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
+                                    delayTime
                                 )
                             }
 
@@ -143,7 +170,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
                                     TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
+                                    delayTime
                                 )
                             }
 
@@ -183,12 +211,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                 getString(R.string.home_today_title_win)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_lose)
                         }
+
                         lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
                             .not()) -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_not_start)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
                         }
+
                         else -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_lose)
@@ -205,6 +235,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         count: Int,
         bodyType: TodayLessonAdapter.BodyType,
         clickType: TodayLessonAdapter.ClickType,
+        delayTime: Long
     ) {
         mainScope {
             showProgress()
@@ -213,18 +244,22 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 when (it) {
                     is UiState.Loading -> showProgress()
                     is UiState.Success<LessonUpdateCountResponse> -> {
+                        delay(delayTime)
+
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber ||
-                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
-                                ) fetchLessonList() else Unit
+                                if (it.data.presentNumber == lesson.untilTodayNumber
+                                    //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
+                                ) fetchLessonList()
                             }
+
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (it.data.presentNumber < lesson.untilTodayNumber ||
                                     it.data.presentNumber == lesson.totalNumber ||
                                     it.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
-                                ) fetchLessonList() else Unit
+                                ) fetchLessonList()
                             }
+
                             else -> Unit
                         }
                     }
@@ -241,20 +276,20 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
     }
 
     private fun showCompleteDialog(lessonId: String) {
-        val dlg = SlothDialog(requireContext(), DialogState.COMPLETE)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+        val completeDialog = SlothDialog(requireContext(), DialogState.COMPLETE)
+        completeDialog.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
                 finishLesson(lessonId)
             }
         }
-        dlg.start()
+        completeDialog.start()
     }
 
     private fun finishLesson(lessonId: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             lessonListViewModel.finishLesson(lessonId)
-                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+                //.onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+                //.onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {

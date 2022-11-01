@@ -2,6 +2,7 @@ package com.depromeet.sloth.ui.list.viewholder
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
+import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
@@ -10,7 +11,7 @@ import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 class TodayLessonDoingViewHolder(
     private val binding: ItemHomeTodayLessonDoingBinding,
     private val currentList: List<LessonTodayResponse>,
-    val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse) -> Unit,
+    private val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var nowProgress = 0
@@ -63,7 +64,6 @@ class TodayLessonDoingViewHolder(
     private fun updateProgress(isUp: Boolean, totalNum: Int) = with(binding) {
         if (((nowProgress == 0) && isUp.not()) || ((nowProgress >= totalNum) && isUp)) return
 
-
         when (isUp) {
             true -> nowProgress++
             false -> nowProgress--
@@ -77,7 +77,7 @@ class TodayLessonDoingViewHolder(
             )
 
             animation.apply {
-                duration = 500
+                duration = DELAY_TIME
             }.start()
         }
     }
@@ -91,10 +91,10 @@ class TodayLessonDoingViewHolder(
 
         if (isUp) {
             currentList[bindingAdapterPosition].presentNumber++
-            onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday)
+            onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
         } else {
             currentList[bindingAdapterPosition].presentNumber--
-            onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday)
+            onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday, DELAY_TIME)
         }
     }
 
@@ -102,5 +102,9 @@ class TodayLessonDoingViewHolder(
         if (((nowProgress < 0) && isUp.not()) || ((nowProgress > totalNum) && isUp)) return
 
         tvTodayLessonCurrentNum.text = nowProgress.toString()
+    }
+
+    companion object {
+        const val DELAY_TIME = 350L
     }
 }
