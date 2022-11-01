@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//TODO ViewModel 내에서 UiState 핸들링할 수 있게 변경
+//TODO !! 제거
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -34,9 +36,9 @@ class UpdateLessonViewModel @Inject constructor(
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _lessonUpdateResponseState = MutableSharedFlow<UiState<LessonUpdateResponse>>()
+    private val _lessonUpdateState = MutableSharedFlow<UiState<LessonUpdateResponse>>()
     val lessonUpdateState: SharedFlow<UiState<LessonUpdateResponse>>
-        get() = _lessonUpdateResponseState
+        get() = _lessonUpdateState
 
     private val _lessonName =
         savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, "")
@@ -53,8 +55,7 @@ class UpdateLessonViewModel @Inject constructor(
     private val lessonPrice: LiveData<Int>
         get() = _lessonPrice
 
-    private val _lessonCategoryListState =
-        MutableLiveData<UiState<List<LessonCategory>>>()
+    private val _lessonCategoryListState = MutableLiveData<UiState<List<LessonCategory>>>()
     val lessonCategoryListState: LiveData<UiState<List<LessonCategory>>>
         get() = _lessonCategoryListState
 
@@ -118,6 +119,10 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
+    private val _lessonNumberValidation = MutableLiveData<Boolean>()
+    val lessonNumberValidation: LiveData<Boolean>
+        get() = _lessonNumberValidation
+
     init {
         viewModelScope.launch {
             // 두 api를 병렬적으로 호출
@@ -134,10 +139,6 @@ class UpdateLessonViewModel @Inject constructor(
         }
         // setLessonUpdateInfo()
     }
-
-    private val _lessonNumberValidation = MutableLiveData<Boolean>()
-    val lessonNumberValidation: LiveData<Boolean>
-        get() = _lessonNumberValidation
 
     fun setLessonName(lessonName: String?) {
         if (this.lessonName.value == lessonName || lessonName == null) {
@@ -165,7 +166,7 @@ class UpdateLessonViewModel @Inject constructor(
             _lessonNumberValidation.value = false
         } else {
             _lessonNumberValidation.value = true
-            _lessonUpdateResponseState.emit(UiState.Loading)
+            _lessonUpdateState.emit(UiState.Loading)
             val lessonUpdateResponse =
                 lessonRepository.updateLesson(
                     lessonDetail.lessonId.toString(),
@@ -177,7 +178,7 @@ class UpdateLessonViewModel @Inject constructor(
                         totalNumber = lessonTotalNumber.value!!,
                     )
                 )
-            _lessonUpdateResponseState.emit(lessonUpdateResponse)
+            _lessonUpdateState.emit(lessonUpdateResponse)
         }
     }
 

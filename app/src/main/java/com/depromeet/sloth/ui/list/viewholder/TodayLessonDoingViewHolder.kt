@@ -5,7 +5,7 @@ import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
-import com.depromeet.sloth.ui.list.TodayLessonAdapter
+import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 
 class TodayLessonDoingViewHolder(
     private val binding: ItemHomeTodayLessonDoingBinding,

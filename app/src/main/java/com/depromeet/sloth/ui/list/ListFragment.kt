@@ -19,7 +19,9 @@ import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
-import com.depromeet.sloth.ui.list.LessonViewModel.Companion.PAST
+import com.depromeet.sloth.ui.list.LessonListViewModel.Companion.PAST
+import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.list.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,7 @@ import java.util.*
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
-    private val lessonViewModel: LessonViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,7 +43,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
     private fun fetchLessonList() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.allLessonList
+            lessonListViewModel.allLessonList
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { uiState ->
                     when (uiState) {

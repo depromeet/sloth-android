@@ -17,6 +17,8 @@ import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
+import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onCompletion
@@ -27,7 +29,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
 
-    private val lessonViewModel: LessonViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,7 +51,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     private fun fetchLessonList() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.todayLessonList
+            lessonListViewModel.todayLessonList
                 .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
                 .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -207,7 +209,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         mainScope {
             showProgress()
 
-            lessonViewModel.updateLessonCount(count, lesson.lessonId).let {
+            lessonListViewModel.updateLessonCount(count, lesson.lessonId).let {
                 when (it) {
                     is UiState.Loading -> showProgress()
                     is UiState.Success<LessonUpdateCountResponse> -> {
@@ -250,7 +252,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     private fun finishLesson(lessonId: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.finishLesson(lessonId)
+            lessonListViewModel.finishLesson(lessonId)
                 .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
                 .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)

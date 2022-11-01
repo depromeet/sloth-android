@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LessonViewModel @Inject constructor(
+class LessonListViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
