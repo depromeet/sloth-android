@@ -117,18 +117,6 @@ class RegisterLessonFirstFragment :
                 }
                 hideProgress()
             }
-
-            isEnabledMoveLessonSecondButton.observe(viewLifecycleOwner) { isEnable ->
-                when (isEnable) {
-                    false -> {
-                        lockButton(binding.btnRegisterLesson, requireContext())
-                    }
-
-                    true -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
-                    }
-                }
-            }
         }
     }
 
@@ -168,9 +156,6 @@ class RegisterLessonFirstFragment :
 
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    clearFocus(etRegisterLessonTotalNumber)
-                    clearFocus(etRegisterLessonName)
-
                     if (spinner.selectedItemPosition == 0) {
                         if (spinner == spnRegisterLessonCategory) {
                             viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
@@ -194,6 +179,7 @@ class RegisterLessonFirstFragment :
                             viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
                     }
+                    clearFocus(etRegisterLessonTotalNumber)
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}

@@ -35,11 +35,9 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.DecimalFormat
 import java.util.*
 
-//TODO Button 상태 관리 viewModel 내의 livedata 로 처리
 @AndroidEntryPoint
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
@@ -79,28 +77,12 @@ class RegisterLessonSecondFragment :
                 }
             }
 
-            lessonEndDateSelectedItemPosition.observe(viewLifecycleOwner) { position ->
-                when (position) {
-                    0 -> {
-                        lockButton(binding.btnRegisterLesson, requireContext())
-                    }
-
-                    else -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
-                    }
-                }
-            }
-
-            lessonDateValidation.observe(viewLifecycleOwner) { isEnable ->
+            lessonDateRangeValidation.observe(viewLifecycleOwner) { isEnable ->
                 when (isEnable) {
                     false -> {
                         showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
-                        lockButton(binding.btnRegisterLesson, requireContext())
                     }
-
-                    true -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
-                    }
+                    else -> Unit
                 }
             }
         }
@@ -142,8 +124,8 @@ class RegisterLessonSecondFragment :
             addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                viewModel.updateLessonStartDate(calendar)
-                viewModel.updateLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value!!)
+                viewModel.setLessonStartDate(calendar)
+                // viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value!!)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -164,7 +146,7 @@ class RegisterLessonSecondFragment :
             addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                viewModel.updateLessonEndDateByCalendar(calendar)
+                viewModel.setLessonEndDateByCalendar(calendar)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -172,7 +154,7 @@ class RegisterLessonSecondFragment :
 
     private fun bindAdapter() = with(binding) {
         lessonEndDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterGoalLessonDate.apply {
+        spnRegisterLessonEndDate.apply {
             adapter = lessonEndDateAdapter
             setSelection(viewModel.lessonEndDateSelectedItemPosition.value!!, false)
             setSpinnerListener(this)
@@ -191,21 +173,18 @@ class RegisterLessonSecondFragment :
         spinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                clearFocus(etRegisterLessonPrice)
-                clearFocus(etRegisterLessonMessage)
-                Timber.d("${spnRegisterGoalLessonDate.selectedItemPosition}")
+                viewModel.setLessonEndDateSelectedItemPosition(spnRegisterLessonEndDate.selectedItemPosition)
 
-                viewModel.setLessonEndDateSelectedItemPosition(spnRegisterGoalLessonDate.selectedItemPosition)
-
-                when (spnRegisterGoalLessonDate.selectedItemPosition) {
+                when (spnRegisterLessonEndDate.selectedItemPosition) {
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
-                        viewModel.updateLessonEndDateBySpinner(spnRegisterGoalLessonDate.selectedItemPosition)
+                        viewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
                     }
 
                     CUSTOM_SETTING -> {
                         viewModel.registerLessonEndDate()
                     }
                 }
+                binding.clRegisterLessonSecond.clearFocus()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}

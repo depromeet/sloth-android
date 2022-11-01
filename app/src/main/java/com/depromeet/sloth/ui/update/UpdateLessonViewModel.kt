@@ -37,9 +37,9 @@ class UpdateLessonViewModel @Inject constructor(
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _lessonUpdateState = MutableSharedFlow<UiState<LessonUpdateResponse>>()
-    val lessonUpdateState: SharedFlow<UiState<LessonUpdateResponse>>
-        get() = _lessonUpdateState
+    private val _updateLessonState = MutableSharedFlow<UiState<LessonUpdateResponse>>()
+    val updateLessonState: SharedFlow<UiState<LessonUpdateResponse>>
+        get() = _updateLessonState
 
     private val _lessonName =
         savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, "")
@@ -96,9 +96,9 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
-    private val _lessonNumberValidation = MutableLiveData<Boolean>()
-    val lessonNumberValidation: LiveData<Boolean>
-        get() = _lessonNumberValidation
+    private val _lessonTotalNumberValidation = MutableLiveData<Boolean>()
+    val lessonTotalNumberValidation: LiveData<Boolean>
+        get() = _lessonTotalNumberValidation
 
     init {
         viewModelScope.launch {
@@ -136,27 +136,24 @@ class UpdateLessonViewModel @Inject constructor(
             return
         }
         savedStateHandle[KEY_LESSON_TOTAL_NUMBER] = lessonTotalNumber
+        setLessonTotalNumberValidation()
     }
 
     fun updateLesson() = viewModelScope.launch {
-        if (lessonTotalNumber.value!! < lessonDetail.presentNumber) {
-            _lessonNumberValidation.value = false
-        } else {
-            _lessonNumberValidation.value = true
-            _lessonUpdateState.emit(UiState.Loading)
-            val lessonUpdateResponse =
-                lessonRepository.updateLesson(
-                    lessonDetail.lessonId.toString(),
-                    LessonUpdateRequest(
-                        lessonName = lessonName.value!!,
-                        price = lessonPrice.value!!,
-                        categoryId = lessonCategoryId.value!!,
-                        siteId = lessonSiteId.value!!,
-                        totalNumber = lessonTotalNumber.value!!,
-                    )
+        _lessonTotalNumberValidation.value = true
+        _updateLessonState.emit(UiState.Loading)
+        _updateLessonState.emit(
+            lessonRepository.updateLesson(
+                lessonDetail.lessonId.toString(),
+                LessonUpdateRequest(
+                    lessonName = lessonName.value!!,
+                    price = lessonPrice.value!!,
+                    categoryId = lessonCategoryId.value!!,
+                    siteId = lessonSiteId.value!!,
+                    totalNumber = lessonTotalNumber.value!!,
                 )
-            _lessonUpdateState.emit(lessonUpdateResponse)
-        }
+            )
+        )
     }
 
 //    private suspend fun fetchLessonCategoryList() {
@@ -177,14 +174,14 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteSelectedItemPosition.value = position
     }
 
-    fun setCategoryId(lessonCategoryId: Int?) {
+    fun setLessonCategoryId(lessonCategoryId: Int?) {
         if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
             return
         }
         savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
     }
 
-    fun setCategoryName(lessonCategoryName: String?) {
+    fun setLessonCategoryName(lessonCategoryName: String?) {
         if (this.lessonCategoryName.value == lessonCategoryName || lessonCategoryName == null) {
             return
         }
@@ -192,7 +189,7 @@ class UpdateLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
     }
 
-    fun setSiteId(lessonSiteId: Int?) {
+    fun setLessonSiteId(lessonSiteId: Int?) {
         if (this.lessonSiteId.value == lessonSiteId || lessonSiteId == null) {
             return
         }
@@ -200,7 +197,7 @@ class UpdateLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
     }
 
-    fun setSiteName(lessonSiteName: String?) {
+    fun setLessonSiteName(lessonSiteName: String?) {
         if (this.lessonSiteName.value == lessonSiteName || lessonSiteName == null) {
             return
         }
@@ -208,21 +205,27 @@ class UpdateLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
     }
 
-    val isEnabledLessonUpdateButton = MediatorLiveData<Boolean>().apply {
+    private fun setLessonTotalNumberValidation() {
+        _lessonTotalNumberValidation.value = lessonTotalNumber.value!! >= lessonDetail.presentNumber
+    }
+
+    val updateLessonButtonState = MediatorLiveData<Boolean>().apply {
         addSourceList(
             _lessonName,
             _lessonTotalNumber,
             _lessonPrice,
             _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition
+            _lessonSiteSelectedItemPosition,
+            _lessonTotalNumberValidation
         ) {
-            isValidEnterInfo()
+            canUpdateLesson()
         }
     }
 
-    private fun isValidEnterInfo() =
-        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 && lessonPrice.value != 0 &&
-                lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
+    private fun canUpdateLesson() =
+        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 && lessonPrice.value != 0
+                && lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
+                && lessonTotalNumberValidation.value ?: false
 
     @JvmName("setLessonCategoryList1")
     fun setLessonCategoryList(data: List<LessonCategory>) {
@@ -243,17 +246,13 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     fun setLessonUpdateInfo() = with(lessonDetail) {
-        _lessonName.value = lessonName
-        _lessonTotalNumber.value = totalNumber
-        _lessonPrice.value = price
-        _lessonCategoryId.value =
-            lessonCategoryMap.filterValues { it == categoryName }.keys.first()
-        _lessonSiteId.value = lessonSiteMap.filterValues { it == siteName }.keys.first()
-
-        _lessonCategorySelectedItemPosition.value =
-            lessonCategoryList.indexOf(lessonCategoryMap[lessonCategoryId.value!!])
-        _lessonSiteSelectedItemPosition.value =
-            lessonSiteList.indexOf(lessonSiteMap[lessonSiteId.value!!])
+        setLessonName(lessonName)
+        setLessonTotalNumber(totalNumber)
+        setLessonPrice(price)
+        setLessonCategoryId(lessonCategoryMap.filterValues { it == categoryName }.keys.first())
+        setLessonSiteId(lessonSiteMap.filterValues { it == siteName }.keys.first())
+        setLessonCategoryItemPosition(lessonCategoryList.indexOf(lessonCategoryMap[lessonCategoryId.value!!]))
+        setLessonSiteItemPosition(lessonSiteList.indexOf(lessonSiteMap[lessonSiteId.value!!]))
     }
 
     companion object {
@@ -263,7 +262,8 @@ class UpdateLessonViewModel @Inject constructor(
         const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
         const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
-        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
+        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
+            "lessonCategorySelectedItemPosition"
         const val KEY_LESSON_SITE_NAME = "lessonSiteName"
         const val KEY_LESSON_SITE_ID = "lessonSiteId"
         const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"

@@ -14,6 +14,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_register_lesson_second"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.register.RegisterLessonActivity">
@@ -42,7 +43,6 @@
             app:layout_constraintTop_toBottomOf="@id/tv_register_guide">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_register_lesson_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp">
@@ -98,7 +98,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_register_lesson_start_date_info" />
 
                 <Spinner
-                    android:id="@+id/spn_register_goal_lesson_date"
+                    android:id="@+id/spn_register_lesson_end_date"
                     style="@style/Widget.Sloth.Spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                     android:visibility="@{vm.lessonEndDateSelectedItemPosition == 0 ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spn_register_goal_lesson_date"
+                    app:layout_constraintTop_toBottomOf="@+id/spn_register_lesson_end_date"
                     tools:visibility="visible" />
 
                 <TextView
@@ -147,6 +147,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:hint="@string/enter_lesson_price"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="9"
                     android:paddingHorizontal="18dp"
@@ -206,11 +207,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register_lesson"
-            style="@style/Widget.Sloth.Button.Register"
+            style="@style/Widget.Sloth.Button"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
+            android:background="@drawable/selector_button"
+            android:enabled="@{vm.navigateToLessonCheckButtonState}"
             android:onClick="@{()-> vm.navigateToRegisterLessonCheck()}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"

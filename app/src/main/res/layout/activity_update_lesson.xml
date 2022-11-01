@@ -19,9 +19,9 @@
         android:id="@+id/cl_update_lesson"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.update.UpdateLessonActivity"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        tools:context=".ui.update.UpdateLessonActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tb_update_lesson"
@@ -309,12 +309,14 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_update_lesson"
-                    style="@style/Widget.Sloth.Button.Update"
+                    style="@style/Widget.Sloth.Button"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
+                    android:background="@drawable/selector_button"
+                    android:enabled="@{vm.updateLessonButtonState}"
                     android:onClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -38,7 +38,7 @@ class RegisterLessonCheckFragment :
     private fun initObserver() {
         viewModel.apply {
             repeatOnStarted {
-                lessonRegisterState.collect { uiState ->
+                registerLessonState.collect { uiState ->
                     when (uiState) {
                         is UiState.Loading -> showProgress()
 

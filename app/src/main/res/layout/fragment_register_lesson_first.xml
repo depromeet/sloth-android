@@ -11,6 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_register_lesson_first"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.register.RegisterLessonActivity">
@@ -39,7 +40,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_register_guide">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_register_lesson_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp">
@@ -163,11 +163,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_register_lesson"
-            style="@style/Widget.Sloth.Button.Register"
+            style="@style/Widget.Sloth.Button"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
+            android:background="@drawable/selector_button"
+            android:enabled="@{vm.navigateToLessonSecondButtonState}"
             android:onClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"

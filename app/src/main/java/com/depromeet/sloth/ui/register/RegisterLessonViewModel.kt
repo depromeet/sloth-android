@@ -19,6 +19,7 @@ import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,8 +30,6 @@ import java.util.Date
 import java.util.TimeZone
 import javax.inject.Inject
 
-//TODO saveStateHandle 에 담아야 할 변수와 담지 않아도 될 변수 구분
-//TODO 굳이 변화를 감지할 필요 없는 one-shot으로 받아오는 데이터들을 LiveData로 감쌀 이유가 있나
 //TODO !! 처리한 변수들 보안 처리
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
@@ -86,17 +85,13 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonMessage: LiveData<String>
         get() = _lessonMessage
 
-    private val _lessonRegisterState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
-    val lessonRegisterState: SharedFlow<UiState<LessonRegisterResponse>>
-        get() = _lessonRegisterState
+    private val _registerLessonState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
+    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>>
+        get() = _registerLessonState
 
     private val _lessonCheck = MutableLiveData<Lesson>()
     val lessonCheck: LiveData<Lesson>
         get() = _lessonCheck
-
-    private val _lessonRegister = MutableLiveData<LessonRegisterRequest>()
-    private val lessonRegister: LiveData<LessonRegisterRequest>
-        get() = _lessonRegister
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
@@ -110,6 +105,7 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
+    //Type Date
     private val _startDate = savedStateHandle.getLiveData<Date>(KEY_START_DATE)
     val startDate: LiveData<Date>
         get() = _startDate
@@ -120,6 +116,7 @@ class RegisterLessonViewModel @Inject constructor(
     val endDate: LiveData<Date>
         get() = _endDate
 
+    //Type String
     private val _lessonStartDate = savedStateHandle.getLiveData<String>(
         KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE
     )
@@ -135,8 +132,13 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonEndDateSelectedItemPosition = savedStateHandle.getLiveData<Int>(
         KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0
     )
+
     val lessonEndDateSelectedItemPosition: LiveData<Int>
         get() = _lessonEndDateSelectedItemPosition
+
+    private val _lessonEndDateSelectedState = MutableLiveData<Boolean>()
+    private val lessonEndDateSelectedState: LiveData<Boolean>
+        get() = _lessonEndDateSelectedState
 
     private val _navigateToRegisterLessonSecond = MutableSharedFlow<Unit>()
     val navigateToRegisterLessonSecond: SharedFlow<Unit>
@@ -147,9 +149,9 @@ class RegisterLessonViewModel @Inject constructor(
     val navigateToRegisterLessonCheck: SharedFlow<Unit>
         get() = _navigateToRegisterLessonCheck
 
-    private val _lessonDateValidation = MutableLiveData<Boolean>()
-    val lessonDateValidation: LiveData<Boolean>
-        get() = _lessonDateValidation
+    private val _lessonDateRangeValidation = MutableLiveData<Boolean>()
+    val lessonDateRangeValidation: LiveData<Boolean>
+        get() = _lessonDateRangeValidation
 
     private val _registerLessonStartDate = MutableSharedFlow<Date>()
     val registerLessonStartDate: SharedFlow<Date>
@@ -159,9 +161,29 @@ class RegisterLessonViewModel @Inject constructor(
     val registerLessonEndDate: SharedFlow<Date>
         get() = _registerLessonEndDate
 
+    val navigateToLessonSecondButtonState = MediatorLiveData<Boolean>().apply {
+        addSourceList(
+            _lessonName,
+            _lessonTotalNumber,
+            _lessonCategorySelectedItemPosition,
+            _lessonSiteSelectedItemPosition
+        ) {
+            canNavigateToLessonSecond()
+        }
+    }
+
+    val navigateToLessonCheckButtonState = MediatorLiveData<Boolean>().apply {
+        addSourceList(
+            _lessonEndDateSelectedState,
+//            _lessonDateRangeValidation
+        ) {
+            canNavigateToLessonCheck()
+        }
+    }
+
     private fun initLessonStartDate() {
         val today = Date()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
         calendar.time = today
         _startDate.value = calendar.time
         _lessonStartDate.value = getPickerDateToDash(calendar.time)
@@ -181,40 +203,35 @@ class RegisterLessonViewModel @Inject constructor(
         initLessonStartDate()
     }
 
-    fun updateLessonStartDate(calendar: Calendar) {
+    fun setLessonStartDate(calendar: Calendar) {
         setStartDate(calendar.time)
         setLessonStartDate(getPickerDateToDash(startDate.value!!))
+        setLessonDateRangeValidation()
     }
 
-    fun updateLessonEndDateBySpinner(position: Int?) {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+    fun setLessonEndDateBySpinner(position: Int?) {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
         calendar.time = startDate.value!!
         when (position) {
-            ONE_WEEK -> {
-                calendar.add(Calendar.DATE, 7)
-            }
+            ONE_WEEK -> calendar.add(Calendar.DATE, 7)
 
-            ONE_MONTH -> {
-                calendar.add(Calendar.MONTH, 1)
-            }
+            ONE_MONTH -> calendar.add(Calendar.MONTH, 1)
 
-            TWO_MONTH -> {
-                calendar.add(Calendar.MONTH, 2)
-            }
+            TWO_MONTH -> calendar.add(Calendar.MONTH, 2)
 
-            THREE_MONTH -> {
-                calendar.add(Calendar.MONTH, 3)
-            }
+            THREE_MONTH -> calendar.add(Calendar.MONTH, 3)
 
             else -> Unit
         }
         setEndDate(calendar.time)
         setLessonEndDate(getPickerDateToDash(calendar.time))
+        setLessonDateRangeValidation()
     }
 
-    fun updateLessonEndDateByCalendar(calendar: Calendar) {
+    fun setLessonEndDateByCalendar(calendar: Calendar) {
         setEndDate(calendar.time)
         setLessonEndDate(getPickerDateToDash(calendar.time))
+        setLessonDateRangeValidation()
     }
 
     @JvmName("setLessonCategoryList1")
@@ -235,7 +252,7 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-//    val lessonCategoryList: StateFlow<UIState<List<LessonCategory>>> =
+    //    val lessonCategoryList: StateFlow<UIState<List<LessonCategory>>> =
 //        lessonRepository.fetchLessonCategoryList()
 //            .stateIn(
 //                scope = viewModelScope,
@@ -250,11 +267,11 @@ class RegisterLessonViewModel @Inject constructor(
 //                started = SharingStarted.WhileSubscribed(5000L),
 //                initialValue = UIState.Loading
 //            )
+    private fun setLessonDateRangeValidation() {
+        _lessonDateRangeValidation.value = startDate.value!! <= endDate.value!!
+    }
 
     fun setLessonInfo() {
-        if (startDate.value!! > endDate.value!!) {
-            _lessonDateValidation.value = false
-        }
         _lessonCheck.value = Lesson(
             categoryName = lessonCategoryName.value!!,
             endDate = changeDateStringToArrayList(lessonEndDate.value!!),
@@ -265,23 +282,25 @@ class RegisterLessonViewModel @Inject constructor(
             startDate = changeDateStringToArrayList(lessonStartDate.value!!),
             totalNumber = lessonTotalNumber.value!!
         )
-
-        _lessonRegister.value = LessonRegisterRequest(
-            alertDays = null,
-            categoryId = lessonCategoryId.value!!,
-            endDate = lessonEndDate.value!!,
-            lessonName = lessonName.value!!,
-            message = lessonMessage.value!!,
-            price = lessonPrice.value!!,
-            siteId = lessonSiteId.value!!,
-            startDate = lessonStartDate.value!!,
-            totalNumber = lessonTotalNumber.value!!
-        )
     }
 
     fun registerLesson() = viewModelScope.launch {
-        _lessonRegisterState.emit(UiState.Loading)
-        _lessonRegisterState.emit(lessonRepository.registerLesson(lessonRegister.value!!))
+        _registerLessonState.emit(UiState.Loading)
+        _registerLessonState.emit(
+            lessonRepository.registerLesson(
+                LessonRegisterRequest(
+                    alertDays = null,
+                    categoryId = lessonCategoryId.value!!,
+                    endDate = lessonEndDate.value!!,
+                    lessonName = lessonName.value!!,
+                    message = lessonMessage.value!!,
+                    price = lessonPrice.value!!,
+                    siteId = lessonSiteId.value!!,
+                    startDate = lessonStartDate.value!!,
+                    totalNumber = lessonTotalNumber.value!!
+                )
+            )
+        )
     }
 
     fun setLessonCategoryItemPosition(position: Int?) {
@@ -303,6 +322,7 @@ class RegisterLessonViewModel @Inject constructor(
             return
         }
         _lessonEndDateSelectedItemPosition.value = position
+        _lessonEndDateSelectedState.value = lessonEndDateSelectedItemPosition.value != 0
     }
 
     fun setLessonName(lessonName: String?) {
@@ -330,7 +350,6 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.lessonCategoryName.value == lessonCategoryName || lessonCategoryName == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
     }
 
@@ -338,7 +357,6 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.lessonSiteId.value == lessonSiteId || lessonSiteId == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
     }
 
@@ -346,7 +364,6 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.lessonSiteName.value == lessonSiteName || lessonSiteName == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
     }
 
@@ -354,7 +371,6 @@ class RegisterLessonViewModel @Inject constructor(
         if (this.lessonPrice.value == lessonPrice || lessonPrice == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_PRICE] = lessonPrice
     }
 
@@ -395,20 +411,12 @@ class RegisterLessonViewModel @Inject constructor(
         _registerLessonEndDate.emit(endDate.value ?: Date())
     }
 
-    val isEnabledMoveLessonSecondButton = MediatorLiveData<Boolean>().apply {
-        addSourceList(
-            _lessonName,
-            _lessonTotalNumber,
-            _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition
-        ) {
-            isValidLessonFirstEnterInfo()
-        }
-    }
+    private fun canNavigateToLessonSecond() =
+        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 &&
+                lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
 
-    private fun isValidLessonFirstEnterInfo() =
-        !_lessonName.value.isNullOrBlank() && _lessonTotalNumber.value != 0 &&
-                _lessonCategorySelectedItemPosition.value != 0 && _lessonSiteSelectedItemPosition.value != 0
+    private fun canNavigateToLessonCheck() =
+        lessonEndDateSelectedState.value ?: false && lessonDateRangeValidation.value ?: false
 
     private fun setStartDate(startDate: Date?) {
         if (this.startDate.value == startDate || startDate == null) {

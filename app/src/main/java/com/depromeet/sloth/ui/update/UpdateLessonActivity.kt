@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.DecimalFormat
 
+
 @AndroidEntryPoint
 class UpdateLessonActivity :
     BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
@@ -62,7 +63,7 @@ class UpdateLessonActivity :
     private fun initObserver() {
         viewModel.apply {
             repeatOnStarted {
-                lessonUpdateState.collect { uiState ->
+                updateLessonState.collect { uiState ->
                     when (uiState) {
                         is UiState.Loading ->
                             showProgress(this@UpdateLessonActivity)
@@ -147,28 +148,12 @@ class UpdateLessonActivity :
                 hideProgress()
             }
 
-            isEnabledLessonUpdateButton.observe(this@UpdateLessonActivity) { isEnable ->
-                when (isEnable) {
-                    false -> {
-                        lockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
-                    }
-
-                    true -> {
-                        unlockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
-                    }
-                }
-            }
-
-            lessonNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
+            lessonTotalNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
                 when (isEnable) {
                     false -> {
                         showToast(getString(R.string.lesson_number_validation_error))
-                        lockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
                     }
-
-                    true -> {
-                        unlockButton(binding.btnUpdateLesson, this@UpdateLessonActivity)
-                    }
+                    else -> Unit
                 }
             }
         }
@@ -347,18 +332,18 @@ class UpdateLessonActivity :
                         }
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
-                            viewModel.setCategoryId(
+                            viewModel.setLessonCategoryId(
                                 viewModel.lessonCategoryMap.filterValues
                                 { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                             )
-                            viewModel.setCategoryName(spinner.selectedItem.toString())
+                            viewModel.setLessonCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
-                            viewModel.setSiteId(
+                            viewModel.setLessonSiteId(
                                 viewModel.lessonSiteMap.filterValues
                                 { it == spnUpdateLessonSite.selectedItem }.keys.first()
                             )
-                            viewModel.setSiteName(spinner.selectedItem.toString())
+                            viewModel.setLessonSiteName(spinner.selectedItem.toString())
                             viewModel.setLessonSiteItemPosition(spnUpdateLessonSite.selectedItemPosition)
                         }
                     }
