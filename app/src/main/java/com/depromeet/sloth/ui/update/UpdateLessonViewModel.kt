@@ -17,7 +17,6 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
-import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
