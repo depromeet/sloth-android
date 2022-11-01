@@ -166,5 +166,11 @@
     <string name="noti_update_complete">알림 수신 여부가 변경되었어요</string>
     <string name="choose_lesson_category">강의 카테고리를 선택해 주세요</string>
     <string name="choose_lesosn_site">강의 사이트를 선택해 주세요</string>
+    <string name="click_button_to_register_lesson">아래 버튼을 눌러 강의를 등록해주세요</string>
+    <string name="finished_lesson_until_today">오늘까지 완료한 강의</string>
+    <string name="not_finished_lesson_until_today">오늘까지 들어야하는 강의</string>
+    <string name="doing_lesson">진행중인 강의</string>
+    <string name="planning_lesson">예정된 강의</string>
+    <string name="passed_lesson">지난 강의</string>
 
 </resources>

@@ -38,7 +38,7 @@ class RegisterLessonFirstFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value!!
+            viewModel.lessonCategoryList
         )
     }
 
@@ -46,7 +46,7 @@ class RegisterLessonFirstFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value!!
+            viewModel.lessonSiteList
         )
     }
 
@@ -180,14 +180,14 @@ class RegisterLessonFirstFragment :
                     } else {
                         if (spinner == spnRegisterLessonCategory) {
                             viewModel.setCategoryId(
-                                viewModel.lessonCategoryMap.value!!.filterValues
+                                viewModel.lessonCategoryMap.filterValues
                                 { it == spnRegisterLessonCategory.selectedItem }.keys.first()
                             )
                             viewModel.setCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
                         } else {
                             viewModel.setSiteId(
-                                viewModel.lessonSiteMap.value!!.filterValues
+                                viewModel.lessonSiteMap.filterValues
                                 { it == spnRegisterLessonSite.selectedItem }.keys.first()
                             )
                             viewModel.setSiteName(spinner.selectedItem.toString())

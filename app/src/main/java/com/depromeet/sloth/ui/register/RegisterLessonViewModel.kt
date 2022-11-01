@@ -30,7 +30,7 @@ import java.util.TimeZone
 import javax.inject.Inject
 
 //TODO saveStateHandle 에 담아야 할 변수와 담지 않아도 될 변수 구분
-//TODO saveStateHandle wrapping
+//TODO 굳이 변화를 감지할 필요 없는 one-shot으로 받아오는 데이터들을 LiveData로 감쌀 이유가 있나
 //TODO !! 처리한 변수들 보안 처리
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
@@ -86,30 +86,6 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonMessage: LiveData<String>
         get() = _lessonMessage
 
-    private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>()
-    )
-    val lessonCategoryMap: LiveData<HashMap<Int, String>>
-        get() = _lessonCategoryMap
-
-    private val _lessonCategoryList = savedStateHandle.getLiveData<MutableList<String>>(
-        KEY_LESSON_CATEGORY_LIST, mutableListOf()
-    )
-    val lessonCategoryList: LiveData<MutableList<String>>
-        get() = _lessonCategoryList
-
-    private val _lessonSiteMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        KEY_LESSON_SITE_MAP, HashMap<Int, String>()
-    )
-    val lessonSiteMap: LiveData<HashMap<Int, String>>
-        get() = _lessonSiteMap
-
-    private val _lessonSiteList = savedStateHandle.getLiveData<MutableList<String>>(
-        KEY_LESSON_SITE_LIST, mutableListOf()
-    )
-    val lessonSiteList: LiveData<MutableList<String>>
-        get() = _lessonSiteList
-
     private val _lessonRegisterState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
     val lessonRegisterState: SharedFlow<UiState<LessonRegisterResponse>>
         get() = _lessonRegisterState
@@ -134,9 +110,7 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteSelectedItemPosition: LiveData<Int>
         get() = _lessonSiteSelectedItemPosition
 
-    private val _startDate = savedStateHandle.getLiveData<Date>(
-        KEY_START_DATE
-    )
+    private val _startDate = savedStateHandle.getLiveData<Date>(KEY_START_DATE)
     val startDate: LiveData<Date>
         get() = _startDate
 
@@ -243,20 +217,20 @@ class RegisterLessonViewModel @Inject constructor(
         setLessonEndDate(getPickerDateToDash(calendar.time))
     }
 
+    @JvmName("setLessonCategoryList1")
     fun setLessonCategoryList(data: List<LessonCategory>) {
-        _lessonCategoryMap.value =
-                //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-            data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
-        _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
+        lessonCategoryMap =
+            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
+    @JvmName("setLessonSiteList1")
     fun setLessonSiteList(data: List<LessonSite>) {
-        _lessonSiteMap.value =
-                //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-            data.associate { it.siteId to it.siteName } as HashMap<Int, String>
-        _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
+        lessonSiteMap =
+            data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
     }
@@ -453,13 +427,9 @@ class RegisterLessonViewModel @Inject constructor(
     companion object {
         const val KEY_LESSON_NAME = "lessonName"
         const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
-        const val KEY_LESSON_CATEGORY_MAP = "lessonCategoryMap"
-        const val KEY_LESSON_CATEGORY_LIST = "lessonCategoryList"
         const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
         const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
         const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
-        const val KEY_LESSON_SITE_MAP = "lessonSiteMap"
-        const val KEY_LESSON_SITE_LIST = "lessonSiteList"
         const val KEY_LESSON_SITE_NAME = "lessonSiteName"
         const val KEY_LESSON_SITE_ID = "lessonSiteId"
         const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"

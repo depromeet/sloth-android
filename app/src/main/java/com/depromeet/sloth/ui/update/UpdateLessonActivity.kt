@@ -34,7 +34,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value ?: listOf()
+            viewModel.lessonCategoryList
         )
     }
 
@@ -42,7 +42,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value ?: listOf()
+            viewModel.lessonSiteList
         )
     }
 
@@ -348,14 +348,14 @@ class UpdateLessonActivity :
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
                             viewModel.setCategoryId(
-                                viewModel.lessonCategoryMap.value!!.filterValues
+                                viewModel.lessonCategoryMap.filterValues
                                 { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                             )
                             viewModel.setCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
                             viewModel.setSiteId(
-                                viewModel.lessonSiteMap.value!!.filterValues
+                                viewModel.lessonSiteMap.filterValues
                                 { it == spnUpdateLessonSite.selectedItem }.keys.first()
                             )
                             viewModel.setSiteName(spinner.selectedItem.toString())

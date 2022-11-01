@@ -39,6 +39,7 @@ import timber.log.Timber
 import java.text.DecimalFormat
 import java.util.*
 
+//TODO Button 상태 관리 viewModel 내의 livedata 로 처리
 @AndroidEntryPoint
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {

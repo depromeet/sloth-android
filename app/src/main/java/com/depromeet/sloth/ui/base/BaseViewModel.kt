@@ -12,6 +12,12 @@ open class BaseViewModel @Inject constructor(
     private val memberRepository: MemberRepository
 ) : ViewModel() {
 
+    open lateinit var lessonCategoryMap: HashMap<Int, String>
+    open lateinit var lessonCategoryList: MutableList<String>
+
+    open lateinit var lessonSiteMap: HashMap<Int, String>
+    open lateinit var lessonSiteList: MutableList<String>
+
     fun removeAuthToken() = viewModelScope.launch {
         memberRepository.removeAuthToken()
     }
