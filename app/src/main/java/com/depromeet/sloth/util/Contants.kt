@@ -12,3 +12,5 @@ const val DATE_FORMAT_PATTERN = "yyyy-MM-dd"
 const val DECIMAL_FORMAT_PATTERN = "#,###"
 
 const val LESSON_DETAIL = "lessonDetail"
+
+const val DEFAULT_STRING_VALUE = ""

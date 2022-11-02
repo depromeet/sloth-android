@@ -9,9 +9,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonCategory
-import com.depromeet.sloth.data.network.lesson.LessonSite
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
@@ -21,6 +22,7 @@ import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.DecimalFormat
 
@@ -35,7 +37,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonCategoryList
+            viewModel.lessonCategoryList.value
         )
     }
 
@@ -43,7 +45,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonSiteList
+            viewModel.lessonSiteList.value
         )
     }
 
@@ -82,71 +84,57 @@ class UpdateLessonActivity :
                             Timber.tag("fetch Error").d(uiState.throwable)
                             showToast(getString(R.string.lesson_info_update_fail))
                         }
-
-                        else -> {}
                     }
                     hideProgress()
                 }
             }
 
-            //TODO flow zip 으로 migration
-            lessonCategoryListState.observe(this@UpdateLessonActivity) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> showProgress(this@UpdateLessonActivity)
-
-                    is UiState.Success<List<LessonCategory>> -> {
-                        viewModel.setLessonCategoryList(uiState.data)
-//                        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                        binding.spnUpdateLessonCategory.apply {
-//                            adapter = lessonCategoryAdapter
-//                            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
-//                        }
+            //TODO flow zip 연산자를 사용하여 refactoring
+            lifecycleScope.launch {
+                lessonCategoryListState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
+                            is UiState.Success -> {
+                                //TODO UDF 에 위반 코드 개선
+                                setLessonCategoryList(uiState.data)
+                                hideProgress()
+                            }
+                            // TODO Error 내부로 이동
+                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Error -> {
+                                showToast(getString(R.string.cannot_get_lesson_category))
+                                hideProgress()
+                            }
+                        }
                     }
-
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-                    }
-
-                    is UiState.Error -> {
-                        Timber.tag("fetch Error").d(uiState.throwable)
-                        showToast(getString(R.string.lesson_category_fetch_fail))
-                    }
-
-                    else -> Unit
-                }
-                hideProgress()
             }
 
-            lessonSiteListState.observe(this@UpdateLessonActivity) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> showProgress(this@UpdateLessonActivity)
-
-                    is UiState.Success<List<LessonSite>> -> {
-                        viewModel.setLessonSiteList(uiState.data)
-//                        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                        binding.spnUpdateLessonSite.apply {
-//                            adapter = lessonSiteAdapter
-//                            setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
-//                        }
-
-                        viewModel.setLessonUpdateInfo()
-                        bindAdapter()
+            lifecycleScope.launch {
+                lessonSiteListState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
+                            is UiState.Success -> {
+                                //TODO UDF 에 위반 코드 개선
+                                setLessonSiteList(uiState.data)
+                                setLessonUpdateInfo()
+                                bindAdapter()
+                                hideProgress()
+                            }
+                            // TODO Error 내부로 이동
+                            is UiState.Unauthorized -> {
+                                showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                                hideProgress()
+                            }
+                            is UiState.Error -> {
+                                showToast(getString(R.string.cannot_get_lesson_category))
+                                hideProgress()
+                            }
+                        }
                     }
-
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(
-                            this@UpdateLessonActivity
-                        ) { viewModel.removeAuthToken() }
-                    }
-
-                    is UiState.Error -> {
-                        Timber.tag("fetch Error").d(uiState.throwable)
-                        showToast(getString(R.string.lesson_site_fetch_fail))
-                    }
-
-                    else -> Unit
-                }
-                hideProgress()
             }
 
             lessonTotalNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
@@ -334,14 +322,14 @@ class UpdateLessonActivity :
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
                             viewModel.setLessonCategoryId(
-                                viewModel.lessonCategoryMap.filterValues
+                                viewModel.lessonCategoryMap.value.filterValues
                                 { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                             )
                             viewModel.setLessonCategoryName(spinner.selectedItem.toString())
                             viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
                             viewModel.setLessonSiteId(
-                                viewModel.lessonSiteMap.filterValues
+                                viewModel.lessonSiteMap.value.filterValues
                                 { it == spnUpdateLessonSite.selectedItem }.keys.first()
                             )
                             viewModel.setLessonSiteName(spinner.selectedItem.toString())

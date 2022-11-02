@@ -2,6 +2,7 @@ package com.depromeet.sloth.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,14 +45,8 @@ class PreferenceManager @Inject constructor(
         editor.apply()
     }
 
-    fun clear() {
-        editor.clear()
-        editor.apply()
-    }
-
     companion object {
         private const val PREFERENCES_NAME = "Sloth-pref"
-        private const val DEFAULT_STRING_VALUE = ""
         private const val ACCESS_TOKEN = "accessToken"
         private const val REFRESH_TOKEN = "refreshToken"
     }

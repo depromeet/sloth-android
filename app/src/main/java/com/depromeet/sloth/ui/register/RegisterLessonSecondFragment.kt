@@ -12,9 +12,6 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
@@ -22,7 +19,6 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.CUSTOM_SETTING
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DAY
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_MONTH
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_WEEK
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.THREE_MONTH
@@ -30,11 +26,11 @@ import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.TWO_MON
 import com.depromeet.sloth.util.CALENDAR_TAG
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
 
@@ -89,19 +85,12 @@ class RegisterLessonSecondFragment :
     }
 
     private fun initNavigation() {
-        // navigation 의 경우 repeatOnStarted 확장 함수를 통해 구독할 경우 에러 발생
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToRegisterLessonCheck.collect {
-                    viewModel.setLessonInfo()
-                    navigateToRegisterLessonCheck()
-                }
+        repeatOnStarted {
+            viewModel.navigateToRegisterLessonCheck.collect {
+                viewModel.setLessonInfo()
+                navigateToRegisterLessonCheck()
             }
         }
-
-//        repeatOnStarted {
-//            viewModel.navigateToRegisterLessonCheck.collect { event -> handleEvent(event) }
-//        }
     }
 
     override fun initViews() = with(binding) {
@@ -125,7 +114,6 @@ class RegisterLessonSecondFragment :
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
                 viewModel.setLessonStartDate(calendar)
-                // viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value!!)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -134,7 +122,7 @@ class RegisterLessonSecondFragment :
     private fun registerLessonEndDateByCalendar() = with(binding) {
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(viewModel.startDate.value!!.time + DAY))
+                .setValidator(DateValidatorPointForward.from(viewModel.startDate.value.time + DAY))
 
         val materialDateBuilder =
             MaterialDatePicker.Builder.datePicker().apply {

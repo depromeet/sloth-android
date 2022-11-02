@@ -1,10 +1,6 @@
 package com.depromeet.sloth.ui.update
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonCategory
@@ -15,12 +11,12 @@ import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.addSourceList
+import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,36 +36,49 @@ class UpdateLessonViewModel @Inject constructor(
     val updateLessonState: SharedFlow<UiState<LessonUpdateResponse>>
         get() = _updateLessonState
 
+    private val _lessonCategoryListState =
+        MutableStateFlow<UiState<List<LessonCategory>>>(UiState.Loading)
+    val lessonCategoryListState: StateFlow<UiState<List<LessonCategory>>> =
+        _lessonCategoryListState.asStateFlow()
+
+    private val _lessonSiteListState =
+        MutableStateFlow<UiState<List<LessonSite>>>(UiState.Loading)
+    val lessonSiteListState: StateFlow<UiState<List<LessonSite>>> =
+        _lessonSiteListState.asStateFlow()
+
     private val _lessonName =
-        savedStateHandle.getLiveData<String>(KEY_LESSON_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_NAME, "")
     val lessonName: LiveData<String>
         get() = _lessonName
 
     private val _lessonTotalNumber =
-        savedStateHandle.getLiveData<Int>(KEY_LESSON_TOTAL_NUMBER, 0)
+        savedStateHandle.getLiveData(KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: LiveData<Int>
         get() = _lessonTotalNumber
 
-    private val _lessonPrice =
-        savedStateHandle.getLiveData<Int>(KEY_LESSON_PRICE, 0)
-    private val lessonPrice: LiveData<Int>
-        get() = _lessonPrice
+    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
+    private val lessonPrice: StateFlow<Int>
+        get() = _lessonPrice.asStateFlow()
 
-    private val _lessonCategoryListState = MutableLiveData<UiState<List<LessonCategory>>>()
-    val lessonCategoryListState: LiveData<UiState<List<LessonCategory>>>
-        get() = _lessonCategoryListState
+    private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
 
-    private val _lessonSiteListState = MutableLiveData<UiState<List<LessonSite>>>()
-    val lessonSiteListState: LiveData<UiState<List<LessonSite>>>
-        get() = _lessonSiteListState
+    private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
+
+    private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
+    val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
+
+    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
+    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
     private val _lessonCategoryId =
-        savedStateHandle.getLiveData<Int>(KEY_LESSON_CATEGORY_ID, 0)
+        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_ID, 0)
     private val lessonCategoryId: LiveData<Int>
         get() = _lessonCategoryId
 
     private val _lessonCategoryName =
-        savedStateHandle.getLiveData<String>(KEY_LESSON_CATEGORY_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_NAME, "")
     private val lessonCategoryName: LiveData<String>
         get() = _lessonCategoryName
 
@@ -80,12 +89,12 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonCategorySelectedItemPosition
 
     private val _lessonSiteId =
-        savedStateHandle.getLiveData<Int>(KEY_LESSON_SITE_ID, 0)
+        savedStateHandle.getLiveData(KEY_LESSON_SITE_ID, 0)
     private val lessonSiteId: LiveData<Int>
         get() = _lessonSiteId
 
     private val _lessonSiteName =
-        savedStateHandle.getLiveData<String>(KEY_LESSON_SITE_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_SITE_NAME, "")
     private val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
@@ -146,7 +155,7 @@ class UpdateLessonViewModel @Inject constructor(
                 lessonDetail.lessonId.toString(),
                 LessonUpdateRequest(
                     lessonName = lessonName.value!!,
-                    price = lessonPrice.value!!,
+                    price = lessonPrice.value,
                     categoryId = lessonCategoryId.value!!,
                     siteId = lessonSiteId.value!!,
                     totalNumber = lessonTotalNumber.value!!,
@@ -155,22 +164,18 @@ class UpdateLessonViewModel @Inject constructor(
         )
     }
 
-//    private suspend fun fetchLessonCategoryList() {
-//        _lessonCategoryListState.value = LessonState.Loading
-//        _lessonCategoryListState.value = lessonRepository.fetchLessonCategoryList()
-//    }
-//
-//    private suspend fun fetchLessonSiteList() {
-//        _lessonSiteListState.value = LessonState.Loading
-//        _lessonSiteListState.value = lessonRepository.fetchLessonSiteList()
-//    }
-
-    fun setLessonCategoryItemPosition(position: Int) {
-        _lessonCategorySelectedItemPosition.value = position
+    fun setLessonCategoryItemPosition(position: Int?) {
+        if (this.lessonCategorySelectedItemPosition.value == position || position == null) {
+            return
+        }
+        savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
     }
 
-    fun setLessonSiteItemPosition(position: Int) {
-        _lessonSiteSelectedItemPosition.value = position
+    fun setLessonSiteItemPosition(position: Int?) {
+        if (this.lessonSiteSelectedItemPosition.value == position || position == null) {
+            return
+        }
+        savedStateHandle[KEY_LESSON_SITE_ID] = lessonCategoryId
     }
 
     fun setLessonCategoryId(lessonCategoryId: Int?) {
@@ -184,7 +189,6 @@ class UpdateLessonViewModel @Inject constructor(
         if (this.lessonCategoryName.value == lessonCategoryName || lessonCategoryName == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
     }
 
@@ -192,7 +196,6 @@ class UpdateLessonViewModel @Inject constructor(
         if (this.lessonSiteId.value == lessonSiteId || lessonSiteId == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
     }
 
@@ -200,7 +203,6 @@ class UpdateLessonViewModel @Inject constructor(
         if (this.lessonSiteName.value == lessonSiteName || lessonSiteName == null) {
             return
         }
-
         savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
     }
 
@@ -212,7 +214,6 @@ class UpdateLessonViewModel @Inject constructor(
         addSourceList(
             _lessonName,
             _lessonTotalNumber,
-            _lessonPrice,
             _lessonCategorySelectedItemPosition,
             _lessonSiteSelectedItemPosition,
             _lessonTotalNumberValidation
@@ -222,24 +223,22 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     private fun canUpdateLesson() =
-        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 && lessonPrice.value != 0
+        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0
                 && lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
                 && lessonTotalNumberValidation.value ?: false
 
-    @JvmName("setLessonCategoryList1")
     fun setLessonCategoryList(data: List<LessonCategory>) {
-        lessonCategoryMap =
+        _lessonCategoryMap.value =
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
+        _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
-    @JvmName("setLessonSiteList1")
     fun setLessonSiteList(data: List<LessonSite>) {
-        lessonSiteMap =
+        _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
+        _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
     }
@@ -248,10 +247,10 @@ class UpdateLessonViewModel @Inject constructor(
         setLessonName(lessonName)
         setLessonTotalNumber(totalNumber)
         setLessonPrice(price)
-        setLessonCategoryId(lessonCategoryMap.filterValues { it == categoryName }.keys.first())
-        setLessonSiteId(lessonSiteMap.filterValues { it == siteName }.keys.first())
-        setLessonCategoryItemPosition(lessonCategoryList.indexOf(lessonCategoryMap[lessonCategoryId.value!!]))
-        setLessonSiteItemPosition(lessonSiteList.indexOf(lessonSiteMap[lessonSiteId.value!!]))
+        setLessonCategoryId(lessonCategoryMap.value.filterValues { it == categoryName }.keys.first())
+        setLessonSiteId(lessonSiteMap.value.filterValues { it == siteName }.keys.first())
+        setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value!!]))
+        setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value!!]))
     }
 
     companion object {
