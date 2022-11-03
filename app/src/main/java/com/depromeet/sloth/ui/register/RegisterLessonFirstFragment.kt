@@ -54,8 +54,8 @@ class RegisterLessonFirstFragment :
             vm = viewModel
         }
 
-        initObserver()
         initViews()
+        initObserver()
     }
 
     private fun initObserver() {

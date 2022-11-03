@@ -58,9 +58,9 @@ class UpdateLessonActivity :
             vm = viewModel
         }
 
-        initObserver()
-        initListener()
         initViews()
+        initListener()
+        initObserver()
     }
 
     private fun initObserver() {

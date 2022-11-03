@@ -39,9 +39,13 @@ class LessonDetailActivity :
         bind {
             vm = viewModel
         }
-
-        initObserver()
         initViews()
+        initObserver()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchLessonDetail()
     }
 
     private fun initObserver() {
@@ -113,11 +117,6 @@ class LessonDetailActivity :
                     .collect { showLessonDeleteDialog() }
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.fetchLessonDetail()
     }
 
     override fun initViews() = with(binding) {

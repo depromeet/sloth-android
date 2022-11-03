@@ -21,8 +21,6 @@ abstract class BaseActivity<B: ViewDataBinding>(
 
     open fun initViews() = Unit
 
-    open fun observeData() = Unit
-
     protected fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }

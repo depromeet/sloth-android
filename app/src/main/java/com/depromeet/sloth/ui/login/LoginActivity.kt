@@ -27,7 +27,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         bind {
             vm = viewModel
         }
-
         initObserver()
     }
 

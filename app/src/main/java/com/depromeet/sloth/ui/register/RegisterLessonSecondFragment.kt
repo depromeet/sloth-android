@@ -58,9 +58,8 @@ class RegisterLessonSecondFragment :
         bind {
             vm = viewModel
         }
-
-        initObserver()
         initViews()
+        initObserver()
     }
 
     private fun initObserver() {

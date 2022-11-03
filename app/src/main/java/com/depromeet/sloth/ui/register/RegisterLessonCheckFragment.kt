@@ -29,7 +29,6 @@ class RegisterLessonCheckFragment :
             vm = viewModel
             lesson = viewModel.lessonCheck.value
         }
-
         initObserver()
     }
 

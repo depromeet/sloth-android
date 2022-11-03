@@ -41,13 +41,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
         initNavigation()
         initObserver()
+    }
 
-        viewModel.apply {
-            // 서버에 저장된 FCM 토큰이 있는지 조회 후
-            // 존재하지 않는다면 토큰을 생성하여 서버에 저장
-            // 이미 존재한다면 토큰을 재 생성하지 않음
-            fetchFCMToken(deviceId)
-        }
+    override fun onStart() {
+        super.onStart()
+        // 서버에 저장된 FCM 토큰이 있는지 조회 후
+        // 존재하지 않는다면 토큰을 생성하여 서버에 저장
+        // 이미 존재한다면 토큰을 재 생성하지 않음
+        viewModel.fetchFCMToken(deviceId)
     }
 
     private fun initNavigation() {
