@@ -269,7 +269,7 @@
                     android:layout_height="28dp"
                     android:layout_marginEnd="18dp"
                     android:background="@null"
-                    android:onCheckedChanged="@{(_, isCheck) -> vm.notiSwitchBtnClick(isCheck)}"
+                    android:onCheckedChanged="@{(_, isCheck) -> vm.notificationSwitchClick(isCheck)}"
                     android:thumb="@drawable/selector_thumb"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

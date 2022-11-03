@@ -14,6 +14,7 @@ import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //TODO !! 제거
-
+//TODO MediaLiveData -> Flow 로 변경
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -47,7 +48,7 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
-        savedStateHandle.getLiveData(KEY_LESSON_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
     val lessonName: LiveData<String>
         get() = _lessonName
 
@@ -57,8 +58,7 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonTotalNumber
 
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
-    private val lessonPrice: StateFlow<Int>
-        get() = _lessonPrice.asStateFlow()
+    private val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
     val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
@@ -78,11 +78,11 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonCategoryId
 
     private val _lessonCategoryName =
-        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
     private val lessonCategoryName: LiveData<String>
         get() = _lessonCategoryName
 
-    private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
+    private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
     val lessonCategorySelectedItemPosition: LiveData<Int>
@@ -94,11 +94,11 @@ class UpdateLessonViewModel @Inject constructor(
         get() = _lessonSiteId
 
     private val _lessonSiteName =
-        savedStateHandle.getLiveData(KEY_LESSON_SITE_NAME, "")
+        savedStateHandle.getLiveData(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     private val lessonSiteName: LiveData<String>
         get() = _lessonSiteName
 
-    private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(
+    private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
     val lessonSiteSelectedItemPosition: LiveData<Int>
@@ -164,20 +164,6 @@ class UpdateLessonViewModel @Inject constructor(
         )
     }
 
-    fun setLessonCategoryItemPosition(position: Int?) {
-        if (this.lessonCategorySelectedItemPosition.value == position || position == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
-    }
-
-    fun setLessonSiteItemPosition(position: Int?) {
-        if (this.lessonSiteSelectedItemPosition.value == position || position == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_SITE_ID] = lessonCategoryId
-    }
-
     fun setLessonCategoryId(lessonCategoryId: Int?) {
         if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
             return
@@ -204,6 +190,20 @@ class UpdateLessonViewModel @Inject constructor(
             return
         }
         savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
+    }
+
+    fun setLessonCategoryItemPosition(position: Int?) {
+        if (this.lessonCategorySelectedItemPosition.value == position || position == null) {
+            return
+        }
+        savedStateHandle[KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION] = position
+    }
+
+    fun setLessonSiteItemPosition(position: Int?) {
+        if (this.lessonSiteSelectedItemPosition.value == position || position == null) {
+            return
+        }
+        savedStateHandle[KEY_LESSON_SITE_SELECTED_ITEM_POSITION] = position
     }
 
     private fun setLessonTotalNumberValidation() {
@@ -243,6 +243,8 @@ class UpdateLessonViewModel @Inject constructor(
         }
     }
 
+    // UDF 위반
+    // 사실 이 함수를 둘로 나누면 쉽게 해결할 수 있을 것 같긴하다.
     fun setLessonUpdateInfo() = with(lessonDetail) {
         setLessonName(lessonName)
         setLessonTotalNumber(totalNumber)

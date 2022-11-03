@@ -19,6 +19,7 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,35 +59,31 @@ class UpdateLessonActivity :
         }
 
         initObserver()
-        initNavigation()
+        initListener()
         initViews()
     }
 
     private fun initObserver() {
         viewModel.apply {
-            repeatOnStarted {
-                updateLessonState.collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading ->
-                            showProgress(this@UpdateLessonActivity)
-
-                        is UiState.Success<LessonUpdateResponse> -> {
-                            Timber.tag("Update Success").d("${uiState.data}")
-                            showToast(getString(R.string.lesson_info_update_complete))
-                            finish()
+            lifecycleScope.launch {
+                updateLessonState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
+                            is UiState.Success<LessonUpdateResponse> -> {
+                                showToast(getString(R.string.lesson_info_update_complete))
+                                finish()
+                            }
+                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Error -> {
+                                Timber.tag("fetch Error").d(uiState.throwable)
+                                showToast(getString(R.string.lesson_info_update_fail))
+                            }
+                            else -> {}
                         }
-
-                        is UiState.Unauthorized -> {
-                            showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-                        }
-
-                        is UiState.Error -> {
-                            Timber.tag("fetch Error").d(uiState.throwable)
-                            showToast(getString(R.string.lesson_info_update_fail))
-                        }
+                        hideProgress()
                     }
-                    hideProgress()
-                }
             }
 
             //TODO flow zip 연산자를 사용하여 refactoring
@@ -96,18 +93,17 @@ class UpdateLessonActivity :
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
-                            is UiState.Success -> {
-                                //TODO UDF 에 위반 코드 개선
-                                setLessonCategoryList(uiState.data)
-                                hideProgress()
-                            }
+                            //TODO UDF 에 위반 코드 개선
+                            is UiState.Success -> setLessonCategoryList(uiState.data)
                             // TODO Error 내부로 이동
                             is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
+                                Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.cannot_get_lesson_category))
-                                hideProgress()
                             }
+                            else -> {}
                         }
+                        hideProgress()
                     }
             }
 
@@ -122,33 +118,26 @@ class UpdateLessonActivity :
                                 setLessonSiteList(uiState.data)
                                 setLessonUpdateInfo()
                                 bindAdapter()
-                                hideProgress()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> {
-                                showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
-                                hideProgress()
-                            }
-                            is UiState.Error -> {
-                                showToast(getString(R.string.cannot_get_lesson_category))
-                                hideProgress()
-                            }
+                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            else -> {}
                         }
+                        hideProgress()
                     }
             }
 
             lessonTotalNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
                 when (isEnable) {
-                    false -> {
-                        showToast(getString(R.string.lesson_number_validation_error))
-                    }
+                    false -> showToast(getString(R.string.lesson_number_validation_error))
                     else -> Unit
                 }
             }
         }
     }
 
-    private fun initNavigation() = with(binding) {
+    private fun initListener() = with(binding) {
         tbUpdateLesson.setNavigationOnClickListener { finish() }
     }
 
@@ -163,24 +152,18 @@ class UpdateLessonActivity :
     private fun bindAdapter() = with(binding) {
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonCategory.adapter = lessonCategoryAdapter
-        spnUpdateLessonCategory.setSelection(
-            viewModel.lessonCategorySelectedItemPosition.value!!
-        )
+        spnUpdateLessonCategory.setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
 
         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonSite.adapter = lessonSiteAdapter
-        spnUpdateLessonSite.setSelection(
-            viewModel.lessonSiteSelectedItemPosition.value!!
-        )
+        spnUpdateLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
     }
 
     // LessonName clearFocus 가 되지 않는 문제
     private fun focusInputForm(editText: EditText) {
         editText.apply {
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                }
-
+                override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
                 override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     viewModel.setLessonName(text.toString())
                 }
@@ -199,92 +182,94 @@ class UpdateLessonActivity :
     }
 
     private fun validateCountInputForm(editText: EditText) = with(binding) {
-            var result = ""
+        var result = DEFAULT_STRING_VALUE
 
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    charSequence: CharSequence?,
-                    i1: Int,
-                    i2: Int,
-                    i3: Int,
-                ) {}
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence?,
+                i1: Int,
+                i2: Int,
+                i3: Int,
+            ) {
+            }
 
-                override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                    if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                        viewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                        result = viewModel.lessonTotalNumber.value!!.toString()
-                        if (result[0] == '0') {
-                            tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
-                        } else {
-                            tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                        }
-                        editText.setText(result)
-                        editText.setSelection(result.length)
-
-                        tvUpdateLessonCountInfo.apply {
-                            text = getString(R.string.input_lesson_count, result)
-                            visibility = View.VISIBLE
-                        }
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = viewModel.lessonTotalNumber.value!!.toString()
+                    if (result[0] == '0') {
+                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                    } else {
+                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
                     }
+                    editText.setText(result)
+                    editText.setSelection(result.length)
 
-                    if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                        result = ""
-                        editText.setText(result)
-                        tvUpdateLessonCountInfo.apply {
-                            text = result
-                            visibility = View.INVISIBLE
-                        }
+                    tvUpdateLessonCountInfo.apply {
+                        text = getString(R.string.input_lesson_count, result)
+                        visibility = View.VISIBLE
                     }
                 }
 
-                override fun afterTextChanged(editable: Editable?) {}
-            })
-            setValidateEditTextFocus(editText, tvUpdateLessonCountInfo)
-        }
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = DEFAULT_STRING_VALUE
+                    editText.setText(result)
+                    tvUpdateLessonCountInfo.apply {
+                        text = result
+                        visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+        setValidateEditTextFocus(editText, tvUpdateLessonCountInfo)
+    }
 
     private fun validatePriceInputForm(editText: EditText) = with(binding) {
-            var result = ""
-            val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
+        var result = DEFAULT_STRING_VALUE
+        val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
 
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    charSequence: CharSequence?,
-                    i1: Int,
-                    i2: Int,
-                    i3: Int,
-                ) {}
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence?,
+                i1: Int,
+                i2: Int,
+                i3: Int,
+            ) {
+            }
 
-                override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                    if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
-                        viewModel.setLessonPrice(charSequence.toString().replace(",", "").toInt())
-                        result =
-                            decimalFormat.format(
-                                charSequence.toString().replace(",", "")
-                                    .toDouble()
-                            )
-                        editText.setText(result)
-                        editText.setSelection(result.length)
+            override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
+                    viewModel.setLessonPrice(charSequence.toString().replace(",", "").toInt())
+                    result =
+                        decimalFormat.format(
+                            charSequence.toString().replace(",", "")
+                                .toDouble()
+                        )
+                    editText.setText(result)
+                    editText.setSelection(result.length)
 
-                        tvUpdateLessonPriceInfo.apply {
-                            text = getString(R.string.input_lesson_price, result)
-                            visibility = View.VISIBLE
-                        }
-                    }
-
-                    if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                        result = ""
-                        editText.setText(result)
-                        tvUpdateLessonPriceInfo.apply {
-                            text = result
-                            visibility = View.INVISIBLE
-                        }
+                    tvUpdateLessonPriceInfo.apply {
+                        text = getString(R.string.input_lesson_price, result)
+                        visibility = View.VISIBLE
                     }
                 }
 
-                override fun afterTextChanged(editable: Editable?) {}
-            })
-            setValidateEditTextFocus(editText, tvUpdateLessonPriceInfo)
-        }
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = DEFAULT_STRING_VALUE
+                    editText.setText(result)
+                    tvUpdateLessonPriceInfo.apply {
+                        text = result
+                        visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+        setValidateEditTextFocus(editText, tvUpdateLessonPriceInfo)
+    }
 
     private fun setValidateEditTextFocus(editText: EditText, textView: TextView) {
         editText.setOnFocusChangeListener { _, gainFocus ->

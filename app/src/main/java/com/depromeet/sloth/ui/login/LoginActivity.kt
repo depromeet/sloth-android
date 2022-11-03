@@ -3,12 +3,15 @@ package com.depromeet.sloth.ui.login
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityLoginBinding
-import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
@@ -30,19 +33,21 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
 
     private fun initObserver() {
         viewModel.apply {
-            repeatOnStarted {
-                loginState.collect { loginState ->
-                    when (loginState) {
-                        true -> moveHomeActivity()
-                        else -> Unit
+            lifecycleScope.launch {
+                loginState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { loginState ->
+                        when (loginState) {
+                            true -> moveHomeActivity()
+                            else -> Unit
+                        }
                     }
-                }
             }
 
-            repeatOnStarted {
-                openLoginBottomSheetEvent.collect {
-                    openLoginBottomSheet()
-                }
+            lifecycleScope.launch {
+                openLoginBottomSheetEvent
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { openLoginBottomSheet() }
             }
         }
     }

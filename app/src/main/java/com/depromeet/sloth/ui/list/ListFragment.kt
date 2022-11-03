@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
-import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
-import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
 import com.depromeet.sloth.ui.list.LessonListViewModel.Companion.PAST
@@ -32,43 +32,50 @@ import java.util.*
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
-    private val lessonListViewModel: LessonListViewModel by activityViewModels()
+    private val viewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bind {
+            vm = viewModel
+        }
 
         initViews()
         fetchLessonList()
     }
 
     private fun fetchLessonList() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.allLessonList
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> showProgress()
-                        is UiState.UnLoading -> hideProgress()
-                        is UiState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
-                        is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+        viewModel.apply {
+            viewLifecycleOwner.lifecycleScope.launch {
+                allLessonList
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.UnLoading -> hideProgress()
+                            is UiState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
+                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        }
                     }
-                }
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                onRegisterLessonClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { moveRegisterActivity() }
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                onNavigateToNotificationListClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { showWaitDialog(requireContext()) }
+            }
         }
     }
 
     override fun initViews() {
         with(binding) {
             rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
-
-            ivLessonListRegister.setOnClickListener {
-                moveRegisterActivity()
-            }
-
-            ivLessonListAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireActivity(), DialogState.WAIT)
-                dlg.start()
-            }
         }
     }
 

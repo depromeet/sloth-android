@@ -10,18 +10,16 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
 import com.depromeet.sloth.databinding.FragmentManageBinding
-import com.depromeet.sloth.extensions.focusInputForm
-import com.depromeet.sloth.extensions.hideKeyBoard
-import com.depromeet.sloth.extensions.logout
-import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.showLogoutDialog
-import com.depromeet.sloth.extensions.showWithdrawalDialog
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
@@ -30,6 +28,7 @@ import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -42,145 +41,153 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
         bind {
             vm = viewModel
-            // 상태가 바로 반영 되지 않음
-            // member = viewModel.memberInfo.value.successOrNull()
-            // member = viewModel.member.value
         }
         initObserver()
     }
 
     private fun initObserver() {
         viewModel.apply {
-            memberState.observe(viewLifecycleOwner) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> showProgress()
-
-                    is UiState.Success<Member> -> {
-                        Timber.tag("fetch Success").d("${uiState.data}")
-                        viewModel.setMemberInfo(uiState.data)
-                    }
-
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is UiState.Error -> {
-                        Timber.tag("fetch Error").d(uiState.throwable)
-                        showToast(getString(R.string.member_info_fetch_fail))
-                    }
-                }
-                hideProgress()
-            }
-
-            repeatOnStarted {
-                memberUpdateState.collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> showProgress()
-
-                        is UiState.Success<MemberUpdateResponse> -> {
-                            Timber.tag("update Success").d("${uiState.data}")
-                            showToast(getString(R.string.member_update_success))
-                            viewModel.fetchMemberInfo()
+            viewLifecycleOwner.lifecycleScope.launch {
+                memberState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.Success<Member> -> viewModel.setMemberInfo(uiState.data)
+                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Error -> {
+                                Timber.tag("fetch Error").d(uiState.throwable)
+                                showToast(getString(R.string.member_info_fetch_fail))
+                            }
+                            else -> {}
                         }
-
-                        is UiState.Unauthorized -> {
-                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                        }
-
-                        is UiState.Error -> {
-                            Timber.tag("update Error").d(uiState.throwable)
-                            showToast(getString(R.string.member_update_fail))
-                        }
+                        hideProgress()
                     }
-                    hideProgress()
-                }
             }
 
-            repeatOnStarted {
-                notificationReceiveState.collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> showProgress()
-
-                        is UiState.Success<String> -> {
-                            showToast(getString(R.string.noti_update_complete))
-                            viewModel.fetchMemberInfo()
+            viewLifecycleOwner.lifecycleScope.launch {
+                memberUpdateState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.Success<MemberUpdateResponse> -> {
+                                showToast(getString(R.string.member_update_success))
+                                viewModel.fetchMemberInfo()
+                            }
+                            is UiState.Unauthorized -> {
+                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            }
+                            is UiState.Error -> {
+                                Timber.tag("update Error").d(uiState.throwable)
+                                showToast(getString(R.string.member_update_fail))
+                            }
+                            else -> {}
                         }
+                        hideProgress()
+                    }
+            }
 
-                        is UiState.Unauthorized -> {
-                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+            viewLifecycleOwner.lifecycleScope.launch {
+                notificationReceiveState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.Success<String> -> {
+                                showToast(getString(R.string.noti_update_complete))
+                                viewModel.fetchMemberInfo()
+                            }
+                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Error -> {
+                                Timber.tag("update Error").d(uiState.throwable)
+                                showToast(getString(R.string.noti_update_fail))
+                            }
+                            else -> {}
                         }
+                        hideProgress()
+                    }
+            }
 
-                        is UiState.Error -> {
-                            Timber.tag("update Error").d(uiState.throwable)
-                            showToast(getString(R.string.noti_update_fail))
+            viewLifecycleOwner.lifecycleScope.launch {
+                memberLogoutState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Error -> {
+                                Timber.tag("logout Error").d(uiState.throwable)
+                                showToast(getString(R.string.logout_fail))
+                            }
+                            else -> {}
                         }
+                        hideProgress()
                     }
-                }
             }
 
-            memberLogoutState.observe(viewLifecycleOwner) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> showProgress()
+            viewLifecycleOwner.lifecycleScope.launch {
+                member
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { member -> binding.member = member }
+            }
 
-                    is UiState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
+            viewLifecycleOwner.lifecycleScope.launch {
+                profileClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { showProfileUpdateDialog() }
+            }
 
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+            viewLifecycleOwner.lifecycleScope.launch {
+                contactButtonClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { sendEmail() }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                privatePolicyClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect {
+                        startActivity(
+                            Intent(
+                                requireContext(),
+                                SlothPolicyWebViewActivity::class.java
+                            )
+                        )
                     }
+            }
 
-                    is UiState.Error -> {
-                        Timber.tag("update Error").d(uiState.throwable)
-                        showToast(getString(R.string.logout_fail))
+            viewLifecycleOwner.lifecycleScope.launch {
+                logoutClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { showLogoutDialog() }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                withdrawalClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect {
+                        showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
                     }
-                }
-                hideProgress()
-            }
-
-            member.observe(viewLifecycleOwner) { member ->
-                binding.member = member
-            }
-
-            repeatOnStarted {
-                profileClick.collect { showProfileUpdateDialog() }
-            }
-
-            repeatOnStarted {
-                contactButtonClick.collect { sendEmail() }
-            }
-
-            repeatOnStarted {
-                privatePolicyClick.collect {
-                    startActivity(Intent(requireContext(), SlothPolicyWebViewActivity::class.java))
-                }
-            }
-
-            repeatOnStarted {
-                logoutClick.collect {
-                    val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
-                    dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-                        override fun onItemClicked() {
-                            viewModel.logout()
-                        }
-                    }
-                    dlg.start()
-                }
-            }
-
-            repeatOnStarted {
-                withdrawalClick.collect {
-                    showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
-                }
             }
         }
+    }
 
-//        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
-//            Timber.d("${memberInfo.successOrNull()}")
-//            binding.member = memberInfo.successOrNull()
-//        }
+    private fun showLogoutDialog() {
+        val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
+        dlg.onItemClickListener =
+            object : SlothDialog.OnItemClickedListener {
+                override fun onItemClicked() {
+                    viewModel.logout()
+                }
+            }
+        dlg.start()
     }
 
     private fun showProfileUpdateDialog() {
-        val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+        val updateDialog =
+            Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
         updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
@@ -190,13 +197,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         val updateButton =
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
-        nameEditText.hint = viewModel.member.value?.memberName ?: ""
-        //nameEditText.hint = viewModel.memberInfo.value.successOrNull()?.memberName ?: ""
+        nameEditText.hint = viewModel.member.value.memberName ?: ""
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != (viewModel.member.value?.memberName ?: "")) {
-//            if (nameEditText.text.toString() != (viewModel.memberInfo.value.successOrNull()?.memberName ?: "")) {
+            if (nameEditText.text.toString() != (viewModel.member.value.memberName ?: "")) {
                 viewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
@@ -210,7 +215,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     private fun sendEmail() {
         startActivity(
             Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
+                putExtra(
+                    Intent.EXTRA_EMAIL,
+                    arrayOf(getString(R.string.sloth_official_mail))
+                )
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
                 putExtra(
                     Intent.EXTRA_TEXT,

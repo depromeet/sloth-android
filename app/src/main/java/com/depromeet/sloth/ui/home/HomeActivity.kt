@@ -3,6 +3,9 @@ package com.depromeet.sloth.ui.home
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -18,6 +21,7 @@ import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -59,64 +63,47 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     private fun initObserver() {
         viewModel.apply {
-            notificationFetchState.observe(this@HomeActivity) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> {
-                        showProgress(this@HomeActivity)
-                    }
-
-                    is UiState.Success<NotificationFetchResponse> -> {
-                        Timber.tag("fetch Success").d("${uiState.data}")
-                        if (uiState.data.fcmToken == null) {
-                            Timber.d("fcmToken not existed")
-                            registerFCMToken()
-                        } else {
-                            Timber.d("fcmToken already existed")
+            lifecycleScope.launch {
+                notificationFetchState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress(this@HomeActivity)
+                            is UiState.Success<NotificationFetchResponse> -> {
+                                if (uiState.data.fcmToken == null) {
+                                    Timber.d("fcmToken not existed")
+                                    registerFCMToken()
+                                } else {
+                                    Timber.d("fcmToken already existed")
+                                }
+                            }
+                            is UiState.Unauthorized -> showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                            is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
+                            else -> {}
                         }
+                        hideProgress()
                     }
 
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
-                    }
-
-                    is UiState.Error -> {
-                        Timber.tag("Error").d(uiState.throwable)
-                    }
-
-                    else -> {}
-
-                }
-                hideProgress()
             }
 
-
-            notificationRegisterState.observe(this@HomeActivity) { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> {
-                        showProgress(this@HomeActivity)
+            lifecycleScope.launch {
+                notificationRegisterState
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress(this@HomeActivity)
+                            is UiState.Success<String> -> Timber.d(uiState.data)
+                            is UiState.Unauthorized -> showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                            is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
+                            else -> {}
+                        }
+                        hideProgress()
                     }
-
-                    is UiState.Success<String> -> {
-                        Timber.tag("fetch Success").d(uiState.data)
-                    }
-
-                    is UiState.Unauthorized -> {
-                        showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
-                    }
-
-                    is UiState.Error -> {
-                        Timber.tag("Error").d(uiState.throwable)
-                    }
-
-                    else -> {}
-                }
-                hideProgress()
             }
         }
     }
 
-
-    //TODO 싱글톤으로 변경
+    //TODO Firebase 의존성을 주입하는 방식으로 변경
     private fun registerFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {

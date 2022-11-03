@@ -11,31 +11,28 @@ import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository,
     savedStateHandle: SavedStateHandle,
+    memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
     val lessonId: String = checkNotNull(savedStateHandle[LessonDetailActivity.LESSON_ID])
 
-    private val _lessonDetailState = MutableLiveData<UiState<LessonDetail>>()
-    val lessonDetailState: LiveData<UiState<LessonDetail>>
-        get() = _lessonDetailState
+    private val _lessonDetailState = MutableSharedFlow<UiState<LessonDetail>>()
+    val lessonDetailState: SharedFlow<UiState<LessonDetail>> = _lessonDetailState.asSharedFlow()
 
-    private val _lessonDeleteState = MutableLiveData<UiState<LessonDeleteResponse>>()
-    val lessonDeleteState: LiveData<UiState<LessonDeleteResponse>>
-        get() = _lessonDeleteState
+    private val _lessonDeleteState = MutableSharedFlow<UiState<LessonDeleteResponse>>()
+    val lessonDeleteState: SharedFlow<UiState<LessonDeleteResponse>> =
+        _lessonDeleteState.asSharedFlow()
 
-    private val _lessonDetail = MutableLiveData<LessonDetail>()
-    val lessonDetail: LiveData<LessonDetail>
-        get() = _lessonDetail
+    private val _lessonDetail = MutableStateFlow(LessonDetail())
+    val lessonDetail: StateFlow<LessonDetail> = _lessonDetail.asStateFlow()
 
     private val _lessonUpdateClick = MutableSharedFlow<LessonDetail>()
     val lessonUpdateClick: SharedFlow<LessonDetail>
@@ -46,13 +43,13 @@ class LessonDetailViewModel @Inject constructor(
         get() = _lessonDeleteClick
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailState.value = UiState.Loading
-        _lessonDetailState.value = lessonRepository.fetchLessonDetail(lessonId)
+        _lessonDetailState.emit(UiState.Loading)
+        _lessonDetailState.emit(lessonRepository.fetchLessonDetail(lessonId))
     }
 
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.value = UiState.Loading
-        _lessonDeleteState.value = lessonRepository.deleteLesson(lessonId)
+        _lessonDeleteState.emit(UiState.Loading)
+        _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
     }
 
     fun setLessonDetailInfo(lessonDetail: LessonDetail) {

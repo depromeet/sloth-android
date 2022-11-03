@@ -2,7 +2,6 @@ package com.depromeet.sloth.ui.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +12,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
+import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
@@ -23,57 +24,67 @@ import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
 
-    private val lessonListViewModel: LessonListViewModel by activityViewModels()
+    private val viewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bind {
+            vm = viewModel
+        }
+
         initViews()
-        observe()
+        initObserver()
     }
 
     override fun initViews() {
         with(binding) {
             rvTodayLesson.apply {
-                if(itemDecorationCount == 0) addItemDecoration(LessonItemDecoration(requireContext(), 16))
-            }
-
-            ivTodayAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireContext(), DialogState.WAIT)
-                dlg.start()
+                if (itemDecorationCount == 0) addItemDecoration(
+                    LessonItemDecoration(
+                        requireContext(),
+                        16
+                    )
+                )
             }
         }
     }
 
-    private fun observe() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.todayLessonList
+    private fun initObserver() {
+        viewModel.apply {
+            viewLifecycleOwner.lifecycleScope.launch {
+                todayLessonList
 //                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
 //                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> showProgress()
-                        is UiState.UnLoading -> hideProgress()
-                        is UiState.Success -> setLessonList(uiState.data)
-                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
-                        is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> showProgress()
+                            is UiState.UnLoading -> hideProgress()
+                            is UiState.Success -> setLessonList(uiState.data)
+                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        }
                     }
-                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                onNavigateToNotificationListClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { showWaitDialog(requireContext()) }
+            }
         }
     }
 
     private fun fetchLessonList() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.todayLessonList
+            viewModel.todayLessonList
 //                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
 //                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -82,7 +93,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is UiState.Loading -> showProgress()
                         is UiState.UnLoading -> hideProgress()
                         is UiState.Success -> setLessonList(uiState.data)
-                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                     }
                 }
@@ -240,7 +251,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         mainScope {
             showProgress()
 
-            lessonListViewModel.updateLessonCount(count, lesson.lessonId).let {
+            viewModel.updateLessonCount(count, lesson.lessonId).let {
                 when (it) {
                     is UiState.Loading -> showProgress()
                     is UiState.Success<LessonUpdateCountResponse> -> {
@@ -249,7 +260,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (it.data.presentNumber == lesson.untilTodayNumber
-                                    //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
+                                //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
                                 ) fetchLessonList()
                             }
 
@@ -270,7 +281,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     else -> Unit
                 }
             }
-
             hideProgress()
         }
     }
@@ -287,7 +297,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     private fun finishLesson(lessonId: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.finishLesson(lessonId)
+            viewModel.finishLesson(lessonId)
                 //.onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
                 //.onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -299,7 +309,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             fetchLessonList()
                             showToast(getString(R.string.lesson_finish_complete))
                         }
-                        is UiState.Unauthorized -> showToast(getString(R.string.please_login_again))
+                        is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
                         is UiState.Error -> showToast(getString(R.string.lesson_finish_fail))
                     }
                 }

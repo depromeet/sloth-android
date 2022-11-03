@@ -1,7 +1,5 @@
 package com.depromeet.sloth.ui.manage
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
@@ -12,8 +10,7 @@ import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,9 +20,8 @@ class ManageViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) : BaseViewModel(memberRepository) {
 
-    private val _memberState = MutableLiveData<UiState<Member>>()
-    val memberState: LiveData<UiState<Member>>
-        get() = _memberState
+    private val _memberState = MutableSharedFlow<UiState<Member>>()
+    val memberState: SharedFlow<UiState<Member>> = _memberState.asSharedFlow()
 
     private val _memberUpdateState =
         MutableSharedFlow<UiState<MemberUpdateResponse>>()
@@ -36,41 +32,34 @@ class ManageViewModel @Inject constructor(
     val notificationReceiveState: SharedFlow<UiState<String>>
         get() = _notificationReceiveState
 
-    private val _memberLogoutState = MutableLiveData<UiState<String>>()
-    val memberLogoutState: LiveData<UiState<String>>
-        get() = _memberLogoutState
+    private val _memberLogoutState = MutableSharedFlow<UiState<String>>()
+    val memberLogoutState: SharedFlow<UiState<String>> = _memberLogoutState.asSharedFlow()
 
-    private val _member = MutableLiveData<Member>()
-    val member: LiveData<Member>
-        get() = _member
+    private val _member = MutableStateFlow(Member())
+    val member: StateFlow<Member> = _member.asStateFlow()
 
     private val _profileClick = MutableSharedFlow<Unit>()
-    val profileClick: SharedFlow<Unit>
-        get() = _profileClick
+    val profileClick: SharedFlow<Unit> = _profileClick.asSharedFlow()
 
     private val _contactClick = MutableSharedFlow<Unit>()
-    val contactButtonClick: SharedFlow<Unit>
-        get() = _contactClick
+    val contactButtonClick: SharedFlow<Unit> = _contactClick.asSharedFlow()
 
     private val _privatePolicyClick = MutableSharedFlow<Unit>()
-    val privatePolicyClick: SharedFlow<Unit>
-        get() = _privatePolicyClick
+    val privatePolicyClick: SharedFlow<Unit> = _privatePolicyClick.asSharedFlow()
 
     private val _logoutClick = MutableSharedFlow<Unit>()
-    val logoutClick: SharedFlow<Unit>
-        get() = _logoutClick
+    val logoutClick: SharedFlow<Unit> = _logoutClick.asSharedFlow()
 
     private val _withdrawalClick = MutableSharedFlow<Unit>()
-    val withdrawalClick: SharedFlow<Unit>
-        get() = _withdrawalClick
+    val withdrawalClick: SharedFlow<Unit> = _withdrawalClick.asSharedFlow()
 
     init {
         fetchMemberInfo()
     }
 
     fun fetchMemberInfo() = viewModelScope.launch {
-        _memberState.value = UiState.Loading
-        _memberState.value = memberRepository.fetchMemberInfo()
+        _memberState.emit(UiState.Loading)
+        _memberState.emit(memberRepository.fetchMemberInfo())
     }
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
@@ -78,8 +67,8 @@ class ManageViewModel @Inject constructor(
         _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
     }
 
-    fun notiSwitchBtnClick(check: Boolean) = viewModelScope.launch {
-        if (check != _member.value!!.isPushAlarmUse) {
+    fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
+        if (check != _member.value.isPushAlarmUse) {
             _notificationReceiveState.emit(UiState.Loading)
             _notificationReceiveState.emit(
                 notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
@@ -112,7 +101,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        _memberLogoutState.value = UiState.Loading
-        _memberLogoutState.value = memberRepository.logout()
+        _memberLogoutState.emit(UiState.Loading)
+        _memberLogoutState.emit(memberRepository.logout())
     }
 }

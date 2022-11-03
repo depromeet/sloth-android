@@ -55,7 +55,6 @@ class RegisterLessonFirstFragment :
         }
 
         initObserver()
-        initNavigation()
         initViews()
     }
 
@@ -80,7 +79,9 @@ class RegisterLessonFirstFragment :
                                 hideProgress()
                             }
                             is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            else -> {}
                         }
+                        hideProgress()
                     }
             }
 
@@ -98,23 +99,24 @@ class RegisterLessonFirstFragment :
                                     binding.spnRegisterLessonSite,
                                     viewModel.lessonSiteSelectedItemPosition.value!!
                                 )
-                                hideProgress()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> {
+                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            }
                             is UiState.Error -> {
                                 showToast(getString(R.string.cannot_get_lesson_category))
-                                hideProgress()
                             }
+                            else -> {}
                         }
                     }
+                hideProgress()
             }
-        }
-    }
-
-    private fun initNavigation() {
-        repeatOnStarted {
-            viewModel.navigateToRegisterLessonSecond.collect { navigateToRegisterLessonSecond() }
+            viewLifecycleOwner.lifecycleScope.launch {
+                onNavigateToRegisterLessonSecondClick
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { navigateToRegisterLessonSecond() }
+            }
         }
     }
 

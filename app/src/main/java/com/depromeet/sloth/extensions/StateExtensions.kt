@@ -59,4 +59,11 @@ fun withdrawal(context: Context, removeAuthToken: () -> Job) {
     )
 }
 
+fun showWaitDialog(context: Context) {
+    val dlg = SlothDialog(context, DialogState.WAIT)
+    dlg.start()
+}
+
+
+
 

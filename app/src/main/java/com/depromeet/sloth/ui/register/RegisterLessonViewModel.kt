@@ -25,19 +25,18 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-//TODO repository 를 flow 로 감쌀 필요가 없다 뷰모델에서 liveData -> StateFlow 바꿔 주면 된다 viewModel 에서는 suspend 그대로
 //TODO !! 처리한 변수들 보안 처리
+//TODO MediaLiveData -> Flow 로 변경
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val stringResourcesProvider: StringResourcesProvider
+    private val stringResourcesProvider: StringResourcesProvider,
+    memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
     private val _registerLessonState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
-    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>>
-        get() = _registerLessonState
+    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>> = _registerLessonState.asSharedFlow()
 
     private val _lessonCategoryListState =
         MutableStateFlow<UiState<List<LessonCategory>>>(UiState.Loading)
@@ -58,6 +57,7 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonTotalNumber: LiveData<Int>
         get() = _lessonTotalNumber
 
+    // 굳이 stateflow 로 관리할 이유가
     private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
@@ -128,25 +128,21 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
-    private val _navigateToRegisterLessonSecond = MutableSharedFlow<Unit>()
-    val navigateToRegisterLessonSecond: SharedFlow<Unit>
-        get() = _navigateToRegisterLessonSecond
+    private val _onNavigateToRegisterLessonSecondClick = MutableSharedFlow<Unit>()
+    val onNavigateToRegisterLessonSecondClick: SharedFlow<Unit> = _onNavigateToRegisterLessonSecondClick.asSharedFlow()
 
-    private val _navigateToRegisterLessonCheck = MutableSharedFlow<Unit>()
-    val navigateToRegisterLessonCheck: SharedFlow<Unit>
-        get() = _navigateToRegisterLessonCheck
+    private val _onNavigateToRegisterLessonCheckClick = MutableSharedFlow<Unit>()
+    val onNavigateToRegisterLessonCheckClick: SharedFlow<Unit> = _onNavigateToRegisterLessonCheckClick.asSharedFlow()
 
     private val _lessonDateRangeValidation = MutableLiveData<Boolean>()
     val lessonDateRangeValidation: LiveData<Boolean>
         get() = _lessonDateRangeValidation
 
-    private val _registerLessonStartDate = MutableSharedFlow<Date>()
-    val registerLessonStartDate: SharedFlow<Date>
-        get() = _registerLessonStartDate
+    private val _onRegisterLessonStartDateClick = MutableSharedFlow<Date>()
+    val onRegisterLessonStartDateClick: SharedFlow<Date> = _onRegisterLessonStartDateClick.asSharedFlow()
 
     private val _registerLessonEndDate = MutableSharedFlow<Date>()
-    val registerLessonEndDate: SharedFlow<Date>
-        get() = _registerLessonEndDate
+    val registerLessonEndDate: SharedFlow<Date> = _registerLessonEndDate.asSharedFlow()
 
     val navigateToLessonSecondButtonState = MediatorLiveData<Boolean>().apply {
         addSourceList(
@@ -205,7 +201,7 @@ class RegisterLessonViewModel @Inject constructor(
             ONE_MONTH -> calendar.add(Calendar.MONTH, 1)
             TWO_MONTH -> calendar.add(Calendar.MONTH, 2)
             THREE_MONTH -> calendar.add(Calendar.MONTH, 3)
-            else -> Unit
+            CUSTOM_SETTING -> return
         }
         setEndDate(calendar.time)
         setLessonEndDate(getPickerDateToDash(calendar.time))
@@ -376,16 +372,16 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle[KEY_LESSON_END_DATE] = lessonEndDate
     }
 
-    fun navigateToRegisterLessonSecond() = viewModelScope.launch {
-        _navigateToRegisterLessonSecond.emit(Unit)
+    fun navigateToRegisterLessonSecondClick() = viewModelScope.launch {
+        _onNavigateToRegisterLessonSecondClick.emit(Unit)
     }
 
-    fun navigateToRegisterLessonCheck() = viewModelScope.launch {
-        _navigateToRegisterLessonCheck.emit(Unit)
+    fun navigateToRegisterLessonCheckClick() = viewModelScope.launch {
+        _onNavigateToRegisterLessonCheckClick.emit(Unit)
     }
 
-    fun registerLessonStartDate() = viewModelScope.launch {
-        _registerLessonStartDate.emit(startDate.value)
+    fun registerLessonStartDateClick() = viewModelScope.launch {
+        _onRegisterLessonStartDateClick.emit(startDate.value)
     }
 
     fun registerLessonEndDate() = viewModelScope.launch {
