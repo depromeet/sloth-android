@@ -63,6 +63,7 @@ class UpdateLessonActivity :
         initObserver()
     }
 
+    // TODO Observer Code repeatOnLifecycle + event sealedClass 형태로 변경
     private fun initObserver() {
         viewModel.apply {
             lifecycleScope.launch {
@@ -127,12 +128,15 @@ class UpdateLessonActivity :
                         hideProgress()
                     }
             }
-
-            lessonTotalNumberValidation.observe(this@UpdateLessonActivity) { isEnable ->
-                when (isEnable) {
-                    false -> showToast(getString(R.string.lesson_number_validation_error))
-                    else -> Unit
-                }
+            lifecycleScope.launch {
+                lessonTotalNumberValidation
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { isEnable ->
+                        when (isEnable) {
+                            false -> showToast(getString(R.string.lesson_number_validation_error))
+                            else -> Unit
+                        }
+                    }
             }
         }
     }
@@ -152,18 +156,25 @@ class UpdateLessonActivity :
     private fun bindAdapter() = with(binding) {
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonCategory.adapter = lessonCategoryAdapter
-        spnUpdateLessonCategory.setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
+        spnUpdateLessonCategory.setSelection(viewModel.lessonCategorySelectedItemPosition.value)
 
         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonSite.adapter = lessonSiteAdapter
-        spnUpdateLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
+        spnUpdateLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value)
     }
 
     // LessonName clearFocus 가 되지 않는 문제
     private fun focusInputForm(editText: EditText) {
         editText.apply {
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+                override fun beforeTextChanged(
+                    text: CharSequence?,
+                    i1: Int,
+                    i2: Int,
+                    i3: Int
+                ) {
+                }
+
                 override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
                     viewModel.setLessonName(text.toString())
                 }
@@ -196,7 +207,7 @@ class UpdateLessonActivity :
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
                     viewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = viewModel.lessonTotalNumber.value!!.toString()
+                    result = viewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                     } else {

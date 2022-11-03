@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.register
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Lesson
 import com.depromeet.sloth.data.network.lesson.LessonCategory
@@ -10,7 +11,6 @@ import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
@@ -25,8 +25,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-//TODO !! 처리한 변수들 보안 처리
-//TODO MediaLiveData -> Flow 로 변경
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -36,7 +34,8 @@ class RegisterLessonViewModel @Inject constructor(
 ) : BaseViewModel(memberRepository) {
 
     private val _registerLessonState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
-    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>> = _registerLessonState.asSharedFlow()
+    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>> =
+        _registerLessonState.asSharedFlow()
 
     private val _lessonCategoryListState =
         MutableStateFlow<UiState<List<LessonCategory>>>(UiState.Loading)
@@ -49,50 +48,49 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
-        savedStateHandle.getLiveData(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
-    val lessonName: LiveData<String>
-        get() = _lessonName
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
+    val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
-    private val _lessonTotalNumber = savedStateHandle.getLiveData(KEY_LESSON_TOTAL_NUMBER, 0)
-    val lessonTotalNumber: LiveData<Int>
-        get() = _lessonTotalNumber
+    private val _lessonTotalNumber =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
+    val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    // 굳이 stateflow 로 관리할 이유가
+    // TODO 굳이 stateflow 로 관리할 이유가
     private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
-    private val _lessonCategoryName = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
+    private val _lessonCategoryName =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
     val lessonCategoryName: StateFlow<String> = _lessonCategoryName.asStateFlow()
+
+    private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
+        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
+    )
+    val lessonCategorySelectedItemPosition: StateFlow<Int> =
+        _lessonCategorySelectedItemPosition.asStateFlow()
 
     private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
     val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
 
-    private val _lessonSiteName = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
+    private val _lessonSiteName =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
 
+    private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
+        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
+    )
+    val lessonSiteSelectedItemPosition: StateFlow<Int> =
+        _lessonSiteSelectedItemPosition.asStateFlow()
+
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
-    val lessonPrice: StateFlow<Int>
-        get() = _lessonPrice.asStateFlow()
+    val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     private val _lessonMessage =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
-    val lessonMessage: StateFlow<String>
-        get() = _lessonMessage.asStateFlow()
+    val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
     private val _lessonCheck = MutableStateFlow(Lesson())
     val lessonCheck: StateFlow<Lesson> = _lessonCheck.asStateFlow()
-
-    private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData(
-        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
-    )
-    val lessonCategorySelectedItemPosition: LiveData<Int>
-        get() = _lessonCategorySelectedItemPosition
-
-    private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData(
-        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
-    )
-    val lessonSiteSelectedItemPosition: LiveData<Int>
-        get() = _lessonSiteSelectedItemPosition
 
     private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
     val startDate: StateFlow<Date> = _startDate.asStateFlow()
@@ -100,21 +98,23 @@ class RegisterLessonViewModel @Inject constructor(
     private val _endDate = savedStateHandle.getMutableStateFlow(KEY_END_DATE, Date())
     val endDate: StateFlow<Date> = _endDate.asStateFlow()
 
-    private val _lessonStartDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
+    private val _lessonStartDate =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
     val lessonStartDate: StateFlow<String> = _lessonStartDate.asStateFlow()
 
-    private val _lessonEndDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
+    private val _lessonEndDate =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
     val lessonEndDate: StateFlow<String> = _lessonEndDate.asStateFlow()
 
-    private val _lessonEndDateSelectedItemPosition = savedStateHandle.getLiveData(
+    private val _lessonEndDateSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonEndDateSelectedItemPosition: LiveData<Int>
-        get() = _lessonEndDateSelectedItemPosition
+    val lessonEndDateSelectedItemPosition: StateFlow<Int> =
+        _lessonEndDateSelectedItemPosition.asStateFlow()
 
-    private val _lessonEndDateSelectedState = MutableLiveData<Boolean>()
-    private val lessonEndDateSelectedState: LiveData<Boolean>
-        get() = _lessonEndDateSelectedState
+    private val _lessonEndDateSelectedState = MutableStateFlow(false)
+    private val lessonEndDateSelectedState: StateFlow<Boolean> =
+        _lessonEndDateSelectedState.asStateFlow()
 
     private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
     val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
@@ -129,40 +129,47 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
     private val _onNavigateToRegisterLessonSecondClick = MutableSharedFlow<Unit>()
-    val onNavigateToRegisterLessonSecondClick: SharedFlow<Unit> = _onNavigateToRegisterLessonSecondClick.asSharedFlow()
+    val onNavigateToRegisterLessonSecondClick: SharedFlow<Unit> =
+        _onNavigateToRegisterLessonSecondClick.asSharedFlow()
 
     private val _onNavigateToRegisterLessonCheckClick = MutableSharedFlow<Unit>()
-    val onNavigateToRegisterLessonCheckClick: SharedFlow<Unit> = _onNavigateToRegisterLessonCheckClick.asSharedFlow()
+    val onNavigateToRegisterLessonCheckClick: SharedFlow<Unit> =
+        _onNavigateToRegisterLessonCheckClick.asSharedFlow()
 
-    private val _lessonDateRangeValidation = MutableLiveData<Boolean>()
-    val lessonDateRangeValidation: LiveData<Boolean>
-        get() = _lessonDateRangeValidation
+    private val _lessonDateRangeValidation = MutableStateFlow(true)
+    val lessonDateRangeValidation: StateFlow<Boolean> = _lessonDateRangeValidation.asStateFlow()
 
     private val _onRegisterLessonStartDateClick = MutableSharedFlow<Date>()
-    val onRegisterLessonStartDateClick: SharedFlow<Date> = _onRegisterLessonStartDateClick.asSharedFlow()
+    val onRegisterLessonStartDateClick: SharedFlow<Date> =
+        _onRegisterLessonStartDateClick.asSharedFlow()
 
     private val _registerLessonEndDate = MutableSharedFlow<Date>()
     val registerLessonEndDate: SharedFlow<Date> = _registerLessonEndDate.asSharedFlow()
 
-    val navigateToLessonSecondButtonState = MediatorLiveData<Boolean>().apply {
-        addSourceList(
-            _lessonName,
-            _lessonTotalNumber,
-            _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition
-        ) {
-            canNavigateToLessonSecond()
-        }
-    }
+    val navigateToLessonSecondButtonState = combine(
+        lessonName,
+        lessonTotalNumber,
+        lessonCategorySelectedItemPosition,
+        lessonSiteSelectedItemPosition
+    ) { lessonName, lessonTotalNumber, lessonCategorySelectedItemPosition, lessonSiteSelectedItemPosition ->
+        lessonName.isNotBlank() && lessonTotalNumber != 0 &&
+                lessonCategorySelectedItemPosition != 0 && lessonSiteSelectedItemPosition != 0
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
 
-    val navigateToLessonCheckButtonState = MediatorLiveData<Boolean>().apply {
-        addSourceList(
-            _lessonEndDateSelectedState,
-            _lessonDateRangeValidation
-        ) {
-            canNavigateToLessonCheck()
-        }
-    }
+    val navigateToLessonCheckButtonState = combine(
+        lessonEndDateSelectedState,
+        lessonDateRangeValidation
+    ) { lessonEndDateSelectedState, lessonDateRangeValidation ->
+        lessonEndDateSelectedState && lessonDateRangeValidation
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
 
     private fun initLessonStartDate() {
         val today = Date()
@@ -238,12 +245,12 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonCheck.value = Lesson(
             categoryName = lessonCategoryName.value,
             endDate = changeDateStringToArrayList(lessonEndDate.value),
-            lessonName = lessonName.value!!,
+            lessonName = lessonName.value,
             message = lessonMessage.value,
             price = lessonPrice.value,
             siteName = lessonSiteName.value,
             startDate = changeDateStringToArrayList(lessonStartDate.value),
-            totalNumber = lessonTotalNumber.value!!
+            totalNumber = lessonTotalNumber.value
         )
     }
 
@@ -255,12 +262,12 @@ class RegisterLessonViewModel @Inject constructor(
                     alertDays = null,
                     categoryId = lessonCategoryId.value,
                     endDate = lessonEndDate.value,
-                    lessonName = lessonName.value!!,
+                    lessonName = lessonName.value,
                     message = lessonMessage.value,
                     price = lessonPrice.value,
                     siteId = lessonSiteId.value,
                     startDate = lessonStartDate.value,
-                    totalNumber = lessonTotalNumber.value!!
+                    totalNumber = lessonTotalNumber.value
                 )
             )
         )
@@ -387,13 +394,6 @@ class RegisterLessonViewModel @Inject constructor(
     fun registerLessonEndDate() = viewModelScope.launch {
         _registerLessonEndDate.emit(endDate.value)
     }
-
-    private fun canNavigateToLessonSecond() =
-        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 &&
-                lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
-
-    private fun canNavigateToLessonCheck() =
-        lessonEndDateSelectedState.value ?: false && lessonDateRangeValidation.value ?: false
 
     companion object {
         const val KEY_LESSON_NAME = "lessonName"

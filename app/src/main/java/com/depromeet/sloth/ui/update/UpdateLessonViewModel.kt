@@ -1,6 +1,7 @@
 package com.depromeet.sloth.ui.update
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.LessonCategory
@@ -10,7 +11,6 @@ import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.extensions.addSourceList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
@@ -21,8 +21,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//TODO !! 제거
-//TODO MediaLiveData -> Flow 로 변경
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
@@ -48,14 +46,12 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
-        savedStateHandle.getLiveData(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
-    val lessonName: LiveData<String>
-        get() = _lessonName
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
+    val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
     private val _lessonTotalNumber =
-        savedStateHandle.getLiveData(KEY_LESSON_TOTAL_NUMBER, 0)
-    val lessonTotalNumber: LiveData<Int>
-        get() = _lessonTotalNumber
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
+    val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
     private val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
@@ -72,41 +68,35 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
-    private val _lessonCategoryId =
-        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_ID, 0)
-    private val lessonCategoryId: LiveData<Int>
-        get() = _lessonCategoryId
+    // TODO 굳이 stateflow 로 관리할 이유가
+    private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
+    val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
     private val _lessonCategoryName =
-        savedStateHandle.getLiveData(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
-    private val lessonCategoryName: LiveData<String>
-        get() = _lessonCategoryName
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
+    val lessonCategoryName: StateFlow<String> = _lessonCategoryName.asStateFlow()
 
-    private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData(
+    private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
-    val lessonCategorySelectedItemPosition: LiveData<Int>
-        get() = _lessonCategorySelectedItemPosition
+    val lessonCategorySelectedItemPosition: StateFlow<Int> =
+        _lessonCategorySelectedItemPosition.asStateFlow()
 
-    private val _lessonSiteId =
-        savedStateHandle.getLiveData(KEY_LESSON_SITE_ID, 0)
-    private val lessonSiteId: LiveData<Int>
-        get() = _lessonSiteId
+    private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
+    val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
 
     private val _lessonSiteName =
-        savedStateHandle.getLiveData(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
-    private val lessonSiteName: LiveData<String>
-        get() = _lessonSiteName
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
+    val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
 
-    private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData(
+    private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonSiteSelectedItemPosition: LiveData<Int>
-        get() = _lessonSiteSelectedItemPosition
+    val lessonSiteSelectedItemPosition: StateFlow<Int> =
+        _lessonSiteSelectedItemPosition.asStateFlow()
 
-    private val _lessonTotalNumberValidation = MutableLiveData<Boolean>()
-    val lessonTotalNumberValidation: LiveData<Boolean>
-        get() = _lessonTotalNumberValidation
+    private val _lessonTotalNumberValidation = MutableStateFlow(true)
+    val lessonTotalNumberValidation: StateFlow<Boolean> = _lessonTotalNumberValidation.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -154,11 +144,11 @@ class UpdateLessonViewModel @Inject constructor(
             lessonRepository.updateLesson(
                 lessonDetail.lessonId.toString(),
                 LessonUpdateRequest(
-                    lessonName = lessonName.value!!,
+                    lessonName = lessonName.value,
                     price = lessonPrice.value,
-                    categoryId = lessonCategoryId.value!!,
-                    siteId = lessonSiteId.value!!,
-                    totalNumber = lessonTotalNumber.value!!,
+                    categoryId = lessonCategoryId.value,
+                    siteId = lessonSiteId.value,
+                    totalNumber = lessonTotalNumber.value,
                 )
             )
         )
@@ -207,25 +197,23 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     private fun setLessonTotalNumberValidation() {
-        _lessonTotalNumberValidation.value = lessonTotalNumber.value!! >= lessonDetail.presentNumber
+        _lessonTotalNumberValidation.value = lessonTotalNumber.value >= lessonDetail.presentNumber
     }
 
-    val updateLessonButtonState = MediatorLiveData<Boolean>().apply {
-        addSourceList(
-            _lessonName,
-            _lessonTotalNumber,
-            _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition,
-            _lessonTotalNumberValidation
-        ) {
-            canUpdateLesson()
-        }
-    }
-
-    private fun canUpdateLesson() =
-        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0
-                && lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
-                && lessonTotalNumberValidation.value ?: false
+    val updateLessonButtonState = combine(
+        lessonName,
+        lessonTotalNumber,
+        lessonCategorySelectedItemPosition,
+        lessonSiteSelectedItemPosition,
+        lessonTotalNumberValidation
+    ) { lessonName, lessonTotalNumber, lessonCategorySelectedItemPosition, lessonSiteSelectedItemPosition, lessonTotalNumberValidation ->
+        lessonName.isNotBlank() && lessonTotalNumber != 0 && lessonCategorySelectedItemPosition != 0
+                && lessonSiteSelectedItemPosition != 0 && lessonTotalNumberValidation
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
 
     fun setLessonCategoryList(data: List<LessonCategory>) {
         _lessonCategoryMap.value =
@@ -251,8 +239,8 @@ class UpdateLessonViewModel @Inject constructor(
         setLessonPrice(price)
         setLessonCategoryId(lessonCategoryMap.value.filterValues { it == categoryName }.keys.first())
         setLessonSiteId(lessonSiteMap.value.filterValues { it == siteName }.keys.first())
-        setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value!!]))
-        setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value!!]))
+        setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
+        setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
     }
 
     companion object {

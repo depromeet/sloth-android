@@ -26,6 +26,7 @@ import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -189,7 +190,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         val updateDialog =
             Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
         updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
         updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
 
         val nameEditText =
@@ -197,11 +197,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         val updateButton =
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
-        nameEditText.hint = viewModel.member.value.memberName ?: ""
+        nameEditText.hint = viewModel.member.value.memberName ?: DEFAULT_STRING_VALUE
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != (viewModel.member.value.memberName ?: "")) {
+            if (nameEditText.text.toString() != (viewModel.member.value.memberName ?: DEFAULT_STRING_VALUE)) {
                 viewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())

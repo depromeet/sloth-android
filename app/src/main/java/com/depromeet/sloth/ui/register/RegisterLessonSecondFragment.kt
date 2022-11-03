@@ -76,12 +76,17 @@ class RegisterLessonSecondFragment :
                     .collect { registerLessonEndDateByCalendar() }
             }
 
-            lessonDateRangeValidation.observe(viewLifecycleOwner) { isEnable ->
-                when (isEnable) {
-                    false -> showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
-                    else -> Unit
-                }
+            viewLifecycleOwner.lifecycleScope.launch {
+                lessonDateRangeValidation
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collect { isEnable ->
+                        when (isEnable) {
+                            false -> showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                            else -> Unit
+                        }
+                    }
             }
+
             viewLifecycleOwner.lifecycleScope.launch {
                 onNavigateToRegisterLessonCheckClick
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -149,7 +154,7 @@ class RegisterLessonSecondFragment :
         lessonEndDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnRegisterLessonEndDate.apply {
             adapter = lessonEndDateAdapter
-            setSelection(viewModel.lessonEndDateSelectedItemPosition.value!!, false)
+            setSelection(viewModel.lessonEndDateSelectedItemPosition.value, false)
             setSpinnerListener(this)
         }
     }
@@ -172,10 +177,7 @@ class RegisterLessonSecondFragment :
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
                         viewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
                     }
-
-                    CUSTOM_SETTING -> {
-                        viewModel.registerLessonEndDate()
-                    }
+                    CUSTOM_SETTING -> viewModel.registerLessonEndDate()
                 }
                 binding.clRegisterLessonSecond.clearFocus()
             }
@@ -194,7 +196,8 @@ class RegisterLessonSecondFragment :
                 i1: Int,
                 i2: Int,
                 i3: Int
-            ) {}
+            ) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
