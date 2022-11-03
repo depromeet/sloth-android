@@ -35,11 +35,10 @@ interface LessonRepository {
 
     suspend fun fetchLessonCategoryList(): UiState<List<LessonCategory>>
 
-    //fun fetchLessonCategoryList(): Flow<UiState<List<LessonCategory>>>
-
     suspend fun fetchLessonSiteList(): UiState<List<LessonSite>>
 
-    //fun fetchLessonSiteList(): Flow<UiState<List<LessonSite>>>
-
-    suspend fun updateLesson(lessonId: String, updateLessonRequest: LessonUpdateRequest): UiState<LessonUpdateResponse>
+    suspend fun updateLesson(
+        lessonId: String,
+        updateLessonRequest: LessonUpdateRequest
+    ): UiState<LessonUpdateResponse>
 }

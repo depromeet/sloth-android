@@ -5,6 +5,8 @@ package com.depromeet.sloth.ui.common
  * @created 2022-05-25
  * @desc API 요청에 대한 응답 상태
  */
+//TODO RunCatching 도입
+//TODO hideProgress 의 대한 고민
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()
     object UnLoading : UiState<Nothing>()
@@ -12,15 +14,3 @@ sealed class UiState<out T> {
     data class Unauthorized(val throwable: Throwable) : UiState<Nothing>()
     data class Error(val throwable: Throwable) : UiState<Nothing>()
 }
-
-//fun <T> UiState<T>.successOrNull(): T? = if (this is UiState.Success<T>) {
-//    data
-//} else {
-//    null
-//}
-//
-//fun <T> UiState<T>.throwableOrNull(): Throwable? = if (this is UiState.Error) {
-//    throwable
-//} else {
-//    null
-//}

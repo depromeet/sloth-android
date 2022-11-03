@@ -8,11 +8,7 @@ import com.depromeet.sloth.data.network.lesson.LessonCategory
 import com.depromeet.sloth.data.network.lesson.LessonService
 import com.depromeet.sloth.data.network.lesson.LessonSite
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountRequest
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
+import com.depromeet.sloth.data.network.lesson.list.*
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
 import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
@@ -62,29 +58,6 @@ class LessonRepositoryImpl @Inject constructor(
     }
         .catch { throwable -> emit(UiState.Error(throwable)) }
         .onCompletion { emit(UiState.UnLoading) }
-
-//    suspend fun fetchTodayLessonList(): LessonState<List<LessonTodayResponse>> {
-//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(LessonService::class.java)
-//            .fetchTodayLessonList()?.run {
-//                return when (this.code()) {
-//                    200 -> {
-//                        val newAccessToken = headers()["Authorization"] ?: ""
-//                        if (newAccessToken.isNotEmpty()) {
-//                            preferenceManager.updateAccessToken(newAccessToken)
-//                        }
-//
-//                        LessonState.Success(body() ?: listOf())
-//                    }
-//                    401 -> {
-//                        preferenceManager.removeAuthToken()
-//                        LessonState.Error(Exception(message()))
-//                    }
-//                    else -> LessonState.Error(Exception(message()))
-//                }
-//            } ?: return LessonState.Error(Exception("Response is null"))
-//    }
 
     override fun fetchAllLessonList() = flow {
         emit(UiState.Loading)
@@ -149,29 +122,6 @@ class LessonRepositoryImpl @Inject constructor(
     }
         .catch { throwable -> emit(UiState.Error(throwable)) }
         .onCompletion { emit(UiState.UnLoading) }
-
-//    suspend fun fetchAllLessonList(): LessonState<List<LessonAllResponse>> {
-//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(LessonService::class.java)
-//            .fetchAllLessonList()?.run {
-//                return when (this.code()) {
-//                    200 -> {
-//                        val newAccessToken = headers()["Authorization"] ?: ""
-//                        if (newAccessToken.isNotEmpty()) {
-//                            preferenceManager.updateAccessToken(newAccessToken)
-//                        }
-//
-//                        LessonState.Success(body() ?: listOf())
-//                    }
-//                    401 -> {
-//                        preferenceManager.removeAuthToken()
-//                        LessonState.Error(Exception(message()))
-//                    }
-//                    else -> LessonState.Error(Exception(message()))
-//                }
-//            } ?: return LessonState.Error(Exception("Response is null"))
-//    }
 
     override suspend fun updateLessonCount(
         count: Int,
@@ -316,72 +266,6 @@ class LessonRepositoryImpl @Inject constructor(
                 }
             } ?: return UiState.Error(Exception("Retrofit Exception"))
     }
-
-//    override fun fetchLessonCategoryList(): Flow<UiState<List<LessonCategory>>> =
-//        flow<UiState<List<LessonCategory>>> {
-//            emit(UiState.Loading)
-//            val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//                .build(preferenceManager.getAccessToken())
-//                .create(LessonService::class.java)
-//                .fetchLessonCategoryList() ?: run {
-//                emit(UiState.Error(Exception("Response is null")))
-//                return@flow
-//            }
-//
-//            when (response.code()) {
-//                200 -> {
-//                    val newAccessToken = response.headers()["Authorization"] ?: ""
-//                    if (newAccessToken.isNotEmpty()) {
-//                        preferenceManager.updateAccessToken(newAccessToken)
-//                    }
-//                    //map, list 변환 과정이 여기에 있어야
-//
-//                    emit(UiState.Success(response.body() ?: listOf(LessonCategory.EMPTY)))
-//                }
-//
-//                401 -> {
-//                    preferenceManager.removeAuthToken()
-//                    emit(UiState.Unauthorized(Exception(response.message())))
-//                }
-//
-//                else -> emit(UiState.Error(Exception(response.message())))
-//            }
-//        }
-//            .catch { throwable -> emit(UiState.Error(throwable)) }
-//            .onCompletion { emit(UiState.UnLoading) }
-
-//    override fun fetchLessonSiteList(): Flow<UiState<List<LessonSite>>> =
-//        flow<UiState<List<LessonSite>>> {
-//            emit(UiState.Loading)
-//            val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//                .build(preferenceManager.getAccessToken())
-//                .create(LessonService::class.java)
-//                .fetchLessonSiteList() ?: run {
-//                emit(UiState.Error(Exception("Response is null")))
-//                return@flow
-//            }
-//
-//            when (response.code()) {
-//                200 -> {
-//                    val newAccessToken = response.headers()["Authorization"] ?: ""
-//                    if (newAccessToken.isNotEmpty()) {
-//                        preferenceManager.updateAccessToken(newAccessToken)
-//                    }
-//                    //map, list 변환 과정이 여기에 있어야
-//
-//                    emit(UiState.Success(response.body() ?: listOf(LessonSite.EMPTY)))
-//                }
-//
-//                401 -> {
-//                    preferenceManager.removeAuthToken()
-//                    emit(UiState.Unauthorized(Exception(response.message())))
-//                }
-//
-//                else -> emit(UiState.Error(Exception(response.message())))
-//            }
-//        }
-//            .catch { throwable -> emit(UiState.Error(throwable)) }
-//            .onCompletion { emit(UiState.UnLoading) }
 
     override suspend fun updateLesson(
         lessonId: String,
