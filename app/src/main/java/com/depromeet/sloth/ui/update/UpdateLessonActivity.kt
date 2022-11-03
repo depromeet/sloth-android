@@ -76,7 +76,7 @@ class UpdateLessonActivity :
                                 showToast(getString(R.string.lesson_info_update_complete))
                                 finish()
                             }
-                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.lesson_info_update_fail))
@@ -97,7 +97,7 @@ class UpdateLessonActivity :
                             //TODO UDF 에 위반 코드 개선
                             is UiState.Success -> setLessonCategoryList(uiState.data)
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.cannot_get_lesson_category))
@@ -121,7 +121,7 @@ class UpdateLessonActivity :
                                 bindAdapter()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showLogoutDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
                             else -> {}
                         }

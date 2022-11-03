@@ -12,7 +12,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.LessonDetail
 import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.DialogState
@@ -59,7 +59,7 @@ class LessonDetailActivity :
                             is UiState.Success<LessonDetail> -> viewModel.setLessonDetailInfo(
                                 uiState.data
                             )
-                            is UiState.Unauthorized -> showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> Timber.tag("fetch Error").d(uiState.throwable)
                             else -> {}
                         }
@@ -77,7 +77,7 @@ class LessonDetailActivity :
                                 showToast(getString(R.string.lesson_delete_complete))
                                 finish()
                             }
-                            is UiState.Unauthorized -> showLogoutDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.lesson_delete_fail))

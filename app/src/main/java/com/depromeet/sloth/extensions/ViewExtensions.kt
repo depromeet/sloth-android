@@ -17,20 +17,3 @@ fun LifecycleOwner.repeatOnStarted(block: suspend CoroutineScope.() -> Unit) {
     }
 }
 
-//fun <T> Fragment.collectLatestLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit) {
-//    viewLifecycleOwner.lifecycleScope.launch {
-//        repeatOnLifecycle(Lifecycle.State.STARTED) {
-//            flow.collectLatest(collect)
-//        }
-//    }
-//}
-
-// 계속 반복되는 함수이므로 재사용하기 위한 모듈화
-//fun <T> Fragment.collectLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit) {
-//    viewLifecycleOwner.lifecycleScope.launch {
-//        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//            flow.collect(collect)
-//        }
-//    }
-//}
-

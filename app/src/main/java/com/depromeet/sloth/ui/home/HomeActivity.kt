@@ -14,7 +14,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
 import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.databinding.ActivityHomeBinding
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
@@ -78,7 +78,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                                     Timber.d("fcmToken already existed")
                                 }
                             }
-                            is UiState.Unauthorized -> showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@HomeActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
                             else -> {}
                         }
@@ -94,7 +94,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@HomeActivity)
                             is UiState.Success<String> -> Timber.d(uiState.data)
-                            is UiState.Unauthorized -> showLogoutDialog(this@HomeActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@HomeActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
                             else -> {}
                         }

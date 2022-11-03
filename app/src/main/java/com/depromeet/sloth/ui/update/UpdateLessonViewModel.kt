@@ -24,9 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val stringResourcesProvider: StringResourcesProvider
+    private val stringResourcesProvider: StringResourcesProvider,
+    memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])

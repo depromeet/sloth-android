@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +45,7 @@ class RegisterLessonCheckFragment :
                                 requireActivity().finish()
                             }
                             is UiState.Unauthorized -> {
-                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             }
                             is UiState.Error -> {
                                 Timber.tag("Register Error").d(uiState.throwable)

@@ -11,7 +11,7 @@ import com.depromeet.sloth.ui.login.LoginActivity
 import kotlinx.coroutines.Job
 
 
-fun showLogoutDialog(context: Context, removeAuthToken: () -> Job) {
+fun showForbiddenDialog(context: Context, removeAuthToken: () -> Job) {
     val dlg = SlothDialog(context, DialogState.FORBIDDEN)
     dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
         override fun onItemClicked() {

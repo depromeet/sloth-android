@@ -55,7 +55,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         when (uiState) {
                             is UiState.Loading -> showProgress()
                             is UiState.Success<Member> -> viewModel.setMemberInfo(uiState.data)
-                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.member_info_fetch_fail))
@@ -77,7 +77,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 viewModel.fetchMemberInfo()
                             }
                             is UiState.Unauthorized -> {
-                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             }
                             is UiState.Error -> {
                                 Timber.tag("update Error").d(uiState.throwable)
@@ -99,7 +99,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 showToast(getString(R.string.noti_update_complete))
                                 viewModel.fetchMemberInfo()
                             }
-                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("update Error").d(uiState.throwable)
                                 showToast(getString(R.string.noti_update_fail))
@@ -117,7 +117,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         when (uiState) {
                             is UiState.Loading -> showProgress()
                             is UiState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
-                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("logout Error").d(uiState.throwable)
                                 showToast(getString(R.string.logout_fail))

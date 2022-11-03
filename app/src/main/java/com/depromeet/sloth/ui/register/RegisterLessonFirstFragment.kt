@@ -71,11 +71,11 @@ class RegisterLessonFirstFragment :
                                 bindAdapter(
                                     lessonCategoryAdapter,
                                     binding.spnRegisterLessonCategory,
-                                    viewModel.lessonCategorySelectedItemPosition.value!!
+                                    viewModel.lessonCategorySelectedItemPosition.value
                                 )
                             }
                             is UiState.Unauthorized -> {
-                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                                 hideProgress()
                             }
                             is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
@@ -97,12 +97,12 @@ class RegisterLessonFirstFragment :
                                 bindAdapter(
                                     lessonSiteAdapter,
                                     binding.spnRegisterLessonSite,
-                                    viewModel.lessonSiteSelectedItemPosition.value!!
+                                    viewModel.lessonSiteSelectedItemPosition.value
                                 )
                             }
                             // TODO Error 내부로 이동
                             is UiState.Unauthorized -> {
-                                showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             }
                             is UiState.Error -> {
                                 showToast(getString(R.string.cannot_get_lesson_category))
@@ -212,7 +212,7 @@ class RegisterLessonFirstFragment :
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
                     viewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = viewModel.lessonTotalNumber.value!!.toString()
+                    result = viewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                     } else {

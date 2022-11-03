@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
@@ -55,7 +55,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
                             is UiState.Loading -> showProgress()
                             is UiState.UnLoading -> hideProgress()
                             is UiState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                            is UiState.Unauthorized -> showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
                             is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                         }
                     }
