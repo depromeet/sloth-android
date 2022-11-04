@@ -96,9 +96,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    //ViewModel, LiveData
+    //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     //DataStore
@@ -109,7 +108,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //KTX
-    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
