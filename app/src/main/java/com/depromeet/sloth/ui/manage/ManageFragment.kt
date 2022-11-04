@@ -48,6 +48,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     private fun initObserver() {
         viewModel.apply {
+            repeatOnStarted {
+
+            }
+
             viewLifecycleOwner.lifecycleScope.launch {
                 memberState
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -129,12 +133,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             viewLifecycleOwner.lifecycleScope.launch {
-                member
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { member -> binding.member = member }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
                 profileClick
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { showProfileUpdateDialog() }
@@ -186,6 +184,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         dlg.start()
     }
 
+    //TODO Dialog 에 Databinding 적용하는 방법 학습
     private fun showProfileUpdateDialog() {
         val updateDialog =
             Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
@@ -233,5 +232,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 type = MESSAGE_TYPE
             }
         )
+    }
+
+    private fun handleEvent() {
+
     }
 }

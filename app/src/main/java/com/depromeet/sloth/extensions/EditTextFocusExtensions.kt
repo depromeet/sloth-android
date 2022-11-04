@@ -10,16 +10,9 @@ import com.depromeet.sloth.R
 
 fun focusInputForm(editText: EditText, button: AppCompatButton, context: Context) {
     editText.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-        }
-
-        override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-
-        }
-
-        override fun afterTextChanged(editable: Editable?) {
-            setButton(editable, button, context)
-        }
+        override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+        override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+        override fun afterTextChanged(editable: Editable?) { setButton(editable, button, context) }
     })
     setEditTextFocus(editText)
 }

@@ -39,7 +39,7 @@ class LessonDetailActivity :
         bind {
             vm = viewModel
         }
-        initViews()
+        initListener()
         initObserver()
     }
 
@@ -56,9 +56,9 @@ class LessonDetailActivity :
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@LessonDetailActivity)
-                            is UiState.Success<LessonDetail> -> viewModel.setLessonDetailInfo(
-                                uiState.data
-                            )
+                            is UiState.Success<LessonDetail> -> {
+                                viewModel.setLessonDetailInfo(uiState.data)
+                            }
                             is UiState.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> Timber.tag("fetch Error").d(uiState.throwable)
                             else -> {}
@@ -89,14 +89,6 @@ class LessonDetailActivity :
             }
 
             lifecycleScope.launch {
-                lessonDetail
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { lessonDetail ->
-                        binding.lessonDetail = lessonDetail
-                    }
-            }
-
-            lifecycleScope.launch {
                 lessonUpdateClick
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { lessonDetail ->
@@ -119,7 +111,7 @@ class LessonDetailActivity :
         }
     }
 
-    override fun initViews() = with(binding) {
+    private fun initListener() = with(binding) {
         tbDetailLesson.setNavigationOnClickListener { finish() }
     }
 

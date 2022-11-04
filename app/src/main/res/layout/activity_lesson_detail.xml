@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="lessonDetail"
-            type="com.depromeet.sloth.data.model.LessonDetail" />
-
-        <variable
             name="vm"
             type="com.depromeet.sloth.ui.detail.LessonDetailViewModel" />
     </data>
@@ -66,8 +62,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_detail_sloth"
-                        currentProgressRate="@{lessonDetail.currentProgressRate}"
-                        goalProgressRate="@{lessonDetail.goalProgressRate}"
+                        currentProgressRate="@{vm.lessonDetail.currentProgressRate}"
+                        goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
                         android:layout_width="163dp"
                         android:layout_height="160dp"
                         android:layout_marginStart="24dp"
@@ -81,8 +77,8 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_summary"
-                        currentProgressRate="@{lessonDetail.currentProgressRate}"
-                        goalProgressRate="@{lessonDetail.goalProgressRate}"
+                        currentProgressRate="@{vm.lessonDetail.currentProgressRate}"
+                        goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:maxLines="2"
@@ -100,7 +96,7 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_waste_money"
-                        isVisible="@{lessonDetail.goalProgressRate}"
+                        isVisible="@{vm.lessonDetail.goalProgressRate}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="36dp"
@@ -112,8 +108,8 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_waste_money_info"
-                        goalProgressRate="@{lessonDetail.goalProgressRate}"
-                        priceFormat="@{lessonDetail.wastePrice}"
+                        goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
+                        priceFormat="@{vm.lessonDetail.wastePrice}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
@@ -146,8 +142,8 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_remain_day"
-                        d_day="@{lessonDetail.remainDay}"
-                        goalProgressRate="@{lessonDetail.goalProgressRate}"
+                        d_day="@{vm.lessonDetail.remainDay}"
+                        goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -160,8 +156,8 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_detail_lesson_warning"
-                        goalProgressRate="@{lessonDetail.goalProgressRate}"
-                        remainDay="@{lessonDetail.remainDay}"
+                        goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
+                        remainDay="@{vm.lessonDetail.remainDay}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
@@ -187,7 +183,7 @@
                         android:maxLines="2"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="@{lessonDetail.lessonName}"
+                        android:text="@{vm.lessonDetail.lessonName}"
                         android:textColor="@color/gray_600"
                         android:textSize="24dp"
                         android:textStyle="bold"
@@ -206,7 +202,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:text="@{lessonDetail.categoryName}"
+                        android:text="@{vm.lessonDetail.categoryName}"
                         android:textColor="@color/gray_600"
                         android:textSize="12dp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -224,7 +220,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:text="@{lessonDetail.siteName}"
+                        android:text="@{vm.lessonDetail.siteName}"
                         android:textColor="@color/gray_600"
                         android:textSize="12dp"
                         app:layout_constraintStart_toEndOf="@id/tv_detail_lesson_category"
@@ -283,7 +279,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_detail_lesson_end_date_info"
-                                    lessonDate="@{lessonDetail.endDate}"
+                                    lessonDate="@{vm.lessonDetail.endDate}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/gray_600"
@@ -315,8 +311,8 @@
 
                                 <TextView
                                     android:id="@+id/tv_detail_present_lesson_progress"
-                                    present="@{lessonDetail.presentNumber}"
-                                    total="@{lessonDetail.totalNumber}"
+                                    present="@{vm.lessonDetail.presentNumber}"
+                                    total="@{vm.lessonDetail.totalNumber}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/gray_600"
@@ -343,7 +339,7 @@
 
                             <com.skydoves.progressview.ProgressView
                                 android:id="@+id/pb_detail_current_lesson_progress"
-                                setProgressRate="@{lessonDetail.currentProgressRate}"
+                                setProgressRate="@{vm.lessonDetail.currentProgressRate}"
                                 android:layout_width="228dp"
                                 android:layout_height="14dp"
                                 android:layout_marginTop="84dp"
@@ -380,7 +376,7 @@
 
                             <com.skydoves.progressview.ProgressView
                                 android:id="@+id/pb_detail_goal_lesson_progress"
-                                setProgressRate="@{lessonDetail.goalProgressRate}"
+                                setProgressRate="@{vm.lessonDetail.goalProgressRate}"
                                 android:layout_width="228dp"
                                 android:layout_height="14dp"
                                 android:layout_marginTop="111dp"
@@ -439,7 +435,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="92dp"
                         android:layout_marginEnd="16dp"
-                        android:text="@{@string/unit_lesson_number(lessonDetail.totalNumber)}"
+                        android:text="@{@string/unit_lesson_number(vm.lessonDetail.totalNumber)}"
                         android:textColor="@color/gray_600"
                         android:textSize="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -460,8 +456,8 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_period_info"
-                        endDate="@{lessonDetail.endDate}"
-                        startDate="@{lessonDetail.startDate}"
+                        endDate="@{vm.lessonDetail.endDate}"
+                        startDate="@{vm.lessonDetail.startDate}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="128dp"
@@ -486,7 +482,7 @@
 
                     <TextView
                         android:id="@+id/tv_detail_lesson_price_info"
-                        priceFormat="@{lessonDetail.price}"
+                        priceFormat="@{vm.lessonDetail.price}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="164dp"
@@ -519,7 +515,7 @@
                         android:ellipsize="end"
                         android:gravity="end"
                         android:maxLines="2"
-                        android:text="@{lessonDetail.message}"
+                        android:text="@{vm.lessonDetail.message}"
                         android:textColor="@color/gray_600"
                         android:textSize="16dp"
                         app:layout_constraintEnd_toEndOf="parent"

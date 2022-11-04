@@ -27,7 +27,6 @@ class RegisterLessonCheckFragment :
 
         bind {
             vm = viewModel
-            lesson = viewModel.lessonCheck.value
         }
         initObserver()
     }

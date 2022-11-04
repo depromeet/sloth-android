@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="lessonDetail"
-            type="com.depromeet.sloth.data.model.LessonDetail" />
-
-        <variable
             name="vm"
             type="com.depromeet.sloth.ui.update.UpdateLessonViewModel" />
 
@@ -78,7 +74,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:paddingHorizontal="16dp"
-                    android:text="@{lessonDetail.lessonName}"
+                    android:text="@{vm.lessonDetail.lessonName}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_name"
@@ -98,7 +94,7 @@
                 <EditText
                     android:id="@+id/et_update_lesson_count"
                     style="@style/Widget.Sloth.EditText.Gray"
-                    totalNumber="@{lessonDetail.totalNumber}"
+                    totalNumber="@{vm.lessonDetail.totalNumber}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -114,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/tv_update_lesson_count_info"
-                    text="@{lessonDetail.totalNumber}"
+                    text="@{vm.lessonDetail.totalNumber}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -191,7 +187,7 @@
 
                 <TextView
                     android:id="@+id/tv_update_start_lesson_date"
-                    lessonDate="@{lessonDetail.startDate}"
+                    lessonDate="@{vm.lessonDetail.startDate}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -219,7 +215,7 @@
                 <TextView
                     android:id="@+id/tv_update_end_lesson_date"
                     style="@style/Widget.Sloth.TextView.Gray"
-                    lessonDate="@{lessonDetail.endDate}"
+                    lessonDate="@{vm.lessonDetail.endDate}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -245,7 +241,7 @@
                 <EditText
                     android:id="@+id/et_update_lesson_price"
                     style="@style/Widget.Sloth.EditText.Gray"
-                    priceFormatHint="@{lessonDetail.price}"
+                    priceFormatHint="@{vm.lessonDetail.price}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -301,7 +297,7 @@
                     android:maxLines="1"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
-                    android:text="@{lessonDetail.message}"
+                    android:text="@{vm.lessonDetail.message}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message"

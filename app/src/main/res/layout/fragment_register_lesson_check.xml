@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="lesson"
-            type="com.depromeet.sloth.data.model.Lesson" />
-
-        <variable
             name="vm"
             type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
 
@@ -95,7 +91,7 @@
                             android:maxLines="2"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
-                            android:text="@{lesson.lessonName}"
+                            android:text="@{vm.lesson.lessonName}"
                             android:textColor="@color/gray_600"
                             android:textSize="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="28dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{@string/unit_lesson_total_number(lesson.totalNumber)}"
+                            android:text="@{@string/unit_lesson_total_number(vm.lesson.totalNumber)}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -159,7 +155,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{lesson.categoryName}"
+                            android:text="@{vm.lesson.categoryName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -184,7 +180,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{lesson.siteName}"
+                            android:text="@{vm.lesson.siteName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -205,7 +201,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_price_info"
-                            priceFormat="@{lesson.price}"
+                            priceFormat="@{vm.lesson.price}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -258,7 +254,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_start_date_info"
-                            checkLessonDate="@{lesson.startDate}"
+                            checkLessonDate="@{vm.lesson.startDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -296,7 +292,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_end_date_info"
-                            checkLessonDate="@{lesson.endDate}"
+                            checkLessonDate="@{vm.lesson.endDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"

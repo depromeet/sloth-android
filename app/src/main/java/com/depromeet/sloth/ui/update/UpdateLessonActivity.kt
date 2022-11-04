@@ -54,7 +54,6 @@ class UpdateLessonActivity :
         super.onCreate(savedInstanceState)
 
         bind {
-            lessonDetail = viewModel.lessonDetail
             vm = viewModel
         }
 
@@ -66,6 +65,10 @@ class UpdateLessonActivity :
     // TODO Observer Code repeatOnLifecycle + event sealedClass 형태로 변경
     private fun initObserver() {
         viewModel.apply {
+            repeatOnStarted {
+
+            }
+
             lifecycleScope.launch {
                 updateLessonState
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -117,6 +120,7 @@ class UpdateLessonActivity :
                             is UiState.Success -> {
                                 //TODO UDF 에 위반 코드 개선
                                 setLessonSiteList(uiState.data)
+                                // category 와 site 를 다 받아온 시점에 화면에 데이터를 바인딩
                                 setLessonUpdateInfo()
                                 bindAdapter()
                             }
@@ -338,5 +342,9 @@ class UpdateLessonActivity :
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
+    }
+
+    private fun handleEvent() {
+
     }
 }

@@ -89,8 +89,8 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
-    private val _lessonCheck = MutableStateFlow(Lesson())
-    val lessonCheck: StateFlow<Lesson> = _lessonCheck.asStateFlow()
+    private val _lesson = MutableStateFlow(Lesson())
+    val lesson: StateFlow<Lesson> = _lesson.asStateFlow()
 
     private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
     val startDate: StateFlow<Date> = _startDate.asStateFlow()
@@ -242,7 +242,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun setLessonInfo() {
-        _lessonCheck.value = Lesson(
+        _lesson.value = Lesson(
             categoryName = lessonCategoryName.value,
             endDate = changeDateStringToArrayList(lessonEndDate.value),
             lessonName = lessonName.value,

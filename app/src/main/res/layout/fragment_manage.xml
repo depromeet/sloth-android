@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="member"
-            type="com.depromeet.sloth.data.model.Member" />
-
-        <variable
             name="vm"
             type="com.depromeet.sloth.ui.manage.ManageViewModel" />
     </data>
@@ -50,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{member.memberName}"
+                android:text="@{vm.member.memberName}"
                 android:textColor="#363636"
                 android:textSize="20dp"
                 android:textStyle="bold"
@@ -64,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{member.email}"
+                android:text="@{vm.member.email}"
                 android:textColor="#80000000"
                 android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
