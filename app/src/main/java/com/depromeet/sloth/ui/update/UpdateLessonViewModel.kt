@@ -111,7 +111,6 @@ class UpdateLessonViewModel @Inject constructor(
             _lessonCategoryListState.value = lessonCategoryListResponse.await()
             _lessonSiteListState.value = lessonSiteListResponse.await()
         }
-        // setLessonUpdateInfo()
     }
 
     fun setLessonName(lessonName: String?) {
@@ -214,7 +213,14 @@ class UpdateLessonViewModel @Inject constructor(
         initialValue = false
     )
 
-    fun setLessonCategoryList(data: List<LessonCategory>) {
+    //TODO SaveableMutableStateFlow mapper 확인
+    fun setLessonCategoryInfo(data: List<LessonCategory>) {
+        setLessonCategoryList(data)
+        setLessonCategoryId(lessonCategoryMap.value.filterValues { it == lessonCategoryName.value }.keys.first())
+        setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
+    }
+
+    private fun setLessonCategoryList(data: List<LessonCategory>) {
         _lessonCategoryMap.value =
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
@@ -222,21 +228,18 @@ class UpdateLessonViewModel @Inject constructor(
         }
     }
 
-    fun setLessonSiteList(data: List<LessonSite>) {
+    fun setLessonSiteInfo(data: List<LessonSite>) {
+        setLessonSiteList(data)
+        setLessonSiteId(lessonSiteMap.value.filterValues { it == lessonSiteName.value }.keys.first())
+        setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
+    }
+
+    private fun setLessonSiteList(data: List<LessonSite>) {
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
-    }
-
-    // UDF 위반
-    // 사실 이 함수를 둘로 나누면 쉽게 해결할 수 있을 것 같긴하다.
-    fun setLessonUpdateInfo() = with(lessonDetail) {
-        setLessonCategoryId(lessonCategoryMap.value.filterValues { it == categoryName }.keys.first())
-        setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
-        setLessonSiteId(lessonSiteMap.value.filterValues { it == siteName }.keys.first())
-        setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
     }
 
     companion object {

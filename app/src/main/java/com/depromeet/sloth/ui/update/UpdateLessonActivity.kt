@@ -90,7 +90,6 @@ class UpdateLessonActivity :
                     }
             }
 
-            //TODO flow zip 연산자를 사용하여 refactoring
             lifecycleScope.launch {
                 lessonCategoryListState
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -98,7 +97,10 @@ class UpdateLessonActivity :
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
                             //TODO UDF 에 위반 코드 개선
-                            is UiState.Success -> setLessonCategoryList(uiState.data)
+                            is UiState.Success -> {
+                                setLessonCategoryInfo(uiState.data)
+                                bindLessonCategoryAdapter()
+                            }
                             // TODO Error 내부로 이동
                             is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
                             is UiState.Error -> {
@@ -119,10 +121,8 @@ class UpdateLessonActivity :
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
                             is UiState.Success -> {
                                 //TODO UDF 에 위반 코드 개선
-                                setLessonSiteList(uiState.data)
-                                // category 와 site 를 다 받아온 시점에 화면에 데이터를 바인딩
-                                setLessonUpdateInfo()
-                                bindAdapter()
+                                setLessonSiteInfo(uiState.data)
+                                bindLessonSiteAdapter()
                             }
                             // TODO Error 내부로 이동
                             is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
@@ -157,11 +157,14 @@ class UpdateLessonActivity :
         validatePriceInputForm(etUpdateLessonPrice)
     }
 
-    private fun bindAdapter() = with(binding) {
+    private fun bindLessonCategoryAdapter() = with(binding) {
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonCategory.adapter = lessonCategoryAdapter
         spnUpdateLessonCategory.setSelection(viewModel.lessonCategorySelectedItemPosition.value)
 
+    }
+
+    private fun bindLessonSiteAdapter() = with(binding) {
         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonSite.adapter = lessonSiteAdapter
         spnUpdateLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value)
