@@ -14,7 +14,6 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
-import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
@@ -46,14 +45,14 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
     private val _lessonTotalNumber =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
+    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
     private val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
@@ -73,7 +72,7 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
     private val _lessonCategoryName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, lessonDetail.categoryName)
     val lessonCategoryName: StateFlow<String> = _lessonCategoryName.asStateFlow()
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
@@ -86,7 +85,7 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
 
     private val _lessonSiteName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, lessonDetail.siteName)
     val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
@@ -234,12 +233,9 @@ class UpdateLessonViewModel @Inject constructor(
     // UDF 위반
     // 사실 이 함수를 둘로 나누면 쉽게 해결할 수 있을 것 같긴하다.
     fun setLessonUpdateInfo() = with(lessonDetail) {
-        setLessonName(lessonName)
-        setLessonTotalNumber(totalNumber)
-        setLessonPrice(price)
         setLessonCategoryId(lessonCategoryMap.value.filterValues { it == categoryName }.keys.first())
-        setLessonSiteId(lessonSiteMap.value.filterValues { it == siteName }.keys.first())
         setLessonCategoryItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
+        setLessonSiteId(lessonSiteMap.value.filterValues { it == siteName }.keys.first())
         setLessonSiteItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
     }
 
