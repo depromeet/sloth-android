@@ -53,21 +53,15 @@ class UpdateLessonViewModel @Inject constructor(
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
-    private val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
+    val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
+    // TODO 굳이 stateflow 로 관리할 이유가
     private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
     val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
-
-    private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
-    val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
 
     private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
 
-    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
-
-    // TODO 굳이 stateflow 로 관리할 이유가
     private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
@@ -78,6 +72,13 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
+
+    private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
+
+    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
+    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
+
     val lessonCategorySelectedItemPosition: StateFlow<Int> =
         _lessonCategorySelectedItemPosition.asStateFlow()
 
@@ -221,8 +222,7 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     private fun setLessonCategoryList(data: List<LessonCategory>) {
-        _lessonCategoryMap.value =
-            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+        _lessonCategoryMap.value = data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }

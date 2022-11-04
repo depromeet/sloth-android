@@ -1,5 +1,6 @@
 package com.depromeet.sloth.ui.manage
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.Member
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
@@ -7,8 +8,10 @@ import com.depromeet.sloth.data.network.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
+import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel(memberRepository) {
 
     private val _memberState = MutableSharedFlow<UiState<Member>>()
@@ -37,6 +41,9 @@ class ManageViewModel @Inject constructor(
 
     private val _member = MutableStateFlow(Member())
     val member: StateFlow<Member> = _member.asStateFlow()
+
+    private val _memberName = savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
+    val memberName: StateFlow<String> = _memberName.asStateFlow()
 
     private val _profileClick = MutableSharedFlow<Unit>()
     val profileClick: SharedFlow<Unit> = _profileClick.asSharedFlow()
@@ -78,6 +85,14 @@ class ManageViewModel @Inject constructor(
 
     fun setMemberInfo(member: Member) {
         _member.value = member
+        setMemberName(member.memberName)
+    }
+
+    private fun setMemberName(memberName: String?) {
+        if (this.memberName.value == memberName || memberName == null) {
+            return
+        }
+        savedStateHandle[KEY_MEMBER_NAME] =memberName
     }
 
     fun profileClick() = viewModelScope.launch {
@@ -103,5 +118,9 @@ class ManageViewModel @Inject constructor(
     fun logout() = viewModelScope.launch {
         _memberLogoutState.emit(UiState.Loading)
         _memberLogoutState.emit(memberRepository.logout())
+    }
+
+    companion object {
+        const val KEY_MEMBER_NAME = "memberName"
     }
 }
