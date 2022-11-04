@@ -21,7 +21,7 @@ import javax.inject.Inject
 class ManageViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val notificationRepository: NotificationRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel(memberRepository) {
 
     private val _memberState = MutableSharedFlow<UiState<Member>>()
@@ -75,7 +75,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
-        if (check != _member.value.isPushAlarmUse) {
+        if (check != member.value.isPushAlarmUse) {
             _notificationReceiveState.emit(UiState.Loading)
             _notificationReceiveState.emit(
                 notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
@@ -85,14 +85,7 @@ class ManageViewModel @Inject constructor(
 
     fun setMemberInfo(member: Member) {
         _member.value = member
-        setMemberName(member.memberName)
-    }
-
-    private fun setMemberName(memberName: String?) {
-        if (this.memberName.value == memberName || memberName == null) {
-            return
-        }
-        savedStateHandle[KEY_MEMBER_NAME] =memberName
+        _memberName.value = member.memberName
     }
 
     fun profileClick() = viewModelScope.launch {

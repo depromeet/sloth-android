@@ -318,9 +318,9 @@ class UpdateLessonActivity :
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (spinner.selectedItemPosition == 0) {
                         if (spinner == spnUpdateLessonCategory) {
-                            viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
+                            viewModel.setLessonCategorySelectedItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
-                            viewModel.setLessonSiteItemPosition(spnUpdateLessonSite.selectedItemPosition)
+                            viewModel.setLessonSiteSelectedItemPosition(spnUpdateLessonSite.selectedItemPosition)
                         }
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
@@ -328,15 +328,13 @@ class UpdateLessonActivity :
                                 viewModel.lessonCategoryMap.value.filterValues
                                 { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                             )
-                            viewModel.setLessonCategoryName(spinner.selectedItem.toString())
-                            viewModel.setLessonCategoryItemPosition(spnUpdateLessonCategory.selectedItemPosition)
+                            viewModel.setLessonCategorySelectedItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                         } else {
                             viewModel.setLessonSiteId(
                                 viewModel.lessonSiteMap.value.filterValues
                                 { it == spnUpdateLessonSite.selectedItem }.keys.first()
                             )
-                            viewModel.setLessonSiteName(spinner.selectedItem.toString())
-                            viewModel.setLessonSiteItemPosition(spnUpdateLessonSite.selectedItemPosition)
+                            viewModel.setLessonSiteSelectedItemPosition(spnUpdateLessonSite.selectedItemPosition)
                         }
                     }
                     clUpdateLesson.clearFocus()

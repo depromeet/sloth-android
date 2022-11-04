@@ -28,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val stringResourcesProvider: StringResourcesProvider,
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
@@ -151,9 +151,9 @@ class RegisterLessonViewModel @Inject constructor(
         lessonTotalNumber,
         lessonCategorySelectedItemPosition,
         lessonSiteSelectedItemPosition
-    ) { lessonName, lessonTotalNumber, lessonCategorySelectedItemPosition, lessonSiteSelectedItemPosition ->
-        lessonName.isNotBlank() && lessonTotalNumber != 0 &&
-                lessonCategorySelectedItemPosition != 0 && lessonSiteSelectedItemPosition != 0
+    ) { name, totalNumber, categorySelectedItemPosition, siteSelectedItemPosition ->
+        name.isNotBlank() && totalNumber != 0 &&
+                categorySelectedItemPosition != 0 && siteSelectedItemPosition != 0
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -163,8 +163,8 @@ class RegisterLessonViewModel @Inject constructor(
     val navigateToLessonCheckButtonState = combine(
         lessonEndDateSelectedState,
         lessonDateRangeValidation
-    ) { lessonEndDateSelectedState, lessonDateRangeValidation ->
-        lessonEndDateSelectedState && lessonDateRangeValidation
+    ) { endDateSelectedState, dateRangeValidation ->
+        endDateSelectedState && dateRangeValidation
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -195,8 +195,8 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun setLessonStartDate(calendar: Calendar) {
-        setStartDate(calendar.time)
-        setLessonStartDate(getPickerDateToDash(startDate.value))
+        _startDate.value = calendar.time
+        _lessonStartDate.value = getPickerDateToDash(startDate.value)
         setLessonDateRangeValidation()
     }
 
@@ -210,14 +210,14 @@ class RegisterLessonViewModel @Inject constructor(
             THREE_MONTH -> calendar.add(Calendar.MONTH, 3)
             CUSTOM_SETTING -> return
         }
-        setEndDate(calendar.time)
-        setLessonEndDate(getPickerDateToDash(calendar.time))
+        _endDate.value = calendar.time
+        _lessonEndDate.value = getPickerDateToDash(calendar.time)
         setLessonDateRangeValidation()
     }
 
     fun setLessonEndDateByCalendar(calendar: Calendar) {
-        setEndDate(calendar.time)
-        setLessonEndDate(getPickerDateToDash(calendar.time))
+        _endDate.value = calendar.time
+        _lessonEndDate.value = getPickerDateToDash(calendar.time)
         setLessonDateRangeValidation()
     }
 
@@ -273,110 +273,49 @@ class RegisterLessonViewModel @Inject constructor(
         )
     }
 
-    fun setLessonCategoryItemPosition(position: Int?) {
-        if (this.lessonCategorySelectedItemPosition.value == position || position == null) {
-            return
-        }
+    fun setLessonCategorySelectedItemPosition(position: Int) {
         _lessonCategorySelectedItemPosition.value = position
     }
 
-    fun setLessonSiteItemPosition(position: Int?) {
-        if (this.lessonSiteSelectedItemPosition.value == position || position == null) {
-            return
-        }
+    fun setLessonSiteItemPosition(position: Int) {
         _lessonSiteSelectedItemPosition.value = position
     }
 
-    fun setLessonEndDateSelectedItemPosition(position: Int?) {
-        if (this.lessonEndDateSelectedItemPosition.value == position || position == null) {
-            return
-        }
+    fun setLessonEndDateSelectedItemPosition(position: Int) {
         _lessonEndDateSelectedItemPosition.value = position
         _lessonEndDateSelectedState.value = lessonEndDateSelectedItemPosition.value != 0
     }
 
-    fun setLessonName(lessonName: String?) {
-        if (this.lessonName.value == lessonName || lessonName == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_NAME] = lessonName
+    fun setLessonName(lessonName: String) {
+        _lessonName.value = lessonName
     }
 
-    fun setLessonTotalNumber(lessonTotalNumber: Int?) {
-        if (this.lessonTotalNumber.value == lessonTotalNumber || lessonTotalNumber == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_TOTAL_NUMBER] = lessonTotalNumber
+    fun setLessonTotalNumber(lessonTotalNumber: Int) {
+        _lessonTotalNumber.value = lessonTotalNumber
     }
 
-    fun setCategoryId(lessonCategoryId: Int?) {
-        if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_CATEGORY_ID] = lessonCategoryId
+    fun setLessonCategoryId(lessonCategoryId: Int) {
+        _lessonCategoryId.value = lessonCategoryId
     }
 
-    fun setCategoryName(lessonCategoryName: String?) {
-        if (this.lessonCategoryName.value == lessonCategoryName || lessonCategoryName == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_CATEGORY_NAME] = lessonCategoryName
+    fun setLessonCategoryName(lessonCategoryName: String) {
+        _lessonCategoryName.value = lessonCategoryName
     }
 
-    fun setSiteId(lessonSiteId: Int?) {
-        if (this.lessonSiteId.value == lessonSiteId || lessonSiteId == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_SITE_ID] = lessonSiteId
+    fun setLessonSiteId(lessonSiteId: Int) {
+        _lessonSiteId.value = lessonSiteId
     }
 
-    fun setSiteName(lessonSiteName: String?) {
-        if (this.lessonSiteName.value == lessonSiteName || lessonSiteName == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_SITE_NAME] = lessonSiteName
+    fun setLessonSiteName(lessonSiteName: String) {
+        _lessonSiteName.value = lessonSiteName
     }
 
-    fun setLessonPrice(lessonPrice: Int?) {
-        if (this.lessonPrice.value == lessonPrice || lessonPrice == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_PRICE] = lessonPrice
+    fun setLessonPrice(lessonPrice: Int) {
+        _lessonPrice.value = lessonPrice
     }
 
-    fun setLessonMessage(lessonMessage: String?) {
-        if (this.lessonMessage.value == lessonMessage || lessonMessage == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_MESSAGE] = lessonMessage
-    }
-
-    private fun setStartDate(startDate: Date?) {
-        if (this.startDate.value == startDate || startDate == null) {
-            return
-        }
-        savedStateHandle[KEY_START_DATE] = startDate
-    }
-
-    private fun setEndDate(endDate: Date?) {
-        if (this.endDate.value == endDate || endDate == null) {
-            return
-        }
-        savedStateHandle[KEY_END_DATE] = endDate
-    }
-
-    private fun setLessonStartDate(lessonStartDate: String?) {
-        if (this.lessonStartDate.value == lessonStartDate || lessonStartDate == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_START_DATE] = lessonStartDate
-    }
-
-    private fun setLessonEndDate(lessonEndDate: String?) {
-        if (this.lessonEndDate.value == lessonEndDate || lessonEndDate == null) {
-            return
-        }
-        savedStateHandle[KEY_LESSON_END_DATE] = lessonEndDate
+    fun setLessonMessage(lessonMessage: String) {
+        _lessonMessage.value = lessonMessage
     }
 
     fun navigateToRegisterLessonSecondClick() = viewModelScope.launch {
