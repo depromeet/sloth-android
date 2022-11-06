@@ -55,7 +55,6 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    // TODO 굳이 stateflow 로 관리할 이유가
     private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 

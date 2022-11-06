@@ -10,9 +10,6 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.Member
@@ -34,31 +31,26 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val viewModel: ManageViewModel by viewModels()
+    private val manageViewModel: ManageViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = manageViewModel
         }
         initObserver()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            repeatOnStarted {
-
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
+    private fun initObserver() = with(manageViewModel) {
+        repeatOnStarted {
+            launch {
                 memberState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
-                            is UiState.Success<Member> -> viewModel.setMemberInfo(uiState.data)
-                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Success<Member> -> manageViewModel.setMemberInfo(uiState.data)
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.member_info_fetch_fail))
@@ -69,18 +61,17 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 memberUpdateState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
                             is UiState.Success<MemberUpdateResponse> -> {
                                 showToast(getString(R.string.member_update_success))
-                                viewModel.fetchMemberInfo()
+                                manageViewModel.fetchMemberInfo()
                             }
                             is UiState.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             }
                             is UiState.Error -> {
                                 Timber.tag("update Error").d(uiState.throwable)
@@ -92,17 +83,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 notificationReceiveState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
                             is UiState.Success<String> -> {
                                 showToast(getString(R.string.noti_update_complete))
-                                viewModel.fetchMemberInfo()
+                                manageViewModel.fetchMemberInfo()
                             }
-                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("update Error").d(uiState.throwable)
                                 showToast(getString(R.string.noti_update_fail))
@@ -113,14 +103,13 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 memberLogoutState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
-                            is UiState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
-                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Success<String> -> logout(requireContext()) { manageViewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("logout Error").d(uiState.throwable)
                                 showToast(getString(R.string.logout_fail))
@@ -131,21 +120,22 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 profileClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { showProfileUpdateDialog() }
+                    .collect {
+                        showProfileUpdateDialog()
+                    }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 contactButtonClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { sendEmail() }
+                    .collect {
+                        sendEmail()
+                    }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 privatePolicyClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect {
                         startActivity(
                             Intent(
@@ -156,17 +146,17 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 logoutClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { showLogoutDialog() }
+                    .collect {
+                        showLogoutDialog()
+                    }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 withdrawalClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect {
-                        showWithdrawalDialog(requireContext()) { viewModel.removeAuthToken() }
+                        showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
                     }
             }
         }
@@ -177,7 +167,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         dlg.onItemClickListener =
             object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    viewModel.logout()
+                    manageViewModel.logout()
                 }
             }
         dlg.start()
@@ -195,12 +185,12 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         val updateButton =
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
-        nameEditText.hint = viewModel.memberName.value
+        nameEditText.hint = manageViewModel.memberName.value
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != viewModel.memberName.value) {
-                viewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
+            if (nameEditText.text.toString() != manageViewModel.memberName.value) {
+                manageViewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
                 showToast(getString(R.string.input_same_nickname))
@@ -231,9 +221,5 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 type = MESSAGE_TYPE
             }
         )
-    }
-
-    private fun handleEvent() {
-
     }
 }

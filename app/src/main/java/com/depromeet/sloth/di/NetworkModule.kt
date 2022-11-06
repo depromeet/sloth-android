@@ -23,6 +23,42 @@ object NetworkModule {
     ): AccessTokenAuthenticator =
         AccessTokenAuthenticator(preferenceManager)
 
+//    @Provides
+//    fun providerHttpLoggingInterceptor(): HttpLoggingInterceptor {
+//        return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
+//            .apply {
+//                level = HttpLoggingInterceptor.Level.BODY
+//            }
+//    }
+//
+//    @Provides
+//    fun provideOkHttpClient(
+//        httpLoggingInterceptor: HttpLoggingInterceptor
+//    ): OkHttpClient {
+//        return OkHttpClient.Builder()
+//            .connectTimeout(30, TimeUnit.SECONDS)
+//            .readTimeout(30, TimeUnit.SECONDS)
+//            .writeTimeout(30, TimeUnit.SECONDS)
+//            .addInterceptor(httpLoggingInterceptor)
+//            .build()
+//    }
+
+//    @Singleton
+//    @Provides
+//    fun provideRetrofit(
+//        okHttpClient: OkHttpClient
+//    ): ServiceApi {
+//        val format = Json { ignoreUnknownKeys = true }
+//        val contentType = "application/json".toMediaType()
+//
+//        return Retrofit.Builder()
+//            .client(okHttpClient)
+//            .addConverterFactory(format.asConverterFactory(contentType))
+//            .baseUrl(API.BASE_URL)
+//            .build()
+//            .create(ServiceApi::class.java)
+//    }
+
     @Provides
     fun provideRetrofitServiceGenerator(
         accessTokenAuthenticator: AccessTokenAuthenticator

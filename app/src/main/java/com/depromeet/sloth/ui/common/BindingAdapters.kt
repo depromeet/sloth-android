@@ -14,6 +14,9 @@ import com.depromeet.sloth.extensions.changeListToDot
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 
+// TODO 바인딩어댑터 함수들 단일 책임의 원칙을 만족하도록 수정
+// TODO visibility 관련 작업은 xml에서 직접
+
 @BindingAdapter("currentProgressRate", "goalProgressRate")
 fun setLessonSummaryImage(view: ImageView, currentProgressRate: Float, goalProgressRate: Float) {
     // 시작 하지 않음
@@ -85,22 +88,6 @@ fun setPriceFormatHint(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
     hint = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
-
-@BindingAdapter("price")
-fun setPrice(view: TextView, price: Int) = with(view) {
-    val decimalFormat = DecimalFormat("#,###")
-    text = decimalFormat.format(price)
-}
-
-//@BindingAdapter("lessonPrice")
-//fun setLessonPrice(view: EditText, price: Int?) {
-//    if(price == null) {
-//        view.text.clear()
-//    }
-//    else {
-//        view.setText(price.toString())
-//    }
-//}
 
 @BindingAdapter("lessonDate")
 fun setLessonDate(view: TextView, lessonDate: String?) {
@@ -194,9 +181,4 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
             )
         } else return
     }
-
-@BindingAdapter("show")
-fun ProgressBar.bindShow(uiState: UiState<*>) {
-    visibility = if (uiState is UiState.Loading) View.VISIBLE else View.GONE
-}
 

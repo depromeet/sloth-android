@@ -3,12 +3,10 @@ package com.depromeet.sloth.ui.register
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
@@ -20,22 +18,21 @@ import timber.log.Timber
 class RegisterLessonCheckFragment :
     BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
-    private val viewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = registerLessonViewModel
         }
         initObserver()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            viewLifecycleOwner.lifecycleScope.launch {
+    private fun initObserver() = with(registerLessonViewModel) {
+        repeatOnStarted {
+            launch {
                 registerLessonState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
@@ -44,7 +41,7 @@ class RegisterLessonCheckFragment :
                                 requireActivity().finish()
                             }
                             is UiState.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                             }
                             is UiState.Error -> {
                                 Timber.tag("Register Error").d(uiState.throwable)
@@ -56,10 +53,11 @@ class RegisterLessonCheckFragment :
                     }
             }
 
-            viewLifecycleOwner.lifecycleScope.launch {
+            launch {
                 onNavigateToRegisterLessonSecondClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { navigateToRegisterLessonSecond() }
+                    .collect {
+                        navigateToRegisterLessonSecond()
+                    }
             }
         }
     }

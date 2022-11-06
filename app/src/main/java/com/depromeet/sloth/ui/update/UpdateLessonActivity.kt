@@ -9,9 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
@@ -32,13 +29,13 @@ import java.text.DecimalFormat
 class UpdateLessonActivity :
     BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
 
-    private val viewModel: UpdateLessonViewModel by viewModels()
+    private val updateLessonViewModel: UpdateLessonViewModel by viewModels()
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value
+            updateLessonViewModel.lessonCategoryList.value
         )
     }
 
@@ -46,7 +43,7 @@ class UpdateLessonActivity :
         ArrayAdapter<String>(
             this,
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value
+            updateLessonViewModel.lessonSiteList.value
         )
     }
 
@@ -54,7 +51,7 @@ class UpdateLessonActivity :
         super.onCreate(savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = updateLessonViewModel
         }
 
         initViews()
@@ -62,16 +59,10 @@ class UpdateLessonActivity :
         initObserver()
     }
 
-    // TODO Observer Code repeatOnLifecycle + event sealedClass 형태로 변경
-    private fun initObserver() {
-        viewModel.apply {
-            repeatOnStarted {
-
-            }
-
-            lifecycleScope.launch {
+    private fun initObserver() = with(updateLessonViewModel) {
+        repeatOnStarted {
+            launch {
                 updateLessonState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
@@ -79,7 +70,7 @@ class UpdateLessonActivity :
                                 showToast(getString(R.string.lesson_info_update_complete))
                                 finish()
                             }
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.lesson_info_update_fail))
@@ -90,9 +81,8 @@ class UpdateLessonActivity :
                     }
             }
 
-            lifecycleScope.launch {
+            launch {
                 lessonCategoryListState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
@@ -102,7 +92,7 @@ class UpdateLessonActivity :
                                 bindLessonCategoryAdapter()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is UiState.Error -> {
                                 Timber.tag("fetch Error").d(uiState.throwable)
                                 showToast(getString(R.string.cannot_get_lesson_category))
@@ -113,9 +103,8 @@ class UpdateLessonActivity :
                     }
             }
 
-            lifecycleScope.launch {
+            launch {
                 lessonSiteListState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress(this@UpdateLessonActivity)
@@ -125,16 +114,16 @@ class UpdateLessonActivity :
                                 bindLessonSiteAdapter()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
                             else -> {}
                         }
                         hideProgress()
                     }
             }
-            lifecycleScope.launch {
+
+            launch {
                 lessonTotalNumberValidation
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { isEnable ->
                         when (isEnable) {
                             false -> showToast(getString(R.string.lesson_number_validation_error))
@@ -160,14 +149,14 @@ class UpdateLessonActivity :
     private fun bindLessonCategoryAdapter() = with(binding) {
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonCategory.adapter = lessonCategoryAdapter
-        spnUpdateLessonCategory.setSelection(viewModel.lessonCategorySelectedItemPosition.value)
+        spnUpdateLessonCategory.setSelection(updateLessonViewModel.lessonCategorySelectedItemPosition.value)
 
     }
 
     private fun bindLessonSiteAdapter() = with(binding) {
         lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonSite.adapter = lessonSiteAdapter
-        spnUpdateLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value)
+        spnUpdateLessonSite.setSelection(updateLessonViewModel.lessonSiteSelectedItemPosition.value)
     }
 
     // LessonName clearFocus 가 되지 않는 문제
@@ -183,7 +172,7 @@ class UpdateLessonActivity :
                 }
 
                 override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                    viewModel.setLessonName(text.toString())
+                    updateLessonViewModel.setLessonName(text.toString())
                 }
 
                 override fun afterTextChanged(editable: Editable?) {}
@@ -213,8 +202,8 @@ class UpdateLessonActivity :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = viewModel.lessonTotalNumber.value.toString()
+                    updateLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = updateLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                     } else {
@@ -259,7 +248,9 @@ class UpdateLessonActivity :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
-                    viewModel.setLessonPrice(charSequence.toString().replace(",", "").toInt())
+                    updateLessonViewModel.setLessonPrice(
+                        charSequence.toString().replace(",", "").toInt()
+                    )
                     result =
                         decimalFormat.format(
                             charSequence.toString().replace(",", "")
@@ -318,23 +309,31 @@ class UpdateLessonActivity :
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (spinner.selectedItemPosition == 0) {
                         if (spinner == spnUpdateLessonCategory) {
-                            viewModel.setLessonCategorySelectedItemPosition(spnUpdateLessonCategory.selectedItemPosition)
+                            updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                spnUpdateLessonCategory.selectedItemPosition
+                            )
                         } else {
-                            viewModel.setLessonSiteSelectedItemPosition(spnUpdateLessonSite.selectedItemPosition)
+                            updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                spnUpdateLessonSite.selectedItemPosition
+                            )
                         }
                     } else {
                         if (spinner == spnUpdateLessonCategory) {
-                            viewModel.setLessonCategoryId(
-                                viewModel.lessonCategoryMap.value.filterValues
+                            updateLessonViewModel.setLessonCategoryId(
+                                updateLessonViewModel.lessonCategoryMap.value.filterValues
                                 { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                             )
-                            viewModel.setLessonCategorySelectedItemPosition(spnUpdateLessonCategory.selectedItemPosition)
+                            updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                spnUpdateLessonCategory.selectedItemPosition
+                            )
                         } else {
-                            viewModel.setLessonSiteId(
-                                viewModel.lessonSiteMap.value.filterValues
+                            updateLessonViewModel.setLessonSiteId(
+                                updateLessonViewModel.lessonSiteMap.value.filterValues
                                 { it == spnUpdateLessonSite.selectedItem }.keys.first()
                             )
-                            viewModel.setLessonSiteSelectedItemPosition(spnUpdateLessonSite.selectedItemPosition)
+                            updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                spnUpdateLessonSite.selectedItemPosition
+                            )
                         }
                     }
                     clUpdateLesson.clearFocus()
@@ -343,9 +342,5 @@ class UpdateLessonActivity :
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
-    }
-
-    private fun handleEvent() {
-
     }
 }

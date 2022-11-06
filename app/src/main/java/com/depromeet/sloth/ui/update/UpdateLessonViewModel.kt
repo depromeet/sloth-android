@@ -136,6 +136,25 @@ class UpdateLessonViewModel @Inject constructor(
         )
     }
 
+//    fun updateLesson() = viewModelScope.launch {
+//        lessonRepository.updateLesson(
+//            lessonDetail.lessonId.toString(),
+//            LessonUpdateRequest(
+//                lessonName = lessonName.value,
+//                price = lessonPrice.value,
+//                categoryId = lessonCategoryId.value,
+//                siteId = lessonSiteId.value,
+//                totalNumber = lessonTotalNumber.value,
+//            )
+//        ).onEach {
+//            if (it is UiState.Loading) _updateLessonState.emit(UiState.Loading)
+//            else _updateLessonState.emit(UiState.UnLoading)
+//        }.collect {
+//            _updateLessonState.emit(it)
+//        }
+//    }
+
+
     fun setLessonCategoryId(lessonCategoryId: Int) {
         _lessonCategoryId.value = lessonCategoryId
     }

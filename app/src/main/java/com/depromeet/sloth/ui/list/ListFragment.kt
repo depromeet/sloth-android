@@ -5,13 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -32,43 +30,46 @@ import java.util.*
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
-    private val viewModel: LessonListViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = lessonListViewModel
         }
 
         initViews()
         fetchLessonList()
     }
 
-    private fun fetchLessonList() {
-        viewModel.apply {
-            viewLifecycleOwner.lifecycleScope.launch {
+    private fun fetchLessonList() = with(lessonListViewModel) {
+        repeatOnStarted {
+            launch {
                 allLessonList
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { uiState ->
                         when (uiState) {
                             is UiState.Loading -> showProgress()
                             is UiState.UnLoading -> hideProgress()
                             is UiState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { viewModel.removeAuthToken() }
+                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
                             is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                         }
                     }
             }
-            viewLifecycleOwner.lifecycleScope.launch {
+
+            launch {
                 onRegisterLessonClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { moveRegisterActivity() }
+                    .collect {
+                        moveRegisterActivity()
+                    }
             }
-            viewLifecycleOwner.lifecycleScope.launch {
+
+            launch {
                 onNavigateToNotificationListClick
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { showWaitDialog(requireContext()) }
+                    .collect {
+                        showWaitDialog(requireContext())
+                    }
             }
         }
     }

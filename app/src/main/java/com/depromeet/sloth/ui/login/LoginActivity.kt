@@ -3,11 +3,9 @@ package com.depromeet.sloth.ui.login
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityLoginBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +14,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
 
-    private val viewModel: LoginViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
@@ -25,16 +23,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         super.onCreate(savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = loginViewModel
         }
         initObserver()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            lifecycleScope.launch {
+    private fun initObserver() = with(loginViewModel) {
+        repeatOnStarted {
+            launch {
                 loginState
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collect { loginState ->
                         when (loginState) {
                             true -> moveHomeActivity()
@@ -43,10 +40,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
                     }
             }
 
-            lifecycleScope.launch {
+            launch {
                 openLoginBottomSheetEvent
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collect { openLoginBottomSheet() }
+                    .collect {
+                        openLoginBottomSheet()
+                    }
             }
         }
     }
