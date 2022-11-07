@@ -78,7 +78,7 @@
 - 강의 상세화면, 수정화면, 삭제화면
 <img width="950" alt="image" src="https://user-images.githubusercontent.com/51016231/200232331-f890ea1b-0849-46b9-a60c-801e7910f573.png">
 
-- 마이페이지 화면 메뉴
+- 마이페이지 화면 메뉴 (프로필 수정, 문의, 개인정보 처리 방침, 로그아웃)
 <img width="946" alt="image" src="https://user-images.githubusercontent.com/51016231/200232788-fd1b8d22-6403-443a-aa1b-7228ee0078a6.png">
 
 
