@@ -64,3 +64,22 @@
 # ToDo
 - 푸시 알림 각 소셜 로그인별 고유 식별 처리 
 - 네트워크 상태 처리 개선  
+
+# WireFrame
+- 로그인 
+<img width="812" alt="image" src="https://user-images.githubusercontent.com/51016231/200229589-5ea2dab3-07ea-4bf5-8757-7e1fb8ac212f.png">
+
+- 강의 등록
+<img width="829" alt="image" src="https://user-images.githubusercontent.com/51016231/200231576-a0862620-1564-471a-b9c4-048cd192ac82.png">
+
+- 홈화면 (투데이, 강의목록, 마이페이지)
+<img width="716" alt="image" src="https://user-images.githubusercontent.com/51016231/200232753-7826bf68-6b9e-47a7-ae76-8cd0c880d00a.png">
+
+- 강의 상세화면, 수정화면, 삭제화면
+<img width="950" alt="image" src="https://user-images.githubusercontent.com/51016231/200232331-f890ea1b-0849-46b9-a60c-801e7910f573.png">
+
+- 마이페이지 화면 메뉴
+<img width="946" alt="image" src="https://user-images.githubusercontent.com/51016231/200232788-fd1b8d22-6403-443a-aa1b-7228ee0078a6.png">
+
+
+
