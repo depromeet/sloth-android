@@ -1,4 +1,4 @@
-package com.depromeet.sloth
+package com.depromeet.sloth.util
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
