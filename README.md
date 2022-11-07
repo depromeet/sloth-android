@@ -29,7 +29,7 @@
 **Technology Stack**
 - Tools : Android Studio
 - Language : Kotlin
-- Architecture Pattern : MVVM Pattern
+- Architecture Pattern : Google recommend architecture 
 - Android Architecture Components(AAC)
   - ViewModel
   - DataBinding
