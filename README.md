@@ -70,7 +70,7 @@
 <img width="812" alt="image" src="https://user-images.githubusercontent.com/51016231/200229589-5ea2dab3-07ea-4bf5-8757-7e1fb8ac212f.png">
 
 - 강의 등록
-<img width="829" alt="image" src="https://user-images.githubusercontent.com/51016231/200231576-a0862620-1564-471a-b9c4-048cd192ac82.png">
+<img width="712" alt="image" src="https://user-images.githubusercontent.com/51016231/200233062-30177f75-33c7-4245-b2b1-b16c52db8a50.png">
 
 - 홈화면 (투데이, 강의목록, 마이페이지)
 <img width="716" alt="image" src="https://user-images.githubusercontent.com/51016231/200232753-7826bf68-6b9e-47a7-ae76-8cd0c880d00a.png">
