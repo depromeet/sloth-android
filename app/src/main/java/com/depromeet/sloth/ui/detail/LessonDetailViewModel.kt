@@ -1,7 +1,5 @@
 package com.depromeet.sloth.ui.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.LessonDetail
@@ -22,7 +20,7 @@ class LessonDetailViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonId: String = checkNotNull(savedStateHandle[LessonDetailActivity.LESSON_ID])
+    val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
     private val _lessonDetailState = MutableSharedFlow<UiState<LessonDetail>>()
     val lessonDetailState: SharedFlow<UiState<LessonDetail>> = _lessonDetailState.asSharedFlow()
@@ -62,5 +60,9 @@ class LessonDetailViewModel @Inject constructor(
 
     fun lessonDeleteClick() = viewModelScope.launch {
         _lessonDeleteClick.emit(Unit)
+    }
+
+    companion object {
+        private const val LESSON_ID = "lessonId"
     }
 }

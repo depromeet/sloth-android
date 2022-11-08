@@ -16,8 +16,6 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
-import com.depromeet.sloth.ui.list.LessonListViewModel.Companion.PAST
 import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.list.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
@@ -182,5 +180,10 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             isPlanning -> LessonListAdapter.BodyType.PLANNING
             else -> LessonListAdapter.BodyType.DOING
         }
+    }
+
+    companion object {
+        private const val LESSON_ID = "lessonId"
+        private const val PAST = "PAST"
     }
 }

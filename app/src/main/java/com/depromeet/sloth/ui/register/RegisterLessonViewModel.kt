@@ -334,21 +334,21 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_LESSON_NAME = "lessonName"
-        const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
-        const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
-        const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
-        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
-        const val KEY_LESSON_SITE_NAME = "lessonSiteName"
-        const val KEY_LESSON_SITE_ID = "lessonSiteId"
-        const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
-        const val KEY_START_DATE = "startDate"
-        const val KEY_END_DATE = "endDate"
-        const val KEY_LESSON_START_DATE = "lessonStartDate"
-        const val KEY_LESSON_END_DATE = "lessonEndDate"
-        const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
-        const val KEY_LESSON_PRICE = "lessonPrice"
-        const val KEY_LESSON_MESSAGE = "lessonMessage"
+        private const val KEY_LESSON_NAME = "lessonName"
+        private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
+        private const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
+        private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
+        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
+        private const val KEY_LESSON_SITE_NAME = "lessonSiteName"
+        private const val KEY_LESSON_SITE_ID = "lessonSiteId"
+        private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        private const val KEY_START_DATE = "startDate"
+        private const val KEY_END_DATE = "endDate"
+        private const val KEY_LESSON_START_DATE = "lessonStartDate"
+        private const val KEY_LESSON_END_DATE = "lessonEndDate"
+        private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
+        private const val KEY_LESSON_PRICE = "lessonPrice"
+        private  const val KEY_LESSON_MESSAGE = "lessonMessage"
 
         const val DAY = 86400000L
         const val ONE_WEEK = 1

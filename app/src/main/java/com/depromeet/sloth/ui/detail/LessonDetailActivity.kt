@@ -123,8 +123,4 @@ class LessonDetailActivity :
         }
         dlg.start()
     }
-
-    companion object {
-        const val LESSON_ID = "lessonId"
-    }
 }

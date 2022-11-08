@@ -32,20 +32,20 @@ interface LessonService {
 //        @Body lessonRegisterRequest: LessonRegisterRequest
 //    ): Response<LessonRegisterResponse>?
 
-    @POST("api/lesson")
-    suspend fun registerLesson(
-        @Body lessonRegisterRequest: LessonRegisterRequest
-    ): Response<LessonRegisterResponse>?
-
 //    @POST("api/lesson")
 //    fun registerLesson(
 //        @Body lessonRegisterRequest: LessonRegisterRequest
 //    ): Call<LessonRegisterResponse?>
 
+    @POST("api/lesson")
+    suspend fun registerLesson(
+        @Body lessonRegisterRequest: LessonRegisterRequest
+    ): Response<LessonRegisterResponse>?
+
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(
         @Path("lessonId") lessonId: String,
-        @Body request: LessonUpdateRequest
+        @Body lessonUpdateRequest: LessonUpdateRequest
     ): Response<LessonUpdateResponse>?
 
     @PATCH("api/lesson/{lessonId}/finish")

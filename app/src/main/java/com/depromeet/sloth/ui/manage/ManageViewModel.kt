@@ -114,6 +114,6 @@ class ManageViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_MEMBER_NAME = "memberName"
+        private const val KEY_MEMBER_NAME = "memberName"
     }
 }

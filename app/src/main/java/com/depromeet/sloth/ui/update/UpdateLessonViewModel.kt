@@ -218,15 +218,15 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_LESSON_DETAIL = "lessonDetail"
+        private const val KEY_LESSON_DETAIL = "lessonDetail"
 
-        const val KEY_LESSON_NAME = "lessonName"
-        const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
-        const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
-        const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
+        private const val KEY_LESSON_NAME = "lessonName"
+        private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
+        private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
+        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
             "lessonCategorySelectedItemPosition"
-        const val KEY_LESSON_SITE_ID = "lessonSiteId"
-        const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
-        const val KEY_LESSON_PRICE = "lessonPrice"
+        private const val KEY_LESSON_SITE_ID = "lessonSiteId"
+        private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        private const val KEY_LESSON_PRICE = "lessonPrice"
     }
 }

@@ -51,9 +51,4 @@ class LessonListViewModel @Inject constructor(
     fun navigateToNotificationListClick() = viewModelScope.launch {
         _onNavigateToNotificationListClick.emit(Unit)
     }
-
-    companion object {
-        const val CURRENT = "CURRENT"
-        const val PAST = "PAST"
-    }
 }
