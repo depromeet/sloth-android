@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
 import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 

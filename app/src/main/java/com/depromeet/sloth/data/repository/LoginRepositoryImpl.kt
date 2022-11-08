@@ -4,12 +4,12 @@ import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
-import com.depromeet.sloth.data.network.login.LoginGoogleRequest
-import com.depromeet.sloth.data.network.login.LoginGoogleResponse
-import com.depromeet.sloth.data.network.login.LoginService
-import com.depromeet.sloth.data.network.login.LoginSlothRequest
-import com.depromeet.sloth.data.network.login.LoginSlothResponse
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.data.model.request.login.LoginGoogleRequest
+import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
+import com.depromeet.sloth.data.network.service.LoginService
+import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
+import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
+import com.depromeet.sloth.common.Result
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(

@@ -3,11 +3,11 @@ package com.depromeet.sloth.ui.register
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.Lesson
-import com.depromeet.sloth.data.network.lesson.LessonCategory
-import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
-import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
@@ -15,7 +15,7 @@ import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,13 +38,13 @@ class RegisterLessonViewModel @Inject constructor(
         _registerLessonState.asSharedFlow()
 
     private val _lessonCategoryListState =
-        MutableStateFlow<Result<List<LessonCategory>>>(Result.Loading)
-    val lessonCategoryListState: StateFlow<Result<List<LessonCategory>>> =
+        MutableStateFlow<Result<List<LessonCategoryResponse>>>(Result.Loading)
+    val lessonCategoryListState: StateFlow<Result<List<LessonCategoryResponse>>> =
         _lessonCategoryListState.asStateFlow()
 
     private val _lessonSiteListState =
-        MutableStateFlow<Result<List<LessonSite>>>(Result.Loading)
-    val lessonSiteListState: StateFlow<Result<List<LessonSite>>> =
+        MutableStateFlow<Result<List<LessonSiteResponse>>>(Result.Loading)
+    val lessonSiteListState: StateFlow<Result<List<LessonSiteResponse>>> =
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
@@ -88,8 +88,8 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
-    private val _lesson = MutableStateFlow(Lesson())
-    val lesson: StateFlow<Lesson> = _lesson.asStateFlow()
+    private val _lesson = MutableStateFlow(LessonResponse())
+    val lesson: StateFlow<LessonResponse> = _lesson.asStateFlow()
 
     private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
     val startDate: StateFlow<Date> = _startDate.asStateFlow()
@@ -220,7 +220,7 @@ class RegisterLessonViewModel @Inject constructor(
         setLessonDateRangeValidation()
     }
 
-    fun setLessonCategoryList(data: List<LessonCategory>) {
+    fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         _lessonCategoryMap.value =
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
@@ -228,7 +228,7 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-    fun setLessonSiteList(data: List<LessonSite>) {
+    fun setLessonSiteList(data: List<LessonSiteResponse>) {
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
@@ -241,7 +241,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun setLessonInfo() {
-        _lesson.value = Lesson(
+        _lesson.value = LessonResponse(
             categoryName = lessonCategoryName.value,
             endDate = changeDateStringToArrayList(lessonEndDate.value),
             lessonName = lessonName.value,
@@ -350,7 +350,7 @@ class RegisterLessonViewModel @Inject constructor(
         private const val KEY_LESSON_PRICE = "lessonPrice"
         private  const val KEY_LESSON_MESSAGE = "lessonMessage"
 
-        const val DAY = 86400000L
+        const val DAY = 60L * 60L * 24L
         const val ONE_WEEK = 1
         const val ONE_MONTH = 2
         const val TWO_MONTH = 3

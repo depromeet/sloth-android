@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{vm.member.email}"
+                android:text="@{vm.memberResponse.email}"
                 android:textColor="#80000000"
                 android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.list.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil

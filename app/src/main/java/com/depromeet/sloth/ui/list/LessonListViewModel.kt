@@ -2,12 +2,12 @@ package com.depromeet.sloth.ui.list
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

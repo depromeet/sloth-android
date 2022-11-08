@@ -12,13 +12,13 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.MemberUpdateRequest
-import com.depromeet.sloth.data.network.member.MemberUpdateResponse
+import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
@@ -49,7 +49,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
-                            is Result.Success<Member> -> manageViewModel.setMemberInfo(result.data)
+                            is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(result.data)
                             is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
                                 Timber.tag("fetch Error").d(result.throwable)

@@ -2,9 +2,8 @@ package com.depromeet.sloth.ui.list.viewholder
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
-import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
 import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 

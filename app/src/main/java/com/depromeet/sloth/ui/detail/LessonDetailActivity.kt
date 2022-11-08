@@ -7,13 +7,13 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
@@ -51,11 +51,11 @@ class LessonDetailActivity :
         lifecycleScope.launch {
             repeatOnStarted {
                 launch {
-                    lessonDetailState
+                    lessonDetailResponseState
                         .collect { result ->
                             when (result) {
                                 is Result.Loading -> showProgress(this@LessonDetailActivity)
-                                is Result.Success<LessonDetail> -> {
+                                is Result.Success<LessonDetailResponse> -> {
                                     lessonDetailViewModel.setLessonDetailInfo(result.data)
                                 }
                                 is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }

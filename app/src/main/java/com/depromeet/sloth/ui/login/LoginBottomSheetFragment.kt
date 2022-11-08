@@ -13,10 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.login.LoginGoogleResponse
-import com.depromeet.sloth.data.network.login.LoginSlothResponse
+import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
+import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.GOOGLE
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -190,7 +190,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         when (result) {
                             is Result.Success<LoginGoogleResponse> -> {
                                 Timber.tag("Success").d("${result.data}")
-                                accessToken = result.data.access_token
+                                accessToken = result.data.accessToken
                             }
                             is Result.Error -> {
                                 Timber.tag("Error").d(result.throwable)

@@ -1,12 +1,12 @@
 package com.depromeet.sloth.ui.home
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
-import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
+import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
+import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

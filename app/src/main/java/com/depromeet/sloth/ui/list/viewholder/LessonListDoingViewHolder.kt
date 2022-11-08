@@ -6,7 +6,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.addListener
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil

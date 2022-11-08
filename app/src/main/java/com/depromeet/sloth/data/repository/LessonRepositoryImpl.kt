@@ -1,19 +1,19 @@
 package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.model.LessonDetail
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
-import com.depromeet.sloth.data.network.lesson.LessonCategory
-import com.depromeet.sloth.data.network.lesson.LessonService
-import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
-import com.depromeet.sloth.data.network.lesson.list.*
-import com.depromeet.sloth.data.network.lesson.register.LessonRegisterRequest
-import com.depromeet.sloth.data.network.lesson.register.LessonRegisterResponse
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.network.service.LessonService
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
+import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
+import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
+import com.depromeet.sloth.data.model.response.lesson.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -144,7 +144,7 @@ class LessonRepositoryImpl @Inject constructor(
 
     override suspend fun fetchLessonDetail(
         lessonId: String,
-    ): Result<LessonDetail> {
+    ): Result<LessonDetailResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -156,7 +156,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        Result.Success(this.body() ?: LessonDetail.EMPTY)
+                        Result.Success(this.body() ?: LessonDetailResponse.EMPTY)
                     }
 
                     else -> Result.Error(Exception(message()))
@@ -220,7 +220,7 @@ class LessonRepositoryImpl @Inject constructor(
             } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun fetchLessonCategoryList(): Result<List<LessonCategory>> {
+    override suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -232,14 +232,14 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        Result.Success(this.body() ?: listOf(LessonCategory.EMPTY))
+                        Result.Success(this.body() ?: listOf(LessonCategoryResponse.EMPTY))
                     }
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun fetchLessonSiteList(): Result<List<LessonSite>> {
+    override suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(LessonService::class.java)
@@ -251,7 +251,7 @@ class LessonRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        Result.Success(this.body() ?: listOf(LessonSite.EMPTY))
+                        Result.Success(this.body() ?: listOf(LessonSiteResponse.EMPTY))
                     }
                     else -> Result.Error(Exception(message()))
                 }

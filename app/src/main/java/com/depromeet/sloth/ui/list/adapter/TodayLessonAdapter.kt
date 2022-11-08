@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonNothingBinding

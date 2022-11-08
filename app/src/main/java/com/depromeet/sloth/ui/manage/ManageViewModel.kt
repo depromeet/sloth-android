@@ -2,15 +2,15 @@ package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.MemberUpdateRequest
-import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.data.network.notification.update.NotificationUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
+import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -24,8 +24,8 @@ class ManageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(memberRepository) {
 
-    private val _memberState = MutableSharedFlow<Result<Member>>()
-    val memberState: SharedFlow<Result<Member>> = _memberState.asSharedFlow()
+    private val _memberState = MutableSharedFlow<Result<MemberResponse>>()
+    val memberState: SharedFlow<Result<MemberResponse>> = _memberState.asSharedFlow()
 
     private val _memberUpdateState =
         MutableSharedFlow<Result<MemberUpdateResponse>>()
@@ -39,8 +39,8 @@ class ManageViewModel @Inject constructor(
     private val _memberLogoutState = MutableSharedFlow<Result<String>>()
     val memberLogoutState: SharedFlow<Result<String>> = _memberLogoutState.asSharedFlow()
 
-    private val _member = MutableStateFlow(Member())
-    val member: StateFlow<Member> = _member.asStateFlow()
+    private val _memberResponse = MutableStateFlow(MemberResponse())
+    val memberResponse: StateFlow<MemberResponse> = _memberResponse.asStateFlow()
 
     private val _memberName = savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
@@ -75,7 +75,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
-        if (check != member.value.isPushAlarmUse) {
+        if (check != memberResponse.value.isPushAlarmUse) {
             _notificationReceiveState.emit(Result.Loading)
             _notificationReceiveState.emit(
                 notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
@@ -83,9 +83,9 @@ class ManageViewModel @Inject constructor(
         }
     }
 
-    fun setMemberInfo(member: Member) {
-        _member.value = member
-        _memberName.value = member.memberName
+    fun setMemberInfo(memberResponse: MemberResponse) {
+        _memberResponse.value = memberResponse
+        _memberName.value = memberResponse.memberName
     }
 
     fun profileClick() = viewModelScope.launch {

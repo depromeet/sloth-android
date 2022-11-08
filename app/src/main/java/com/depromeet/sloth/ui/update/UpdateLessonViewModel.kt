@@ -3,17 +3,17 @@ package com.depromeet.sloth.ui.update
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.LessonCategory
-import com.depromeet.sloth.data.network.lesson.LessonSite
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
@@ -28,20 +28,20 @@ class UpdateLessonViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
+    val lessonDetail: LessonDetailResponse = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
     private val _updateLessonState = MutableSharedFlow<Result<LessonUpdateResponse>>()
     val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
         get() = _updateLessonState
 
     private val _lessonCategoryListState =
-        MutableStateFlow<Result<List<LessonCategory>>>(Result.Loading)
-    val lessonCategoryListState: StateFlow<Result<List<LessonCategory>>> =
+        MutableStateFlow<Result<List<LessonCategoryResponse>>>(Result.Loading)
+    val lessonCategoryListState: StateFlow<Result<List<LessonCategoryResponse>>> =
         _lessonCategoryListState.asStateFlow()
 
     private val _lessonSiteListState =
-        MutableStateFlow<Result<List<LessonSite>>>(Result.Loading)
-    val lessonSiteListState: StateFlow<Result<List<LessonSite>>> =
+        MutableStateFlow<Result<List<LessonSiteResponse>>>(Result.Loading)
+    val lessonSiteListState: StateFlow<Result<List<LessonSiteResponse>>> =
         _lessonSiteListState.asStateFlow()
 
     // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
@@ -154,7 +154,6 @@ class UpdateLessonViewModel @Inject constructor(
 //        }
 //    }
 
-
     fun setLessonCategoryId(lessonCategoryId: Int) {
         _lessonCategoryId.value = lessonCategoryId
     }
@@ -190,26 +189,26 @@ class UpdateLessonViewModel @Inject constructor(
         initialValue = false
     )
 
-    fun setLessonCategoryInfo(data: List<LessonCategory>) {
+    fun setLessonCategoryInfo(data: List<LessonCategoryResponse>) {
         setLessonCategoryList(data)
         setLessonCategoryId(lessonCategoryMap.value.filterValues { it == lessonDetail.categoryName }.keys.first())
         setLessonCategorySelectedItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
     }
 
-    private fun setLessonCategoryList(data: List<LessonCategory>) {
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         _lessonCategoryMap.value = data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
-    fun setLessonSiteInfo(data: List<LessonSite>) {
+    fun setLessonSiteInfo(data: List<LessonSiteResponse>) {
         setLessonSiteList(data)
         setLessonSiteId(lessonSiteMap.value.filterValues { it == lessonDetail.siteName }.keys.first())
         setLessonSiteSelectedItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
     }
 
-    private fun setLessonSiteList(data: List<LessonSite>) {
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {

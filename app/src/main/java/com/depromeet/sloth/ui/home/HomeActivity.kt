@@ -8,12 +8,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
+import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.Result
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
