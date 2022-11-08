@@ -22,8 +22,8 @@ class LessonDetailViewModel @Inject constructor(
 
     val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
-    private val _lessonDetailResponseState = MutableSharedFlow<Result<LessonDetailResponse>>()
-    val lessonDetailResponseState: SharedFlow<Result<LessonDetailResponse>> = _lessonDetailResponseState.asSharedFlow()
+    private val _lessonDetailState = MutableSharedFlow<Result<LessonDetailResponse>>()
+    val lessonDetailState: SharedFlow<Result<LessonDetailResponse>> = _lessonDetailState.asSharedFlow()
 
     private val _lessonDeleteState = MutableSharedFlow<Result<LessonDeleteResponse>>()
     val lessonDeleteState: SharedFlow<Result<LessonDeleteResponse>> =
@@ -40,14 +40,32 @@ class LessonDetailViewModel @Inject constructor(
     val lessonDeleteClick: SharedFlow<Unit>
         get() = _lessonDeleteClick
 
+//    fun fetchLessonDetail() = viewModelScope.launch {
+//        _lessonDetailResponseState.emit(Result.Loading)
+//        _lessonDetailResponseState.emit(lessonRepository.fetchLessonDetail(lessonId))
+//    }
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailResponseState.emit(Result.Loading)
-        _lessonDetailResponseState.emit(lessonRepository.fetchLessonDetail(lessonId))
+        lessonRepository.fetchLessonDetail(lessonId)
+            .onEach {
+                if (it is Result.Loading) _lessonDetailState.emit(Result.Loading)
+                else _lessonDetailState.emit(Result.UnLoading)
+            }.collect {
+                _lessonDetailState.emit(it)
+            }
     }
 
+//    fun deleteLesson() = viewModelScope.launch {
+//        _lessonDeleteState.emit(Result.Loading)
+//        _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
+//    }
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.emit(Result.Loading)
-        _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
+        lessonRepository.deleteLesson(lessonId)
+            .onEach {
+                if (it is Result.Loading) _lessonDeleteState.emit(Result.Loading)
+                else _lessonDeleteState.emit(Result.UnLoading)
+            }.collect {
+                _lessonDeleteState.emit(it)
+            }
     }
 
     fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {

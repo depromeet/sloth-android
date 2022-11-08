@@ -51,10 +51,11 @@ class LessonDetailActivity :
         lifecycleScope.launch {
             repeatOnStarted {
                 launch {
-                    lessonDetailResponseState
+                    lessonDetailState
                         .collect { result ->
                             when (result) {
                                 is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDetailResponse> -> {
                                     lessonDetailViewModel.setLessonDetailInfo(result.data)
                                 }
@@ -62,7 +63,7 @@ class LessonDetailActivity :
                                 is Result.Error -> Timber.tag("fetch Error").d(result.throwable)
                                 else -> {}
                             }
-                            hideProgress()
+                            // hideProgress()
                         }
                 }
 
@@ -71,6 +72,7 @@ class LessonDetailActivity :
                         .collect { result ->
                             when (result) {
                                 is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDeleteResponse> -> {
                                     showToast(getString(R.string.lesson_delete_complete))
                                     finish()
@@ -82,7 +84,7 @@ class LessonDetailActivity :
                                 }
                                 else -> {}
                             }
-                            hideProgress()
+                            // hideProgress()
                         }
                 }
 

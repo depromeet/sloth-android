@@ -7,13 +7,13 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
@@ -72,10 +72,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         }
     }
 
-    override fun initViews() {
-        with(binding) {
-            rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
-        }
+    override fun initViews() = with(binding) {
+        rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
     }
 
     private fun moveRegisterActivity() {

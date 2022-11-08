@@ -120,23 +120,41 @@ class UpdateLessonViewModel @Inject constructor(
         setLessonTotalNumberValidation()
     }
 
+//    fun updateLesson() = viewModelScope.launch {
+//        _updateLessonState.emit(Result.Loading)
+//        _updateLessonState.emit(
+//            lessonRepository.updateLesson(
+//                lessonDetail.lessonId.toString(),
+//                LessonUpdateRequest(
+//                    lessonName = lessonName.value,
+//                    price = lessonPrice.value,
+//                    categoryId = lessonCategoryId.value,
+//                    siteId = lessonSiteId.value,
+//                    totalNumber = lessonTotalNumber.value,
+//                )
+//            )
+//        )
+//    }
+
     fun updateLesson() = viewModelScope.launch {
-        _updateLessonState.emit(Result.Loading)
-        _updateLessonState.emit(
-            lessonRepository.updateLesson(
-                lessonDetail.lessonId.toString(),
-                LessonUpdateRequest(
-                    lessonName = lessonName.value,
-                    price = lessonPrice.value,
-                    categoryId = lessonCategoryId.value,
-                    siteId = lessonSiteId.value,
-                    totalNumber = lessonTotalNumber.value,
-                )
+        lessonRepository.updateLesson(
+            lessonDetail.lessonId.toString(),
+            LessonUpdateRequest(
+                lessonName = lessonName.value,
+                price = lessonPrice.value,
+                categoryId = lessonCategoryId.value,
+                siteId = lessonSiteId.value,
+                totalNumber = lessonTotalNumber.value,
             )
-        )
+        ).onEach {
+            if (it is Result.Loading) _updateLessonState.emit(Result.Loading)
+            else _updateLessonState.emit(Result.UnLoading)
+        }.collect {
+            _updateLessonState.emit(it)
+        }
     }
 
-//    fun updateLesson() = viewModelScope.launch {
+//    val updateLesson: Flow<Result<LessonUpdateResponse>> =
 //        lessonRepository.updateLesson(
 //            lessonDetail.lessonId.toString(),
 //            LessonUpdateRequest(
@@ -146,13 +164,7 @@ class UpdateLessonViewModel @Inject constructor(
 //                siteId = lessonSiteId.value,
 //                totalNumber = lessonTotalNumber.value,
 //            )
-//        ).onEach {
-//            if (it is UiState.Loading) _updateLessonState.emit(UiState.Loading)
-//            else _updateLessonState.emit(UiState.UnLoading)
-//        }.collect {
-//            _updateLessonState.emit(it)
-//        }
-//    }
+//        )
 
     fun setLessonCategoryId(lessonCategoryId: Int) {
         _lessonCategoryId.value = lessonCategoryId

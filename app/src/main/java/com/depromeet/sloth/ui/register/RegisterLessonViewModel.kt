@@ -3,11 +3,12 @@ package com.depromeet.sloth.ui.register
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
@@ -15,7 +16,6 @@ import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -190,7 +190,29 @@ class RegisterLessonViewModel @Inject constructor(
             _lessonCategoryListState.value = lessonCategoryListResponse.await()
             _lessonSiteListState.value = lessonSiteListResponse.await()
         }
+//        viewModelScope.launch {
+//            fetchLessonCategoryList()
+//            fetchLessonSiteList()
+//        }
         initLessonStartDate()
+    }
+
+    //initView 의 bindAdapter 와 타이밍 이슈
+    private suspend fun fetchLessonCategoryList() {
+        when(val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()) {
+            is Result.Success -> setLessonCategoryList(lessonCategoryListResponse.data)
+            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
+            else -> return
+        }
+    }
+
+    //initView 의 bindAdapter 와 타이밍 이슈
+    private suspend fun fetchLessonSiteList() {
+        when(val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()) {
+            is Result.Success -> setLessonSiteList(lessonSiteListResponse.data)
+            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
+            else -> return
+        }
     }
 
     fun setLessonStartDate(calendar: Calendar) {
@@ -253,23 +275,44 @@ class RegisterLessonViewModel @Inject constructor(
         )
     }
 
+//    fun registerLesson() = viewModelScope.launch {
+//        _registerLessonState.emit(Result.Loading)
+//        _registerLessonState.emit(
+//            lessonRepository.registerLesson(
+//                LessonRegisterRequest(
+//                    alertDays = null,
+//                    categoryId = lessonCategoryId.value,
+//                    endDate = lessonEndDate.value,
+//                    lessonName = lessonName.value,
+//                    message = lessonMessage.value,
+//                    price = lessonPrice.value,
+//                    siteId = lessonSiteId.value,
+//                    startDate = lessonStartDate.value,
+//                    totalNumber = lessonTotalNumber.value
+//                )
+//            )
+//        )
+//    }
+
     fun registerLesson() = viewModelScope.launch {
-        _registerLessonState.emit(Result.Loading)
-        _registerLessonState.emit(
-            lessonRepository.registerLesson(
-                LessonRegisterRequest(
-                    alertDays = null,
-                    categoryId = lessonCategoryId.value,
-                    endDate = lessonEndDate.value,
-                    lessonName = lessonName.value,
-                    message = lessonMessage.value,
-                    price = lessonPrice.value,
-                    siteId = lessonSiteId.value,
-                    startDate = lessonStartDate.value,
-                    totalNumber = lessonTotalNumber.value
-                )
+        lessonRepository.registerLesson(
+            LessonRegisterRequest(
+                alertDays = null,
+                categoryId = lessonCategoryId.value,
+                endDate = lessonEndDate.value,
+                lessonName = lessonName.value,
+                message = lessonMessage.value,
+                price = lessonPrice.value,
+                siteId = lessonSiteId.value,
+                startDate = lessonStartDate.value,
+                totalNumber = lessonTotalNumber.value
             )
-        )
+        ).onEach {
+            if (it is Result.Loading) _registerLessonState.emit(Result.Loading)
+            else _registerLessonState.emit(Result.UnLoading)
+        }.collect {
+            _registerLessonState.emit(it)
+        }
     }
 
     fun setLessonCategorySelectedItemPosition(position: Int) {

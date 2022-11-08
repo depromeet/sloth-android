@@ -66,6 +66,7 @@ class UpdateLessonActivity :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(getString(R.string.lesson_info_update_complete))
                                 finish()
@@ -77,7 +78,7 @@ class UpdateLessonActivity :
                             }
                             else -> {}
                         }
-                        hideProgress()
+                        //hideProgress()
                     }
             }
 

@@ -173,4 +173,6 @@
     <string name="planning_lesson">예정된 강의</string>
     <string name="passed_lesson">지난 강의</string>
 
+    <string name="error_message">문제가 발생했어요</string>
+
 </resources>

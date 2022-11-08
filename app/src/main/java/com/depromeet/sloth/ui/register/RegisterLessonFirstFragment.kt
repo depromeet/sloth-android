@@ -118,6 +118,12 @@ class RegisterLessonFirstFragment :
     }
 
     override fun initViews() = with(binding) {
+//        bindAdapter(lessonCategoryAdapter, spnRegisterLessonCategory,
+//            registerLessonViewModel.lessonCategorySelectedItemPosition.value)
+//        bindAdapter(lessonSiteAdapter, spnRegisterLessonSite,
+//            registerLessonViewModel.lessonSiteSelectedItemPosition.value)
+
+
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)

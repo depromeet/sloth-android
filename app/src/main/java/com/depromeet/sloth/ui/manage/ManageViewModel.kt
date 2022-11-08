@@ -64,14 +64,32 @@ class ManageViewModel @Inject constructor(
         fetchMemberInfo()
     }
 
+//    fun fetchMemberInfo() = viewModelScope.launch {
+//        _memberState.emit(Result.Loading)
+//        _memberState.emit(memberRepository.fetchMemberInfo())
+//    }
     fun fetchMemberInfo() = viewModelScope.launch {
-        _memberState.emit(Result.Loading)
-        _memberState.emit(memberRepository.fetchMemberInfo())
+        memberRepository.fetchMemberInfo()
+            .onEach {
+                if (it is Result.Loading) _memberState.emit(Result.Loading)
+                else _memberState.emit(Result.UnLoading)
+            }.collect {
+                _memberState.emit(it)
+            }
     }
 
+//    fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
+//        _memberUpdateState.emit(Result.Loading)
+//        _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
+//    }
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
-        _memberUpdateState.emit(Result.Loading)
-        _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
+        memberRepository.updateMemberInfo(memberUpdateRequest)
+            .onEach {
+                if (it is Result.Loading) _memberUpdateState.emit(Result.Loading)
+                else _memberUpdateState.emit(Result.UnLoading)
+            }.collect {
+                _memberUpdateState.emit(it)
+            }
     }
 
     fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {

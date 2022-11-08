@@ -25,20 +25,40 @@ interface LessonRepository {
 
     suspend fun updateLessonCount(count: Int, lessonId: Int): Result<LessonUpdateCountResponse>
 
-    suspend fun fetchLessonDetail(lessonId: String): Result<LessonDetailResponse>
+//    suspend fun fetchLessonDetail(lessonId: String): Result<LessonDetailResponse>
 
-    suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): Result<LessonRegisterResponse>
+    fun fetchLessonDetail(lessonId: String): Flow<Result<LessonDetailResponse>>
 
-    // suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): LessonRegisterResponse?
+//    suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): Result<LessonRegisterResponse>
 
-    suspend fun deleteLesson(lessonId: String): Result<LessonDeleteResponse>
+//    suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): LessonRegisterResponse?
+
+    fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): Flow<Result<LessonRegisterResponse>>
+
+//    suspend fun deleteLesson(lessonId: String): Result<LessonDeleteResponse>
+
+    fun deleteLesson(lessonId: String): Flow<Result<LessonDeleteResponse>>
 
     suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>>
 
+//    fun fetchLessonCategoryList(): Flow<Result<LessonCategoryResponse>>
+
     suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>>
 
-    suspend fun updateLesson(
+//    fun fetchLessonSiteList(): Flow<Result<LessonSiteResponse>>
+
+//    suspend fun updateLesson(
+//        lessonId: String,
+//        updateLessonRequest: LessonUpdateRequest
+//    ): Result<LessonUpdateResponse>
+
+    fun updateLesson(
         lessonId: String,
-        updateLessonRequest: LessonUpdateRequest
-    ): Result<LessonUpdateResponse>
+        lessonUpdateRequest: LessonUpdateRequest
+    ): Flow<Result<LessonUpdateResponse>>
+
+//    fun updateLesson(
+//        lessonId: String,
+//        lessonUpdateRequest: LessonUpdateRequest
+//    ): Flow<LessonUpdateResponse>
 }

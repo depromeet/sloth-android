@@ -13,6 +13,7 @@ import javax.inject.Inject
 class NotificationRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) : NotificationRepository {
+
     override suspend fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String> {
@@ -26,10 +27,8 @@ class NotificationRepositoryImpl @Inject constructor(
                         if (newAccessToken.isNotEmpty()) {
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
-
                         Result.Success(this.body() ?: "")
                     }
-
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
@@ -46,10 +45,8 @@ class NotificationRepositoryImpl @Inject constructor(
                         if (newAccessToken.isNotEmpty()) {
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
-
                         Result.Success(this.body() ?: "")
                     }
-
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
@@ -68,10 +65,8 @@ class NotificationRepositoryImpl @Inject constructor(
                         if (newAccessToken.isNotEmpty()) {
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
-
                         Result.Success(this.body() ?: NotificationFetchResponse())
                     }
-
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))

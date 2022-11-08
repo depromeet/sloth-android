@@ -49,6 +49,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(result.data)
                             is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
@@ -57,7 +58,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             }
                             else -> {}
                         }
-                        hideProgress()
+                        //hideProgress()
                     }
             }
 
@@ -66,6 +67,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<MemberUpdateResponse> -> {
                                 showToast(getString(R.string.member_update_success))
                                 manageViewModel.fetchMemberInfo()
@@ -79,7 +81,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             }
                             else -> {}
                         }
-                        hideProgress()
+                        //hideProgress()
                     }
             }
 

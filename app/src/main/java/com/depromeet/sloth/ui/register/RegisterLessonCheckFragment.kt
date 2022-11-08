@@ -36,6 +36,7 @@ class RegisterLessonCheckFragment :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 showToast(getString(R.string.lesson_register_complete))
                                 requireActivity().finish()
@@ -47,9 +48,9 @@ class RegisterLessonCheckFragment :
                                 Timber.tag("Register Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_register_fail))
                             }
-                            else -> {}
+                            // else -> {}
                         }
-                        hideProgress()
+                        // hideProgress()
                     }
             }
 
