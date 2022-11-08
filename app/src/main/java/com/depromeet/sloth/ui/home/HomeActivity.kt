@@ -13,7 +13,7 @@ import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,19 +62,19 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         repeatOnStarted {
             launch {
                 notificationFetchState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress(this@HomeActivity)
-                            is UiState.Success<NotificationFetchResponse> -> {
-                                if (uiState.data.fcmToken == null) {
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress(this@HomeActivity)
+                            is Result.Success<NotificationFetchResponse> -> {
+                                if (result.data.fcmToken == null) {
                                     Timber.d("fcmToken not existed")
                                     createAndRegisterFCMToken(deviceId)
                                 } else {
                                     Timber.d("fcmToken already existed")
                                 }
                             }
-                            is UiState.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
-                            is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
+                            is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
+                            is Result.Error -> Timber.tag("Error").d(result.throwable)
                             else -> {}
                         }
                         hideProgress()
@@ -83,12 +83,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
             launch {
                 notificationRegisterState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress(this@HomeActivity)
-                            is UiState.Success<String> -> Timber.d(uiState.data)
-                            is UiState.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
-                            is UiState.Error -> Timber.tag("Error").d(uiState.throwable)
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress(this@HomeActivity)
+                            is Result.Success<String> -> Timber.d(result.data)
+                            is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
+                            is Result.Error -> Timber.tag("Error").d(result.throwable)
                             else -> {}
                         }
                         hideProgress()

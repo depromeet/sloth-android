@@ -13,7 +13,7 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
@@ -45,13 +45,13 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         repeatOnStarted {
             launch {
                 allLessonList
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress()
-                            is UiState.UnLoading -> hideProgress()
-                            is UiState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                            is UiState.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
-                            is UiState.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<List<LessonAllResponse>> -> setLessonList(result.data)
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
+                            is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                         }
                     }
             }

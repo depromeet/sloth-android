@@ -14,7 +14,7 @@ import com.depromeet.sloth.data.network.lesson.update.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
@@ -63,16 +63,16 @@ class UpdateLessonActivity :
         repeatOnStarted {
             launch {
                 updateLessonState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
-                            is UiState.Success<LessonUpdateResponse> -> {
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.Success<LessonUpdateResponse> -> {
                                 showToast(getString(R.string.lesson_info_update_complete))
                                 finish()
                             }
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
-                            is UiState.Error -> {
-                                Timber.tag("fetch Error").d(uiState.throwable)
+                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
+                            is Result.Error -> {
+                                Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_info_update_fail))
                             }
                             else -> {}
@@ -83,18 +83,18 @@ class UpdateLessonActivity :
 
             launch {
                 lessonCategoryListState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
                             //TODO UDF 에 위반 코드 개선
-                            is UiState.Success -> {
-                                setLessonCategoryInfo(uiState.data)
+                            is Result.Success -> {
+                                setLessonCategoryInfo(result.data)
                                 bindLessonCategoryAdapter()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
-                            is UiState.Error -> {
-                                Timber.tag("fetch Error").d(uiState.throwable)
+                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
+                            is Result.Error -> {
+                                Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.cannot_get_lesson_category))
                             }
                             else -> {}
@@ -105,17 +105,17 @@ class UpdateLessonActivity :
 
             launch {
                 lessonSiteListState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress(this@UpdateLessonActivity)
-                            is UiState.Success -> {
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.Success -> {
                                 //TODO UDF 에 위반 코드 개선
-                                setLessonSiteInfo(uiState.data)
+                                setLessonSiteInfo(result.data)
                                 bindLessonSiteAdapter()
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
-                            is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
+                            is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
                             else -> {}
                         }
                         hideProgress()

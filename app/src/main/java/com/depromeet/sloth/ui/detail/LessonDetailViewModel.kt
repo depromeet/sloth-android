@@ -7,7 +7,7 @@ import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,11 +22,11 @@ class LessonDetailViewModel @Inject constructor(
 
     val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
-    private val _lessonDetailState = MutableSharedFlow<UiState<LessonDetail>>()
-    val lessonDetailState: SharedFlow<UiState<LessonDetail>> = _lessonDetailState.asSharedFlow()
+    private val _lessonDetailState = MutableSharedFlow<Result<LessonDetail>>()
+    val lessonDetailState: SharedFlow<Result<LessonDetail>> = _lessonDetailState.asSharedFlow()
 
-    private val _lessonDeleteState = MutableSharedFlow<UiState<LessonDeleteResponse>>()
-    val lessonDeleteState: SharedFlow<UiState<LessonDeleteResponse>> =
+    private val _lessonDeleteState = MutableSharedFlow<Result<LessonDeleteResponse>>()
+    val lessonDeleteState: SharedFlow<Result<LessonDeleteResponse>> =
         _lessonDeleteState.asSharedFlow()
 
     private val _lessonDetail = MutableStateFlow(LessonDetail())
@@ -41,12 +41,12 @@ class LessonDetailViewModel @Inject constructor(
         get() = _lessonDeleteClick
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailState.emit(UiState.Loading)
+        _lessonDetailState.emit(Result.Loading)
         _lessonDetailState.emit(lessonRepository.fetchLessonDetail(lessonId))
     }
 
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.emit(UiState.Loading)
+        _lessonDeleteState.emit(Result.Loading)
         _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
     }
 

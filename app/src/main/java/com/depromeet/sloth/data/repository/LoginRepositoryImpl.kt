@@ -9,7 +9,7 @@ import com.depromeet.sloth.data.network.login.LoginGoogleResponse
 import com.depromeet.sloth.data.network.login.LoginService
 import com.depromeet.sloth.data.network.login.LoginSlothRequest
 import com.depromeet.sloth.data.network.login.LoginSlothResponse
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -23,7 +23,7 @@ class LoginRepositoryImpl @Inject constructor(
     override suspend fun fetchSlothAuthInfo(
         authToken: String,
         socialType: String
-    ): UiState<LoginSlothResponse> {
+    ): Result<LoginSlothResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(authToken)
             .create(LoginService::class.java)
@@ -36,13 +36,13 @@ class LoginRepositoryImpl @Inject constructor(
                 val refreshToken = body()?.refreshToken ?: ""
                 preferenceManager.putAuthToken(accessToken, refreshToken)
 
-                return UiState.Success(this.body() ?: LoginSlothResponse())
-            } ?: return UiState.Error(Exception("Login Exception"))
+                return Result.Success(this.body() ?: LoginSlothResponse())
+            } ?: return Result.Error(Exception("Login Exception"))
     }
 
     override suspend fun fetchGoogleAuthInfo(
         authCode: String
-    ): UiState<LoginGoogleResponse> {
+    ): Result<LoginGoogleResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(isGoogleLogin = true)
             .create(LoginService::class.java)
@@ -55,7 +55,7 @@ class LoginRepositoryImpl @Inject constructor(
                     code = authCode
                 )
             )?.run {
-                return UiState.Success(this.body() ?: LoginGoogleResponse())
-            } ?: return UiState.Error(Exception("Retrofit Exception"))
+                return Result.Success(this.body() ?: LoginGoogleResponse())
+            } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 }

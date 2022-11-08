@@ -9,7 +9,7 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,18 +33,18 @@ class RegisterLessonCheckFragment :
         repeatOnStarted {
             launch {
                 registerLessonState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress()
-                            is UiState.Success -> {
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success -> {
                                 showToast(getString(R.string.lesson_register_complete))
                                 requireActivity().finish()
                             }
-                            is UiState.Unauthorized -> {
+                            is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                             }
-                            is UiState.Error -> {
-                                Timber.tag("Register Error").d(uiState.throwable)
+                            is Result.Error -> {
+                                Timber.tag("Register Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_register_fail))
                             }
                             else -> {}

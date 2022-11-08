@@ -13,7 +13,7 @@ import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
@@ -52,14 +52,14 @@ class LessonDetailActivity :
             repeatOnStarted {
                 launch {
                     lessonDetailState
-                        .collect { uiState ->
-                            when (uiState) {
-                                is UiState.Loading -> showProgress(this@LessonDetailActivity)
-                                is UiState.Success<LessonDetail> -> {
-                                    lessonDetailViewModel.setLessonDetailInfo(uiState.data)
+                        .collect { result ->
+                            when (result) {
+                                is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.Success<LessonDetail> -> {
+                                    lessonDetailViewModel.setLessonDetailInfo(result.data)
                                 }
-                                is UiState.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
-                                is UiState.Error -> Timber.tag("fetch Error").d(uiState.throwable)
+                                is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
+                                is Result.Error -> Timber.tag("fetch Error").d(result.throwable)
                                 else -> {}
                             }
                             hideProgress()
@@ -68,16 +68,16 @@ class LessonDetailActivity :
 
                 launch {
                     lessonDeleteState
-                        .collect { uiState ->
-                            when (uiState) {
-                                is UiState.Loading -> showProgress(this@LessonDetailActivity)
-                                is UiState.Success<LessonDeleteResponse> -> {
+                        .collect { result ->
+                            when (result) {
+                                is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.Success<LessonDeleteResponse> -> {
                                     showToast(getString(R.string.lesson_delete_complete))
                                     finish()
                                 }
-                                is UiState.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
-                                is UiState.Error -> {
-                                    Timber.tag("fetch Error").d(uiState.throwable)
+                                is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
+                                is Result.Error -> {
+                                    Timber.tag("fetch Error").d(result.throwable)
                                     showToast(getString(R.string.lesson_delete_fail))
                                 }
                                 else -> {}

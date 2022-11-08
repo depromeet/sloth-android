@@ -7,7 +7,7 @@ import com.depromeet.sloth.data.network.lesson.list.LessonFinishResponse
 import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,10 +23,10 @@ class LessonListViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    val todayLessonList: Flow<UiState<List<LessonTodayResponse>>> =
+    val todayLessonList: Flow<Result<List<LessonTodayResponse>>> =
         lessonRepository.fetchTodayLessonList()
 
-    val allLessonList: Flow<UiState<List<LessonAllResponse>>> =
+    val allLessonList: Flow<Result<List<LessonAllResponse>>> =
         lessonRepository.fetchAllLessonList()
 
     private val _onRegisterLessonClick = MutableSharedFlow<Unit>()
@@ -36,7 +36,7 @@ class LessonListViewModel @Inject constructor(
     val onNavigateToNotificationListClick: SharedFlow<Unit> =
         _onNavigateToNotificationListClick.asSharedFlow()
 
-    fun finishLesson(lessonId: String): Flow<UiState<LessonFinishResponse>> =
+    fun finishLesson(lessonId: String): Flow<Result<LessonFinishResponse>> =
         lessonRepository.finishLesson(lessonId)
 
     suspend fun updateLessonCount(count: Int, lessonId: Int) =

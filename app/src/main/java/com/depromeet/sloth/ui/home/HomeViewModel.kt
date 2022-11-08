@@ -6,7 +6,7 @@ import com.depromeet.sloth.data.network.notification.register.NotificationRegist
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,16 +24,16 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel(memberRepository) {
 
     private val _notificationFetchState =
-        MutableSharedFlow<UiState<NotificationFetchResponse>>()
-    val notificationFetchState: SharedFlow<UiState<NotificationFetchResponse>> =
+        MutableSharedFlow<Result<NotificationFetchResponse>>()
+    val notificationFetchState: SharedFlow<Result<NotificationFetchResponse>> =
         _notificationFetchState.asSharedFlow()
 
-    private val _notificationRegisterState = MutableSharedFlow<UiState<String>>()
-    val notificationRegisterState: SharedFlow<UiState<String>> =
+    private val _notificationRegisterState = MutableSharedFlow<Result<String>>()
+    val notificationRegisterState: SharedFlow<Result<String>> =
         _notificationRegisterState.asSharedFlow()
 
     fun fetchFCMToken(deviceId: String) = viewModelScope.launch {
-        _notificationFetchState.emit(UiState.Loading)
+        _notificationFetchState.emit(Result.Loading)
         _notificationFetchState.emit(notificationRepository.fetchFCMToken(deviceId))
     }
 
@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
     private fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
-        _notificationRegisterState.emit(UiState.Loading)
+        _notificationRegisterState.emit(Result.Loading)
         _notificationRegisterState.emit(
             notificationRepository.registerFCMToken(
                 notificationRegisterRequest

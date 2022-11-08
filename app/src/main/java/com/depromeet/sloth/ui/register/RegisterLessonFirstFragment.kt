@@ -17,7 +17,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -59,22 +59,22 @@ class RegisterLessonFirstFragment :
         repeatOnStarted {
             launch {
                 lessonCategoryListState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress()
-                            is UiState.Success -> {
-                                registerLessonViewModel.setLessonCategoryList(uiState.data)
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success -> {
+                                registerLessonViewModel.setLessonCategoryList(result.data)
                                 bindAdapter(
                                     lessonCategoryAdapter,
                                     binding.spnRegisterLessonCategory,
                                     registerLessonViewModel.lessonCategorySelectedItemPosition.value
                                 )
                             }
-                            is UiState.Unauthorized -> {
+                            is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                                 hideProgress()
                             }
-                            is UiState.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
                             else -> {}
                         }
                         hideProgress()
@@ -83,12 +83,12 @@ class RegisterLessonFirstFragment :
 
             launch {
                 lessonSiteListState
-                    .collect { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> showProgress()
-                            is UiState.Success -> {
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success -> {
                                 //TODO UDF 에 위반 -> 코드 개선
-                                registerLessonViewModel.setLessonSiteList(uiState.data)
+                                registerLessonViewModel.setLessonSiteList(result.data)
                                 bindAdapter(
                                     lessonSiteAdapter,
                                     binding.spnRegisterLessonSite,
@@ -96,10 +96,10 @@ class RegisterLessonFirstFragment :
                                 )
                             }
                             // TODO Error 내부로 이동
-                            is UiState.Unauthorized -> {
+                            is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                             }
-                            is UiState.Error -> {
+                            is Result.Error -> {
                                 showToast(getString(R.string.cannot_get_lesson_category))
                             }
                             else -> {}

@@ -7,14 +7,14 @@ import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.member.MemberService
 import com.depromeet.sloth.data.network.member.MemberUpdateRequest
 import com.depromeet.sloth.data.network.member.MemberUpdateResponse
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
 ): MemberRepository {
 
-    override suspend fun fetchMemberInfo(): UiState<Member> {
+    override suspend fun fetchMemberInfo(): Result<Member> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -26,16 +26,16 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        UiState.Success(this.body() ?: Member())
+                        Result.Success(this.body() ?: Member())
                     }
-                    else -> UiState.Error(Exception(message()))
+                    else -> Result.Error(Exception(message()))
                 }
-            } ?: return UiState.Error(Exception("Retrofit Exception"))
+            } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
     override suspend fun updateMemberInfo(
         memberUpdateRequest: MemberUpdateRequest,
-    ): UiState<MemberUpdateResponse> {
+    ): Result<MemberUpdateResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -47,14 +47,14 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        UiState.Success(this.body() ?: MemberUpdateResponse())
+                        Result.Success(this.body() ?: MemberUpdateResponse())
                     }
-                    else -> UiState.Error(Exception(message()))
+                    else -> Result.Error(Exception(message()))
                 }
-            } ?: return UiState.Error(Exception("Retrofit Exception"))
+            } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun logout(): UiState<String> {
+    override suspend fun logout(): Result<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
             .build(preferenceManager.getAccessToken())
             .create(MemberService::class.java)
@@ -66,11 +66,11 @@ class MemberRepositoryImpl @Inject constructor(
                             preferenceManager.updateAccessToken(newAccessToken)
                         }
 
-                        UiState.Success(this.body() ?: "")
+                        Result.Success(this.body() ?: "")
                     }
-                    else -> UiState.Error(Exception(message()))
+                    else -> Result.Error(Exception(message()))
                 }
-            } ?: return UiState.Error(Exception("Retrofit Exception"))
+            } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
     override fun removeAuthToken() {

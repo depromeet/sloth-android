@@ -15,7 +15,7 @@ import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.UiState
+import com.depromeet.sloth.ui.common.Result
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,18 +33,18 @@ class RegisterLessonViewModel @Inject constructor(
     memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    private val _registerLessonState = MutableSharedFlow<UiState<LessonRegisterResponse>>()
-    val registerLessonState: SharedFlow<UiState<LessonRegisterResponse>> =
+    private val _registerLessonState = MutableSharedFlow<Result<LessonRegisterResponse>>()
+    val registerLessonState: SharedFlow<Result<LessonRegisterResponse>> =
         _registerLessonState.asSharedFlow()
 
     private val _lessonCategoryListState =
-        MutableStateFlow<UiState<List<LessonCategory>>>(UiState.Loading)
-    val lessonCategoryListState: StateFlow<UiState<List<LessonCategory>>> =
+        MutableStateFlow<Result<List<LessonCategory>>>(Result.Loading)
+    val lessonCategoryListState: StateFlow<Result<List<LessonCategory>>> =
         _lessonCategoryListState.asStateFlow()
 
     private val _lessonSiteListState =
-        MutableStateFlow<UiState<List<LessonSite>>>(UiState.Loading)
-    val lessonSiteListState: StateFlow<UiState<List<LessonSite>>> =
+        MutableStateFlow<Result<List<LessonSite>>>(Result.Loading)
+    val lessonSiteListState: StateFlow<Result<List<LessonSite>>> =
         _lessonSiteListState.asStateFlow()
 
     private val _lessonName =
@@ -254,7 +254,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun registerLesson() = viewModelScope.launch {
-        _registerLessonState.emit(UiState.Loading)
+        _registerLessonState.emit(Result.Loading)
         _registerLessonState.emit(
             lessonRepository.registerLesson(
                 LessonRegisterRequest(
