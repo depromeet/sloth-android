@@ -2,20 +2,20 @@ package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
-import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.common.Result
-import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
@@ -39,10 +39,10 @@ class ManageViewModel @Inject constructor(
     private val _memberLogoutState = MutableSharedFlow<Result<String>>()
     val memberLogoutState: SharedFlow<Result<String>> = _memberLogoutState.asSharedFlow()
 
-    private val _memberResponse = MutableStateFlow(MemberResponse())
-    val memberResponse: StateFlow<MemberResponse> = _memberResponse.asStateFlow()
+    private val _member = MutableStateFlow(MemberResponse())
+    val member: StateFlow<MemberResponse> = _member.asStateFlow()
 
-    private val _memberName = savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
+    private val _memberName = savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, member.value.memberName)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
     private val _profileClick = MutableSharedFlow<Unit>()
@@ -75,7 +75,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
-        if (check != memberResponse.value.isPushAlarmUse) {
+        if (check != member.value.isPushAlarmUse) {
             _notificationReceiveState.emit(Result.Loading)
             _notificationReceiveState.emit(
                 notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
@@ -84,7 +84,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun setMemberInfo(memberResponse: MemberResponse) {
-        _memberResponse.value = memberResponse
+        _member.value = memberResponse
         _memberName.value = memberResponse.memberName
     }
 
