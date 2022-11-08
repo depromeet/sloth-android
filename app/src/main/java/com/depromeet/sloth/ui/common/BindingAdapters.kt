@@ -2,15 +2,14 @@ package com.depromeet.sloth.ui.common
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
-import com.depromeet.sloth.GlideApp
 import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
+import com.depromeet.sloth.util.GlideApp
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 

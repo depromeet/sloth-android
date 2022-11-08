@@ -7,16 +7,19 @@ import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.common.UiState
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
+    private val messaging: FirebaseMessaging,
     memberRepository: MemberRepository
 ) : BaseViewModel(memberRepository) {
 
@@ -34,7 +37,19 @@ class HomeViewModel @Inject constructor(
         _notificationFetchState.emit(notificationRepository.fetchFCMToken(deviceId))
     }
 
-    fun registerFCMToken(
+    fun createAndRegisterFCMToken(deviceId: String) {
+        messaging.token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Timber.w(task.exception, "Fetching FCM registration token failed")
+                return@addOnCompleteListener
+            }
+            val fcmToken = task.result
+            Timber.tag("FCM Token is created").d(fcmToken)
+            registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken))
+        }
+    }
+
+    private fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
         _notificationRegisterState.emit(UiState.Loading)

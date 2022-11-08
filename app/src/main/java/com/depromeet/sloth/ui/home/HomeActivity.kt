@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.network.notification.fetch.NotificationFetchResponse
-import com.depromeet.sloth.data.network.notification.register.NotificationRegisterRequest
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
@@ -17,7 +16,6 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.ui.common.UiState
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
 import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -70,7 +68,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                             is UiState.Success<NotificationFetchResponse> -> {
                                 if (uiState.data.fcmToken == null) {
                                     Timber.d("fcmToken not existed")
-                                    registerFCMToken()
+                                    createAndRegisterFCMToken(deviceId)
                                 } else {
                                     Timber.d("fcmToken already existed")
                                 }
@@ -96,19 +94,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                         hideProgress()
                     }
             }
-        }
-    }
-
-    //TODO Firebase 의존성을 주입하는 방식으로 변경
-    private fun registerFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Timber.w(task.exception, "Fetching FCM registration token failed")
-                return@addOnCompleteListener
-            }
-            val fcmToken = task.result
-            Timber.tag("FCM Token is created").d(fcmToken)
-            homeViewModel.registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken))
         }
     }
 }
