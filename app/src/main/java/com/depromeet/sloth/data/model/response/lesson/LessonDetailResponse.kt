@@ -9,37 +9,37 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LessonDetailResponse (
     @SerializedName("alertDays")
-    var alertDays: String? = "",
+    val alertDays: String? = "",
     @SerializedName("categoryName")
-    var categoryName: String = "",
+    val categoryName: String = "",
     @SerializedName("currentProgressRate")
-    var currentProgressRate: Int = 0,
+    val currentProgressRate: Int = 0,
     @SerializedName("endDate")
-    var endDate: ArrayList<String> = ArrayList(),
+    val endDate: ArrayList<String> = ArrayList(),
     @SerializedName("goalProgressRate")
-    var goalProgressRate: Int = 0,
+    val goalProgressRate: Int = 0,
     @SerializedName("isFinished")
-    var isFinished: Boolean = false,
+    val isFinished: Boolean = false,
     @SerializedName("lessonId")
-    var lessonId: Int = 0,
+    val lessonId: Int = 0,
     @SerializedName("lessonName")
-    var lessonName: String = "",
+    val lessonName: String = "",
     @SerializedName("message")
-    var message: String = "",
+    val message: String = "",
     @SerializedName("presentNumber")
-    var presentNumber: Int = 0,
+    val presentNumber: Int = 0,
     @SerializedName("price")
-    var price: Int = 0,
+    val price: Int = 0,
     @SerializedName("remainDay")
-    var remainDay: Int = 0,
+    val remainDay: Int = 0,
     @SerializedName("siteName")
-    var siteName: String = "",
+    val siteName: String = "",
     @SerializedName("startDate")
-    var startDate: ArrayList<String> = ArrayList(),
+    val startDate: ArrayList<String> = ArrayList(),
     @SerializedName("totalNumber")
-    var totalNumber: Int = 0,
+    val totalNumber: Int = 0,
     @SerializedName("wastePrice")
-    var wastePrice: Int = 0,
+    val wastePrice: Int = 0,
 ): Parcelable {
     companion object {
         val EMPTY = LessonDetailResponse("", "", 0, ArrayList(),  0,false, 0, "", "", 0,0,0,"",ArrayList(),0,0)

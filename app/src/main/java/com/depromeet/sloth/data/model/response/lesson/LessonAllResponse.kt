@@ -5,31 +5,31 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonAllResponse (
     @SerializedName("categoryName")
-    var categoryName: String = "",
+    val categoryName: String = "",
     @SerializedName("currentProgressRate")
-    var currentProgressRate: Int = 0,
+    val currentProgressRate: Int = 0,
     @SerializedName("endDate")
-    var endDate: String = "",
+    val endDate: String = "",
     @SerializedName("goalProgressRate")
-    var goalProgressRate: Int = 0,
+    val goalProgressRate: Int = 0,
     @SerializedName("isFinished")
-    var isFinished: Boolean = false,
+    val isFinished: Boolean = false,
     @SerializedName("lessonId")
-    var lessonId: Int = 0,
+    val lessonId: Int = 0,
     @SerializedName("lessonName")
-    var lessonName: String = "",
+    val lessonName: String = "",
     @SerializedName("lessonStatus")
-    var lessonStatus: String = "",
+    val lessonStatus: String = "",
     @SerializedName("price")
-    var price: Int = 0,
+    val price: Int = 0,
     @SerializedName("remainDay")
-    var remainDay: Int = 0,
+    val remainDay: Int = 0,
     @SerializedName("siteName")
-    var siteName: String = "",
+    val siteName: String = "",
     @SerializedName("startDate")
-    var startDate: String = "",
+    val startDate: String = "",
     @SerializedName("totalNumber")
-    var totalNumber: Int = 0
+    val totalNumber: Int = 0
 ) {
     companion object {
         val EMPTY = LessonAllResponse("", 0, "", 0, false, 0, "", "", 0, 0, "", "", 0)

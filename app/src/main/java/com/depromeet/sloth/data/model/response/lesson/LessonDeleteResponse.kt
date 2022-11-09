@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonDeleteResponse(
     @SerializedName("code")
-    var code: String = "",
+    val code: String = "",
     @SerializedName("message")
-    var message: String = "",
+    val message: String = "",
 ) {
     companion object {
         val EMPTY = LessonDeleteResponse("", "")

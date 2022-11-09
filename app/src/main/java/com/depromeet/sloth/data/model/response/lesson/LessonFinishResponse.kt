@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonFinishResponse (
     @SerializedName("isFinished")
-    var isFinished: Boolean
+    val isFinished: Boolean
 ) {
     companion object {
         val EMPTY = LessonFinishResponse(false)

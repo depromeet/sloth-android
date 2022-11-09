@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class LessonCategoryResponse(
     @SerializedName("categoryId")
-    var categoryId: Int,
+    val categoryId: Int,
     @SerializedName("categoryName")
-    var categoryName: String
+    val categoryName: String
 ) {
     companion object {
         val EMPTY = LessonCategoryResponse(0, "")

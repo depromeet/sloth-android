@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonUpdateCountResponse (
     @SerializedName("isFinished")
-    var isFinished: Boolean,
+    val isFinished: Boolean,
     @SerializedName("lessonId")
     val lessonId: Int,
     @SerializedName("presentNumber")
-    var presentNumber: Int,
+    val presentNumber: Int,
     @SerializedName("weeklyFinished")
-    var weeklyFinished: Boolean
+    val weeklyFinished: Boolean
 ) {
     companion object {
         val EMPTY = LessonUpdateCountResponse(false, -1, -1, false)

@@ -9,15 +9,15 @@ data class LessonTodayResponse (
     @SerializedName("lessonId")
     val lessonId: Int,
     @SerializedName("lessonName")
-    var lessonName: String,
+    val lessonName: String,
     @SerializedName("presentNumber")
     var presentNumber: Int,
     @SerializedName("remainDay")
-    var remainDay: Int,
+    val remainDay: Int,
     @SerializedName("siteName")
-    var siteName: String,
+    val siteName: String,
     @SerializedName("untilTodayFinished")
-    var untilTodayFinished: Boolean,
+    val untilTodayFinished: Boolean,
     @SerializedName("untilTodayNumber")
     val untilTodayNumber: Int,
     @SerializedName("totalNumber")
