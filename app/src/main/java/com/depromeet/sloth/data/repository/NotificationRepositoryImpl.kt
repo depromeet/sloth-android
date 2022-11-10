@@ -1,13 +1,13 @@
 package com.depromeet.sloth.data.repository
 
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
+import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
+import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.service.NotificationService
-import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
-import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
-import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
-import com.depromeet.sloth.common.Result
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -18,9 +18,9 @@ class NotificationRepositoryImpl @Inject constructor(
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(NotificationService::class.java)
-            .registerFCMToken(notificationRegisterRequest)?.run {
+            .registerFCMToken(preferenceManager.getAccessToken(), notificationRegisterRequest)?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""
@@ -36,9 +36,9 @@ class NotificationRepositoryImpl @Inject constructor(
 
     override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Result<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(NotificationService::class.java)
-            .updateFCMTokenUse(notificationUpdateRequest)?.run {
+            .updateFCMTokenUse(preferenceManager.getAccessToken(), notificationUpdateRequest)?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""
@@ -56,9 +56,9 @@ class NotificationRepositoryImpl @Inject constructor(
         deviceId: String
     ): Result<NotificationFetchResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(NotificationService::class.java)
-            .fetchFCMToken(deviceId)?.run {
+            .fetchFCMToken(preferenceManager.getAccessToken(), deviceId)?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""

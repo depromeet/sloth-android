@@ -10,6 +10,8 @@ import com.depromeet.sloth.data.network.service.LoginService
 import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.GRANT_TYPE
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -25,9 +27,10 @@ class LoginRepositoryImpl @Inject constructor(
         socialType: String
     ): Result<LoginSlothResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(authToken)
+            .build()
             .create(LoginService::class.java)
             .fetchSlothAuthInfo(
+                authToken,
                 LoginSlothRequest(
                     socialType = socialType
                 )
@@ -44,14 +47,14 @@ class LoginRepositoryImpl @Inject constructor(
         authCode: String
     ): Result<LoginGoogleResponse> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(isGoogleLogin = true)
+            .build()
             .create(LoginService::class.java)
             .fetchGoogleAuthInfo(
                 LoginGoogleRequest(
-                    grant_type = "authorization_code",
+                    grant_type = GRANT_TYPE,
                     client_id = BuildConfig.GOOGLE_CLIENT_ID,
                     client_secret = BuildConfig.GOOGLE_CLIENT_SECRET,
-                    redirect_uri = "",
+                    redirect_uri = DEFAULT_STRING_VALUE,
                     code = authCode
                 )
             )?.run {

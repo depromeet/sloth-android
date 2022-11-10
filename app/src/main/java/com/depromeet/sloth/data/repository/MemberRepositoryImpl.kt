@@ -17,29 +17,12 @@ class MemberRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
 ) : MemberRepository {
 
-    //    override suspend fun fetchMemberInfo(): Result<MemberResponse> {
-//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(MemberService::class.java)
-//            .fetchMemberInfo()?.run {
-//                return when (this.code()) {
-//                    200 -> {
-//                        val newAccessToken = headers()["Authorization"] ?: ""
-//                        if (newAccessToken.isNotEmpty()) {
-//                            preferenceManager.updateAccessToken(newAccessToken)
-//                        }
-//                        Result.Success(this.body() ?: MemberResponse())
-//                    }
-//                    else -> Result.Error(Exception(message()))
-//                }
-//            } ?: return Result.Error(Exception("Retrofit Exception"))
-//    }
     override fun fetchMemberInfo() = flow {
         emit(Result.Loading)
         val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(MemberService::class.java)
-            .fetchMemberInfo() ?: run {
+            .fetchMemberInfo(preferenceManager.getAccessToken()) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -61,34 +44,14 @@ class MemberRepositoryImpl @Inject constructor(
         .catch { throwable -> emit(Result.Error(throwable)) }
         .onCompletion { emit(Result.UnLoading) }
 
-//    override suspend fun updateMemberInfo(
-//        memberUpdateRequest: MemberUpdateRequest,
-//    ): Result<MemberUpdateResponse> {
-//        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(MemberService::class.java)
-//            .updateMemberInfo(memberUpdateRequest)?.run {
-//                return when (this.code()) {
-//                    200 -> {
-//                        val newAccessToken = headers()["Authorization"] ?: ""
-//                        if (newAccessToken.isNotEmpty()) {
-//                            preferenceManager.updateAccessToken(newAccessToken)
-//                        }
-//                        Result.Success(this.body() ?: MemberUpdateResponse())
-//                    }
-//                    else -> Result.Error(Exception(message()))
-//                }
-//            } ?: return Result.Error(Exception("Retrofit Exception"))
-//    }
-
     override fun updateMemberInfo(
         memberUpdateRequest: MemberUpdateRequest
     ) = flow {
         emit(Result.Loading)
         val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(MemberService::class.java)
-            .updateMemberInfo(memberUpdateRequest) ?: run {
+            .updateMemberInfo(preferenceManager.getAccessToken(), memberUpdateRequest) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -112,9 +75,9 @@ class MemberRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): Result<String> {
         RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build(preferenceManager.getAccessToken())
+            .build()
             .create(MemberService::class.java)
-            .logout()?.run {
+            .logout(preferenceManager.getAccessToken())?.run {
                 return when (this.code()) {
                     200 -> {
                         val newAccessToken = headers()["Authorization"] ?: ""

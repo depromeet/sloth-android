@@ -18,6 +18,7 @@ import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.GOOGLE
+import com.depromeet.sloth.util.KAKAO
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -115,7 +116,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
-                        socialType = "KAKAO"
+                        socialType = KAKAO
                     ).let { result ->
                         when (result) {
                             is Result.Success<LoginSlothResponse> -> {
@@ -151,7 +152,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
-                        socialType = "KAKAO"
+                        socialType = KAKAO
                     ).let { result ->
                         when (result) {
                             is Result.Success<LoginSlothResponse> -> {

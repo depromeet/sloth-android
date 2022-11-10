@@ -10,48 +10,55 @@ import retrofit2.http.*
 
 interface LessonService {
     @GET("api/lesson/doing")
-    suspend fun fetchTodayLessonList(): Response<List<LessonTodayResponse>>?
+    suspend fun fetchTodayLessonList(@Header("Authorization") accessToken: String?): Response<List<LessonTodayResponse>>?
 
     @GET("api/lesson/list")
-    suspend fun fetchAllLessonList(): Response<List<LessonAllResponse>>?
+    suspend fun fetchAllLessonList(@Header("Authorization") accessToken: String?): Response<List<LessonAllResponse>>?
 
     @PATCH("api/lesson/number")
-    suspend fun updateLessonCount(@Body request: LessonUpdateCountRequest): Response<LessonUpdateCountResponse>?
+    suspend fun updateLessonCount(
+        @Header("Authorization") accessToken: String?,
+        @Body request: LessonUpdateCountRequest
+    ): Response<LessonUpdateCountResponse>?
 
     @GET("api/lesson/detail/{lessonId}")
-    suspend fun fetchLessonDetail(@Path("lessonId") lessonId: String): Response<LessonDetailResponse>?
+    suspend fun fetchLessonDetail(
+        @Header("Authorization") accessToken: String?,
+        @Path("lessonId") lessonId: String
+    ): Response<LessonDetailResponse>?
 
     @DELETE("api/lesson/{lessonId}")
-    suspend fun deleteLesson(@Path("lessonId") lessonId: String): Response<LessonDeleteResponse>?
-
-//    @POST("api/lesson")
-//    suspend fun registerLesson(
-//        @Header("Authorization") authToken: String?,
-//        @Body lessonRegisterRequest: LessonRegisterRequest
-//    ): Response<LessonRegisterResponse>?
-
-//    @POST("api/lesson")
-//    fun registerLesson(
-//        @Body lessonRegisterRequest: LessonRegisterRequest
-//    ): Call<LessonRegisterResponse?>
+    suspend fun deleteLesson(
+        @Header("Authorization") accessToken: String?,
+        @Path("lessonId") lessonId: String
+    ): Response<LessonDeleteResponse>?
 
     @POST("api/lesson")
     suspend fun registerLesson(
+        @Header("Authorization") accessToken: String?,
         @Body lessonRegisterRequest: LessonRegisterRequest
     ): Response<LessonRegisterResponse>?
 
     @PATCH("api/lesson/{lessonId}")
     suspend fun updateLesson(
+        @Header("Authorization") accessToken: String?,
         @Path("lessonId") lessonId: String,
         @Body lessonUpdateRequest: LessonUpdateRequest
     ): Response<LessonUpdateResponse>?
 
     @PATCH("api/lesson/{lessonId}/finish")
-    suspend fun finishLesson(@Path("lessonId") lessonId: String): Response<LessonFinishResponse>?
+    suspend fun finishLesson(
+        @Header("Authorization") accessToken: String?,
+        @Path("lessonId") lessonId: String
+    ): Response<LessonFinishResponse>?
 
     @GET("api/category/list")
-    suspend fun fetchLessonCategoryList(): Response<List<LessonCategoryResponse>>?
+    suspend fun fetchLessonCategoryList(
+        @Header("Authorization") accessToken: String?
+    ): Response<List<LessonCategoryResponse>>?
 
     @GET("api/site/list")
-    suspend fun fetchLessonSiteList(): Response<List<LessonSiteResponse>>?
+    suspend fun fetchLessonSiteList(
+        @Header("Authorization") accessToken: String?
+    ): Response<List<LessonSiteResponse>>?
 }
