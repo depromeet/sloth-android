@@ -47,8 +47,6 @@ abstract class BaseFragment<B : ViewDataBinding>(
 
     open fun initViews() = Unit
 
-    open fun observeData() = Unit
-
     protected fun showToast(msg: String) =
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 

@@ -2,8 +2,11 @@ package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.network.login.LoginRepository
+import com.depromeet.sloth.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -11,6 +14,27 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
 ) : ViewModel() {
+
+    private val _loginState = MutableSharedFlow<Boolean>(replay = 1)
+    val loginState: SharedFlow<Boolean>
+        get() = _loginState
+
+    private val _openLoginBottomSheetEvent = MutableSharedFlow<Unit>()
+    val openLoginBottomSheetEvent: SharedFlow<Unit>
+        get() = _openLoginBottomSheetEvent
+
+    init {
+        checkLoggedIn()
+    }
+
+    private fun checkLoggedIn() = viewModelScope.launch {
+        _loginState.emit(loginRepository.checkedLoggedIn())
+    }
+
+    fun clickLoginBtn() = viewModelScope.launch {
+        _openLoginBottomSheetEvent.emit(Unit)
+    }
+
     suspend fun fetchSlothAuthInfo(accessToken: String, socialType: String) =
         withContext(viewModelScope.coroutineContext) {
             loginRepository.fetchSlothAuthInfo(authToken = accessToken, socialType = socialType)

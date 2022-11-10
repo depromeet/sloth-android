@@ -1,68 +1,86 @@
 package com.depromeet.sloth.ui.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.delete.LessonDeleteResponse
-import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.member.MemberRepository
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
+import com.depromeet.sloth.data.repository.LessonRepository
+import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Event
+import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository,
     savedStateHandle: SavedStateHandle,
+    memberRepository: MemberRepository,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonId: String = savedStateHandle.get(LessonDetailActivity.LESSON_ID)
-        ?: throw IllegalStateException("There is no value of the lesson id.")
+    val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
-    private val _lessonDetailState = MutableLiveData<LessonState<LessonDetail>>()
-    val lessonDetailState: LiveData<LessonState<LessonDetail>> = _lessonDetailState
+    private val _lessonDetailState = MutableSharedFlow<Result<LessonDetailResponse>>()
+    val lessonDetailState: SharedFlow<Result<LessonDetailResponse>> = _lessonDetailState.asSharedFlow()
 
-    private val _lessonDeleteState = MutableLiveData<LessonState<LessonDeleteResponse>>()
-    val lessonDeleteState: LiveData<LessonState<LessonDeleteResponse>> = _lessonDeleteState
+    private val _lessonDeleteState = MutableSharedFlow<Result<LessonDeleteResponse>>()
+    val lessonDeleteState: SharedFlow<Result<LessonDeleteResponse>> =
+        _lessonDeleteState.asSharedFlow()
 
-    private val _lessonDetail = MutableLiveData<LessonDetail>()
-    val lessonDetail: LiveData<LessonDetail> = _lessonDetail
+    private val _lessonDetail = MutableStateFlow(LessonDetailResponse())
+    val lessonDetail: StateFlow<LessonDetailResponse> = _lessonDetail.asStateFlow()
 
-    private val _lessonUpdateEvent = MutableLiveData<Event<LessonDetail>>()
-    val lessonUpdateEvent: LiveData<Event<LessonDetail>> = _lessonUpdateEvent
+    private val _lessonUpdateClick = MutableSharedFlow<LessonDetailResponse>()
+    val lessonUpdateClick: SharedFlow<LessonDetailResponse>
+        get() = _lessonUpdateClick
 
-    private val _lessonDeleteEvent = MutableLiveData<Event<Boolean>>()
-    val lessonDeleteEvent: LiveData<Event<Boolean>> = _lessonDeleteEvent
+    private val _lessonDeleteClick = MutableSharedFlow<Unit>()
+    val lessonDeleteClick: SharedFlow<Unit>
+        get() = _lessonDeleteClick
 
-
+//    fun fetchLessonDetail() = viewModelScope.launch {
+//        _lessonDetailResponseState.emit(Result.Loading)
+//        _lessonDetailResponseState.emit(lessonRepository.fetchLessonDetail(lessonId))
+//    }
     fun fetchLessonDetail() = viewModelScope.launch {
-        _lessonDetailState.value = LessonState.Loading
-        val lessonDetail = lessonRepository.fetchLessonDetail(lessonId)
-        _lessonDetailState.value = lessonDetail
+        lessonRepository.fetchLessonDetail(lessonId)
+            .onEach {
+                if (it is Result.Loading) _lessonDetailState.emit(Result.Loading)
+                else _lessonDetailState.emit(Result.UnLoading)
+            }.collect {
+                _lessonDetailState.emit(it)
+            }
     }
 
-
+//    fun deleteLesson() = viewModelScope.launch {
+//        _lessonDeleteState.emit(Result.Loading)
+//        _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
+//    }
     fun deleteLesson() = viewModelScope.launch {
-        _lessonDeleteState.value = LessonState.Loading
-        val lessonDeleteResponse = lessonRepository.deleteLesson(lessonId)
-        _lessonDeleteState.value = lessonDeleteResponse
+        lessonRepository.deleteLesson(lessonId)
+            .onEach {
+                if (it is Result.Loading) _lessonDeleteState.emit(Result.Loading)
+                else _lessonDeleteState.emit(Result.UnLoading)
+            }.collect {
+                _lessonDeleteState.emit(it)
+            }
     }
 
-    fun setLessonDetailInfo(lessonDetail: LessonDetail) {
-        _lessonDetail.value = lessonDetail
+    fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {
+        _lessonDetail.value = lessonDetailResponse
     }
 
-    fun onClickLessonUpdateEvent(lessonDetail: LessonDetail) {
-        _lessonUpdateEvent.value = Event(lessonDetail)
+    fun lessonUpdateClick(lessonDetailResponse: LessonDetailResponse) = viewModelScope.launch {
+        _lessonUpdateClick.emit(lessonDetailResponse)
     }
 
-    fun onClickLessonDeleteEvent() {
-        _lessonDeleteEvent.value = Event(true)
+    fun lessonDeleteClick() = viewModelScope.launch {
+        _lessonDeleteClick.emit(Unit)
+    }
+
+    companion object {
+        private const val LESSON_ID = "lessonId"
     }
 }

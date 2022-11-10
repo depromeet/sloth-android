@@ -19,8 +19,8 @@ android {
         applicationId "com.depromeet.sloth"
         minSdk 24
         targetSdk 31
-        versionCode 15
-        versionName "1.0.10"
+        versionCode 17
+        versionName "1.0.12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -67,8 +67,8 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -77,8 +77,9 @@ dependencies {
     //RecyclerView - ConcatAdapter
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
 
-    //Lottie
-    implementation 'com.airbnb.android:lottie:5.0.2'
+    //navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //Retrofit2, Okhttp3
     implementation 'com.google.code.gson:gson:2.9.0'
@@ -88,17 +89,11 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$interceptor_version"
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
 
-
     //Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
 
-    //Room, Gson
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-
-    //ViewModel, LiveData
+    //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     //DataStore
@@ -109,7 +104,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //KTX
-    implementation 'androidx.fragment:fragment-ktx:1.5.0'
+    implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -119,7 +114,7 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.8.2"
 
     //Google login
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
 
     //ProgressView
@@ -130,13 +125,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
-    //navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    //Lottie
+    implementation 'com.airbnb.android:lottie:5.0.2'
 
     //Timber
     implementation "com.jakewharton.timber:timber:5.0.1"
-
-    // ZoneDateTime
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.3'
 }

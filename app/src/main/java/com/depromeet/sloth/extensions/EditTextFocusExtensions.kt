@@ -1,27 +1,18 @@
 package com.depromeet.sloth.extensions
 
 import android.content.Context
-import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import com.depromeet.sloth.R
 
 fun focusInputForm(editText: EditText, button: AppCompatButton, context: Context) {
     editText.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-        }
-
-        override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-
-        }
-
-        override fun afterTextChanged(editable: Editable?) {
-            setButton(editable, button, context)
-        }
+        override fun beforeTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+        override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+        override fun afterTextChanged(editable: Editable?) { setButton(editable, button, context) }
     })
     setEditTextFocus(editText)
 }

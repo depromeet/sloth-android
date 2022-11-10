@@ -12,163 +12,174 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.Member
-import com.depromeet.sloth.data.network.member.*
+import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
-import com.depromeet.sloth.ui.login.LoginActivity
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val viewModel: ManageViewModel by viewModels()
+    private val manageViewModel: ManageViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            //member = viewModel.memberInfo.value.successOrNull()
-            vm = viewModel
+            vm = manageViewModel
         }
-
         initObserver()
-        initViews()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            memberState.observe(viewLifecycleOwner) { memberState ->
-                when (memberState) {
-                    is MemberState.Loading -> handleLoadingState(requireContext())
-
-                    is MemberState.Success<Member> -> {
-                        Timber.tag("fetch Success").d("${memberState.data}")
-                        viewModel.setMemberInfo(memberState.data)
+    private fun initObserver() = with(manageViewModel) {
+        repeatOnStarted {
+            launch {
+                memberState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(result.data)
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Error -> {
+                                Timber.tag("fetch Error").d(result.throwable)
+                                showToast(getString(R.string.member_info_fetch_fail))
+                            }
+                            else -> {}
+                        }
+                        //hideProgress()
                     }
-
-                    is MemberState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is MemberState.Error -> {
-                        Timber.tag("fetch Error").d(memberState.exception)
-                        showToast("회원 정보를 가져오지 못했어요")
-                    }
-                }
-                hideProgress()
             }
 
-            memberUpdateState.observe(viewLifecycleOwner, EventObserver { memberUpdateState ->
-                when (memberUpdateState) {
-                    is MemberUpdateState.Loading -> handleLoadingState(requireContext())
-
-                    is MemberUpdateState.Success<MemberUpdateInfoResponse> -> {
-                        Timber.tag("update Success").d("${memberUpdateState.data}")
-                        showToast("닉네임이 변경되었어요")
-                        viewModel.fetchMemberInfo()
+            launch {
+                memberUpdateState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<MemberUpdateResponse> -> {
+                                showToast(getString(R.string.member_update_success))
+                                manageViewModel.fetchMemberInfo()
+                            }
+                            is Result.Unauthorized -> {
+                                showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                            }
+                            is Result.Error -> {
+                                Timber.tag("update Error").d(result.throwable)
+                                showToast(getString(R.string.member_update_fail))
+                            }
+                            else -> {}
+                        }
+                        //hideProgress()
                     }
-
-                    is MemberUpdateState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is MemberUpdateState.Error -> {
-                        Timber.tag("update Error").d(memberUpdateState.exception)
-                        showToast("회원 정보를 변경하지 못했어요")
-                    }
-                }
-                hideProgress()
-            })
-
-            memberLogoutState.observe(viewLifecycleOwner) { memberLogoutState ->
-                when (memberLogoutState) {
-                    is MemberLogoutState.Loading -> handleLoadingState(requireContext())
-
-                    is MemberLogoutState.Success<String> -> logout(requireContext()) { viewModel.removeAuthToken() }
-
-                    is MemberLogoutState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is MemberLogoutState.Error -> {
-                        Timber.tag("update Error").d(memberLogoutState.exception)
-                        showToast("로그아웃 하지 못했어요")
-                    }
-                }
-                hideProgress()
             }
 
-            member.observe(viewLifecycleOwner) { member ->
-                binding.member = member
+            launch {
+                notificationReceiveState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success<String> -> {
+                                showToast(getString(R.string.noti_update_complete))
+                                manageViewModel.fetchMemberInfo()
+                            }
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Error -> {
+                                Timber.tag("update Error").d(result.throwable)
+                                showToast(getString(R.string.noti_update_fail))
+                            }
+                            else -> {}
+                        }
+                        hideProgress()
+                    }
+            }
+
+            launch {
+                memberLogoutState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success<String> -> logout(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Error -> {
+                                Timber.tag("logout Error").d(result.throwable)
+                                showToast(getString(R.string.logout_fail))
+                            }
+                            else -> {}
+                        }
+                        hideProgress()
+                    }
+            }
+
+            launch {
+                profileClick
+                    .collect {
+                        showProfileUpdateDialog()
+                    }
+            }
+
+            launch {
+                contactButtonClick
+                    .collect {
+                        sendEmail()
+                    }
+            }
+
+            launch {
+                privatePolicyClick
+                    .collect {
+                        startActivity(
+                            Intent(
+                                requireContext(),
+                                SlothPolicyWebViewActivity::class.java
+                            )
+                        )
+                    }
+            }
+
+            launch {
+                logoutClick
+                    .collect {
+                        showLogoutDialog()
+                    }
+            }
+
+            launch {
+                withdrawalClick
+                    .collect {
+                        showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                    }
             }
         }
-
-//        collectLatestLifecycleFlow(viewModel.memberInfo) { memberInfo ->
-//            Timber.d("${memberInfo.successOrNull()}")
-//            binding.member = memberInfo.successOrNull()
-//        }
     }
 
-    override fun initViews() = with(binding) {
-        ivManageProfileImage.setOnClickListener {
-            showUpdateDialog()
-        }
-
-        clManageContact.setOnClickListener {
-            sendEmail()
-        }
-
-        clManagePrivacy.setOnClickListener {
-            startActivity(
-                SlothPolicyWebViewActivity.newIntent(requireContext())
-            )
-        }
-
-        clManageLogout.setOnClickListener {
-            val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
-            dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+    private fun showLogoutDialog() {
+        val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
+        dlg.onItemClickListener =
+            object : SlothDialog.OnItemClickedListener {
                 override fun onItemClicked() {
-                    viewModel.logout()
+                    manageViewModel.logout()
                 }
             }
-            dlg.start()
-        }
-
-        clManageWithdraw.setOnClickListener {
-            showWithdrawDialog()
-        }
-    }
-
-    private fun showWithdrawDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.WITHDRAW)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                withdraw()
-            }
-        }
         dlg.start()
     }
 
-    //회원 탈퇴 api 필요
-    private fun withdraw() {
-        viewModel.removeAuthToken()
-        showToast("회원탈퇴 되었어요")
-        startActivity(LoginActivity.newIntent(requireActivity()))
-    }
-
-    private fun showUpdateDialog() {
-        val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+    //TODO Dialog 에 Databinding 적용하는 방법 학습
+    private fun showProfileUpdateDialog() {
+        val updateDialog =
+            Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
         updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
         updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
 
         val nameEditText =
@@ -176,17 +187,15 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         val updateButton =
             updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
 
-        nameEditText.hint = viewModel.member.value?.memberName ?: ""
-        //nameEditText.hint = viewModel.memberInfo.value.successOrNull()?.memberName ?: ""
+        nameEditText.hint = manageViewModel.memberName.value
         focusInputForm(nameEditText, updateButton, requireContext())
 
         updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != (viewModel.member.value?.memberName ?: "")) {
-//            if (nameEditText.text.toString() != (viewModel.memberInfo.value.successOrNull()?.memberName ?: "")) {
-                viewModel.updateMemberInfo(MemberUpdateInfoRequest(nameEditText.text.toString()))
+            if (nameEditText.text.toString() != manageViewModel.memberName.value) {
+                manageViewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
-                showToast("현재 닉네임과 동일한 닉네임이에요")
+                showToast(getString(R.string.input_same_nickname))
             }
             updateDialog.dismiss()
         }
@@ -196,7 +205,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     private fun sendEmail() {
         startActivity(
             Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
+                putExtra(
+                    Intent.EXTRA_EMAIL,
+                    arrayOf(getString(R.string.sloth_official_mail))
+                )
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
                 putExtra(
                     Intent.EXTRA_TEXT,

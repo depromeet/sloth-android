@@ -1,6 +1,9 @@
 package com.depromeet.sloth.data.network
 
 import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
+import com.depromeet.sloth.util.KEY_CONTENT_TYPE
+import com.depromeet.sloth.util.VALUE_CONTENT_TYPE
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -19,9 +22,9 @@ import javax.inject.Inject
 class AccessTokenAuthenticator @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) : Authenticator {
-    private val keyContentType = "Content-Type"
-    private val valueContentType = "application/json"
-    private val keyAuthorization = "Authorization"
+    private val keyContentType =  KEY_CONTENT_TYPE
+    private val valueContentType = VALUE_CONTENT_TYPE
+    private val keyAuthorization = KEY_AUTHORIZATION
     private var retryLimitCount = 1
 
     override fun authenticate(route: Route?, response: Response): Request? {

@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:background="#F5F5F5"
         android:fitsSystemWindows="true"
-        tools:context=".ui.HomeActivity">
+        tools:context=".ui.home.HomeActivity">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_home_container"

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.depromeet.sloth.databinding.FragmentRegisterBottomBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import android.content.Intent
 
 class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentRegisterBottomBinding
@@ -37,7 +38,9 @@ class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun openSlothPolicy() {
-        startActivity(SlothPolicyWebViewActivity.newIntent(requireContext()))
+        startActivity(
+            Intent(requireContext(), SlothPolicyWebViewActivity::class.java)
+        )
     }
 
     fun setRegisterListener(registerListener: RegisterListener) {

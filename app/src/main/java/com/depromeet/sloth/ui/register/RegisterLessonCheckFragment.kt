@@ -5,68 +5,65 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
-import com.depromeet.sloth.extensions.handleLoadingState
-import com.depromeet.sloth.extensions.showLogoutDialog
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
+import com.depromeet.sloth.common.Result
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class RegisterLessonCheckFragment :
     BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
-    private val viewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
-            lesson = viewModel.lessonCheck.value
+            vm = registerLessonViewModel
         }
-
         initObserver()
-        initNavigation()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            lessonRegisterState.observe(viewLifecycleOwner,
-                EventObserver { lessonRegisterResponse ->
-                    when (lessonRegisterResponse) {
-                        is LessonState.Loading -> handleLoadingState(requireContext())
-
-                        is LessonState.Success -> {
-                            Timber.tag("Register Success").d("${lessonRegisterResponse.data}")
-                            showToast("강의가 등록되었어요")
-                            (activity as RegisterLessonActivity).finish()
+    private fun initObserver() = with(registerLessonViewModel) {
+        repeatOnStarted {
+            launch {
+                registerLessonState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success -> {
+                                showToast(getString(R.string.lesson_register_complete))
+                                requireActivity().finish()
+                            }
+                            is Result.Unauthorized -> {
+                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
+                            }
+                            is Result.Error -> {
+                                Timber.tag("Register Error").d(result.throwable)
+                                showToast(getString(R.string.lesson_register_fail))
+                            }
+                            // else -> {}
                         }
-
-                        is LessonState.Unauthorized -> {
-                            showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                        }
-
-                        is LessonState.Error -> {
-                            Timber.tag("Register Error").d(lessonRegisterResponse.throwable)
-                            showToast("강의 등록을 실패했어요")
-                        }
-                        else -> Unit
+                        // hideProgress()
                     }
-                    hideProgress()
-                })
+            }
+
+            launch {
+                onNavigateToRegisterLessonSecondClick
+                    .collect {
+                        navigateToRegisterLessonSecond()
+                    }
+            }
         }
     }
 
-    private fun initNavigation() {
-        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
-            moveRegisterLessonSecond()
-        })
-    }
-
-    private fun moveRegisterLessonSecond() {
+    private fun navigateToRegisterLessonSecond() {
         findNavController().navigateUp()
     }
 }

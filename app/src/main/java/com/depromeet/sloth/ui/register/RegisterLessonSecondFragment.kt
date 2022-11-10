@@ -17,19 +17,21 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.CUSTOM_SETTING
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DAY
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_MONTH
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.ONE_WEEK
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.THREE_MONTH
 import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.TWO_MONTH
+import com.depromeet.sloth.util.CALENDAR_TAG
+import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
+import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
 
@@ -37,7 +39,7 @@ import java.util.*
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
-    private val viewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
 
     private val lessonEndDateAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
@@ -51,88 +53,83 @@ class RegisterLessonSecondFragment :
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = registerLessonViewModel
         }
-
-        initObserver()
         initViews()
-        initNavigation()
+        initObserver()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            navigateToStartDate.observe(viewLifecycleOwner, EventObserver {
-                registerStartLessonDate()
-            })
-
-            navigateToEndDate.observe(viewLifecycleOwner, EventObserver {
-                registerLessonEndDate()
-            })
-
-            lessonEndDateSelectedItemPosition.observe(viewLifecycleOwner) { position ->
-                when (position) {
-                    0 -> {
-                        lockButton(binding.btnRegisterLesson, requireContext())
+    private fun initObserver() = with(registerLessonViewModel) {
+        repeatOnStarted {
+            launch {
+                onRegisterLessonStartDateClick
+                    .collect {
+                        registerLessonStartDate()
                     }
-                    else -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
-                    }
-                }
             }
 
-            lessonDateValidation.observe(viewLifecycleOwner) { isEnable ->
-                when(isEnable) {
-                    false -> {
-                        showToast("강의 시작일은 완강 목표일 이전이어야 해요")
-                        lockButton(binding.btnRegisterLesson, requireContext())
+            launch {
+                registerLessonEndDate
+                    .collect {
+                        registerLessonEndDateByCalendar()
                     }
+            }
 
-                    true -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
+            launch {
+                lessonDateRangeValidation
+                    .collect { isEnable ->
+                        when (isEnable) {
+                            false -> showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                            else -> Unit
+                        }
                     }
-                }
+            }
+
+            launch {
+                onNavigateToRegisterLessonCheckClick
+                    .collect {
+                        registerLessonViewModel.setLessonInfo()
+                        navigateToRegisterLessonCheck()
+                    }
             }
         }
-    }
-
-    private fun initNavigation() {
-        viewModel.moveRegisterLessonCheckEvent.observe(viewLifecycleOwner, EventObserver {
-            viewModel.setLessonInfo()
-            moveRegisterLessonCheck()
-        })
     }
 
     override fun initViews() = with(binding) {
         bindAdapter()
-
         validateInputForm(etRegisterLessonPrice)
         focusInputFormOptional(etRegisterLessonMessage)
     }
 
-    private fun moveRegisterLessonCheck() {
+    private fun navigateToRegisterLessonCheck() {
         findNavController().navigate(R.id.action_register_lesson_second_to_register_lesson_check)
     }
 
-    private fun registerStartLessonDate() = with(binding) {
+    private fun registerLessonStartDate() = with(binding) {
         val materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
             setTitleText(getString(R.string.lesson_start_date))
         }
 
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                viewModel.updateLessonStartDate(calendar)
-                viewModel.updateLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value!!)
+                registerLessonViewModel.setLessonStartDate(calendar)
+                // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
+                updateLessonEndDate()
             }
         }
-        materialDatePicker.show(childFragmentManager, "calendar")
+        materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
-    private fun registerLessonEndDate() = with(binding) {
+    private fun updateLessonEndDate() {
+        registerLessonViewModel.setLessonEndDateBySpinner(registerLessonViewModel.lessonEndDateSelectedItemPosition.value)
+    }
+
+    private fun registerLessonEndDateByCalendar() = with(binding) {
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(viewModel.startDate.value!!.time + DAY))
+                .setValidator(DateValidatorPointForward.from(registerLessonViewModel.startDate.value.time + DAY))
 
         val materialDateBuilder =
             MaterialDatePicker.Builder.datePicker().apply {
@@ -142,21 +139,20 @@ class RegisterLessonSecondFragment :
 
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                viewModel.updateLessonEndDateByCalendar(calendar)
+                registerLessonViewModel.setLessonEndDateByCalendar(calendar)
             }
         }
-        materialDatePicker.show(childFragmentManager, "calendar")
+        materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
     private fun bindAdapter() = with(binding) {
         lessonEndDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterGoalLessonDate.apply {
+        spnRegisterLessonEndDate.apply {
             adapter = lessonEndDateAdapter
-            setSelection(viewModel.lessonEndDateSelectedItemPosition.value!!, false)
+            setSelection(registerLessonViewModel.lessonEndDateSelectedItemPosition.value, false)
             setSpinnerListener(this)
-
         }
     }
 
@@ -172,21 +168,17 @@ class RegisterLessonSecondFragment :
         spinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                clearFocus(etRegisterLessonPrice)
-                clearFocus(etRegisterLessonMessage)
-                Timber.d("${spnRegisterGoalLessonDate.selectedItemPosition}")
+                registerLessonViewModel.setLessonEndDateSelectedItemPosition(
+                    spnRegisterLessonEndDate.selectedItemPosition
+                )
 
-                viewModel.setLessonEndDateSelectedItemPosition(spnRegisterGoalLessonDate.selectedItemPosition)
-
-                when (spnRegisterGoalLessonDate.selectedItemPosition) {
+                when (spnRegisterLessonEndDate.selectedItemPosition) {
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
-                        viewModel.updateLessonEndDateBySpinner(spnRegisterGoalLessonDate.selectedItemPosition)
+                        registerLessonViewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
                     }
-
-                    CUSTOM_SETTING -> {
-                        viewModel.navigateToEndDate()
-                    }
+                    CUSTOM_SETTING -> registerLessonViewModel.registerLessonEndDate()
                 }
+                binding.clRegisterLessonSecond.clearFocus()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -195,19 +187,22 @@ class RegisterLessonSecondFragment :
 
     private fun validateInputForm(editText: EditText) = with(binding) {
         var result = DEFAULT_STRING_VALUE
-        val decimalFormat = DecimalFormat("#,###")
+        val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence?,
                 i1: Int,
                 i2: Int,
-                i3: Int,
-            ) {}
+                i3: Int
+            ) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    viewModel.setLessonPrice(charSequence.toString().replace(",", "").toInt())
+                    registerLessonViewModel.setLessonPrice(
+                        charSequence.toString().replace(",", "").toInt()
+                    )
                     result =
                         decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
                     editText.setText(result)
@@ -246,9 +241,9 @@ class RegisterLessonSecondFragment :
     private fun focusInputFormOptional(editText: EditText) = with(binding) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
-
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                viewModel.setLessonMessage(text.toString()) }
+                registerLessonViewModel.setLessonMessage(text.toString())
+            }
 
             override fun afterTextChanged(editable: Editable?) {}
         })

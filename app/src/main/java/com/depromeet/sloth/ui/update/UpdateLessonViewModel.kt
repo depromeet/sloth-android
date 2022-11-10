@@ -1,262 +1,243 @@
 package com.depromeet.sloth.ui.update
 
-import androidx.lifecycle.*
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonDetail
-import com.depromeet.sloth.data.model.LessonSite
-import com.depromeet.sloth.data.model.LessonUpdate
-import com.depromeet.sloth.data.network.lesson.LessonRepository
-import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.lesson.update.LessonUpdateRequest
-import com.depromeet.sloth.data.network.member.MemberRepository
-import com.depromeet.sloth.extensions.addSourceList
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
+import com.depromeet.sloth.data.repository.LessonRepository
+import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.di.StringResourcesProvider
+import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.ui.common.Event
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel
+import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val lessonRepository: LessonRepository,
+    savedStateHandle: SavedStateHandle,
+    private val stringResourcesProvider: StringResourcesProvider,
     memberRepository: MemberRepository,
-    private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(memberRepository) {
 
-    val lessonDetail: LessonDetail = savedStateHandle.get(KEY_LESSON_DETAIL)
-        ?: throw IllegalStateException("There is no value of the lesson id.")
+    val lessonDetail: LessonDetailResponse = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _lessonUpdateState = MutableLiveData<Event<LessonState<LessonUpdate>>>()
-    val lessonUpdateState: LiveData<Event<LessonState<LessonUpdate>>>
-        get() = _lessonUpdateState
-
-    private val _lessonName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_NAME, "")
-    val lessonName: LiveData<String>
-        get() = _lessonName
-
-    private val _lessonTotalNumber =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER, 0)
-    val lessonTotalNumber: LiveData<Int>
-        get() = _lessonTotalNumber
-
-    private val _lessonPrice =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_PRICE, 0)
-    val lessonPrice: LiveData<Int>
-        get() = _lessonPrice
+    private val _updateLessonState = MutableSharedFlow<Result<LessonUpdateResponse>>()
+    val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
+        get() = _updateLessonState
 
     private val _lessonCategoryListState =
-        MutableLiveData<LessonState<List<LessonCategory>>>()
-    val lessonCategoryListState: LiveData<LessonState<List<LessonCategory>>> =
-        _lessonCategoryListState
+        MutableStateFlow<Result<List<LessonCategoryResponse>>>(Result.Loading)
+    val lessonCategoryListState: StateFlow<Result<List<LessonCategoryResponse>>> =
+        _lessonCategoryListState.asStateFlow()
 
-    private val _lessonSiteListState = MutableLiveData<LessonState<List<LessonSite>>>()
-    val lessonSiteListState: LiveData<LessonState<List<LessonSite>>>
-        get() = _lessonSiteListState
+    private val _lessonSiteListState =
+        MutableStateFlow<Result<List<LessonSiteResponse>>>(Result.Loading)
+    val lessonSiteListState: StateFlow<Result<List<LessonSiteResponse>>> =
+        _lessonSiteListState.asStateFlow()
 
-    private val _lessonCategoryMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_MAP, HashMap<Int, String>())
-    val lessonCategoryMap: LiveData<HashMap<Int, String>>
-        get() = _lessonCategoryMap
+    // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
+    private val _lessonName =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
+    val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
-    private val _lessonCategoryList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_LIST, mutableListOf())
-    val lessonCategoryList: LiveData<MutableList<String>>
-        get() = _lessonCategoryList
+    private val _lessonTotalNumber =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
+    val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonCategoryId =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID, 0)
-    val lessonCategoryId: LiveData<Int>
-        get() = _lessonCategoryId
+    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
+    val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
-    private val _lessonCategoryName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_CATEGORY_NAME, "")
-    val lessonCategoryName: LiveData<String>
-        get() = _lessonCategoryName
+    // TODO 굳이 stateflow 로 관리할 이유가
+    private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
 
-    private val _lessonCategorySelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0)
-    val lessonCategorySelectedItemPosition: LiveData<Int>
-        get() = _lessonCategorySelectedItemPosition
+    private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
+    val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
 
-    private val _lessonSiteMap = savedStateHandle.getLiveData<HashMap<Int, String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_MAP, HashMap<Int, String>())
-    val lessonSiteMap: LiveData<HashMap<Int, String>>
-        get() = _lessonSiteMap
+    private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
+    val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
-    private val _lessonSiteList = savedStateHandle.getLiveData<MutableList<String>>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_LIST, mutableListOf())
-    val lessonSiteList: LiveData<MutableList<String>>
-        get() = _lessonSiteList
+    private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
+        KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
+    )
 
-    private val _lessonSiteId =
-        savedStateHandle.getLiveData<Int>(RegisterLessonViewModel.KEY_LESSON_SITE_ID, 0)
-    val lessonSiteId: LiveData<Int>
-        get() = _lessonSiteId
+    private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
+    val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
 
-    private val _lessonSiteName =
-        savedStateHandle.getLiveData<String>(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, "")
-    val lessonSiteName: LiveData<String>
-        get() = _lessonSiteName
+    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
+    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
-    private val _lessonSiteSelectedItemPosition = savedStateHandle.getLiveData<Int>(
-        RegisterLessonViewModel.KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0)
-    val lessonSiteSelectedItemPosition: LiveData<Int>
-        get() = _lessonSiteSelectedItemPosition
+    val lessonCategorySelectedItemPosition: StateFlow<Int> =
+        _lessonCategorySelectedItemPosition.asStateFlow()
+
+    private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
+    val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
+
+    private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
+        KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
+    )
+    val lessonSiteSelectedItemPosition: StateFlow<Int> =
+        _lessonSiteSelectedItemPosition.asStateFlow()
+
+    private val _lessonTotalNumberValidation = MutableStateFlow(true)
+    val lessonTotalNumberValidation: StateFlow<Boolean> = _lessonTotalNumberValidation.asStateFlow()
 
     init {
         viewModelScope.launch {
-            fetchLessonCategoryList()
-            fetchLessonSiteList()
+            // 두 api를 병렬적으로 호출
+            val lessonCategoryListResponse = async {
+                _lessonCategoryListState.value = Result.Loading
+                lessonRepository.fetchLessonCategoryList()
+            }
+            val lessonSiteListResponse = async {
+                _lessonSiteListState.value = Result.Loading
+                lessonRepository.fetchLessonSiteList()
+            }
+            _lessonCategoryListState.value = lessonCategoryListResponse.await()
+            _lessonSiteListState.value = lessonSiteListResponse.await()
         }
     }
 
-    private val _lessonNumberValidation = MutableLiveData<Boolean>()
-    val lessonNumberValidation: LiveData<Boolean>
-        get() = _lessonNumberValidation
-
-    fun setLessonName(lessonName: String?) {
-        if (this.lessonName.value == lessonName || lessonName == null) {
-            return
-        }
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_NAME, lessonName)
+    fun setLessonName(lessonName: String) {
+        _lessonName.value = lessonName
     }
 
-    fun setLessonPrice(lessonPrice: Int?) {
-        if (this.lessonPrice.value == lessonPrice || lessonPrice == null) {
-            return
-        }
-
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_PRICE, lessonPrice)
+    fun setLessonPrice(lessonPrice: Int) {
+        _lessonPrice.value = lessonPrice
     }
 
-    fun setLessonTotalNumber(lessonTotalNumber: Int?) {
-        if (this.lessonTotalNumber.value == lessonTotalNumber || lessonTotalNumber == null) {
-            return
-        }
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_TOTAL_NUMBER, lessonTotalNumber)
+    fun setLessonTotalNumber(lessonTotalNumber: Int) {
+        _lessonTotalNumber.value = lessonTotalNumber
+        setLessonTotalNumberValidation()
     }
+
+//    fun updateLesson() = viewModelScope.launch {
+//        _updateLessonState.emit(Result.Loading)
+//        _updateLessonState.emit(
+//            lessonRepository.updateLesson(
+//                lessonDetail.lessonId.toString(),
+//                LessonUpdateRequest(
+//                    lessonName = lessonName.value,
+//                    price = lessonPrice.value,
+//                    categoryId = lessonCategoryId.value,
+//                    siteId = lessonSiteId.value,
+//                    totalNumber = lessonTotalNumber.value,
+//                )
+//            )
+//        )
+//    }
 
     fun updateLesson() = viewModelScope.launch {
-        if (lessonTotalNumber.value!! < lessonDetail.presentNumber) {
-            _lessonNumberValidation.value = false
-        } else {
-            _lessonNumberValidation.value = true
-            _lessonUpdateState.value = Event(LessonState.Loading)
-            val lessonUpdateResponse =
-                lessonRepository.updateLesson(
-                    lessonDetail.lessonId.toString(),
-                    LessonUpdateRequest(
-                        lessonName = lessonName.value!!,
-                        price = lessonPrice.value!!,
-                        categoryId = lessonCategoryId.value!!,
-                        siteId = lessonSiteId.value!!,
-                        totalNumber = lessonTotalNumber.value!!,
-                    )
-                )
-            _lessonUpdateState.value = Event(lessonUpdateResponse)
+        lessonRepository.updateLesson(
+            lessonDetail.lessonId.toString(),
+            LessonUpdateRequest(
+                lessonName = lessonName.value,
+                price = lessonPrice.value,
+                categoryId = lessonCategoryId.value,
+                siteId = lessonSiteId.value,
+                totalNumber = lessonTotalNumber.value,
+            )
+        ).onEach {
+            if (it is Result.Loading) _updateLessonState.emit(Result.Loading)
+            else _updateLessonState.emit(Result.UnLoading)
+        }.collect {
+            _updateLessonState.emit(it)
         }
     }
 
-    private suspend fun fetchLessonCategoryList() {
-        _lessonCategoryListState.value = LessonState.Loading
-        val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()
-        _lessonCategoryListState.value = lessonCategoryListResponse
+//    val updateLesson: Flow<Result<LessonUpdateResponse>> =
+//        lessonRepository.updateLesson(
+//            lessonDetail.lessonId.toString(),
+//            LessonUpdateRequest(
+//                lessonName = lessonName.value,
+//                price = lessonPrice.value,
+//                categoryId = lessonCategoryId.value,
+//                siteId = lessonSiteId.value,
+//                totalNumber = lessonTotalNumber.value,
+//            )
+//        )
+
+    fun setLessonCategoryId(lessonCategoryId: Int) {
+        _lessonCategoryId.value = lessonCategoryId
     }
 
-    private suspend fun fetchLessonSiteList() {
-        _lessonSiteListState.value = LessonState.Loading
-        val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()
-        _lessonSiteListState.value = lessonSiteListResponse
+    fun setLessonSiteId(lessonSiteId: Int) {
+        _lessonSiteId.value = lessonSiteId
     }
 
-    fun setLessonCategoryItemPosition(position: Int) {
+    fun setLessonCategorySelectedItemPosition(position: Int) {
         _lessonCategorySelectedItemPosition.value = position
     }
 
-    fun setLessonSiteItemPosition(position: Int) {
+    fun setLessonSiteSelectedItemPosition(position: Int) {
         _lessonSiteSelectedItemPosition.value = position
     }
 
-    fun setCategoryId(lessonCategoryId: Int?) {
-        if (this.lessonCategoryId.value == lessonCategoryId || lessonCategoryId == null) {
-            return
-        }
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_CATEGORY_ID, lessonCategoryId)
+    private fun setLessonTotalNumberValidation() {
+        _lessonTotalNumberValidation.value = lessonTotalNumber.value >= lessonDetail.presentNumber
     }
 
-    fun setCategoryName(lessonCategoryName: String?) {
-        if (this.lessonCategoryName.value == lessonCategoryName || lessonCategoryName == null) {
-            return
-        }
+    // 초기값이 false 인데 왜 버튼이 활성화 되어있지 -> 값을 바로 방출하니까 true 로
+    val updateLessonButtonState = combine(
+        lessonName,
+        lessonCategorySelectedItemPosition,
+        lessonSiteSelectedItemPosition,
+        lessonTotalNumberValidation
+    ) { name, categorySelectedItemPosition, siteSelectedItemPosition, totalNumberValidation ->
+        name.isNotBlank()  && categorySelectedItemPosition != 0
+                && siteSelectedItemPosition != 0 && totalNumberValidation
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
 
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_CATEGORY_NAME, lessonCategoryName)
+    fun setLessonCategoryInfo(data: List<LessonCategoryResponse>) {
+        setLessonCategoryList(data)
+        setLessonCategoryId(lessonCategoryMap.value.filterValues { it == lessonDetail.categoryName }.keys.first())
+        setLessonCategorySelectedItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
     }
 
-    fun setSiteId(lessonSiteId: Int?) {
-        if (this.lessonSiteId.value == lessonSiteId || lessonSiteId == null) {
-            return
-        }
-
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_SITE_ID, lessonSiteId)
-    }
-
-    fun setSiteName(lessonSiteName: String?) {
-        if (this.lessonSiteName.value == lessonSiteName || lessonSiteName == null) {
-            return
-        }
-
-        savedStateHandle.set(RegisterLessonViewModel.KEY_LESSON_SITE_NAME, lessonSiteName)
-    }
-
-    val isEnabledLessonUpdateButton = MediatorLiveData<Boolean>().apply {
-        addSourceList(_lessonName,
-            _lessonTotalNumber,
-            _lessonPrice,
-            _lessonCategorySelectedItemPosition,
-            _lessonSiteSelectedItemPosition
-        ) {
-            isValidEnterInfo()
-        }
-    }
-
-    private fun isValidEnterInfo() =
-        !lessonName.value.isNullOrBlank() && lessonTotalNumber.value != 0 && lessonPrice.value != 0 &&
-                lessonCategorySelectedItemPosition.value != 0 && lessonSiteSelectedItemPosition.value != 0
-
-    fun setLessonCategoryList(data: List<LessonCategory>) {
-        _lessonCategoryMap.value =
-                //data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
-            data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+        _lessonCategoryMap.value = data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
-            add(0, "강의 카테고리를 선택해 주세요")
+            add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
-    fun setLessonSiteList(data: List<LessonSite>) {
+    fun setLessonSiteInfo(data: List<LessonSiteResponse>) {
+        setLessonSiteList(data)
+        setLessonSiteId(lessonSiteMap.value.filterValues { it == lessonDetail.siteName }.keys.first())
+        setLessonSiteSelectedItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
+    }
+
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
         _lessonSiteMap.value =
-                //data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
-            data.associate { it.siteId to it.siteName } as HashMap<Int, String>
+            data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
-            add(0, "강의 사이트를 선택해 주세요")
+            add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
-    }
-
-    fun setLessonUpdateInfo() = with(lessonDetail) {
-        _lessonName.value = lessonName
-        _lessonTotalNumber.value = totalNumber
-        _lessonPrice.value = price
-        _lessonCategoryId.value =
-            lessonCategoryMap.value!!.filterValues { it == categoryName }.keys.first()
-        _lessonSiteId.value = lessonSiteMap.value!!.filterValues { it == siteName }.keys.first()
-        _lessonCategorySelectedItemPosition.value =
-            lessonCategoryList.value!!.indexOf(lessonCategoryMap.value!![lessonCategoryId.value!!])
-        _lessonSiteSelectedItemPosition.value =
-            lessonSiteList.value!!.indexOf(lessonSiteMap.value!![lessonSiteId.value!!])
     }
 
     companion object {
-        const val KEY_LESSON_DETAIL = "lessonDetail"
+        private const val KEY_LESSON_DETAIL = "lessonDetail"
+
+        private const val KEY_LESSON_NAME = "lessonName"
+        private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
+        private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
+        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
+            "lessonCategorySelectedItemPosition"
+        private const val KEY_LESSON_SITE_ID = "lessonSiteId"
+        private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
+        private const val KEY_LESSON_PRICE = "lessonPrice"
     }
 }

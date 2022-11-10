@@ -15,13 +15,11 @@ class RetrofitServiceGenerator @Inject constructor(
     private val timeoutRead = 30L
     private val timeoutConnect = 30L
 
-    private fun provideHttpClient(
-        authToken: String? = null,
-    ): OkHttpClient {
+    private fun provideHttpClient(): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         return httpClient.apply {
             authenticator(accessTokenAuthenticator)
-            addInterceptor(AuthenticationInterceptor(authToken))
+            addInterceptor(AuthenticationInterceptor())
             addInterceptor(HttpLoggingInterceptor().apply {
                 if (BuildConfig.DEBUG) {
                     level = HttpLoggingInterceptor.Level.BODY
@@ -32,20 +30,12 @@ class RetrofitServiceGenerator @Inject constructor(
         }.build()
     }
 
-    fun build(
-        accessToken: String? = null,
-        isGoogleLogin: Boolean = false,
-    ): Retrofit {
+    fun build(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(
-                when (isGoogleLogin) {
-                    true -> BuildConfig.GOOGLE_BASE_URL
-                    false -> BuildConfig.SLOTH_BASE_URL
-                }
-            )
+            .baseUrl(BuildConfig.SLOTH_BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .client(provideHttpClient(accessToken))
+            .client(provideHttpClient())
             .build()
     }
 }

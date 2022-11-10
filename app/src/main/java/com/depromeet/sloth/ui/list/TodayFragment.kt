@@ -2,7 +2,6 @@ package com.depromeet.sloth.ui.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -10,80 +9,94 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.LessonState
-import com.depromeet.sloth.data.network.lesson.list.LessonTodayResponse
-import com.depromeet.sloth.data.network.lesson.list.LessonUpdateCountResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.base.UIState
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
+import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today) {
 
-    private val lessonViewModel: LessonViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bind {
+            vm = lessonListViewModel
+        }
+
         initViews()
-        fetchLessonList()
+        initObserver()
     }
 
+    // TODO = = with(binding) {} 으로 하면 에러나는 이유 학습
     override fun initViews() {
         with(binding) {
-            rvTodayLesson.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            rvTodayLesson.apply {
+                if (itemDecorationCount == 0) addItemDecoration(
+                    LessonItemDecoration(
+                        requireContext(),
+                        16
+                    )
+                )
+            }
+        }
+    }
 
-            ivTodayAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireContext(), DialogState.WAIT)
-                dlg.start()
+    private fun initObserver() = with(lessonListViewModel) {
+        repeatOnStarted {
+            launch {
+                todayLessonList
+//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success -> setLessonList(result.data)
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
+                            is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        }
+                    }
+            }
+
+            launch {
+                onNavigateToNotificationListClick
+                    .collect {
+                        showWaitDialog(requireContext())
+                    }
             }
         }
     }
 
     private fun fetchLessonList() {
-//        mainScope {
-//            showProgress()
-//            binding.ivTodaySloth.visibility = View.INVISIBLE
-//
-//            viewModel.fetchTodayLessonList().let {
-//                when (it) {
-//                    is LessonState.Loading -> handleLoadingState(requireContext())
-//                    is LessonState.Success<List<LessonTodayResponse>> -> {
-//                        val lessonTodayList = it.data
-//                        setLessonList(lessonTodayList)
-//                    }
-//                    is LessonState.Error -> {
-//
-//                    }
-//                    else -> Unit
-//                }
-//                hideProgress()
-//            }
-//
-//            binding.ivTodaySloth.visibility = View.VISIBLE
-//            hideProgress()
-//        }
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.todayLessonList
-                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+            lessonListViewModel.todayLessonList
+//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { uiState ->
-                    when (uiState) {
-                        is UIState.Loading -> showProgress()
-                        is UIState.UnLoading -> hideProgress()
-                        is UIState.Success -> setLessonList(uiState.data)
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
+                .collect { result ->
+                    when (result) {
+                        is Result.Loading -> showProgress()
+                        is Result.UnLoading -> hideProgress()
+                        is Result.Success -> setLessonList(result.data)
+                        is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
+                        is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
                     }
                 }
         }
@@ -93,18 +106,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
     }
 
-    private fun moveDetailActivity(lessonToday: LessonTodayResponse) {
-        val intent = Intent(requireContext(), LessonDetailActivity::class.java)
-        intent.putExtra("lessonId", lessonToday.lessonId.toString())
-        startActivity(intent)
-    }
-
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _ -> moveRegisterActivity() }
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _, _ ->
+                        moveRegisterActivity()
+                    }
                 val concatAdapter = ConcatAdapter(
                     nothingHeader,
                     nothingLessonAdapter
@@ -129,14 +138,15 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 val notFinishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
                 val notFinishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday ->
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
                                 updateLessonCount(
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
                                     TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
+                                    delayTime
                                 )
                             }
 
@@ -145,22 +155,26 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
                                     TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
+                                    delayTime
                                 )
                             }
+
+                            else -> Unit
                         }
                     }
                 val finishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
                 val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday ->
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
                             TodayLessonAdapter.ClickType.CLICK_PLUS -> {
                                 updateLessonCount(
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_PLUS.value,
                                     TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS
+                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
+                                    delayTime
                                 )
                             }
 
@@ -169,13 +183,16 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     lessonToday,
                                     TodayLessonAdapter.ClickType.CLICK_MINUS.value,
                                     TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS
+                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
+                                    delayTime
                                 )
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
                                 showCompleteDialog(lessonToday.lessonId.toString())
                             }
+
+                            else -> {}
                         }
                     }
                 val concatAdapter = ConcatAdapter(
@@ -207,12 +224,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                 getString(R.string.home_today_title_win)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_lose)
                         }
+
                         lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
                             .not()) -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_not_start)
                             ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
                         }
+
                         else -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_lose)
@@ -229,182 +248,79 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         count: Int,
         bodyType: TodayLessonAdapter.BodyType,
         clickType: TodayLessonAdapter.ClickType,
+        delayTime: Long
     ) {
         mainScope {
             showProgress()
 
-            lessonViewModel.updateLessonCount(count, lesson.lessonId).let {
-                when (it) {
-                    is LessonState.Loading -> showProgress()
-                    is LessonState.Success<LessonUpdateCountResponse> -> {
+            lessonListViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
+                when (result) {
+                    is Result.Loading -> showProgress()
+                    is Result.Success<LessonUpdateCountResponse> -> {
+                        delay(delayTime)
+
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (it.data.presentNumber == lesson.untilTodayNumber ||
-                                    it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
-                                ) fetchLessonList() else Unit
+                                if (result.data.presentNumber == lesson.untilTodayNumber
+                                //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
+                                ) fetchLessonList()
                             }
+
                             TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (it.data.presentNumber < lesson.untilTodayNumber ||
-                                    it.data.presentNumber == lesson.totalNumber ||
-                                    it.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)) fetchLessonList() else Unit
+                                if (result.data.presentNumber < lesson.untilTodayNumber ||
+                                    result.data.presentNumber == lesson.totalNumber ||
+                                    result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
+                                ) fetchLessonList()
                             }
+
                             else -> Unit
                         }
                     }
-                    is LessonState.Error -> {
-                        showToast("강의 정보를 업데이트 하지 못했어요")
-                        Timber.tag("Error").d(it.throwable)
+                    is Result.Error -> {
+                        showToast(getString(R.string.lesson_info_update_fail))
+                        Timber.tag("Error").d(result.throwable)
                     }
                     else -> Unit
                 }
             }
-
             hideProgress()
         }
     }
 
     private fun showCompleteDialog(lessonId: String) {
-        val dlg = SlothDialog(requireContext(), DialogState.COMPLETE)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
+        val completeDialog = SlothDialog(requireContext(), DialogState.COMPLETE)
+        completeDialog.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
                 finishLesson(lessonId)
             }
         }
-        dlg.start()
+        completeDialog.start()
     }
 
     private fun finishLesson(lessonId: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.finishLesson(lessonId)
-                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
+            lessonListViewModel.finishLesson(lessonId)
+                //.onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
+                //.onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { uiState ->
-                    when (uiState) {
-                        is UIState.Loading -> showProgress()
-                        is UIState.UnLoading -> hideProgress()
-                        is UIState.Success -> {
+                .collect { result ->
+                    when (result) {
+                        is Result.Loading -> showProgress()
+                        is Result.UnLoading -> hideProgress()
+                        is Result.Success -> {
                             fetchLessonList()
-                            showToast("해당 강의가 완료처리 되었어요")
+                            showToast(getString(R.string.lesson_finish_complete))
                         }
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 완료처리에 실패하였어요")
+                        is Result.Unauthorized -> showForbiddenDialog(
+                            requireContext()
+                        ) { lessonListViewModel.removeAuthToken() }
+                        is Result.Error -> showToast(
+                            getString(
+                                R.string.lesson_finish_fail
+                            )
+                        )
                     }
                 }
-        }
-    }
-
-    private fun setTestData() {
-        val dummyList = listOf<LessonTodayResponse>(
-            LessonTodayResponse(
-                categoryName = "개발",
-                lessonId = 1,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
-                presentNumber = 4,
-                remainDay = 9,
-                siteName = "TEST1",
-                untilTodayFinished = false,
-                untilTodayNumber = 8,
-                totalNumber = 8
-            ),
-            LessonTodayResponse(
-                categoryName = "디자인",
-                lessonId = 2,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
-                presentNumber = 5,
-                remainDay = 19,
-                siteName = "TEST2",
-                untilTodayFinished = true,
-                untilTodayNumber = 5,
-                totalNumber = 8
-            ),
-            LessonTodayResponse(
-                categoryName = "기획",
-                lessonId = 3,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
-                presentNumber = 4,
-                remainDay = 10,
-                siteName = "TEST3",
-                untilTodayFinished = false,
-                untilTodayNumber = 6,
-                totalNumber = 8
-            ),
-            LessonTodayResponse(
-                categoryName = "개발",
-                lessonId = 4,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 초급 (Inflearn Original)",
-                presentNumber = 6,
-                remainDay = 7,
-                siteName = "TEST4",
-                untilTodayFinished = true,
-                untilTodayNumber = 6,
-                totalNumber = 8
-            ),
-            LessonTodayResponse(
-                categoryName = "디자인",
-                lessonId = 5,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 중급 (Inflearn Original)",
-                presentNumber = 1,
-                remainDay = 11,
-                siteName = "TEST5",
-                untilTodayFinished = false,
-                untilTodayNumber = 4,
-                totalNumber = 8
-            ),
-            LessonTodayResponse(
-                categoryName = "기획",
-                lessonId = 6,
-                lessonName = "프로그래밍 시작하기 : \n파이썬 고급 (Inflearn Original)",
-                presentNumber = 2,
-                remainDay = 1,
-                siteName = "TEST6",
-                untilTodayFinished = false,
-                untilTodayNumber = 3,
-                totalNumber = 8
-            )
-        )
-
-        val notFinishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
-        val finishedHeader = HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-        val notFinishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, _ ->
-                when (clickType) {
-                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-
-                    }
-
-                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {
-
-                    }
-
-                    TodayLessonAdapter.ClickType.CLICK_NORMAL -> {
-
-                    }
-                }
-            }
-        val finishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { _, lesson ->
-                moveDetailActivity(lesson)
-            }
-        val concatAdapter = ConcatAdapter(
-            notFinishedHeader,
-            notFinishedLessonAdapter,
-            finishedHeader,
-            finishedLessonAdapter
-        )
-
-        dummyList.let {
-            finishedLessonAdapter.submitList(
-                dummyList.filter { it.untilTodayFinished }
-            )
-            notFinishedLessonAdapter.submitList(
-                dummyList.filter { it.untilTodayFinished.not() }
-            )
-        }
-
-        binding.rvTodayLesson.let {
-            it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-            it.adapter = concatAdapter
         }
     }
 }

@@ -1,47 +1,52 @@
 package com.depromeet.sloth.ui.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.depromeet.sloth.databinding.ActivityLoginBinding
-import android.widget.Button
+import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.databinding.ActivityLoginBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.ui.HomeActivity
+import com.depromeet.sloth.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private var loginBottomSheet: LoginBottomSheetFragment? = null
     private var registerBottomSheet: RegisterBottomSheetFragment? = null
 
-    companion object {
-        fun newIntent(activity: Activity) =
-            Intent(activity, LoginActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(preferenceManager.getAccessToken().isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()) {
-            nextActivity()
-        } else {
-            findViewById<Button>(R.id.btn_login_start).setOnClickListener {
-                openLoginBottomSheet()
-            }
+        bind {
+            vm = loginViewModel
         }
+        initObserver()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        closeLoginBottomSheet()
-        closeRegisterBottomSheet()
+    private fun initObserver() = with(loginViewModel) {
+        repeatOnStarted {
+            launch {
+                loginState
+                    .collect { loginState ->
+                        when (loginState) {
+                            true -> moveHomeActivity()
+                            else -> Unit
+                        }
+                    }
+            }
+
+            launch {
+                openLoginBottomSheetEvent
+                    .collect {
+                        openLoginBottomSheet()
+                    }
+            }
+        }
     }
 
     private fun openLoginBottomSheet() {
@@ -49,7 +54,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             val loginListener = object : LoginListener {
                 override fun onSuccessWithRegisteredMember() {
                     closeLoginBottomSheet()
-                    nextActivity()
+                    moveHomeActivity()
                 }
 
                 override fun onSuccessWithNewMember() {
@@ -75,7 +80,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             val registerListener = object : RegisterListener {
                 override fun onAgree() {
                     closeRegisterBottomSheet()
-                    nextActivity()
+                    moveHomeActivity()
                 }
 
                 override fun onCancel() {
@@ -101,9 +106,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
         registerBottomSheet = null
     }
 
-    private fun nextActivity() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
+    private fun moveHomeActivity() {
+        startActivity(
+            Intent(this, HomeActivity::class.java)
+        )
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        closeLoginBottomSheet()
+        closeRegisterBottomSheet()
     }
 }

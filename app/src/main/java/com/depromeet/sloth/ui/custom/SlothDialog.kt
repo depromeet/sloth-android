@@ -14,7 +14,8 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 
-class SlothDialog(private val context: Context, private val state: DialogState) {
+//TODO 인터넷 연결 끊김 (재시도) 다이얼로그 필요
+class SlothDialog(context: Context, private val state: DialogState) {
 
     lateinit var onItemClickListener: OnItemClickedListener
 
@@ -24,17 +25,16 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
         fun onItemClicked()
     }
 
-    fun start() {
-        // 타이틀바 제거
-        dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        // 커스텀 다이얼로그 radius 적용
-        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dlg.setContentView(R.layout.dialog_sloth)
+    fun start() = with(dlg) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        // custom view 영역 size 적용
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setContentView(R.layout.dialog_sloth)
 
-        val ivDialogState = dlg.findViewById<ImageView>(R.id.iv_dialog_state)
-        val btnDialogCheck = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_check)
-        val btnDialogCancel = dlg.findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
-        val tvDialogMessage = dlg.findViewById<TextView>(R.id.tv_dialog_message)
+        val ivDialogState = findViewById<ImageView>(R.id.iv_dialog_state)
+        val btnDialogCheck = findViewById<AppCompatButton>(R.id.btn_dialog_check)
+        val btnDialogCancel = findViewById<AppCompatButton>(R.id.btn_dialog_cancel)
+        val tvDialogMessage = findViewById<TextView>(R.id.tv_dialog_message)
 
         when (state) {
             DialogState.FORBIDDEN -> {
@@ -47,7 +47,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -56,7 +56,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -65,7 +65,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
 
             }
@@ -76,7 +76,7 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
 
                 btnDialogCheck.setOnClickListener {
                     onItemClickListener.onItemClicked()
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
@@ -89,32 +89,45 @@ class SlothDialog(private val context: Context, private val state: DialogState) 
                 )
 
                 btnDialogCheck.setOnClickListener {
-                    dlg.dismiss()
+                    dismiss()
                 }
             }
 
             DialogState.COMPLETE -> {
-                tvDialogMessage.text = "모든 강의를 다 들으셨나요?"
+                tvDialogMessage.setText(R.string.check_all_lesson_finished)
                 ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
                 btnDialogCheck.apply {
                     backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
-                    text = "완강했어요"
+                    text = context.getString(R.string.finished)
                     setOnClickListener {
                         onItemClickListener.onItemClicked()
-                        dlg.dismiss()
+                        dismiss()
+                    }
+                }
+            }
+
+            DialogState.LOST_INTERNET_CONNECTION -> {
+                tvDialogMessage.text = context.getString(R.string.check_internet_connection)
+                ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
+                btnDialogCheck.apply {
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
+                    text = context.getString(R.string.refresh)
+                    setOnClickListener {
+                        onItemClickListener.onItemClicked()
+                        dismiss()
                     }
                 }
             }
         }
 
         btnDialogCancel.setOnClickListener {
-            dlg.dismiss()
+            dismiss()
         }
 
-        dlg.show()
+        show()
     }
 }
 
 enum class DialogState {
-    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, COMPLETE
+    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, COMPLETE, LOST_INTERNET_CONNECTION
 }

@@ -14,28 +14,25 @@ import android.widget.Spinner
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.LessonCategory
-import com.depromeet.sloth.data.model.LessonSite
-import com.depromeet.sloth.data.network.lesson.LessonState
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.common.EventObserver
-import com.depromeet.sloth.ui.register.RegisterLessonViewModel.Companion.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
-    private val viewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value!!
+            registerLessonViewModel.lessonCategoryList.value
         )
     }
 
@@ -43,7 +40,7 @@ class RegisterLessonFirstFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value!!
+            registerLessonViewModel.lessonSiteList.value
         )
     }
 
@@ -51,80 +48,81 @@ class RegisterLessonFirstFragment :
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = viewModel
+            vm = registerLessonViewModel
         }
 
+        initViews()
         initObserver()
-        initNavigation()
     }
 
-    private fun initObserver() {
-        viewModel.apply {
-            lessonCategoryListState.observe(viewLifecycleOwner) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
-
-                    is LessonState.Success<List<LessonCategory>> -> {
-                        viewModel.setLessonCategoryList(lessonState.data)
+    private fun initObserver() = with(registerLessonViewModel) {
+        repeatOnStarted {
+            launch {
+                lessonCategoryListState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success -> {
+                                registerLessonViewModel.setLessonCategoryList(result.data)
+                                bindAdapter(
+                                    lessonCategoryAdapter,
+                                    binding.spnRegisterLessonCategory,
+                                    registerLessonViewModel.lessonCategorySelectedItemPosition.value
+                                )
+                            }
+                            is Result.Unauthorized -> {
+                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
+                                hideProgress()
+                            }
+                            is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            else -> {}
+                        }
+                        hideProgress()
                     }
-
-                    is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 카테고리를 가져오지 못했어요")
-                    }
-                    else -> Unit
-                }
-                hideProgress()
             }
 
-            lessonSiteListState.observe(viewLifecycleOwner) { lessonState ->
-                when (lessonState) {
-                    is LessonState.Loading -> handleLoadingState(requireContext())
-
-                    is LessonState.Success<List<LessonSite>> -> {
-                        viewModel.setLessonSiteList(lessonState.data)
-                        initViews()
+            launch {
+                lessonSiteListState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.Success -> {
+                                //TODO UDF 에 위반 -> 코드 개선
+                                registerLessonViewModel.setLessonSiteList(result.data)
+                                bindAdapter(
+                                    lessonSiteAdapter,
+                                    binding.spnRegisterLessonSite,
+                                    registerLessonViewModel.lessonSiteSelectedItemPosition.value
+                                )
+                            }
+                            // TODO Error 내부로 이동
+                            is Result.Unauthorized -> {
+                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
+                            }
+                            is Result.Error -> {
+                                showToast(getString(R.string.cannot_get_lesson_category))
+                            }
+                            else -> {}
+                        }
+                        hideProgress()
                     }
-
-                    is LessonState.Unauthorized -> {
-                        showLogoutDialog(requireContext()) { viewModel.removeAuthToken() }
-                    }
-
-                    is LessonState.Error -> {
-                        Timber.tag("fetch Error").d(lessonState.throwable)
-                        showToast("강의 사이트를 가져오지 못했어요")
-                    }
-                    else -> Unit
-                }
-                hideProgress()
             }
 
-            isEnabledMoveLessonSecondButton.observe(viewLifecycleOwner) { isEnable ->
-                when (isEnable) {
-                    false -> {
-                        lockButton(binding.btnRegisterLesson, requireContext())
+            launch {
+                onNavigateToRegisterLessonSecondClick
+                    .collect {
+                        navigateToRegisterLessonSecond()
                     }
-
-                    true -> {
-                        unlockButton(binding.btnRegisterLesson, requireContext())
-                    }
-                }
             }
         }
-    }
-
-    private fun initNavigation() {
-        viewModel.moveRegisterLessonSecondEvent.observe(viewLifecycleOwner, EventObserver {
-            moveRegisterLessonSecond()
-        })
     }
 
     override fun initViews() = with(binding) {
-        bindAdapter()
+//        bindAdapter(lessonCategoryAdapter, spnRegisterLessonCategory,
+//            registerLessonViewModel.lessonCategorySelectedItemPosition.value)
+//        bindAdapter(lessonSiteAdapter, spnRegisterLessonSite,
+//            registerLessonViewModel.lessonSiteSelectedItemPosition.value)
+
 
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
@@ -132,22 +130,16 @@ class RegisterLessonFirstFragment :
         focusSpinnerForm(spnRegisterLessonSite)
     }
 
-    private fun moveRegisterLessonSecond() {
-        findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
+    private fun bindAdapter(arrayAdapter: ArrayAdapter<String>, spinner: Spinner, position: Int) {
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.apply {
+            adapter = arrayAdapter
+            setSelection(position)
+        }
     }
 
-    private fun bindAdapter() = with(binding) {
-        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonCategory.apply {
-            adapter = lessonCategoryAdapter
-            setSelection(viewModel.lessonCategorySelectedItemPosition.value!!)
-        }
-
-        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnRegisterLessonSite.apply {
-            adapter = lessonSiteAdapter
-            spnRegisterLessonSite.setSelection(viewModel.lessonSiteSelectedItemPosition.value!!)
-        }
+    private fun navigateToRegisterLessonSecond() {
+        findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -162,28 +154,34 @@ class RegisterLessonFirstFragment :
 
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    clearFocus(etRegisterLessonTotalNumber)
-                    clearFocus(etRegisterLessonName)
-
                     if (spinner.selectedItemPosition == 0) {
                         if (spinner == spnRegisterLessonCategory) {
-                            viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
+                            registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                spnRegisterLessonCategory.selectedItemPosition
+                            )
                         } else {
-                            viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                            registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
                     } else {
                         if (spinner == spnRegisterLessonCategory) {
-                            viewModel.setCategoryId(viewModel.lessonCategoryMap.value!!.filterValues
-                            { it == spnRegisterLessonCategory.selectedItem }.keys.first())
-                            viewModel.setCategoryName(spinner.selectedItem.toString())
-                            viewModel.setLessonCategoryItemPosition(spnRegisterLessonCategory.selectedItemPosition)
+                            registerLessonViewModel.setLessonCategoryId(
+                                registerLessonViewModel.lessonCategoryMap.value.filterValues
+                                { it == spnRegisterLessonCategory.selectedItem }.keys.first()
+                            )
+                            registerLessonViewModel.setLessonCategoryName(spinner.selectedItem.toString())
+                            registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                spnRegisterLessonCategory.selectedItemPosition
+                            )
                         } else {
-                            viewModel.setSiteId(viewModel.lessonSiteMap.value!!.filterValues
-                            { it == spnRegisterLessonSite.selectedItem }.keys.first())
-                            viewModel.setSiteName(spinner.selectedItem.toString())
-                            viewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                            registerLessonViewModel.setLessonSiteId(
+                                registerLessonViewModel.lessonSiteMap.value.filterValues
+                                { it == spnRegisterLessonSite.selectedItem }.keys.first()
+                            )
+                            registerLessonViewModel.setLessonSiteName(spinner.selectedItem.toString())
+                            registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
                         }
                     }
+                    clearFocus(etRegisterLessonTotalNumber)
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -193,11 +191,12 @@ class RegisterLessonFirstFragment :
 
     private fun focusInputForm(editText: EditText) {
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-            }
+            override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
+
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                viewModel.setLessonName(text.toString())
+                registerLessonViewModel.setLessonName(text.toString())
             }
+
             override fun afterTextChanged(editable: Editable?) {}
         })
 
@@ -210,7 +209,6 @@ class RegisterLessonFirstFragment :
         }
     }
 
-    //다시 돌아왔을때 "개" 가 보이지 않음
     private fun validateInputForm(editText: EditText) = with(binding) {
         var result = DEFAULT_STRING_VALUE
 
@@ -220,8 +218,8 @@ class RegisterLessonFirstFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = viewModel.lessonTotalNumber.value!!.toString()
+                    registerLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = registerLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
                     } else {
@@ -245,6 +243,7 @@ class RegisterLessonFirstFragment :
                     }
                 }
             }
+
             override fun afterTextChanged(editable: Editable?) {}
         })
 

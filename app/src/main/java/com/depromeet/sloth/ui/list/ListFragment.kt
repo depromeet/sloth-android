@@ -5,22 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.network.lesson.list.LessonAllResponse
+import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.ui.base.UIState
-import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
-import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.detail.LessonDetailActivity.Companion.LESSON_ID
-import com.depromeet.sloth.ui.list.LessonViewModel.Companion.PAST
+import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.list.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
+import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -29,61 +28,52 @@ import java.util.*
 @AndroidEntryPoint
 class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
 
-    private val lessonViewModel: LessonViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
+        bind {
+            vm = lessonListViewModel
+        }
 
+        initViews()
         fetchLessonList()
     }
 
-    private fun fetchLessonList() {
-//        mainScope {
-//            showProgress()
-//            viewModel.fetchAllLessonList().let {
-//                when (it) {
-//                    is LessonState.Loading -> handleLoadingState(requireContext())
-//                    is LessonState.Success<List<LessonAllResponse>> -> setLessonList(it.data)
-//                    is LessonState.Error -> {
-//                        showToast("강의 정보를 가져오지 못했어요")
-//                        Log.d("Error", "${it.throwable}")
-//                    }
-//                    else -> Unit
-//                }
-//            }
-//
-//            hideProgress()
-//        }
-        viewLifecycleOwner.lifecycleScope.launch {
-            lessonViewModel.allLessonList
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { uiState ->
-                    when (uiState) {
-                        is UIState.Loading -> showProgress()
-                        is UIState.UnLoading -> hideProgress()
-                        is UIState.Success<List<LessonAllResponse>> -> setLessonList(uiState.data)
-                        is UIState.Unauthorized -> showToast("다시 로그인 해주세요")
-                        is UIState.Error -> showToast("강의 정보를 가져오지 못했어요")
+    private fun fetchLessonList() = with(lessonListViewModel) {
+        repeatOnStarted {
+            launch {
+                allLessonList
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<List<LessonAllResponse>> -> setLessonList(result.data)
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
+                            is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        }
                     }
-                }
+            }
+
+            launch {
+                onRegisterLessonClick
+                    .collect {
+                        moveRegisterActivity()
+                    }
+            }
+
+            launch {
+                onNavigateToNotificationListClick
+                    .collect {
+                        showWaitDialog(requireContext())
+                    }
+            }
         }
     }
 
-    override fun initViews() {
-        with(binding) {
-            rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
-
-            ivLessonListRegister.setOnClickListener {
-                moveRegisterActivity()
-            }
-
-            ivLessonListAlarm.setOnClickListener {
-                val dlg = SlothDialog(requireActivity(), DialogState.WAIT)
-                dlg.start()
-            }
-        }
+    override fun initViews() = with(binding) {
+        rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
     }
 
     private fun moveRegisterActivity() {
@@ -177,11 +167,11 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     private fun getLessonType(
         lessonInfo: LessonAllResponse,
     ): LessonListAdapter.BodyType {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
         val startDate = dateFormat.parse(lessonInfo.startDate)
         val todayDate = Calendar.getInstance()
         val isPassed = lessonInfo.isFinished || lessonInfo.lessonStatus == PAST
-        val isPlanning = (todayDate.time.time - startDate.time) < 0L
+        val isPlanning = (todayDate.time.time - startDate!!.time) < 0L
 
         return when {
             isPassed -> LessonListAdapter.BodyType.PASSED
@@ -190,150 +180,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         }
     }
 
-//    @SuppressLint("SimpleDateFormat")
-//    private fun setTestData() {
-//        val dummyList = listOf<LessonAllResponse>(
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nScala 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 8,
-//                goalProgressRate = 8,
-//                totalNumber = 60,
-//                price = 50000,
-//                startDate = "2021-08-19 10:12:14",
-//                endDate = "2021-11-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nKotlin 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 0,
-//                goalProgressRate = 20,
-//                totalNumber = 50,
-//                price = 30000,
-//                startDate = "2021-12-22 10:12:14",
-//                endDate = "2022-11-11 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nC++ 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 0,
-//                goalProgressRate = 12,
-//                totalNumber = 22,
-//                price = 150000,
-//                startDate = "2022-01-12 10:12:14",
-//                endDate = "2022-11-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nPython 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 6,
-//                goalProgressRate = 8,
-//                totalNumber = 16,
-//                price = 25000,
-//                startDate = "2021-11-10 10:12:14",
-//                endDate = "2021-12-24 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nGolang 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 8,
-//                goalProgressRate = 8,
-//                totalNumber = 42,
-//                price = 55000,
-//                startDate = "2021-09-19 10:12:14",
-//                endDate = "2021-10-22 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nRuby 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 4,
-//                goalProgressRate = 4,
-//                totalNumber = 40,
-//                price = 68000,
-//                startDate = "2021-11-15 10:12:14",
-//                endDate = "2021-11-30 10:12:14"
-//            ),
-//            LessonAllResponse(
-//                lessonName = "프로그래밍 시작하기 : \nJava 고급 (Inflearn Original)",
-//                categoryName = "기획",
-//                currentProgressRate = 1,
-//                goalProgressRate = 4,
-//                totalNumber = 30,
-//                price = 33000,
-//                startDate = "2021-10-19 10:12:14",
-//                endDate = "2021-12-31 10:12:14"
-//            )
-//        )
-//
-//        val doingHeader = HeaderAdapter(HeaderAdapter.HeaderType.DOING)
-//        val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
-//        val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
-//
-//        val doingLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-//            moveDetailActivity(lesson)
-//        }
-//        val planningLessonAdapter =
-//            LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-//                moveDetailActivity(lesson)
-//            }
-//        val passedLessonAdapter = LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-//            moveDetailActivity(lesson)
-//        }
-//
-//        val concatAdapter = ConcatAdapter(
-//            doingHeader,
-//            doingLessonAdapter,
-//            planningHeader,
-//            planningLessonAdapter,
-//            passedHeader,
-//            passedLessonAdapter
-//        )
-//
-//        dummyList.let {
-//            doingLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val startDateString = it.startDate
-//                    val endDateString = it.endDate
-//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//                    val startDate = dateFormat.parse(startDateString)
-//                    val endDate = dateFormat.parse(endDateString)
-//                    val todayDate = Calendar.getInstance()
-//                    val startDiffTime =
-//                        (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val endDiffTime =
-//                        (endDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val progressRatio = it.currentProgressRate / it.goalProgressRate.toDouble()
-//                    val inValidData =
-//                        startDiffTime < 0.0 && endDiffTime >= 0.0 && progressRatio < 1.0
-//                    inValidData
-//                }
-//            )
-//
-//            planningLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val startDateString = it.startDate
-//                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//                    val startDate = dateFormat.parse(startDateString)
-//                    val todayDate = Calendar.getInstance()
-//                    val endDiffTime =
-//                        (startDate.time - todayDate.time.time) / (60 * 60 * 24 * 1000).toDouble()
-//                    val inValidData = endDiffTime > 0.0
-//                    inValidData
-//                }
-//            )
-//
-//            passedLessonAdapter.submitList(
-//                dummyList.filter {
-//                    val progressRatio = it.currentProgressRate / it.goalProgressRate
-//                    val inValidData = (progressRatio == 1)
-//                    inValidData
-//                }
-//            )
-//        }
-//
-//        binding.rvLessonList.let {
-//            it.addItemDecoration(LessonItemDecoration(requireContext(), 16))
-//            it.adapter = concatAdapter
-//        }
-//    }
+    companion object {
+        private const val LESSON_ID = "lessonId"
+        private const val PAST = "PAST"
+    }
 }

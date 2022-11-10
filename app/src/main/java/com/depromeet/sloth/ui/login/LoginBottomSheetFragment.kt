@@ -13,10 +13,12 @@ import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.PreferenceManager
-import com.depromeet.sloth.data.network.login.LoginGoogleResponse
-import com.depromeet.sloth.data.network.login.LoginSlothResponse
-import com.depromeet.sloth.data.network.login.LoginState
+import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
+import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
+import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.GOOGLE
+import com.depromeet.sloth.util.KAKAO
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -114,22 +116,23 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
-                        socialType = "KAKAO"
-                    ).let {
-                        when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> {
-                                Timber.tag("인증정보 수신 성공").d(it.data.toString())
-                                if (it.data.isNewMember) {
+                        socialType = KAKAO
+                    ).let { result ->
+                        when (result) {
+                            is Result.Success<LoginSlothResponse> -> {
+                                Timber.tag("인증 정보 수신 성공").d(result.data.toString())
+                                if (result.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
 
                             }
-                            is LoginState.Error -> {
-                                Timber.tag("인증정보 수신 실패").d(it.exception)
+                            is Result.Error -> {
+                                Timber.tag("인증 정보 수신 실패").d(result.throwable)
                                 loginListener.onError()
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -149,21 +152,22 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 mainScope {
                     loginViewModel.fetchSlothAuthInfo(
                         accessToken = token.accessToken,
-                        socialType = "KAKAO"
-                    ).let {
-                        when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> {
-                                Timber.tag("인증정보 수신 성공").d(it.data.toString())
-                                if (it.data.isNewMember) {
+                        socialType = KAKAO
+                    ).let { result ->
+                        when (result) {
+                            is Result.Success<LoginSlothResponse> -> {
+                                Timber.tag("인증정보 수신 성공").d(result.data.toString())
+                                if (result.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
                             }
-                            is LoginState.Error -> {
-                                Timber.tag("인증정보 수신 실패").d(it.exception)
+                            is Result.Error -> {
+                                Timber.tag("인증정보 수신 실패").d(result.throwable)
                                 loginListener.onError()
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -183,34 +187,35 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
             mainScope {
                 authCode?.run {
                     var accessToken = "userToken"
-                    loginViewModel.fetchGoogleAuthInfo(this).let {
-                        when (it) {
-                            is LoginState.Success<LoginGoogleResponse> -> {
-                                Timber.tag("Success").d("${it.data}")
-                                accessToken = it.data.access_token
+                    loginViewModel.fetchGoogleAuthInfo(this).let { result ->
+                        when (result) {
+                            is Result.Success<LoginGoogleResponse> -> {
+                                Timber.tag("Success").d("${result.data}")
+                                accessToken = result.data.accessToken
                             }
-
-                            is LoginState.Error -> {
-                                Timber.tag("Error").d(it.exception)
+                            is Result.Error -> {
+                                Timber.tag("Error").d(result.throwable)
                                 loginListener.onError()
                             }
+                            else -> {}
                         }
                     }
 
-                    loginViewModel.fetchSlothAuthInfo(accessToken, "GOOGLE").let {
-                        when (it) {
-                            is LoginState.Success<LoginSlothResponse> -> {
-                                Timber.tag("Success").d("${it.data}")
-                                if (it.data.isNewMember) {
+                    loginViewModel.fetchSlothAuthInfo(accessToken, GOOGLE).let { result ->
+                        when (result) {
+                            is Result.Success<LoginSlothResponse> -> {
+                                Timber.tag("Success").d("${result.data}")
+                                if (result.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {
                                     loginListener.onSuccessWithRegisteredMember()
                                 }
                             }
-                            is LoginState.Error -> {
-                                Timber.tag("Error").d(it.exception)
+                            is Result.Error -> {
+                                Timber.tag("Error").d(result.throwable)
                                 loginListener.onError()
                             }
+                            else -> {}
                         }
                     }
                 } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
