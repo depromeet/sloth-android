@@ -25,17 +25,9 @@ interface LessonRepository {
 
     suspend fun updateLessonCount(count: Int, lessonId: Int): Result<LessonUpdateCountResponse>
 
-//    suspend fun fetchLessonDetail(lessonId: String): Result<LessonDetailResponse>
-
     fun fetchLessonDetail(lessonId: String): Flow<Result<LessonDetailResponse>>
 
-//    suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): Result<LessonRegisterResponse>
-
-//    suspend fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): LessonRegisterResponse?
-
     fun registerLesson(lessonRegisterRequest: LessonRegisterRequest): Flow<Result<LessonRegisterResponse>>
-
-//    suspend fun deleteLesson(lessonId: String): Result<LessonDeleteResponse>
 
     fun deleteLesson(lessonId: String): Flow<Result<LessonDeleteResponse>>
 
@@ -47,18 +39,8 @@ interface LessonRepository {
 
 //    fun fetchLessonSiteList(): Flow<Result<LessonSiteResponse>>
 
-//    suspend fun updateLesson(
-//        lessonId: String,
-//        updateLessonRequest: LessonUpdateRequest
-//    ): Result<LessonUpdateResponse>
-
     fun updateLesson(
         lessonId: String,
         lessonUpdateRequest: LessonUpdateRequest
     ): Flow<Result<LessonUpdateResponse>>
-
-//    fun updateLesson(
-//        lessonId: String,
-//        lessonUpdateRequest: LessonUpdateRequest
-//    ): Flow<LessonUpdateResponse>
 }

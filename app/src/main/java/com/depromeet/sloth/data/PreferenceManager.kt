@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO interface 로 만들어서 주입하는 식으로 변경
 @Singleton
 class PreferenceManager @Inject constructor(
     @ApplicationContext private val context: Context

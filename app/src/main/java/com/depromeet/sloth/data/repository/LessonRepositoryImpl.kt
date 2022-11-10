@@ -6,8 +6,6 @@ import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.*
-import com.depromeet.sloth.data.network.AccessTokenAuthenticator
-import com.depromeet.sloth.data.network.RetrofitServiceGenerator
 import com.depromeet.sloth.data.network.service.LessonService
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -21,14 +19,12 @@ import javax.inject.Inject
  */
 class LessonRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
+    private val service: LessonService
 ) : LessonRepository {
 
     override fun fetchTodayLessonList() = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .fetchTodayLessonList(preferenceManager.getAccessToken()) ?: run {
+        val response = service.fetchTodayLessonList(preferenceManager.getAccessToken()) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -52,10 +48,7 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun fetchAllLessonList() = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .fetchAllLessonList(preferenceManager.getAccessToken()) ?: run {
+        val response = service.fetchAllLessonList(preferenceManager.getAccessToken()) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -79,11 +72,7 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun finishLesson(lessonId: String) = flow {
         emit(Result.Loading)
-
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .finishLesson(preferenceManager.getAccessToken(), lessonId) ?: run {
+        val response = service.finishLesson(preferenceManager.getAccessToken(), lessonId) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -109,39 +98,35 @@ class LessonRepositoryImpl @Inject constructor(
         count: Int,
         lessonId: Int,
     ): Result<LessonUpdateCountResponse> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .updateLessonCount(
-                preferenceManager.getAccessToken(),
-                LessonUpdateCountRequest(count, lessonId)
-            )?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if (newAccessToken.isNotEmpty()) {
-                            preferenceManager.updateAccessToken(newAccessToken)
-                        }
-                        Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
+        service.updateLessonCount(
+            preferenceManager.getAccessToken(),
+            LessonUpdateCountRequest(count, lessonId)
+        )?.run {
+            return when (this.code()) {
+                200 -> {
+                    val newAccessToken = headers()["Authorization"] ?: ""
+                    if (newAccessToken.isNotEmpty()) {
+                        preferenceManager.updateAccessToken(newAccessToken)
                     }
-                    401 -> {
-                        preferenceManager.removeAuthToken()
-                        Result.Error(Exception(message()))
-                    }
-                    else -> Result.Error(Exception(message()))
+                    Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                 }
-            } ?: return Result.Error(Exception("Retrofit Exception"))
+                401 -> {
+                    preferenceManager.removeAuthToken()
+                    Result.Error(Exception(message()))
+                }
+                else -> Result.Error(Exception(message()))
+
+            }
+        } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .fetchLessonDetail(preferenceManager.getAccessToken(), lessonId) ?: run {
-            emit(Result.Error(Exception("Response is null")))
-            return@flow
-        }
+        val response =
+            service.fetchLessonDetail(preferenceManager.getAccessToken(), lessonId) ?: run {
+                emit(Result.Error(Exception("Response is null")))
+                return@flow
+            }
         when (response.code()) {
             200 -> {
                 val newAccessToken = response.headers()["Authorization"] ?: ""
@@ -162,13 +147,12 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun registerLesson(lessonRegisterRequest: LessonRegisterRequest) = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .registerLesson(preferenceManager.getAccessToken(), lessonRegisterRequest) ?: run {
-            emit(Result.Error(Exception("Response is null")))
-            return@flow
-        }
+        val response =
+            service.registerLesson(preferenceManager.getAccessToken(), lessonRegisterRequest)
+                ?: run {
+                    emit(Result.Error(Exception("Response is null")))
+                    return@flow
+                }
         when (response.code()) {
             200 -> {
                 val newAccessToken = response.headers()["Authorization"] ?: ""
@@ -189,10 +173,7 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun deleteLesson(lessonId: String) = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .deleteLesson(preferenceManager.getAccessToken(), lessonId) ?: run {
+        val response = service.deleteLesson(preferenceManager.getAccessToken(), lessonId) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -216,21 +197,18 @@ class LessonRepositoryImpl @Inject constructor(
 
 
     override suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .fetchLessonCategoryList(preferenceManager.getAccessToken())?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if (newAccessToken.isNotEmpty()) {
-                            preferenceManager.updateAccessToken(newAccessToken)
-                        }
-                        Result.Success(this.body() ?: listOf(LessonCategoryResponse.EMPTY))
+        service.fetchLessonCategoryList(preferenceManager.getAccessToken())?.run {
+            return when (this.code()) {
+                200 -> {
+                    val newAccessToken = headers()["Authorization"] ?: ""
+                    if (newAccessToken.isNotEmpty()) {
+                        preferenceManager.updateAccessToken(newAccessToken)
                     }
-                    else -> Result.Error(Exception(message()))
+                    Result.Success(this.body() ?: listOf(LessonCategoryResponse.EMPTY))
                 }
-            } ?: return Result.Error(Exception("Retrofit Exception"))
+                else -> Result.Error(Exception(message()))
+            }
+        } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
 //    override fun fetchLessonCategoryList() = flow {
@@ -261,21 +239,18 @@ class LessonRepositoryImpl @Inject constructor(
 //        .onCompletion { emit(Result.UnLoading) }
 
     override suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>> {
-        RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .fetchLessonSiteList(preferenceManager.getAccessToken())?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
-                        if (newAccessToken.isNotEmpty()) {
-                            preferenceManager.updateAccessToken(newAccessToken)
-                        }
-                        Result.Success(this.body() ?: listOf(LessonSiteResponse.EMPTY))
+        service.fetchLessonSiteList(preferenceManager.getAccessToken())?.run {
+            return when (this.code()) {
+                200 -> {
+                    val newAccessToken = headers()["Authorization"] ?: ""
+                    if (newAccessToken.isNotEmpty()) {
+                        preferenceManager.updateAccessToken(newAccessToken)
                     }
-                    else -> Result.Error(Exception(message()))
+                    Result.Success(this.body() ?: listOf(LessonSiteResponse.EMPTY))
                 }
-            } ?: return Result.Error(Exception("Retrofit Exception"))
+                else -> Result.Error(Exception(message()))
+            }
+        } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
 //    override fun fetchLessonSiteList() = flow {
@@ -310,14 +285,12 @@ class LessonRepositoryImpl @Inject constructor(
         lessonUpdateRequest: LessonUpdateRequest
     ) = flow {
         emit(Result.Loading)
-        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-            .build()
-            .create(LessonService::class.java)
-            .updateLesson(preferenceManager.getAccessToken(), lessonId, lessonUpdateRequest)
-            ?: run {
-                emit(Result.Error(Exception("Response is null")))
-                return@flow
-            }
+        val response =
+            service.updateLesson(preferenceManager.getAccessToken(), lessonId, lessonUpdateRequest)
+                ?: run {
+                    emit(Result.Error(Exception("Response is null")))
+                    return@flow
+                }
         when (response.code()) {
             200 -> {
                 val newAccessToken = response.headers()["Authorization"] ?: ""
