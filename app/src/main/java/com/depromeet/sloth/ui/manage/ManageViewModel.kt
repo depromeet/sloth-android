@@ -64,10 +64,6 @@ class ManageViewModel @Inject constructor(
         fetchMemberInfo()
     }
 
-//    fun fetchMemberInfo() = viewModelScope.launch {
-//        _memberState.emit(Result.Loading)
-//        _memberState.emit(memberRepository.fetchMemberInfo())
-//    }
     fun fetchMemberInfo() = viewModelScope.launch {
         memberRepository.fetchMemberInfo()
             .onEach {
@@ -78,10 +74,6 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-//    fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
-//        _memberUpdateState.emit(Result.Loading)
-//        _memberUpdateState.emit(memberRepository.updateMemberInfo(memberUpdateRequest))
-//    }
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         memberRepository.updateMemberInfo(memberUpdateRequest)
             .onEach {

@@ -48,9 +48,7 @@ class RegisterLessonCheckFragment :
                                 Timber.tag("Register Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_register_fail))
                             }
-                            // else -> {}
                         }
-                        // hideProgress()
                     }
             }
 

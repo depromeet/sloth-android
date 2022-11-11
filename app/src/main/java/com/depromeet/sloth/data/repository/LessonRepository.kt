@@ -33,11 +33,11 @@ interface LessonRepository {
 
     suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>>
 
-//    fun fetchLessonCategoryList(): Flow<Result<LessonCategoryResponse>>
+//    fun fetchLessonCategoryList(): Flow<Result<List<LessonCategoryResponse>>>
 
     suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>>
 
-//    fun fetchLessonSiteList(): Flow<Result<LessonSiteResponse>>
+//    fun fetchLessonSiteList(): Flow<Result<List<LessonSiteResponse>>>
 
     fun updateLesson(
         lessonId: String,

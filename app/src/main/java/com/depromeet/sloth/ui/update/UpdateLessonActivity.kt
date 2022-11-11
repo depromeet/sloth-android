@@ -76,9 +76,7 @@ class UpdateLessonActivity :
                                 Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_info_update_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 

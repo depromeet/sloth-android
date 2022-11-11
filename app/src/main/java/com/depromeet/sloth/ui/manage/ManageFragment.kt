@@ -56,9 +56,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.member_info_fetch_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 
@@ -79,9 +77,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 Timber.tag("update Error").d(result.throwable)
                                 showToast(getString(R.string.member_update_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 

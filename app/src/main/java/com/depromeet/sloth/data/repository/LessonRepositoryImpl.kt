@@ -17,6 +17,9 @@ import javax.inject.Inject
  * @created 2021-12-28
  * @desc Lesson 관련 API 저장소
  */
+
+// TODO HTTP 코드 응답 처리 함수화
+// TODO State 방출 helper 함수 만들기
 class LessonRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val service: LessonService
@@ -115,7 +118,6 @@ class LessonRepositoryImpl @Inject constructor(
                     Result.Error(Exception(message()))
                 }
                 else -> Result.Error(Exception(message()))
-
             }
         } ?: return Result.Error(Exception("Retrofit Exception"))
     }
@@ -213,10 +215,7 @@ class LessonRepositoryImpl @Inject constructor(
 
 //    override fun fetchLessonCategoryList() = flow {
 //        emit(Result.Loading)
-//        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(LessonService::class.java)
-//            .fetchLessonCategoryList() ?: run {
+//        val response = service.fetchLessonCategoryList(preferenceManager.getAccessToken()) ?: run {
 //            emit(Result.Error(Exception("Response is null")))
 //            return@flow
 //        }
@@ -226,7 +225,7 @@ class LessonRepositoryImpl @Inject constructor(
 //                if (newAccessToken.isNotEmpty()) {
 //                    preferenceManager.updateAccessToken(newAccessToken)
 //                }
-//                emit(Result.Success(response.body() ?: LessonCategoryResponse.EMPTY))
+//                emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
 //            }
 //            401 -> {
 //                preferenceManager.removeAuthToken()
@@ -255,10 +254,7 @@ class LessonRepositoryImpl @Inject constructor(
 
 //    override fun fetchLessonSiteList() = flow {
 //        emit(Result.Loading)
-//        val response = RetrofitServiceGenerator(AccessTokenAuthenticator((preferenceManager)))
-//            .build(preferenceManager.getAccessToken())
-//            .create(LessonService::class.java)
-//            .fetchLessonSiteList() ?: run {
+//        val response = service.fetchLessonSiteList(preferenceManager.getAccessToken()) ?:run {
 //            emit(Result.Error(Exception("Response is null")))
 //            return@flow
 //        }
@@ -268,7 +264,7 @@ class LessonRepositoryImpl @Inject constructor(
 //                if (newAccessToken.isNotEmpty()) {
 //                    preferenceManager.updateAccessToken(newAccessToken)
 //                }
-//                emit(Result.Success(response.body() ?: LessonSiteResponse.EMPTY))
+//                emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
 //            }
 //            401 -> {
 //                preferenceManager.removeAuthToken()
