@@ -9,6 +9,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding
@@ -16,7 +17,6 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
@@ -44,17 +44,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         initObserver()
     }
 
-    // TODO = = with(binding) {} 으로 하면 에러나는 이유 학습
     override fun initViews() {
-        with(binding) {
-            rvTodayLesson.apply {
-                if (itemDecorationCount == 0) addItemDecoration(
-                    LessonItemDecoration(
-                        requireContext(),
-                        16
-                    )
-                )
-            }
+        binding.rvTodayLesson.apply {
+            if (itemDecorationCount == 0) addItemDecoration(
+                LessonItemDecoration(requireContext(), 16)
+            )
         }
     }
 
@@ -276,10 +270,12 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             else -> Unit
                         }
                     }
+
                     is Result.Error -> {
                         showToast(getString(R.string.lesson_info_update_fail))
                         Timber.tag("Error").d(result.throwable)
                     }
+
                     else -> Unit
                 }
             }
@@ -311,9 +307,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             fetchLessonList()
                             showToast(getString(R.string.lesson_finish_complete))
                         }
+
                         is Result.Unauthorized -> showForbiddenDialog(
                             requireContext()
                         ) { lessonListViewModel.removeAuthToken() }
+
                         is Result.Error -> showToast(
                             getString(
                                 R.string.lesson_finish_fail
