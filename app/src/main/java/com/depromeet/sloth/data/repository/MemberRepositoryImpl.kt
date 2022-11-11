@@ -73,7 +73,7 @@ class MemberRepositoryImpl @Inject constructor(
         .catch { throwable -> emit(Result.Error(throwable)) }
         .onCompletion { emit(Result.UnLoading) }
 
-    override suspend fun logout() = flow {
+    override fun logout() = flow {
         emit(Result.Loading)
         val response = service.logout(preferences.getAccessToken()) ?: run {
             emit(Result.Error(Exception("Response is nukk")))

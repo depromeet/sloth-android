@@ -35,7 +35,7 @@ class NotificationRepositoryImpl @Inject constructor(
             } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
         flow {
             emit(Result.Loading)
             val response = service.updateFCMTokenUse(

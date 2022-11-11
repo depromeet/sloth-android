@@ -12,7 +12,7 @@ interface NotificationRepository {
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String>
 
-    suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<String>>
+    fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<String>>
 
     suspend fun fetchFCMToken(deviceId: String): Result<NotificationFetchResponse>
 }

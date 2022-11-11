@@ -14,7 +14,7 @@ interface MemberRepository {
         memberUpdateRequest: MemberUpdateRequest,
     ): Flow<Result<MemberUpdateResponse>>
 
-    suspend fun logout(): Flow<Result<String>>
+    fun logout(): Flow<Result<String>>
 
     fun removeAuthToken()
 }
