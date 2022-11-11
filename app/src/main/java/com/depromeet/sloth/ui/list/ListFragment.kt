@@ -38,10 +38,14 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         }
 
         initViews()
-        fetchLessonList()
+        initObserver()
     }
 
-    private fun fetchLessonList() = with(lessonListViewModel) {
+    override fun initViews() = with(binding) {
+        rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
+    }
+
+    private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
             launch {
                 allLessonList
@@ -70,10 +74,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
                     }
             }
         }
-    }
-
-    override fun initViews() = with(binding) {
-        rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
     }
 
     private fun moveRegisterActivity() {
