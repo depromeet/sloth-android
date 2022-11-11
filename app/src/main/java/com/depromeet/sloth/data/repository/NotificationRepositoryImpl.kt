@@ -6,6 +6,9 @@ import com.depromeet.sloth.data.model.request.notification.NotificationRegisterR
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.data.network.service.NotificationService
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -16,34 +19,47 @@ class NotificationRepositoryImpl @Inject constructor(
     override suspend fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String> {
-        service.registerFCMToken(preferenceManager.getAccessToken(), notificationRegisterRequest)?.run {
-            return when (this.code()) {
-                200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
-                    if (newAccessToken.isNotEmpty()) {
-                        preferenceManager.updateAccessToken(newAccessToken)
+        service.registerFCMToken(preferenceManager.getAccessToken(), notificationRegisterRequest)
+            ?.run {
+                return when (this.code()) {
+                    200 -> {
+                        val newAccessToken = headers()["Authorization"] ?: ""
+                        if (newAccessToken.isNotEmpty()) {
+                            preferenceManager.updateAccessToken(newAccessToken)
+                        }
+                        Result.Success(this.body() ?: "")
                     }
-                    Result.Success(this.body() ?: "")
+
+                    else -> Result.Error(Exception(message()))
                 }
-                else -> Result.Error(Exception(message()))
-            }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+            } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Result<String> {
-        service.updateFCMTokenUse(preferenceManager.getAccessToken(), notificationUpdateRequest)?.run {
-            return when (this.code()) {
+    override suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+        flow {
+            emit(Result.Loading)
+            val response = service.updateFCMTokenUse(
+                preferenceManager.getAccessToken(),
+                notificationUpdateRequest
+            ) ?: run {
+                emit(Result.Error(Exception("Response is null")))
+                return@flow
+            }
+            when (response.code()) {
                 200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
+                    val newAccessToken = response.headers()["Authorization"] ?: ""
                     if (newAccessToken.isNotEmpty()) {
                         preferenceManager.updateAccessToken(newAccessToken)
                     }
-                    Result.Success(this.body() ?: "")
+                    Result.Success(response.body() ?: "")
                 }
-                else -> Result.Error(Exception(message()))
+
+                else -> Result.Error(Exception(response.message()))
             }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
-    }
+        }
+            .catch { throwable -> emit(Result.Error(throwable)) }
+            .onCompletion { emit(Result.UnLoading) }
+
 
     override suspend fun fetchFCMToken(
         deviceId: String
@@ -57,6 +73,7 @@ class NotificationRepositoryImpl @Inject constructor(
                     }
                     Result.Success(this.body() ?: NotificationFetchResponse())
                 }
+
                 else -> Result.Error(Exception(message()))
             }
         } ?: return Result.Error(Exception("Retrofit Exception"))

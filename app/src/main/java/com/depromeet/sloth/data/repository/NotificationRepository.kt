@@ -4,6 +4,7 @@ import com.depromeet.sloth.data.model.response.notification.NotificationFetchRes
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.common.Result
+import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
 
@@ -11,7 +12,7 @@ interface NotificationRepository {
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String>
 
-    suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Result<String>
+    suspend fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<String>>
 
     suspend fun fetchFCMToken(deviceId: String): Result<NotificationFetchResponse>
 }

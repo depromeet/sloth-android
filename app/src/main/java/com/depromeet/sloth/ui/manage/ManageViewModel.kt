@@ -12,7 +12,13 @@ import com.depromeet.sloth.data.repository.NotificationRepository
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -86,10 +92,13 @@ class ManageViewModel @Inject constructor(
 
     fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
         if (check != member.value.isPushAlarmUse) {
-            _notificationReceiveState.emit(Result.Loading)
-            _notificationReceiveState.emit(
-                notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
-            )
+            notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
+                .onEach {
+                    if (it is Result.Loading) _notificationReceiveState.emit(Result.Loading)
+                    else _notificationReceiveState.emit(Result.UnLoading)
+                }.collect {
+                    _notificationReceiveState.emit(it)
+                }
         }
     }
 
@@ -119,8 +128,13 @@ class ManageViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        _memberLogoutState.emit(Result.Loading)
-        _memberLogoutState.emit(memberRepository.logout())
+        memberRepository.logout()
+            .onEach {
+                if (it is Result.Loading) _memberLogoutState.emit(Result.Loading)
+                else _memberLogoutState.emit(Result.UnLoading)
+            }.collect {
+                _memberLogoutState.emit(it)
+            }
     }
 
     companion object {
