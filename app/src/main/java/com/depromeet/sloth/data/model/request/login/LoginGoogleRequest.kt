@@ -2,7 +2,7 @@ package com.depromeet.sloth.data.model.request.login
 
 import com.google.gson.annotations.SerializedName
 
-class LoginGoogleRequest(
+data class LoginGoogleRequest(
     @SerializedName("grant_type")
     private val grant_type: String,
     @SerializedName("client_id")
