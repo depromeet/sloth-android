@@ -62,6 +62,7 @@ class RegisterLessonFirstFragment :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 registerLessonViewModel.setLessonCategoryList(result.data)
                                 bindAdapter(
@@ -70,14 +71,14 @@ class RegisterLessonFirstFragment :
                                     registerLessonViewModel.lessonCategorySelectedItemPosition.value
                                 )
                             }
+
                             is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                                 hideProgress()
                             }
+
                             is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 
@@ -86,6 +87,7 @@ class RegisterLessonFirstFragment :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 //TODO UDF 에 위반 -> 코드 개선
                                 registerLessonViewModel.setLessonSiteList(result.data)
@@ -99,12 +101,11 @@ class RegisterLessonFirstFragment :
                             is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                             }
+
                             is Result.Error -> {
                                 showToast(getString(R.string.cannot_get_lesson_category))
                             }
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 
@@ -118,12 +119,6 @@ class RegisterLessonFirstFragment :
     }
 
     override fun initViews() = with(binding) {
-//        bindAdapter(lessonCategoryAdapter, spnRegisterLessonCategory,
-//            registerLessonViewModel.lessonCategorySelectedItemPosition.value)
-//        bindAdapter(lessonSiteAdapter, spnRegisterLessonSite,
-//            registerLessonViewModel.lessonSiteSelectedItemPosition.value)
-
-
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)

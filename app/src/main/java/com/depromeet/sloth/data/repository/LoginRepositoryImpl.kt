@@ -2,24 +2,24 @@ package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.common.Result
-import com.depromeet.sloth.data.PreferenceManager
 import com.depromeet.sloth.data.model.request.login.LoginGoogleRequest
 import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.data.network.service.LoginService
+import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val preferenceManager: PreferenceManager,
+    private val preferences: Preferences,
     private val service: LoginService
 ) : LoginRepository {
 
     override fun checkedLoggedIn(): Boolean {
-        return preferenceManager.getAccessToken()
-            .isNotEmpty() && preferenceManager.getRefreshToken().isNotEmpty()
+        return preferences.getAccessToken()
+            .isNotEmpty() && preferences.getRefreshToken().isNotEmpty()
     }
 
     override suspend fun fetchSlothAuthInfo(
@@ -29,7 +29,7 @@ class LoginRepositoryImpl @Inject constructor(
         service.fetchSlothAuthInfo(authToken, LoginSlothRequest(socialType = socialType))?.run {
             val accessToken = body()?.accessToken ?: ""
             val refreshToken = body()?.refreshToken ?: ""
-            preferenceManager.putAuthToken(accessToken, refreshToken)
+            preferences.saveAuthToken(accessToken, refreshToken)
 
             return Result.Success(this.body() ?: LoginSlothResponse())
         } ?: return Result.Error(Exception("Login Exception"))

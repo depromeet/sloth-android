@@ -56,9 +56,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.member_info_fetch_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 
@@ -79,9 +77,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 Timber.tag("update Error").d(result.throwable)
                                 showToast(getString(R.string.member_update_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 
@@ -90,6 +86,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
                                 showToast(getString(R.string.noti_update_complete))
                                 manageViewModel.fetchMemberInfo()
@@ -99,9 +96,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 Timber.tag("update Error").d(result.throwable)
                                 showToast(getString(R.string.noti_update_fail))
                             }
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 
@@ -110,15 +105,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> logout(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
                                 Timber.tag("logout Error").d(result.throwable)
                                 showToast(getString(R.string.logout_fail))
                             }
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 

@@ -61,9 +61,7 @@ class LessonDetailActivity :
                                 }
                                 is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
                                 is Result.Error -> Timber.tag("fetch Error").d(result.throwable)
-                                else -> {}
                             }
-                            // hideProgress()
                         }
                 }
 
@@ -82,9 +80,7 @@ class LessonDetailActivity :
                                     Timber.tag("fetch Error").d(result.throwable)
                                     showToast(getString(R.string.lesson_delete_fail))
                                 }
-                                else -> {}
                             }
-                            // hideProgress()
                         }
                 }
 

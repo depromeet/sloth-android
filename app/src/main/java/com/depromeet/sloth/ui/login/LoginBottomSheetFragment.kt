@@ -12,11 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.PreferenceManager
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,12 +32,10 @@ import com.kakao.sdk.auth.model.Prompt
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginBottomSheetFragment : BottomSheetDialogFragment() {
-    @Inject
-    lateinit var preferenceManager: PreferenceManager
+class LoginBottomSheetFragment: BottomSheetDialogFragment() {
+
     private val loginViewModel: LoginViewModel by viewModels()
 
     private lateinit var binding: FragmentLoginBottomBinding
@@ -156,7 +153,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                     ).let { result ->
                         when (result) {
                             is Result.Success<LoginSlothResponse> -> {
-                                Timber.tag("인증정보 수신 성공").d(result.data.toString())
+                                Timber.tag("인증 정보 수신 성공").d(result.data.toString())
                                 if (result.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()
                                 } else {

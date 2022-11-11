@@ -52,6 +52,7 @@ class FirebaseService : FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_sloth_logo)
             .setContentTitle(messageTitle)
             .setContentText(messageBody)
+                // 노티 알림 클릭시 알림 사라짐
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()

@@ -19,10 +19,21 @@ import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,15 +48,11 @@ class RegisterLessonViewModel @Inject constructor(
     val registerLessonState: SharedFlow<Result<LessonRegisterResponse>> =
         _registerLessonState.asSharedFlow()
 
-    private val _lessonCategoryListState =
-        MutableStateFlow<Result<List<LessonCategoryResponse>>>(Result.Loading)
-    val lessonCategoryListState: StateFlow<Result<List<LessonCategoryResponse>>> =
-        _lessonCategoryListState.asStateFlow()
+    val lessonCategoryListState: Flow<Result<List<LessonCategoryResponse>>> =
+        lessonRepository.fetchLessonCategoryList()
 
-    private val _lessonSiteListState =
-        MutableStateFlow<Result<List<LessonSiteResponse>>>(Result.Loading)
-    val lessonSiteListState: StateFlow<Result<List<LessonSiteResponse>>> =
-        _lessonSiteListState.asStateFlow()
+    val lessonSiteListState: Flow<Result<List<LessonSiteResponse>>> =
+        lessonRepository.fetchLessonSiteList()
 
     private val _lessonName =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
@@ -177,43 +184,26 @@ class RegisterLessonViewModel @Inject constructor(
         _startDate.value = calendar.time
         _lessonStartDate.value = getPickerDateToDash(calendar.time)
     }
-
-    //async await 빼라 했던거 같은데 현우님이
     init {
-        viewModelScope.launch {
-            val lessonCategoryListResponse = async {
-                lessonRepository.fetchLessonCategoryList()
-            }
-            val lessonSiteListResponse = async {
-                lessonRepository.fetchLessonSiteList()
-            }
-            _lessonCategoryListState.value = lessonCategoryListResponse.await()
-            _lessonSiteListState.value = lessonSiteListResponse.await()
-        }
-//        viewModelScope.launch {
-//            fetchLessonCategoryList()
-//            fetchLessonSiteList()
-//        }
         initLessonStartDate()
     }
 
-    //initView 의 bindAdapter 와 타이밍 이슈
-    private suspend fun fetchLessonCategoryList() {
-        when(val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()) {
-            is Result.Success -> setLessonCategoryList(lessonCategoryListResponse.data)
-            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
-            else -> return
-        }
-    }
+//    private suspend fun fetchLessonCategoryList() {
+//        when(val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()) {
+//            is Result.Success -> setLessonCategoryList(lessonCategoryListResponse.data)
+//            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
+//            else -> return
+//        }
+//    }
 
     //initView 의 bindAdapter 와 타이밍 이슈
-    private suspend fun fetchLessonSiteList() {
-        when(val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()) {
-            is Result.Success -> setLessonSiteList(lessonSiteListResponse.data)
-            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
-            else -> return
-        }
-    }
+//    private suspend fun fetchLessonSiteList() {
+//        when(val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()) {
+//            is Result.Success -> setLessonSiteList(lessonSiteListResponse.data)
+//            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
+//            else -> return
+//        }
+//    }
 
     fun setLessonStartDate(calendar: Calendar) {
         _startDate.value = calendar.time
@@ -274,25 +264,6 @@ class RegisterLessonViewModel @Inject constructor(
             totalNumber = lessonTotalNumber.value
         )
     }
-
-//    fun registerLesson() = viewModelScope.launch {
-//        _registerLessonState.emit(Result.Loading)
-//        _registerLessonState.emit(
-//            lessonRepository.registerLesson(
-//                LessonRegisterRequest(
-//                    alertDays = null,
-//                    categoryId = lessonCategoryId.value,
-//                    endDate = lessonEndDate.value,
-//                    lessonName = lessonName.value,
-//                    message = lessonMessage.value,
-//                    price = lessonPrice.value,
-//                    siteId = lessonSiteId.value,
-//                    startDate = lessonStartDate.value,
-//                    totalNumber = lessonTotalNumber.value
-//                )
-//            )
-//        )
-//    }
 
     fun registerLesson() = viewModelScope.launch {
         lessonRepository.registerLesson(

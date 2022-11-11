@@ -76,9 +76,7 @@ class UpdateLessonActivity :
                                 Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.lesson_info_update_fail))
                             }
-                            else -> {}
                         }
-                        //hideProgress()
                     }
             }
 
@@ -87,6 +85,7 @@ class UpdateLessonActivity :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.UnLoading -> hideProgress()
                             //TODO UDF 에 위반 코드 개선
                             is Result.Success -> {
                                 setLessonCategoryInfo(result.data)
@@ -98,9 +97,7 @@ class UpdateLessonActivity :
                                 Timber.tag("fetch Error").d(result.throwable)
                                 showToast(getString(R.string.cannot_get_lesson_category))
                             }
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 
@@ -109,6 +106,7 @@ class UpdateLessonActivity :
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 //TODO UDF 에 위반 코드 개선
                                 setLessonSiteInfo(result.data)
@@ -117,9 +115,7 @@ class UpdateLessonActivity :
                             // TODO Error 내부로 이동
                             is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 

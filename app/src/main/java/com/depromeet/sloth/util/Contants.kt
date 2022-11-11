@@ -1,5 +1,7 @@
 package com.depromeet.sloth.util
 
+const val KEY_PREFERENCES = "shared_pref"
+
 const val GOOGLE = "GOOGLE"
 const val KAKAO = "KAKAO"
 

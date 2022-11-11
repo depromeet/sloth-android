@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.content.Intent
 
 class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
+
     private lateinit var binding: FragmentRegisterBottomBinding
     private var _binding: FragmentRegisterBottomBinding? = null
 
