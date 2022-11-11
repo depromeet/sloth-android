@@ -14,7 +14,7 @@ open class BaseViewModel @Inject constructor(
 ) : ViewModel() {
 
     //TODO error 이벤트 처리용
-    val _errorToast = MutableSharedFlow<String>()
+    private val _errorToast = MutableSharedFlow<String>()
     val errorToast: SharedFlow<String> = _errorToast.asSharedFlow()
 
     fun removeAuthToken() = viewModelScope.launch {

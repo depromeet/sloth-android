@@ -52,3 +52,11 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
 //        emit(Result.Exception(e))
 //    }
 //}
+
+//fun <T> test(response: Response<T>) : Result<T?> {
+//    return when(response.code()) {
+//        200 -> Result.Success(response.body())
+//        401 -> Result.Error(Exception(response.message()))
+//        else -> Result.Error()
+//    }
+//}
