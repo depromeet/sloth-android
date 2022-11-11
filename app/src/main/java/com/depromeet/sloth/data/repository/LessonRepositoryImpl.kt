@@ -197,84 +197,53 @@ class LessonRepositoryImpl @Inject constructor(
         .catch { throwable -> emit(Result.Error(throwable)) }
         .onCompletion { emit(Result.UnLoading) }
 
-
-    override suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>> {
-        service.fetchLessonCategoryList(preferenceManager.getAccessToken())?.run {
-            return when (this.code()) {
-                200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
-                    if (newAccessToken.isNotEmpty()) {
-                        preferenceManager.updateAccessToken(newAccessToken)
-                    }
-                    Result.Success(this.body() ?: listOf(LessonCategoryResponse.EMPTY))
+    override fun fetchLessonCategoryList() = flow {
+        emit(Result.Loading)
+        val response = service.fetchLessonCategoryList(preferenceManager.getAccessToken()) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()["Authorization"] ?: ""
+                if (newAccessToken.isNotEmpty()) {
+                    preferenceManager.updateAccessToken(newAccessToken)
                 }
-                else -> Result.Error(Exception(message()))
+                emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
             }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+            401 -> {
+                preferenceManager.removeAuthToken()
+                emit(Result.Unauthorized(Exception(response.message())))
+            }
+            else -> emit(Result.Error(Exception(response.message())))
+        }
     }
+        .catch { throwable -> emit(Result.Error(throwable)) }
+        .onCompletion { emit(Result.UnLoading) }
 
-//    override fun fetchLessonCategoryList() = flow {
-//        emit(Result.Loading)
-//        val response = service.fetchLessonCategoryList(preferenceManager.getAccessToken()) ?: run {
-//            emit(Result.Error(Exception("Response is null")))
-//            return@flow
-//        }
-//        when (response.code()) {
-//            200 -> {
-//                val newAccessToken = response.headers()["Authorization"] ?: ""
-//                if (newAccessToken.isNotEmpty()) {
-//                    preferenceManager.updateAccessToken(newAccessToken)
-//                }
-//                emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
-//            }
-//            401 -> {
-//                preferenceManager.removeAuthToken()
-//                emit(Result.Unauthorized(Exception(response.message())))
-//            }
-//            else -> emit(Result.Error(Exception(response.message())))
-//        }
-//    }
-//        .catch { throwable -> emit(Result.Error(throwable)) }
-//        .onCompletion { emit(Result.UnLoading) }
-
-    override suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>> {
-        service.fetchLessonSiteList(preferenceManager.getAccessToken())?.run {
-            return when (this.code()) {
-                200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
-                    if (newAccessToken.isNotEmpty()) {
-                        preferenceManager.updateAccessToken(newAccessToken)
-                    }
-                    Result.Success(this.body() ?: listOf(LessonSiteResponse.EMPTY))
+    override fun fetchLessonSiteList() = flow {
+        emit(Result.Loading)
+        val response = service.fetchLessonSiteList(preferenceManager.getAccessToken()) ?:run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()["Authorization"] ?: ""
+                if (newAccessToken.isNotEmpty()) {
+                    preferenceManager.updateAccessToken(newAccessToken)
                 }
-                else -> Result.Error(Exception(message()))
+                emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
             }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+            401 -> {
+                preferenceManager.removeAuthToken()
+                emit(Result.Unauthorized(Exception(response.message())))
+            }
+            else -> emit(Result.Error(Exception(response.message())))
+        }
     }
-
-//    override fun fetchLessonSiteList() = flow {
-//        emit(Result.Loading)
-//        val response = service.fetchLessonSiteList(preferenceManager.getAccessToken()) ?:run {
-//            emit(Result.Error(Exception("Response is null")))
-//            return@flow
-//        }
-//        when (response.code()) {
-//            200 -> {
-//                val newAccessToken = response.headers()["Authorization"] ?: ""
-//                if (newAccessToken.isNotEmpty()) {
-//                    preferenceManager.updateAccessToken(newAccessToken)
-//                }
-//                emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
-//            }
-//            401 -> {
-//                preferenceManager.removeAuthToken()
-//                emit(Result.Unauthorized(Exception(response.message())))
-//            }
-//            else -> emit(Result.Error(Exception(response.message())))
-//        }
-//    }
-//        .catch { throwable -> emit(Result.Error(throwable)) }
-//        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable -> emit(Result.Error(throwable)) }
+        .onCompletion { emit(Result.UnLoading) }
 
     override fun updateLesson(
         lessonId: String,

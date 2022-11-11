@@ -31,13 +31,9 @@ interface LessonRepository {
 
     fun deleteLesson(lessonId: String): Flow<Result<LessonDeleteResponse>>
 
-    suspend fun fetchLessonCategoryList(): Result<List<LessonCategoryResponse>>
+    fun fetchLessonCategoryList(): Flow<Result<List<LessonCategoryResponse>>>
 
-//    fun fetchLessonCategoryList(): Flow<Result<List<LessonCategoryResponse>>>
-
-    suspend fun fetchLessonSiteList(): Result<List<LessonSiteResponse>>
-
-//    fun fetchLessonSiteList(): Flow<Result<List<LessonSiteResponse>>>
+    fun fetchLessonSiteList(): Flow<Result<List<LessonSiteResponse>>>
 
     fun updateLesson(
         lessonId: String,

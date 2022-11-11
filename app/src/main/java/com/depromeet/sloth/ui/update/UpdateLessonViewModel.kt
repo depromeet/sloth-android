@@ -3,20 +3,28 @@ package com.depromeet.sloth.ui.update
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,15 +42,11 @@ class UpdateLessonViewModel @Inject constructor(
     val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
         get() = _updateLessonState
 
-    private val _lessonCategoryListState =
-        MutableStateFlow<Result<List<LessonCategoryResponse>>>(Result.Loading)
-    val lessonCategoryListState: StateFlow<Result<List<LessonCategoryResponse>>> =
-        _lessonCategoryListState.asStateFlow()
+    val lessonCategoryListState: Flow<Result<List<LessonCategoryResponse>>> =
+        lessonRepository.fetchLessonCategoryList()
 
-    private val _lessonSiteListState =
-        MutableStateFlow<Result<List<LessonSiteResponse>>>(Result.Loading)
-    val lessonSiteListState: StateFlow<Result<List<LessonSiteResponse>>> =
-        _lessonSiteListState.asStateFlow()
+    val lessonSiteListState: Flow<Result<List<LessonSiteResponse>>> =
+        lessonRepository.fetchLessonSiteList()
 
     // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
     private val _lessonName =
@@ -91,22 +95,6 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonTotalNumberValidation = MutableStateFlow(true)
     val lessonTotalNumberValidation: StateFlow<Boolean> = _lessonTotalNumberValidation.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            // 두 api를 병렬적으로 호출
-            val lessonCategoryListResponse = async {
-                _lessonCategoryListState.value = Result.Loading
-                lessonRepository.fetchLessonCategoryList()
-            }
-            val lessonSiteListResponse = async {
-                _lessonSiteListState.value = Result.Loading
-                lessonRepository.fetchLessonSiteList()
-            }
-            _lessonCategoryListState.value = lessonCategoryListResponse.await()
-            _lessonSiteListState.value = lessonSiteListResponse.await()
-        }
-    }
-
     fun setLessonName(lessonName: String) {
         _lessonName.value = lessonName
     }
@@ -119,22 +107,6 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonTotalNumber.value = lessonTotalNumber
         setLessonTotalNumberValidation()
     }
-
-//    fun updateLesson() = viewModelScope.launch {
-//        _updateLessonState.emit(Result.Loading)
-//        _updateLessonState.emit(
-//            lessonRepository.updateLesson(
-//                lessonDetail.lessonId.toString(),
-//                LessonUpdateRequest(
-//                    lessonName = lessonName.value,
-//                    price = lessonPrice.value,
-//                    categoryId = lessonCategoryId.value,
-//                    siteId = lessonSiteId.value,
-//                    totalNumber = lessonTotalNumber.value,
-//                )
-//            )
-//        )
-//    }
 
     fun updateLesson() = viewModelScope.launch {
         lessonRepository.updateLesson(
@@ -153,18 +125,6 @@ class UpdateLessonViewModel @Inject constructor(
             _updateLessonState.emit(it)
         }
     }
-
-//    val updateLesson: Flow<Result<LessonUpdateResponse>> =
-//        lessonRepository.updateLesson(
-//            lessonDetail.lessonId.toString(),
-//            LessonUpdateRequest(
-//                lessonName = lessonName.value,
-//                price = lessonPrice.value,
-//                categoryId = lessonCategoryId.value,
-//                siteId = lessonSiteId.value,
-//                totalNumber = lessonTotalNumber.value,
-//            )
-//        )
 
     fun setLessonCategoryId(lessonCategoryId: Int) {
         _lessonCategoryId.value = lessonCategoryId
