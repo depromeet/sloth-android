@@ -80,13 +80,12 @@ object AppModule {
         accessTokenAuthenticator: AccessTokenAuthenticator
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .authenticator(accessTokenAuthenticator)
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(authenticationInterceptor)
+            .authenticator(accessTokenAuthenticator)
             .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
-            .addInterceptor(httpLoggingInterceptor)
             .build()
     }
 
