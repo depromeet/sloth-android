@@ -1,13 +1,13 @@
 package com.depromeet.sloth.data.network
 
 import com.depromeet.sloth.data.preferences.Preferences
-import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.KEY_CONTENT_TYPE
 import com.depromeet.sloth.util.VALUE_CONTENT_TYPE
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -22,20 +22,21 @@ import javax.inject.Inject
 class AccessTokenAuthenticator @Inject constructor(
     private val preferences: Preferences
 ) : Authenticator {
-    private val keyContentType =  KEY_CONTENT_TYPE
-    private val valueContentType = VALUE_CONTENT_TYPE
-    private val keyAuthorization = KEY_AUTHORIZATION
+
     private var retryLimitCount = 1
 
     override fun authenticate(route: Route?, response: Response): Request? {
         val accessToken = preferences.getAccessToken()
+        Timber.tag("accessToken").d(accessToken)
 
         if (hasNotAccessTokenOnResponse(response)) {
             synchronized(this) {
                 val newAccessToken = preferences.getAccessToken()
                 if (accessToken != newAccessToken) {
+                    Timber.tag("newAccessToken").d(newAccessToken)
                     return newRequestWithAccessToken(response.request, newAccessToken)
                 }
+                Timber.tag("retryLimitCount").d("$retryLimitCount")
 
                 if (retryLimitCount == 0) {
                     return null
@@ -43,6 +44,7 @@ class AccessTokenAuthenticator @Inject constructor(
                 retryLimitCount = retryLimitCount.minus(1)
 
                 val refreshToken = preferences.getRefreshToken()
+                Timber.tag("refreshToken").d(refreshToken)
                 return newRequestWithAccessToken(response.request, refreshToken)
             }
         }
@@ -55,7 +57,7 @@ class AccessTokenAuthenticator @Inject constructor(
 
     private fun newRequestWithAccessToken(request: Request, accessToken: String): Request =
         request.newBuilder()
-            .header(keyContentType, valueContentType)
-            .header(keyAuthorization, accessToken)
+            .header(KEY_CONTENT_TYPE, VALUE_CONTENT_TYPE)
+            .header("Authorization", accessToken)
             .build()
 }
