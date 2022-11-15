@@ -23,8 +23,6 @@ class AccessTokenAuthenticator @Inject constructor(
     private val preferences: Preferences
 ) : Authenticator {
 
-    private var retryLimitCount = 1
-
     override fun authenticate(route: Route?, response: Response): Request? {
         val accessToken = preferences.getAccessToken()
         Timber.tag("accessToken").d(accessToken)
@@ -36,12 +34,6 @@ class AccessTokenAuthenticator @Inject constructor(
                     Timber.tag("newAccessToken").d(newAccessToken)
                     return newRequestWithAccessToken(response.request, newAccessToken)
                 }
-                Timber.tag("retryLimitCount").d("$retryLimitCount")
-
-                if (retryLimitCount == 0) {
-                    return null
-                }
-                retryLimitCount = retryLimitCount.minus(1)
 
                 val refreshToken = preferences.getRefreshToken()
                 Timber.tag("refreshToken").d(refreshToken)
