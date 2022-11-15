@@ -12,13 +12,13 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
+import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+// TODO 화면 전환 시 푸시알림 수신버튼이 이동되는 애니메이션이 보이는 현상 -> 데이터를 받아오고 해당 데이터가 데이터바인딩에 의해 화면에 바인딩이 됨
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
@@ -68,11 +69,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<MemberUpdateResponse> -> {
                                 showToast(getString(R.string.member_update_success))
-                                manageViewModel.fetchMemberInfo()
+                                setMemberName(result.data.memberName)
                             }
-                            is Result.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
-                            }
+                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
                                 Timber.tag("update Error").d(result.throwable)
                                 showToast(getString(R.string.member_update_fail))
@@ -81,6 +80,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
+            //TODO Success 일때 Success block 내의 코드가(토스트 실행, data setting) 실행되지 않는 문제
             launch {
                 notificationReceiveState
                     .collect { result ->
@@ -89,7 +89,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
                                 showToast(getString(R.string.noti_update_complete))
-                                manageViewModel.fetchMemberInfo()
+                                setMemberNotificationReceive()
                             }
                             is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
@@ -169,7 +169,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         dlg.start()
     }
 
-    //TODO Dialog 에 Databinding 적용하는 방법 학습
+    //TODO Dialog 에 Databinding 적용
     private fun showProfileUpdateDialog() {
         val updateDialog =
             Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
