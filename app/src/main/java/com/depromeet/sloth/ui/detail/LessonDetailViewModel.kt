@@ -40,10 +40,6 @@ class LessonDetailViewModel @Inject constructor(
     val lessonDeleteClick: SharedFlow<Unit>
         get() = _lessonDeleteClick
 
-//    fun fetchLessonDetail() = viewModelScope.launch {
-//        _lessonDetailResponseState.emit(Result.Loading)
-//        _lessonDetailResponseState.emit(lessonRepository.fetchLessonDetail(lessonId))
-//    }
     fun fetchLessonDetail() = viewModelScope.launch {
         lessonRepository.fetchLessonDetail(lessonId)
             .onEach {
@@ -54,10 +50,6 @@ class LessonDetailViewModel @Inject constructor(
             }
     }
 
-//    fun deleteLesson() = viewModelScope.launch {
-//        _lessonDeleteState.emit(Result.Loading)
-//        _lessonDeleteState.emit(lessonRepository.deleteLesson(lessonId))
-//    }
     fun deleteLesson() = viewModelScope.launch {
         lessonRepository.deleteLesson(lessonId)
             .onEach {
