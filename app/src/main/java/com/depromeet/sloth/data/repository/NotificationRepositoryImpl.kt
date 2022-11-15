@@ -29,7 +29,10 @@ class NotificationRepositoryImpl @Inject constructor(
                         }
                         Result.Success(this.body() ?: "")
                     }
-
+                    401 -> {
+                        preferences.removeAuthToken()
+                        Result.Unauthorized(Exception(message()))
+                    }
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
@@ -53,6 +56,10 @@ class NotificationRepositoryImpl @Inject constructor(
                     }
                     Result.Success(response.body() ?: "")
                 }
+                401 -> {
+                    preferences.removeAuthToken()
+                    emit(Result.Unauthorized(Exception(response.message())))
+                }
 
                 else -> Result.Error(Exception(response.message()))
             }
@@ -73,7 +80,10 @@ class NotificationRepositoryImpl @Inject constructor(
                     }
                     Result.Success(this.body() ?: NotificationFetchResponse())
                 }
-
+                401 -> {
+                    preferences.removeAuthToken()
+                    Result.Unauthorized(Exception(message()))
+                }
                 else -> Result.Error(Exception(message()))
             }
         } ?: return Result.Error(Exception("Retrofit Exception"))

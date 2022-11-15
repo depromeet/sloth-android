@@ -74,7 +74,7 @@ class LessonRepositoryImpl @Inject constructor(
             }
             401 -> {
                 preferences.removeAuthToken()
-                emit(Result.Error(Exception(response.message())))
+                emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
         }
@@ -98,7 +98,7 @@ class LessonRepositoryImpl @Inject constructor(
             }
             401 -> {
                 preferences.removeAuthToken()
-                emit(Result.Error(Exception(response.message())))
+                emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
         }
@@ -124,7 +124,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 401 -> {
                     preferences.removeAuthToken()
-                    Result.Error(Exception(message()))
+                    Result.Unauthorized(Exception(message()))
                 }
                 else -> Result.Error(Exception(message()))
             }
