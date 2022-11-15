@@ -27,8 +27,8 @@ class LoginRepositoryImpl @Inject constructor(
         socialType: String
     ): Result<LoginSlothResponse> {
         service.fetchSlothAuthInfo(authToken, LoginSlothRequest(socialType = socialType))?.run {
-            val accessToken = body()?.accessToken ?: ""
-            val refreshToken = body()?.refreshToken ?: ""
+            val accessToken = body()?.accessToken ?: DEFAULT_STRING_VALUE
+            val refreshToken = body()?.refreshToken ?: DEFAULT_STRING_VALUE
             preferences.saveAuthToken(accessToken, refreshToken)
 
             return Result.Success(this.body() ?: LoginSlothResponse())

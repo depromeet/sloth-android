@@ -6,6 +6,7 @@ import com.depromeet.sloth.data.model.request.notification.NotificationUpdateReq
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.data.network.service.NotificationService
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -23,19 +24,22 @@ class NotificationRepositoryImpl @Inject constructor(
             ?.run {
                 return when (this.code()) {
                     200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: ""
+                        val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                         if (newAccessToken.isNotEmpty()) {
                             preferences.updateAccessToken(newAccessToken)
                         }
                         Result.Success(this.body() ?: "")
                     }
-
+                    401 -> {
+                        preferences.removeAuthToken()
+                        Result.Unauthorized(Exception(message()))
+                    }
                     else -> Result.Error(Exception(message()))
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
     }
 
-    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+        override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
         flow {
             emit(Result.Loading)
             val response = service.updateFCMTokenUse(
@@ -47,11 +51,15 @@ class NotificationRepositoryImpl @Inject constructor(
             }
             when (response.code()) {
                 200 -> {
-                    val newAccessToken = response.headers()["Authorization"] ?: ""
+                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
-                    Result.Success(response.body() ?: "")
+                    Result.Success(response.body() ?: DEFAULT_STRING_VALUE)
+                }
+                401 -> {
+                    preferences.removeAuthToken()
+                    emit(Result.Unauthorized(Exception(response.message())))
                 }
 
                 else -> Result.Error(Exception(response.message()))
@@ -61,19 +69,53 @@ class NotificationRepositoryImpl @Inject constructor(
             .onCompletion { emit(Result.UnLoading) }
 
 
+// response 형식 바뀌면 해당 메소드 사용
+//    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+//        flow {
+//            emit(Result.Loading)
+//            val response = service.updateFCMTokenUse(
+//                preferences.getAccessToken(),
+//                notificationUpdateRequest
+//            ) ?: run {
+//                emit(Result.Error(Exception("Response is null")))
+//                return@flow
+//            }
+//            when (response.code()) {
+//                200 -> {
+//                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+//                    if (newAccessToken.isNotEmpty()) {
+//                        preferences.updateAccessToken(newAccessToken)
+//                    }
+//                    Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY)
+//                }
+//                401 -> {
+//                    preferences.removeAuthToken()
+//                    emit(Result.Unauthorized(Exception(response.message())))
+//                }
+//
+//                else -> Result.Error(Exception(response.message()))
+//            }
+//        }
+//            .catch { throwable -> emit(Result.Error(throwable)) }
+//            .onCompletion { emit(Result.UnLoading) }
+
+
     override suspend fun fetchFCMToken(
         deviceId: String
     ): Result<NotificationFetchResponse> {
         service.fetchFCMToken(preferences.getAccessToken(), deviceId)?.run {
             return when (this.code()) {
                 200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
+                    val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
-                    Result.Success(this.body() ?: NotificationFetchResponse())
+                    Result.Success(this.body() ?: NotificationFetchResponse.EMPTY)
                 }
-
+                401 -> {
+                    preferences.removeAuthToken()
+                    Result.Unauthorized(Exception(message()))
+                }
                 else -> Result.Error(Exception(message()))
             }
         } ?: return Result.Error(Exception("Retrofit Exception"))

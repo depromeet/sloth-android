@@ -260,13 +260,13 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/sc_manage_noti_status"
+                    android:id="@+id/sc_manage_notification_status"
                     android:layout_width="56dp"
                     android:layout_height="28dp"
                     android:layout_marginEnd="18dp"
                     android:background="@null"
-                    android:checked="@{vm.member.pushAlarmUse}"
-                    android:onCheckedChanged="@{(_, isCheck) -> vm.notificationSwitchClick(isCheck)}"
+                    android:checked="@{vm.memberNotificationReceive}"
+                    android:onCheckedChanged="@{(_, isChecked) -> vm.notificationSwitchClick(isChecked)}"
                     android:thumb="@drawable/selector_thumb"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

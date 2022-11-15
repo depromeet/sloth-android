@@ -1,10 +1,8 @@
 package com.depromeet.sloth.data.model.response.lesson
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
-@Keep
 data class LessonUpdateResponse (
     @SerializedName("categoryId")
     val categoryId: Int = 0,

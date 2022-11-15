@@ -1,8 +1,8 @@
 package com.depromeet.sloth.data.network.service
 
-import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
+import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -18,6 +18,12 @@ interface NotificationService {
         @Header("Authorization") accessToken: String?,
         @Body notificationUpdateRequest: NotificationUpdateRequest
     ): Response<String>?
+
+//    @PATCH("api/fcmtoken/use")
+//    suspend fun updateFCMTokenUse(
+//        @Header("Authorization") accessToken: String?,
+//        @Body notificationUpdateRequest: NotificationUpdateRequest
+//    ): Response<NotificationUpdateResponse>?
 
     @GET("api/fcmtoken/device/{deviceId}")
     suspend fun fetchFCMToken(

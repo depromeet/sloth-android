@@ -14,7 +14,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 
-//TODO 인터넷 연결 끊김 (재시도) 다이얼로그 필요
 class SlothDialog(context: Context, private val state: DialogState) {
 
     lateinit var onItemClickListener: OnItemClickedListener
@@ -105,19 +104,6 @@ class SlothDialog(context: Context, private val state: DialogState) {
                     }
                 }
             }
-
-            DialogState.LOST_INTERNET_CONNECTION -> {
-                tvDialogMessage.text = context.getString(R.string.check_internet_connection)
-                ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
-                btnDialogCheck.apply {
-                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
-                    text = context.getString(R.string.refresh)
-                    setOnClickListener {
-                        onItemClickListener.onItemClicked()
-                        dismiss()
-                    }
-                }
-            }
         }
 
         btnDialogCancel.setOnClickListener {
@@ -129,5 +115,5 @@ class SlothDialog(context: Context, private val state: DialogState) {
 }
 
 enum class DialogState {
-    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, COMPLETE, LOST_INTERNET_CONNECTION
+    FORBIDDEN, LOGOUT, WITHDRAW, DELETE_LESSON, WAIT, COMPLETE
 }

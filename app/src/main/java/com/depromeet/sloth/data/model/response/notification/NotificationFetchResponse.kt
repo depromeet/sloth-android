@@ -16,6 +16,10 @@ data class NotificationFetchResponse(
     var deviceId: String = "",
     @SerializedName("fcmToken")
     var fcmToken: String? = ""
-)
+) {
+    companion object {
+        val EMPTY = NotificationFetchResponse("", "")
+    }
+}
 
 

@@ -1,9 +1,7 @@
 package com.depromeet.sloth.data.model.response.lesson
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-@Keep
 data class LessonSiteResponse(
     @SerializedName("siteId")
     val siteId: Int,
