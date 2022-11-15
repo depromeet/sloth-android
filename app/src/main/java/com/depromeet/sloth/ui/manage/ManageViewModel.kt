@@ -39,6 +39,10 @@ class ManageViewModel @Inject constructor(
     val notificationReceiveState: SharedFlow<Result<String>> =
         _notificationReceiveState.asSharedFlow()
 
+//    private val _notificationReceiveState = MutableSharedFlow<Result<NotificationUpdateResponse>>()
+//    val notificationReceiveState: SharedFlow<Result<NotificationUpdateResponse>> =
+//        _notificationReceiveState.asSharedFlow()
+
     private val _memberLogoutState = MutableSharedFlow<Result<String>>()
     val memberLogoutState: SharedFlow<Result<String>> = _memberLogoutState.asSharedFlow()
 
