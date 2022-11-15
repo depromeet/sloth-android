@@ -25,7 +25,7 @@ class MemberRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -53,7 +53,7 @@ class MemberRepositoryImpl @Inject constructor(
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -78,7 +78,7 @@ class MemberRepositoryImpl @Inject constructor(
 
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }

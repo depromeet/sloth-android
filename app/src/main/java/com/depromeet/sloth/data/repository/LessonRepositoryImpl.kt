@@ -16,6 +16,7 @@ import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.data.network.service.LessonService
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -42,7 +43,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -66,7 +67,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -90,7 +91,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -116,7 +117,7 @@ class LessonRepositoryImpl @Inject constructor(
         )?.run {
             return when (this.code()) {
                 200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: ""
+                    val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
@@ -140,7 +141,7 @@ class LessonRepositoryImpl @Inject constructor(
             }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -166,7 +167,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -190,7 +191,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -214,7 +215,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -238,7 +239,7 @@ class LessonRepositoryImpl @Inject constructor(
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -267,7 +268,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: ""
+                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
