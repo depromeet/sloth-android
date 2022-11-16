@@ -53,17 +53,8 @@ object AppModule {
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
             .apply {
-                level = if (BuildConfig.DEBUG) {
-                    HttpLoggingInterceptor.Level.BODY
-                } else {
-                    HttpLoggingInterceptor.Level.NONE
-                }
+                level = HttpLoggingInterceptor.Level.BODY
             }
-    }
-
-    @Provides
-    fun provideAuthenticationInterceptor(): AuthenticationInterceptor {
-        return AuthenticationInterceptor()
     }
 
     @Provides
@@ -74,15 +65,20 @@ object AppModule {
     }
 
     @Provides
+    fun provideAuthenticationInterceptor(): AuthenticationInterceptor {
+        return AuthenticationInterceptor()
+    }
+
+    @Provides
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        authenticationInterceptor: AuthenticationInterceptor,
-        accessTokenAuthenticator: AccessTokenAuthenticator
+        accessTokenAuthenticator: AccessTokenAuthenticator,
+        authenticationInterceptor: AuthenticationInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(authenticationInterceptor)
-            .authenticator(accessTokenAuthenticator)
+            .authenticator(accessTokenAuthenticator) // To update the token when it gets HTTP unauthorized error
+            .addInterceptor(authenticationInterceptor) // To set the token in the header
             .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
