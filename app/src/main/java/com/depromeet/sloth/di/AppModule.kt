@@ -53,7 +53,11 @@ object AppModule {
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
             .apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                if (BuildConfig.DEBUG) {
+                    level = HttpLoggingInterceptor.Level.BODY
+                } else {
+                    level = HttpLoggingInterceptor.Level.NONE
+                }
             }
     }
 
