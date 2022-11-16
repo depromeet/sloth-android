@@ -41,6 +41,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         }
 
         initViews()
+        fetchLessonList()
         initObserver()
     }
 
@@ -54,21 +55,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
-            launch {
-                todayLessonList
-//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> setLessonList(result.data)
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
-                            is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
-                        }
-                    }
-            }
-
             launch {
                 onNavigateToNotificationListClick
                     .collect {
