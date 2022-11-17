@@ -1,16 +1,11 @@
 package com.depromeet.sloth.di
 
-import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.AuthenticationInterceptor
 import com.depromeet.sloth.data.network.service.*
 import com.depromeet.sloth.data.preferences.Preferences
-import com.depromeet.sloth.data.preferences.PreferencesImpl
 import com.depromeet.sloth.util.CONNECT_TIME_OUT
-import com.depromeet.sloth.util.KEY_PREFERENCES
 import com.depromeet.sloth.util.READ_TIME_OUT
 import com.depromeet.sloth.util.WRITE_TIME_OUT
 import dagger.Module
@@ -29,23 +24,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideSharedPreferences(
-        app: Application
-    ): SharedPreferences {
-        return app.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE)
-    }
-
-    @Provides
-    @Singleton
-    fun providePreferences(
-        sharedPreferences: SharedPreferences
-    ): Preferences {
-        return PreferencesImpl(sharedPreferences)
-    }
+object NetworkModule {
 
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
