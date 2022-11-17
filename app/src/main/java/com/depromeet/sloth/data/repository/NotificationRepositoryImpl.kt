@@ -7,6 +7,7 @@ import com.depromeet.sloth.data.model.response.notification.NotificationFetchRes
 import com.depromeet.sloth.data.network.service.NotificationService
 import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -14,21 +15,21 @@ import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val preferences: Preferences,
-    private val service: NotificationService
+    private val notificationService: NotificationService,
 ) : NotificationRepository {
 
     override suspend fun registerFCMToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ): Result<String> {
-        service.registerFCMToken(preferences.getAccessToken(), notificationRegisterRequest)
+        notificationService.registerFCMToken(notificationRegisterRequest)
             ?.run {
                 return when (this.code()) {
                     200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                        val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                         if (newAccessToken.isNotEmpty()) {
                             preferences.updateAccessToken(newAccessToken)
                         }
-                        Result.Success(this.body() ?: "")
+                        Result.Success(this.body() ?: DEFAULT_STRING_VALUE)
                     }
                     401 -> {
                         preferences.removeAuthToken()
@@ -42,16 +43,13 @@ class NotificationRepositoryImpl @Inject constructor(
         override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
         flow {
             emit(Result.Loading)
-            val response = service.updateFCMTokenUse(
-                preferences.getAccessToken(),
-                notificationUpdateRequest
-            ) ?: run {
+            val response = notificationService.updateFCMTokenUse(notificationUpdateRequest) ?: run {
                 emit(Result.Error(Exception("Response is null")))
                 return@flow
             }
             when (response.code()) {
                 200 -> {
-                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
@@ -73,8 +71,7 @@ class NotificationRepositoryImpl @Inject constructor(
 //    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
 //        flow {
 //            emit(Result.Loading)
-//            val response = service.updateFCMTokenUse(
-//                preferences.getAccessToken(),
+//            val response = notificationService.updateFCMTokenUse(
 //                notificationUpdateRequest
 //            ) ?: run {
 //                emit(Result.Error(Exception("Response is null")))
@@ -82,7 +79,7 @@ class NotificationRepositoryImpl @Inject constructor(
 //            }
 //            when (response.code()) {
 //                200 -> {
-//                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+//                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
 //                    if (newAccessToken.isNotEmpty()) {
 //                        preferences.updateAccessToken(newAccessToken)
 //                    }
@@ -103,10 +100,10 @@ class NotificationRepositoryImpl @Inject constructor(
     override suspend fun fetchFCMToken(
         deviceId: String
     ): Result<NotificationFetchResponse> {
-        service.fetchFCMToken(preferences.getAccessToken(), deviceId)?.run {
+        notificationService.fetchFCMToken(deviceId)?.run {
             return when (this.code()) {
                 200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                    val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }

@@ -9,25 +9,21 @@ import retrofit2.http.*
 interface NotificationService {
     @POST("api/fcmtoken")
     suspend fun registerFCMToken(
-        @Header("Authorization") accessToken: String?,
         @Body notificationRegisterRequest: NotificationRegisterRequest
     ): Response<String>?
 
     @PATCH("api/fcmtoken/use")
     suspend fun updateFCMTokenUse(
-        @Header("Authorization") accessToken: String?,
         @Body notificationUpdateRequest: NotificationUpdateRequest
     ): Response<String>?
 
 //    @PATCH("api/fcmtoken/use")
 //    suspend fun updateFCMTokenUse(
-//        @Header("Authorization") accessToken: String?,
 //        @Body notificationUpdateRequest: NotificationUpdateRequest
 //    ): Response<NotificationUpdateResponse>?
 
     @GET("api/fcmtoken/device/{deviceId}")
     suspend fun fetchFCMToken(
-        @Header("Authorization") accessToken: String?,
         @Path("deviceId") deviceId: String
     ): Response<NotificationFetchResponse>?
 }

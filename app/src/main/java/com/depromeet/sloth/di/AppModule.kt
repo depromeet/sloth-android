@@ -1,17 +1,14 @@
 package com.depromeet.sloth.di
 
-import com.depromeet.sloth.data.preferences.PreferencesImpl
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.AuthenticationInterceptor
-import com.depromeet.sloth.data.network.service.LessonService
-import com.depromeet.sloth.data.network.service.LoginService
-import com.depromeet.sloth.data.network.service.MemberService
-import com.depromeet.sloth.data.network.service.NotificationService
+import com.depromeet.sloth.data.network.service.*
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferencesImpl
 import com.depromeet.sloth.util.CONNECT_TIME_OUT
 import com.depromeet.sloth.util.KEY_PREFERENCES
 import com.depromeet.sloth.util.READ_TIME_OUT
@@ -26,6 +23,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -69,11 +67,14 @@ object AppModule {
     }
 
     @Provides
-    fun provideAuthenticationInterceptor(): AuthenticationInterceptor {
-        return AuthenticationInterceptor()
+    fun provideAuthenticationInterceptor(
+        preferences: Preferences
+    ): AuthenticationInterceptor {
+        return AuthenticationInterceptor(preferences)
     }
 
     @Provides
+    @Named("Sloth")
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         accessTokenAuthenticator: AccessTokenAuthenticator,
@@ -89,9 +90,24 @@ object AppModule {
             .build()
     }
 
+    @Provides
+    @Named("Login")
+    fun provideOkHttpClientForLogin(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
+            .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+            .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
+            .build()
+    }
+
     @Singleton
     @Provides
+    @Named("Sloth")
     fun provideRetrofit(
+        @Named("Sloth")
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
@@ -104,25 +120,59 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideLoginService(retrofit: Retrofit): LoginService {
-        return retrofit.create(LoginService::class.java)
+    @Named("GoogleLogin")
+    fun provideRetrofitForGoogleLogin(
+        @Named("Login")
+        okHttpClient: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .baseUrl(BuildConfig.GOOGLE_BASE_URL)
+            .build()
     }
 
     @Singleton
     @Provides
-    fun provideLessonService(retrofit: Retrofit): LessonService {
+    @Named("SlothLogin")
+    fun provideRetrofitForSlothLogin(
+        @Named("Login")
+        okHttpClient: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .baseUrl(BuildConfig.SLOTH_BASE_URL)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideGoogleLoginService(@Named("GoogleLogin")retrofit: Retrofit): GoogleLoginService {
+        return retrofit.create(GoogleLoginService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSlothLoginService(@Named("SlothLogin")retrofit: Retrofit): SlothLoginService {
+        return retrofit.create(SlothLoginService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLessonService(@Named("Sloth")retrofit: Retrofit): LessonService {
         return retrofit.create(LessonService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideMemberService(retrofit: Retrofit): MemberService {
+    fun provideMemberService(@Named("Sloth")retrofit: Retrofit): MemberService {
         return retrofit.create(MemberService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideNotificationService(retrofit: Retrofit): NotificationService {
+    fun provideNotificationService(@Named("Sloth")retrofit: Retrofit): NotificationService {
         return retrofit.create(NotificationService::class.java)
     }
 }

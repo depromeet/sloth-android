@@ -7,6 +7,7 @@ import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.service.MemberService
 import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -14,18 +15,18 @@ import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
     private val preferences: Preferences,
-    private val service: MemberService
+    private val memberService: MemberService
 ) : MemberRepository {
 
     override fun fetchMemberInfo() = flow {
         emit(Result.Loading)
-        val response = service.fetchMemberInfo(preferences.getAccessToken()) ?: run {
+        val response = memberService.fetchMemberInfo() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -46,14 +47,14 @@ class MemberRepositoryImpl @Inject constructor(
     ) = flow {
         emit(Result.Loading)
         val response =
-            service.updateMemberInfo(preferences.getAccessToken(), memberUpdateRequest)
+            memberService.updateMemberInfo(memberUpdateRequest)
                 ?: run {
                     emit(Result.Error(Exception("Response is null")))
                     return@flow
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -71,14 +72,14 @@ class MemberRepositoryImpl @Inject constructor(
 
     override fun logout() = flow {
         emit(Result.Loading)
-        val response = service.logout(preferences.getAccessToken()) ?: run {
+        val response = memberService.logout() ?: run {
             emit(Result.Error(Exception("Response is nukk")))
             return@flow
         }
 
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }

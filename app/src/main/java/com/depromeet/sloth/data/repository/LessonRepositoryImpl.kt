@@ -4,19 +4,11 @@ import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
+import com.depromeet.sloth.data.model.response.lesson.*
 import com.depromeet.sloth.data.network.service.LessonService
 import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -28,22 +20,22 @@ import javax.inject.Inject
  * @desc Lesson 관련 API 저장소
  */
 
-// TODO HTTP 코드 응답 처리 함수화
-// TODO State 방출 helper 함수 만들기
+// TODO HTTP 코드 응답 처리 함수로 만들어 모듈화
+// TODO State emit helper 함수 적용
 class LessonRepositoryImpl @Inject constructor(
     private val preferences: Preferences,
-    private val service: LessonService
+    private val lessonService: LessonService
 ) : LessonRepository {
 
     override fun fetchTodayLessonList() = flow {
         emit(Result.Loading)
-        val response = service.fetchTodayLessonList(preferences.getAccessToken()) ?: run {
+        val response = lessonService.fetchTodayLessonList() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -61,13 +53,13 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun fetchAllLessonList() = flow {
         emit(Result.Loading)
-        val response = service.fetchAllLessonList(preferences.getAccessToken()) ?: run {
+        val response = lessonService.fetchAllLessonList() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -85,13 +77,13 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun finishLesson(lessonId: String) = flow {
         emit(Result.Loading)
-        val response = service.finishLesson(preferences.getAccessToken(), lessonId) ?: run {
+        val response = lessonService.finishLesson(lessonId) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -111,13 +103,10 @@ class LessonRepositoryImpl @Inject constructor(
         count: Int,
         lessonId: Int,
     ): Result<LessonUpdateCountResponse> {
-        service.updateLessonCount(
-            preferences.getAccessToken(),
-            LessonUpdateCountRequest(count, lessonId)
-        )?.run {
+        lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
             return when (this.code()) {
                 200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                    val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
@@ -135,13 +124,13 @@ class LessonRepositoryImpl @Inject constructor(
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
         val response =
-            service.fetchLessonDetail(preferences.getAccessToken(), lessonId) ?: run {
+            lessonService.fetchLessonDetail(lessonId) ?: run {
                 emit(Result.Error(Exception("Response is null")))
                 return@flow
             }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -160,14 +149,14 @@ class LessonRepositoryImpl @Inject constructor(
     override fun registerLesson(lessonRegisterRequest: LessonRegisterRequest) = flow {
         emit(Result.Loading)
         val response =
-            service.registerLesson(preferences.getAccessToken(), lessonRegisterRequest)
+            lessonService.registerLesson(lessonRegisterRequest)
                 ?: run {
                     emit(Result.Error(Exception("Response is null")))
                     return@flow
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -185,13 +174,13 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun deleteLesson(lessonId: String) = flow {
         emit(Result.Loading)
-        val response = service.deleteLesson(preferences.getAccessToken(), lessonId) ?: run {
+        val response = lessonService.deleteLesson(lessonId) ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -209,13 +198,13 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun fetchLessonCategoryList() = flow {
         emit(Result.Loading)
-        val response = service.fetchLessonCategoryList(preferences.getAccessToken()) ?: run {
+        val response = lessonService.fetchLessonCategoryList() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -233,13 +222,13 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun fetchLessonSiteList() = flow {
         emit(Result.Loading)
-        val response = service.fetchLessonSiteList(preferences.getAccessToken()) ?:run {
+        val response = lessonService.fetchLessonSiteList() ?:run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
@@ -261,14 +250,14 @@ class LessonRepositoryImpl @Inject constructor(
     ) = flow {
         emit(Result.Loading)
         val response =
-            service.updateLesson(preferences.getAccessToken(), lessonId, lessonUpdateRequest)
+            lessonService.updateLesson(lessonId, lessonUpdateRequest)
                 ?: run {
                     emit(Result.Error(Exception("Response is null")))
                     return@flow
                 }
         when (response.code()) {
             200 -> {
-                val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
