@@ -30,10 +30,10 @@ object NetworkModule {
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
             .apply {
-                if (BuildConfig.DEBUG) {
-                    level = HttpLoggingInterceptor.Level.BODY
+                level = if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
                 } else {
-                    level = HttpLoggingInterceptor.Level.NONE
+                    HttpLoggingInterceptor.Level.NONE
                 }
             }
     }
@@ -53,7 +53,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Named("Sloth")
+    @Named("SlothClient")
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         accessTokenAuthenticator: AccessTokenAuthenticator,
@@ -70,7 +70,7 @@ object NetworkModule {
     }
 
     @Provides
-    @Named("Login")
+    @Named("LoginClient")
     fun provideOkHttpClientForLogin(
         httpLoggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
@@ -84,9 +84,9 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @Named("Sloth")
+    @Named("SlothApi")
     fun provideRetrofit(
-        @Named("Sloth")
+        @Named("SlothClient")
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
@@ -101,7 +101,7 @@ object NetworkModule {
     @Provides
     @Named("GoogleLogin")
     fun provideRetrofitForGoogleLogin(
-        @Named("Login")
+        @Named("LoginClient")
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
@@ -115,7 +115,7 @@ object NetworkModule {
     @Provides
     @Named("SlothLogin")
     fun provideRetrofitForSlothLogin(
-        @Named("Login")
+        @Named("LoginClient")
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
@@ -139,19 +139,19 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideLessonService(@Named("Sloth")retrofit: Retrofit): LessonService {
+    fun provideLessonService(@Named("SlothApi")retrofit: Retrofit): LessonService {
         return retrofit.create(LessonService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideMemberService(@Named("Sloth")retrofit: Retrofit): MemberService {
+    fun provideMemberService(@Named("SlothApi")retrofit: Retrofit): MemberService {
         return retrofit.create(MemberService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideNotificationService(@Named("Sloth")retrofit: Retrofit): NotificationService {
+    fun provideNotificationService(@Named("SlothApi")retrofit: Retrofit): NotificationService {
         return retrofit.create(NotificationService::class.java)
     }
 }
