@@ -25,11 +25,10 @@ class ManageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(memberRepository) {
 
-//    private val _memberState = MutableSharedFlow<Result<MemberResponse>>()
-//    val memberState: SharedFlow<Result<MemberResponse>> = _memberState.asSharedFlow()
+    val memberState: Flow<Result<MemberResponse>> = memberRepository.fetchMemberInfo()
 
-    val memberState: Flow<Result<MemberResponse>> =
-        memberRepository.fetchMemberInfo()
+//    val memberState: Flow<Result<MemberResponse>> =
+//        memberRepository.fetchMemberInfo().asResult()
 
     private val _memberUpdateState = MutableSharedFlow<Result<MemberUpdateResponse>>()
     val memberUpdateState: SharedFlow<Result<MemberUpdateResponse>> =
@@ -39,6 +38,7 @@ class ManageViewModel @Inject constructor(
     val notificationReceiveState: SharedFlow<Result<String>> =
         _notificationReceiveState.asSharedFlow()
 
+    // api response 변경 후
 //    private val _notificationReceiveState = MutableSharedFlow<Result<NotificationUpdateResponse>>()
 //    val notificationReceiveState: SharedFlow<Result<NotificationUpdateResponse>> =
 //        _notificationReceiveState.asSharedFlow()
@@ -72,20 +72,6 @@ class ManageViewModel @Inject constructor(
     private val _withdrawalClick = MutableSharedFlow<Unit>()
     val withdrawalClick: SharedFlow<Unit> = _withdrawalClick.asSharedFlow()
 
-//    init {
-//        fetchMemberInfo()
-//    }
-
-//    fun fetchMemberInfo() = viewModelScope.launch {
-//        memberRepository.fetchMemberInfo()
-//            .onEach {
-//                if (it is Result.Loading) _memberState.emit(Result.Loading)
-//                else _memberState.emit(Result.UnLoading)
-//            }.collect {
-//                _memberState.emit(it)
-//            }
-//    }
-
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         memberRepository.updateMemberInfo(memberUpdateRequest)
             .onEach {
@@ -96,33 +82,32 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-    fun notificationSwitchClick(check: Boolean) = viewModelScope.launch {
-        notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
-            .onEach {
-                if (it is Result.Loading) _notificationReceiveState.emit(Result.Loading)
-                else _notificationReceiveState.emit(Result.UnLoading)
-            }.collect {
-                _notificationReceiveState.emit(it)
+    fun notificationSwitchClick(check: Boolean) {
+        if (memberNotificationReceive.value != check) {
+            viewModelScope.launch {
+                notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
+                    .onEach {
+                        if (it is Result.Loading) _notificationReceiveState.emit(Result.Loading)
+                        else _notificationReceiveState.emit(Result.UnLoading)
+                    }.collect {
+                        _notificationReceiveState.emit(it)
+                    }
             }
+        }
     }
 
     fun setMemberInfo(memberResponse: MemberResponse) {
         _member.value = memberResponse
         setMemberName(memberResponse.memberName)
-        setMemberNotificationReceive()
+        _memberNotificationReceive.value = memberResponse.isPushAlarmUse
     }
 
     fun setMemberName(memberName: String) {
-        if (this.memberName.value == memberName)
-            return
         _memberName.value = memberName
     }
 
-    // TODO API response 수정 후 (json 형태로 반환) 함수 변경 예정
-    fun setMemberNotificationReceive() {
-        if (this.memberNotificationReceive.value == member.value.isPushAlarmUse)
-            return
-        _memberNotificationReceive.value = member.value.isPushAlarmUse
+    fun setMemberNotificationReceive(check: Boolean) {
+        _memberNotificationReceive.value = check
     }
 
     fun profileClick() = viewModelScope.launch {

@@ -259,6 +259,21 @@
                     app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
                     app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti" />
 
+                <!--                <com.google.android.material.switchmaterial.SwitchMaterial-->
+                <!--                    android:id="@+id/sc_manage_notification_status"-->
+                <!--                    android:layout_width="56dp"-->
+                <!--                    android:layout_height="28dp"-->
+                <!--                    android:layout_marginEnd="18dp"-->
+                <!--                    android:background="@null"-->
+                <!--                    android:checked="@{vm.memberNotificationReceive}"-->
+                <!--                    android:onCheckedChanged="@{(_, isChecked) -> vm.notificationSwitchClick(isChecked)}"-->
+                <!--                    android:thumb="@drawable/selector_thumb"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                <!--                    app:switchMinWidth="52dp"-->
+                <!--                    app:track="@drawable/selector_switch" />-->
+
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/sc_manage_notification_status"
                     android:layout_width="56dp"

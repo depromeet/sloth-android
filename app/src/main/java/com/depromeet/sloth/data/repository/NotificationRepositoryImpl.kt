@@ -53,14 +53,14 @@ class NotificationRepositoryImpl @Inject constructor(
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
-                    Result.Success(response.body() ?: DEFAULT_STRING_VALUE)
+                    emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
                 }
                 401 -> {
                     preferences.removeAuthToken()
                     emit(Result.Unauthorized(Exception(response.message())))
                 }
 
-                else -> Result.Error(Exception(response.message()))
+                else -> emit(Result.Error(Exception(response.message())))
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
@@ -83,20 +83,21 @@ class NotificationRepositoryImpl @Inject constructor(
 //                    if (newAccessToken.isNotEmpty()) {
 //                        preferences.updateAccessToken(newAccessToken)
 //                    }
-//                    Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY)
+//                    emit(Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY))
 //                }
 //                401 -> {
 //                    preferences.removeAuthToken()
 //                    emit(Result.Unauthorized(Exception(response.message())))
 //                }
 //
-//                else -> Result.Error(Exception(response.message()))
+//                else -> emit(Result.Error(Exception(response.message())))
 //            }
 //        }
 //            .catch { throwable -> emit(Result.Error(throwable)) }
 //            .onCompletion { emit(Result.UnLoading) }
 
 
+    //TODO 안드로이드 의존성을 가지고 있는 datasource 를 만들어 거기서 devideId 를 주입
     override suspend fun fetchFCMToken(
         deviceId: String
     ): Result<NotificationFetchResponse> {

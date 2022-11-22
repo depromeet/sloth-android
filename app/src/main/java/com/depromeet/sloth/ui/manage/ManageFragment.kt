@@ -28,7 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-// TODO 화면 전환 시 푸시알림 수신버튼이 이동되는 애니메이션이 보이는 현상 -> 데이터를 받아오고 해당 데이터가 데이터바인딩에 의해 화면에 바인딩이 됨
+// TODO 화면 전환 시 푸시알림 수신버튼이 이동되는 애니메이션이 보이는 현상 제거
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
@@ -80,7 +80,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
 
-            //TODO Success 일때 Success block 내의 코드가(토스트 실행, data setting) 실행되지 않는 문제
             launch {
                 notificationReceiveState
                     .collect { result ->
@@ -89,7 +88,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
                                 showToast(getString(R.string.noti_update_complete))
-                                setMemberNotificationReceive()
+                                setMemberNotificationReceive(binding.scManageNotificationStatus.isChecked)
                             }
                             is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {

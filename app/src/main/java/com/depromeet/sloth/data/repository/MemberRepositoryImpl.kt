@@ -89,7 +89,7 @@ class MemberRepositoryImpl @Inject constructor(
                 preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
-            else -> Result.Error(Exception(response.message()))
+            else -> emit(Result.Error(Exception(response.message())))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
