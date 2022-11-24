@@ -37,4 +37,21 @@ class PreferencesImpl(
             .remove(Preferences.KEY_REFRESH_TOKEN)
             .apply()
     }
+
+    override fun saveFCMToken(fcmToken: String) {
+        sharedPref.edit()
+            .putString(Preferences.KEY_FCM_TOKEN, fcmToken)
+            .apply()
+    }
+
+    override fun getFCMToken(): String {
+        return sharedPref.getString(Preferences.KEY_FCM_TOKEN, DEFAULT_STRING_VALUE)
+            ?: DEFAULT_STRING_VALUE
+    }
+
+    override fun removeFCMToken() {
+        sharedPref.edit()
+            .remove(Preferences.KEY_FCM_TOKEN)
+            .apply()
+    }
 }
