@@ -3,118 +3,128 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_lesson_list"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_lesson_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_home_today_item_rounded_white"
-        android:paddingBottom="20dp">
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_home_today_item_rounded_category_gray"
-            android:gravity="center_vertical|center_horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="개발"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="HardcodedText" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_site"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_home_today_item_rounded_category_gray"
-            android:gravity="center_vertical|center_horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="인프런"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_category"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="HardcodedText" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_lesson_list"
             android:layout_width="match_parent"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:maxLines="2"
-            android:ellipsize="end"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_category"
-            tools:ignore="HardcodedText" />
+            android:paddingBottom="20dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_planning_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="시작예정일"
-            android:textSize="12dp"
-            app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
-            tools:ignore="HardcodedText" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:gravity="center_vertical|center_horizontal"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="개발"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_planning_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="16dp"
-            android:text="2021.11.15"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_planning_text"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
-            tools:ignore="HardcodedText" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_site"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:gravity="center_vertical|center_horizontal"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="인프런"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                app:layout_constraintStart_toEndOf="@id/tv_lesson_list_category"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_price_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="top"
-            android:lineSpacingExtra="2sp"
-            android:text="내가 투자한 금액 "
-            android:textSize="12dp"
-            android:translationY="-1.2sp"
-            app:layout_constraintStart_toStartOf="@id/tv_lesson_list_planning_text"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_date"
-            tools:ignore="HardcodedText" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_category"
+                tools:ignore="HardcodedText" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_lesson_list_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:lineSpacingExtra="2sp"
-            android:text="50000"
-            android:textColor="@color/black"
-            android:textSize="12dp"
-            android:textStyle="bold"
-            android:translationY="-1.2sp"
-            app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price_start"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_text"
-            tools:ignore="HardcodedText" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_planning_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="시작예정일"
+                android:textSize="12dp"
+                app:layout_constraintStart_toStartOf="@id/tv_lesson_list_category"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
+                tools:ignore="HardcodedText" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_planning_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:text="2021.11.15"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/tv_lesson_list_planning_text"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
+                tools:ignore="HardcodedText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_price_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="top"
+                android:lineSpacingExtra="2sp"
+                android:text="내가 투자한 금액 "
+                android:textSize="12dp"
+                android:translationY="-1.2sp"
+                app:layout_constraintStart_toStartOf="@id/tv_lesson_list_planning_text"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_date"
+                tools:ignore="HardcodedText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_lesson_list_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="2sp"
+                android:text="50000"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                android:translationY="-1.2sp"
+                app:layout_constraintStart_toEndOf="@id/tv_lesson_list_price_start"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_planning_text"
+                tools:ignore="HardcodedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
 </layout>
