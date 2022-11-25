@@ -134,7 +134,9 @@ class RegisterLessonFirstFragment :
     }
 
     private fun navigateToRegisterLessonSecond() {
-        findNavController().navigate(R.id.action_register_lesson_first_to_register_lesson_second)
+        val action =
+            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
+        findNavController().safeNavigate(action)
     }
 
     @SuppressLint("ClickableViewAccessibility")

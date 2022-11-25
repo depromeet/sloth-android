@@ -102,7 +102,8 @@ class RegisterLessonSecondFragment :
     }
 
     private fun navigateToRegisterLessonCheck() {
-        findNavController().navigate(R.id.action_register_lesson_second_to_register_lesson_check)
+        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
+        findNavController().safeNavigate(action)
     }
 
     private fun registerLessonStartDate() = with(binding) {
