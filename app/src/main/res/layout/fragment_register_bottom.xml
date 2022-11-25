@@ -44,12 +44,11 @@
             android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login_policy_cancel"
+                style="@style/Widget.Sloth.Button.Cancel"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_login_policy_rounded_gray"
                 android:text="@string/cancel" />
 
             <View
@@ -57,14 +56,12 @@
                 android:layout_width="10dp"
                 android:layout_height="56dp" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login_policy_agree"
+                style="@style/Widget.Sloth.Button.Start"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_login_policy_rounded_sloth"
-                android:text="@string/agree_and_start"
-                android:textColor="@color/white" />
+                android:text="@string/agree_and_start" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

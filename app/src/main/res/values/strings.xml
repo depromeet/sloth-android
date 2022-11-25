@@ -132,6 +132,7 @@
     <string name="unit_lesson_take_rate">%d%%</string>
     <string name="unit_lesson_total_number">%d개</string>
     <string name="unit_lesson_price">%s원</string>
+    <string name="register_lesson">강의 등록하기</string>
     <string name="finish_lesson">완강하기</string>
     <string name="check_all_lesson_finished">모든 강의를 다 들으셨나요?</string>
     <string name="finished">완강했어요</string>

@@ -334,11 +334,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register_lesson_update"
                 style="@style/Widget.Sloth.Button.RegisterUpdate"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="16dp"
@@ -349,11 +348,10 @@
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register_lesson_accept"
                 style="@style/Widget.Sloth.Button.Check"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"

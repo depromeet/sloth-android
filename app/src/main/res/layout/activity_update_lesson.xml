@@ -303,7 +303,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message"
                     tools:text="@string/lesson_message_info" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_update_lesson"
                     style="@style/Widget.Sloth.Button"
                     android:layout_width="0dp"
@@ -311,7 +311,6 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/selector_button"
                     android:enabled="@{vm.updateLessonButtonState}"
                     android:onClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"

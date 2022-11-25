@@ -523,29 +523,23 @@
                         app:layout_constraintTop_toBottomOf="@id/cv_detail_lesson_progress"
                         tools:text="@string/lesson_message_info" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_detail_delete_lesson"
+                        style="@style/Widget.Sloth.Button.Delete"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="36dp"
                         android:layout_marginBottom="36dp"
-                        android:background="@drawable/bg_detail_rounded_gray"
                         android:onClick="@{() -> vm.lessonDeleteClick()}"
                         android:text="@string/remove"
-                        android:textColor="@color/gray_500"
-                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_detail_lesson_message_info" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         </ScrollView>
 

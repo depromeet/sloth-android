@@ -49,28 +49,52 @@
         <item name="android:textSize">16dp</item>
     </style>
 
-    <style name="Widget.Sloth.Button" parent="Widget.AppCompat.Button">
+    <style name="Widget.Sloth.Button" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.LargeComponent</item>
+        <item name="backgroundTint">@color/selector_button</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Sloth.Button.Cancel" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/gray_200</item>
+        <item name="android:textColor">@color/gray_500</item>
     </style>
 
     <style name="Widget.Sloth.Button.Register" parent="Widget.Sloth.Button">
-        <item name="android:background">@drawable/bg_register_rounded_button_disabled</item>
+        <item name="android:backgroundTint">@color/sloth</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Widget.Sloth.Button.Update" parent="Widget.Sloth.Button">
-        <item name="android:background">@drawable/bg_update_rounded_button_disabled</item>
+    <style name="Widget.Sloth.Button.Start" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/sloth</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Widget.Sloth.Button.Delete" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/gray_200</item>
+        <item name="android:textColor">@color/gray_500</item>
+    </style>
+
+    <style name="Widget.Sloth.Button.Login" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/sloth</item>
     </style>
 
     <style name="Widget.Sloth.Button.Check" parent="Widget.Sloth.Button">
-        <item name="android:background">@drawable/bg_register_check_rounded_button_sloth</item>
+        <item name="android:backgroundTint">@color/sloth</item>
     </style>
 
     <style name="Widget.Sloth.Button.RegisterUpdate" parent="Widget.Sloth.Button">
-        <item name="android:background">@drawable/bg_register_check_rounded_button_gray</item>
+        <item name="android:backgroundTint">@color/gray_200</item>
         <item name="android:textColor">@color/gray_600</item>
     </style>
-
 
     <style name="circleImageView" parent="">
         <item name="cornerFamily">rounded</item>
