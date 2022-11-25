@@ -39,7 +39,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         // 최초 실행시에만 호출 - 이렇게 간단하게 해결해줄 수도 있음
         // preference 에 fcmToken 을 저장을 해서 있나 없나만 확인하는 방법을 사용하면 앱을 실행할때마다 fetch Api를 호출할 필요가 없게됨
         // 로그아웃할때 preference 에 fcm 토큰 제거해주면 다중 로그인문제도 해결
-        if (savedInstanceState ==  null) {
+        if (savedInstanceState == null) {
             homeViewModel.fetchFCMToken(deviceId)
         }
 
@@ -65,6 +65,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress(this@HomeActivity)
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<NotificationFetchResponse> -> {
                                 if (result.data.fcmToken == null) {
                                     Timber.d("fcmToken not existed")
@@ -75,9 +76,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                             }
                             is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
                             is Result.Error -> Timber.tag("Error").d(result.throwable)
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
 
@@ -86,12 +85,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress(this@HomeActivity)
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> Timber.d(result.data)
                             is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
                             is Result.Error -> Timber.tag("Error").d(result.throwable)
-                            else -> {}
                         }
-                        hideProgress()
                     }
             }
         }
