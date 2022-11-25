@@ -8,14 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
 
-    suspend fun registerFCMToken(
-        notificationRegisterRequest: NotificationRegisterRequest
-    ): Result<String>
+    fun registerFCMToken(notificationRegisterRequest: NotificationRegisterRequest): Flow<Result<String>>
 
     fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<String>>
 
-    // response 양식 바뀌면 해당 함수 사용
-    // fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<NotificationUpdateResponse>>
-
-    suspend fun fetchFCMToken(deviceId: String): Result<NotificationFetchResponse>
+    fun fetchFCMToken(deviceId: String): Flow<Result<NotificationFetchResponse>>
 }

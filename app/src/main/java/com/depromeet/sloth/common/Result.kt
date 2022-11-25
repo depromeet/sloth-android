@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import retrofit2.Response
 
 /**
  * @author 최철훈
@@ -28,6 +29,8 @@ sealed class Result<out T> {
 //    object Loading : Result<Nothing>
 //}
 
+
+// result 를 repository interface 함수의 반환형에서 제거하면 해당 함수 적용 가능
 // 반복되는 코드를 제거하기 위해 helper 함수 추카
 fun <T> Flow<T>.asResult(): Flow<Result<T>> {
     return this
@@ -60,3 +63,11 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
 //        else -> Result.Error()
 //    }
 //}
+
+fun <T> handleResponse(response: Response<T>) : Result<T?> {
+    return when(response.code()) {
+        200 -> Result.Success(response.body())
+        401 -> Result.Unauthorized(Exception(response.message()))
+        else -> Result.Error(Exception(response.message()))
+    }
+}

@@ -1,6 +1,7 @@
 package com.depromeet.sloth.data.network
 
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.KEY_CONTENT_TYPE
 import com.depromeet.sloth.util.VALUE_CONTENT_TYPE
 import okhttp3.Authenticator
@@ -45,11 +46,11 @@ class AccessTokenAuthenticator @Inject constructor(
     }
 
     private fun hasNotAccessTokenOnResponse(response: Response): Boolean =
-        response.header("Authorization") == null
+        response.header(KEY_AUTHORIZATION) == null
 
     private fun newRequestWithAccessToken(request: Request, accessToken: String): Request =
         request.newBuilder()
             .header(KEY_CONTENT_TYPE, VALUE_CONTENT_TYPE)
-            .header("Authorization", accessToken)
+            .header(KEY_AUTHORIZATION, accessToken)
             .build()
 }

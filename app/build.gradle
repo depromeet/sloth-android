@@ -6,6 +6,8 @@ plugins {
     id 'com.google.gms.google-services'
     id 'dagger.hilt.android.plugin'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'androidx.navigation.safeargs'
+
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")

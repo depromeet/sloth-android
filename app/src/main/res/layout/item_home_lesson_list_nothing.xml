@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -32,19 +31,15 @@
             app:layout_constraintTop_toBottomOf="@id/iv_lesson_list_sloth"
             app:layout_constraintVertical_bias="0.3" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_lesson_list_register"
+            style="@style/Widget.Sloth.Button.Register"
             android:layout_width="166dp"
-            android:layout_height="56dp"
             android:layout_marginTop="36dp"
-            android:background="@drawable/bg_home_class_item_rounded_sloth"
-            android:text="강의 등록하기"
-            android:textColor="@color/white"
-            android:textSize="16dp"
+            android:text="@string/register_lesson"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_register"
-            tools:ignore="HardcodedText" />
+            app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_register" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

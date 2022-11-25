@@ -6,15 +6,18 @@ import com.depromeet.sloth.data.model.request.login.LoginGoogleRequest
 import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
-import com.depromeet.sloth.data.network.service.LoginService
+import com.depromeet.sloth.data.network.service.GoogleLoginService
+import com.depromeet.sloth.data.network.service.SlothLoginService
 import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
+import retrofit2.Retrofit
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
     private val preferences: Preferences,
-    private val service: LoginService
+    private val slothLoginService: SlothLoginService,
+    private val googleLoginService: GoogleLoginService
 ) : LoginRepository {
 
     override fun checkedLoggedIn(): Boolean {
@@ -26,7 +29,7 @@ class LoginRepositoryImpl @Inject constructor(
         authToken: String,
         socialType: String
     ): Result<LoginSlothResponse> {
-        service.fetchSlothAuthInfo(authToken, LoginSlothRequest(socialType = socialType))?.run {
+        slothLoginService.fetchSlothAuthInfo(authToken, LoginSlothRequest(socialType = socialType))?.run {
             val accessToken = body()?.accessToken ?: DEFAULT_STRING_VALUE
             val refreshToken = body()?.refreshToken ?: DEFAULT_STRING_VALUE
             preferences.saveAuthToken(accessToken, refreshToken)
@@ -38,7 +41,8 @@ class LoginRepositoryImpl @Inject constructor(
     override suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): Result<LoginGoogleResponse> {
-        service.fetchGoogleAuthInfo(
+        Retrofit.Builder()
+        googleLoginService.fetchGoogleAuthInfo(
             LoginGoogleRequest(
                 grant_type = GRANT_TYPE,
                 client_id = BuildConfig.GOOGLE_CLIENT_ID,

@@ -8,18 +8,13 @@ import retrofit2.http.*
 
 interface MemberService {
     @GET("api/member")
-    suspend fun fetchMemberInfo(
-        @Header("Authorization") accessToken: String?
-    ): Response<MemberResponse>?
+    suspend fun fetchMemberInfo(): Response<MemberResponse>?
 
     @PATCH("api/member")
     suspend fun updateMemberInfo(
-        @Header("Authorization") accessToken: String?,
         @Body memberUpdateRequest: MemberUpdateRequest
     ): Response<MemberUpdateResponse>?
 
     @POST("api/logout")
-    suspend fun logout(
-        @Header("Authorization") accessToken: String?,
-    ): Response<String>?
+    suspend fun logout(): Response<String>?
 }

@@ -7,6 +7,7 @@ import com.depromeet.sloth.data.model.response.notification.NotificationFetchRes
 import com.depromeet.sloth.data.network.service.NotificationService
 import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -14,55 +15,59 @@ import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val preferences: Preferences,
-    private val service: NotificationService
+    private val notificationService: NotificationService,
 ) : NotificationRepository {
 
-    override suspend fun registerFCMToken(
-        notificationRegisterRequest: NotificationRegisterRequest
-    ): Result<String> {
-        service.registerFCMToken(preferences.getAccessToken(), notificationRegisterRequest)
-            ?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
-                        if (newAccessToken.isNotEmpty()) {
-                            preferences.updateAccessToken(newAccessToken)
-                        }
-                        Result.Success(this.body() ?: "")
-                    }
-                    401 -> {
-                        preferences.removeAuthToken()
-                        Result.Unauthorized(Exception(message()))
-                    }
-                    else -> Result.Error(Exception(message()))
-                }
-            } ?: return Result.Error(Exception("Retrofit Exception"))
-    }
-
-        override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+    override fun registerFCMToken(notificationRegisterRequest: NotificationRegisterRequest) =
         flow {
             emit(Result.Loading)
-            val response = service.updateFCMTokenUse(
-                preferences.getAccessToken(),
-                notificationUpdateRequest
-            ) ?: run {
+            val response = notificationService.registerFCMToken(notificationRegisterRequest) ?: run {
                 emit(Result.Error(Exception("Response is null")))
                 return@flow
             }
             when (response.code()) {
                 200 -> {
-                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+                    val newAccessToken =
+                        response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                     if (newAccessToken.isNotEmpty()) {
                         preferences.updateAccessToken(newAccessToken)
                     }
-                    Result.Success(response.body() ?: DEFAULT_STRING_VALUE)
+                    emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
                 }
                 401 -> {
                     preferences.removeAuthToken()
                     emit(Result.Unauthorized(Exception(response.message())))
                 }
 
-                else -> Result.Error(Exception(response.message()))
+                else -> emit(Result.Error(Exception(response.message())))
+            }
+        }
+            .catch { throwable -> emit(Result.Error(throwable)) }
+            .onCompletion { emit(Result.UnLoading) }
+
+
+    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
+        flow {
+            emit(Result.Loading)
+            val response = notificationService.updateFCMTokenUse(notificationUpdateRequest) ?: run {
+                emit(Result.Error(Exception("Response is null")))
+                return@flow
+            }
+            when (response.code()) {
+                200 -> {
+                    val newAccessToken =
+                        response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                    if (newAccessToken.isNotEmpty()) {
+                        preferences.updateAccessToken(newAccessToken)
+                    }
+                    emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+                }
+                401 -> {
+                    preferences.removeAuthToken()
+                    emit(Result.Unauthorized(Exception(response.message())))
+                }
+
+                else -> emit(Result.Error(Exception(response.message())))
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
@@ -73,8 +78,7 @@ class NotificationRepositoryImpl @Inject constructor(
 //    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
 //        flow {
 //            emit(Result.Loading)
-//            val response = service.updateFCMTokenUse(
-//                preferences.getAccessToken(),
+//            val response = notificationService.updateFCMTokenUse(
 //                notificationUpdateRequest
 //            ) ?: run {
 //                emit(Result.Error(Exception("Response is null")))
@@ -82,42 +86,47 @@ class NotificationRepositoryImpl @Inject constructor(
 //            }
 //            when (response.code()) {
 //                200 -> {
-//                    val newAccessToken = response.headers()["Authorization"] ?: DEFAULT_STRING_VALUE
+//                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
 //                    if (newAccessToken.isNotEmpty()) {
 //                        preferences.updateAccessToken(newAccessToken)
 //                    }
-//                    Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY)
+//                    emit(Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY))
 //                }
 //                401 -> {
 //                    preferences.removeAuthToken()
 //                    emit(Result.Unauthorized(Exception(response.message())))
 //                }
 //
-//                else -> Result.Error(Exception(response.message()))
+//                else -> emit(Result.Error(Exception(response.message())))
 //            }
 //        }
 //            .catch { throwable -> emit(Result.Error(throwable)) }
 //            .onCompletion { emit(Result.UnLoading) }
 
 
-    override suspend fun fetchFCMToken(
-        deviceId: String
-    ): Result<NotificationFetchResponse> {
-        service.fetchFCMToken(preferences.getAccessToken(), deviceId)?.run {
-            return when (this.code()) {
-                200 -> {
-                    val newAccessToken = headers()["Authorization"] ?: DEFAULT_STRING_VALUE
-                    if (newAccessToken.isNotEmpty()) {
-                        preferences.updateAccessToken(newAccessToken)
-                    }
-                    Result.Success(this.body() ?: NotificationFetchResponse.EMPTY)
+    //TODO 안드로이드 의존성을 가지고 있는 datasource 를 만들어 거기서 devideId 를 주입
+    override fun fetchFCMToken(deviceId: String) = flow {
+        emit(Result.Loading)
+        val response = notificationService.fetchFCMToken(deviceId) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
                 }
-                401 -> {
-                    preferences.removeAuthToken()
-                    Result.Unauthorized(Exception(message()))
-                }
-                else -> Result.Error(Exception(message()))
+                emit(Result.Success(response.body() ?: NotificationFetchResponse.EMPTY))
             }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+            401 -> {
+                preferences.removeAuthToken()
+                emit(Result.Unauthorized(Exception(response.message())))
+            }
+
+            else -> emit(Result.Error(Exception(response.message())))
+        }
     }
+        .catch { throwable -> emit(Result.Error(throwable)) }
+        .onCompletion { emit(Result.UnLoading) }
 }
