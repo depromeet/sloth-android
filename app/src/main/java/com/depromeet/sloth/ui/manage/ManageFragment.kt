@@ -7,8 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
@@ -16,6 +14,7 @@ import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
+import com.depromeet.sloth.databinding.DialogManageUpdateMemberInfoBinding
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -34,12 +33,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     private val manageViewModel: ManageViewModel by viewModels()
 
+    lateinit var dialogBinding: DialogManageUpdateMemberInfoBinding
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
             vm = manageViewModel
         }
+        dialogBinding = DialogManageUpdateMemberInfoBinding.inflate(layoutInflater)
+
         initObserver()
     }
 
@@ -169,23 +172,19 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     }
 
     //TODO Dialog 에 Databinding 적용
-    private fun showProfileUpdateDialog() {
-        val updateDialog =
-            Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
-        updateDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        updateDialog.setContentView(R.layout.dialog_manage_update_member_info)
+    private fun showProfileUpdateDialog() = with(dialogBinding) {
+        val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+                .apply {
+                    window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    setContentView(dialogBinding.root)
+                }
 
-        val nameEditText =
-            updateDialog.findViewById<EditText>(R.id.et_manage_dialog_profile_name)
-        val updateButton =
-            updateDialog.findViewById<AppCompatButton>(R.id.btn_manage_dialog_update_member_info)
+        etManageProfileName.hint = manageViewModel.memberName.value
+        focusInputForm(etManageProfileName, btnManageUpdateMemberInfo, requireContext())
 
-        nameEditText.hint = manageViewModel.memberName.value
-        focusInputForm(nameEditText, updateButton, requireContext())
-
-        updateButton.setOnClickListener {
-            if (nameEditText.text.toString() != manageViewModel.memberName.value) {
-                manageViewModel.updateMemberInfo(MemberUpdateRequest(memberName = nameEditText.text.toString()))
+        btnManageUpdateMemberInfo.setOnClickListener {
+            if (etManageProfileName.text.toString() != manageViewModel.memberName.value) {
+                manageViewModel.updateMemberInfo(MemberUpdateRequest(memberName = etManageProfileName.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
                 showToast(getString(R.string.input_same_nickname))
