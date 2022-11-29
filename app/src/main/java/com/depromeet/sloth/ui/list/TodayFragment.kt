@@ -276,7 +276,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 finishLesson(lessonId)
             }
         }
-        completeDialog.start()
+        completeDialog.show()
     }
 
     private fun finishLesson(lessonId: String) {

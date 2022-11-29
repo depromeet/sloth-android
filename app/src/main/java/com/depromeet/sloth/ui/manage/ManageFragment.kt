@@ -165,7 +165,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     manageViewModel.logout()
                 }
             }
-        dlg.start()
+        dlg.show()
     }
 
     //TODO Dialog 에 Databinding 적용

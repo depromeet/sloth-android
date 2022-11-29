@@ -119,6 +119,6 @@ class LessonDetailActivity :
                 lessonDetailViewModel.deleteLesson()
             }
         }
-        dlg.start()
+        dlg.show()
     }
 }

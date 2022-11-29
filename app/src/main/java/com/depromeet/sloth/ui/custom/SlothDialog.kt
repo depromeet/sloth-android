@@ -24,7 +24,7 @@ class SlothDialog(context: Context, private val state: DialogState) {
         fun onItemClicked()
     }
 
-    fun start() = with(dlg) {
+    fun show() = with(dlg) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         // custom view 영역 size 적용
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

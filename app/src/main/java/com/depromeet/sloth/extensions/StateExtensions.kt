@@ -18,7 +18,7 @@ fun showForbiddenDialog(context: Context, removeAuthToken: () -> Job) {
             logout(context) { removeAuthToken() }
         }
     }
-    dlg.start()
+    dlg.show()
 }
 
 fun logout(context: Context, removeAuthToken: () -> Job) {
@@ -41,7 +41,7 @@ fun showWithdrawalDialog(context: Context, removeAuthToken: () -> Job) {
             withdrawal(context) { removeAuthToken() }
         }
     }
-    dlg.start()
+    dlg.show()
 }
 
 // 회원 탈퇴 api 필요
@@ -61,7 +61,7 @@ fun withdrawal(context: Context, removeAuthToken: () -> Job) {
 
 fun showWaitDialog(context: Context) {
     val dlg = SlothDialog(context, DialogState.WAIT)
-    dlg.start()
+    dlg.show()
 }
 
 
