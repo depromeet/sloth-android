@@ -103,23 +103,53 @@ class LessonRepositoryImpl @Inject constructor(
         count: Int,
         lessonId: Int,
     ): Result<LessonUpdateCountResponse> {
-        lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
-            return when (this.code()) {
-                200 -> {
-                    val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                    if (newAccessToken.isNotEmpty()) {
-                        preferences.updateAccessToken(newAccessToken)
+        try {
+            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
+                return when (this.code()) {
+                    200 -> {
+                        val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                        if (newAccessToken.isNotEmpty()) {
+                            preferences.updateAccessToken(newAccessToken)
+                        }
+                        Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                     }
-                    Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
+                    401 -> {
+                        preferences.removeAuthToken()
+                        Result.Unauthorized(Exception(message()))
+                    }
+                    else -> Result.Error(Exception(message()))
                 }
-                401 -> {
-                    preferences.removeAuthToken()
-                    Result.Unauthorized(Exception(message()))
-                }
-                else -> Result.Error(Exception(message()))
-            }
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+
+            } ?: return Result.Error(Exception("Retrofit Exception"))
+        } catch (e: Exception) {
+            return Result.Error(Exception(e.message))
+        }
     }
+
+//    override fun updateLessonCount(count: Int, lessonId: Int) = flow {
+//        emit(Result.Loading)
+//        val response =
+//            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId)) ?: run {
+//                emit(Result.Error(Exception("Response is null")))
+//                return@flow
+//            }
+//        when (response.code()) {
+//            200 -> {
+//                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+//                if (newAccessToken.isNotEmpty()) {
+//                    preferences.updateAccessToken(newAccessToken)
+//                }
+//                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
+//            }
+//            401 -> {
+//                preferences.removeAuthToken()
+//                emit(Result.Unauthorized(Exception(response.message())))
+//            }
+//            else -> emit(Result.Error(Exception(response.message())))
+//        }
+//    }
+//        .catch { throwable -> emit(Result.Error(throwable)) }
+//        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
@@ -222,7 +252,7 @@ class LessonRepositoryImpl @Inject constructor(
 
     override fun fetchLessonSiteList() = flow {
         emit(Result.Loading)
-        val response = lessonService.fetchLessonSiteList() ?:run {
+        val response = lessonService.fetchLessonSiteList() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
