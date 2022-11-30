@@ -67,7 +67,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = DefaultConfig.javaCompileTarget.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     buildFeatures {
