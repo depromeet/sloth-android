@@ -1,12 +1,12 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'kotlin-parcelize'
-    id 'com.google.gms.google-services'
-    id 'dagger.hilt.android.plugin'
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
-    id 'androidx.navigation.safeargs'
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-kapt"
+    id "kotlin-parcelize"
+    id "com.google.gms.google-services"
+    id "dagger.hilt.android.plugin"
+    id "com.google.android.libraries.mapsplatform.secrets-gradle-plugin"
+    id "androidx.navigation.safeargs"
 
 }
 
@@ -15,6 +15,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    namespace "com.depromeet.sloth"
     compileSdk 32
 
     defaultConfig {
@@ -32,10 +33,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(keystoreProperties['STORE_FILE'])
-            storePassword keystoreProperties['STORE_PASSWORD']
-            keyAlias keystoreProperties['KEY_ALIAS']
-            keyPassword keystoreProperties['KEY_PASSWORD']
+            storeFile file(keystoreProperties["STORE_FILE"])
+            storePassword keystoreProperties["STORE_PASSWORD"]
+            keyAlias keystoreProperties["KEY_ALIAS"]
+            keyPassword keystoreProperties["KEY_PASSWORD"]
         }
     }
 
@@ -47,7 +48,7 @@ android {
         release {
             debuggable false
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             buildConfigField("String", "SLOTH_BASE_URL", RELEASE_BASE_URL)
             signingConfig signingConfigs.release
         }
@@ -59,7 +60,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
 
     buildFeatures{
@@ -68,13 +69,13 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "androidx.appcompat:appcompat:1.4.1"
+    implementation "com.google.android.material:material:1.5.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.1.4"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.0"
 
     //RecyclerView - ConcatAdapter
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
