@@ -11,8 +11,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+        maven(url = "https://devrepo.kakao.com/nexus/content/groups/public/")
     }
 }
 rootProject.name = "sloth"
-include ':app'
+include(":app")
