@@ -74,7 +74,6 @@ class RegisterLessonFirstFragment :
 
                             is Result.Unauthorized -> {
                                 showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
-                                hideProgress()
                             }
 
                             is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
