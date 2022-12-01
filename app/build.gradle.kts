@@ -37,7 +37,7 @@ android {
             val propertiesFile = rootProject.file("keystore.properties")
             val properties = Properties()
             properties.load(propertiesFile.inputStream())
-            storeFile = File(propertiesFile.parentFile, "sloth.jks")
+            storeFile = file(properties["STORE_FILE"] as String)
             storePassword = properties["STORE_PASSWORD"] as String
             keyAlias = properties["KEY_ALIAS"] as String
             keyPassword = properties["KEY_PASSWORD"] as String
