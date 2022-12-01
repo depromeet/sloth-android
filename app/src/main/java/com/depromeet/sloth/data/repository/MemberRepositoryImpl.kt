@@ -33,7 +33,6 @@ class MemberRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: MemberResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -61,7 +60,6 @@ class MemberRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: MemberUpdateResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -86,7 +84,6 @@ class MemberRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))

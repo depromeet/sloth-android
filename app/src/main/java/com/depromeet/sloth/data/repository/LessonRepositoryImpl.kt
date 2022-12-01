@@ -42,7 +42,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -66,7 +65,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -90,7 +88,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: LessonFinishResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -114,7 +111,6 @@ class LessonRepositoryImpl @Inject constructor(
                         Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                     }
                     401 -> {
-                        preferences.removeAuthToken()
                         Result.Unauthorized(Exception(message()))
                     }
                     else -> Result.Error(Exception(message()))
@@ -142,7 +138,6 @@ class LessonRepositoryImpl @Inject constructor(
 //                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
 //            }
 //            401 -> {
-//                preferences.removeAuthToken()
 //                emit(Result.Unauthorized(Exception(response.message())))
 //            }
 //            else -> emit(Result.Error(Exception(response.message())))
@@ -167,7 +162,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: LessonDetailResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -193,7 +187,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: LessonRegisterResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -217,7 +210,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: LessonDeleteResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -241,7 +233,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -265,7 +256,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
@@ -294,7 +284,6 @@ class LessonRepositoryImpl @Inject constructor(
                 emit(Result.Success(response.body() ?: LessonUpdateResponse.EMPTY))
             }
             401 -> {
-                preferences.removeAuthToken()
                 emit(Result.Unauthorized(Exception(response.message())))
             }
             else -> emit(Result.Error(Exception(response.message())))
