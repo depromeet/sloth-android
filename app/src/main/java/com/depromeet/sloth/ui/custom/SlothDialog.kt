@@ -30,6 +30,8 @@ class SlothDialog(context: Context, private val state: DialogState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         // custom view 영역 size 적용
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        // 외부 클릭시 창닫기 금지
+        setCancelable(false)
         setContentView(binding.root)
 
         when (state) {
