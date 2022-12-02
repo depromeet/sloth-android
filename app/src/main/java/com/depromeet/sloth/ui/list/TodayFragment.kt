@@ -230,8 +230,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         delayTime: Long
     ) {
         mainScope {
-            showProgress()
-
             lessonListViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
                 when (result) {
                     is Result.Loading -> showProgress()
