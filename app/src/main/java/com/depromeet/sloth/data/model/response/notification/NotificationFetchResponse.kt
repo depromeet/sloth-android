@@ -13,9 +13,9 @@ import com.google.gson.annotations.SerializedName
 
 data class NotificationFetchResponse(
     @SerializedName("deviceId")
-    var deviceId: String = "",
+    val deviceId: String = "",
     @SerializedName("fcmToken")
-    var fcmToken: String? = ""
+    val fcmToken: String? = ""
 ) {
     companion object {
         val EMPTY = NotificationFetchResponse("", "")

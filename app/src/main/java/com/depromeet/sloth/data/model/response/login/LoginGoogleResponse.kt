@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginGoogleResponse(
     @SerializedName("access_token")
-    var accessToken: String = "",
+    val accessToken: String = "",
     @SerializedName("expires_in")
-    var expiresIn: Int = 0,
+    val expiresIn: Int = 0,
     @SerializedName("scope")
-    var scope: String = "",
+    val scope: String = "",
     @SerializedName("token_type")
-    var tokenType: String = "",
+    val tokenType: String = "",
     @SerializedName("id_token")
-    var idToken: String = "",
+    val idToken: String = "",
 )

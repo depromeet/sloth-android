@@ -115,7 +115,6 @@ class LessonRepositoryImpl @Inject constructor(
                     }
                     else -> Result.Error(Exception(message()))
                 }
-
             } ?: return Result.Error(Exception("Retrofit Exception"))
         } catch (e: Exception) {
             return Result.Error(Exception(e.message))
