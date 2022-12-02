@@ -80,7 +80,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_home_today_sloth_not_register"
+                    tools:src="@drawable/ic_home_today_sloth_not_register"
                     app:layout_constraintEnd_toStartOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
                     app:layout_constraintTop_toTopOf="parent" />
