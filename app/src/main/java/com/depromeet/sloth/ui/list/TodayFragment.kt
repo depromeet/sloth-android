@@ -228,6 +228,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         }
     }
 
+    //TODO Flow 로 변경
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
@@ -239,6 +240,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             lessonListViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
                 when (result) {
                     is Result.Loading -> showProgress()
+                    is Result.UnLoading -> hideProgress()
                     is Result.Success<LessonUpdateCountResponse> -> {
                         delay(delayTime)
                         when (bodyType) {
@@ -267,10 +269,8 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             }
                         }
                     }
-                    else -> Unit
                 }
             }
-            hideProgress()
         }
     }
 
