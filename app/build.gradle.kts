@@ -1,26 +1,27 @@
 import java.util.Properties
 
+@Suppress("DSL_SCOPE_VIOLATION", "PropertyName")
 plugins {
-    id(Plugins.ANDROID_APPLICATION)
-    id(Plugins.KOTLIN_ANDROID)
-    id(Plugins.KAPT)
-    id(Plugins.PARCELIZE)
-    id(Plugins.GOOGLE_SERVICE)
-    id(Plugins.HILT_PLUGIN)
-    id(Plugins.SECRETS_GRADLE_PLUGIN)
-    id(Plugins.SAFEARGS)
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.kotlin.parcelize.get().pluginId)
+    id(libs.plugins.google.service.get().pluginId)
+    id(libs.plugins.hilt.android.get().pluginId)
+    id(libs.plugins.secrets.gradle.plugin.get().pluginId)
+    id(libs.plugins.navigation.safeargs.get().pluginId)
 }
 
 android {
-    namespace = DefaultConfig.NAMESPACE
-    compileSdk = DefaultConfig.COMPILE_SDK_VERSION
+    namespace = "com.depromeet.sloth"
+    compileSdk = 32
 
     defaultConfig {
-        applicationId = DefaultConfig.APPLICATION_ID
-        minSdk = DefaultConfig.MIN_SDK_VERSION
-        targetSdk = DefaultConfig.TARGET_SDK_VERSION
-        versionCode = DefaultConfig.VERSION_CODE
-        versionName = DefaultConfig.VERSION_NAME
+        applicationId = "com.depromeet.sloth"
+        minSdk = 24
+        targetSdk = 32
+        versionCode = 20
+        versionName = "1.0.15"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -73,76 +74,38 @@ android {
     buildFeatures {
         dataBinding = true
     }
+}
 
-    dependencies {
-        implementation(Dependencies.CORE_KTX)
-        implementation(Dependencies.APP_COMPAT)
-        implementation(Dependencies.MATERIAL)
-        implementation(Dependencies.CONSTRAINT_LAYOUT)
+dependencies {
+    implementation(libs.core)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.android.test)
 
-        testImplementation(Testings.JUNIT4)
-        androidTestImplementation(Testings.ANDROID_JUNIT)
-        androidTestImplementation(Testings.ESPRESSO_CORE)
+    implementation(libs.bundles.navigation)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.activity)
+    implementation(libs.fragment)
+    implementation(libs.recyclerview)
+    implementation(libs.datastore)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-        // Navigation
-        implementation(Dependencies.NAVIGATION_FRAGMENT_KTX)
-        implementation(Dependencies.NAVIGATION_UI_KTX)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.okhttp)
+    implementation(libs.bundles.coroutine)
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.google.auth)
+    implementation(libs.kakao.auth)
+    implementation(libs.progressview)
+    implementation(libs.lottie)
+    implementation(libs.timber)
 
-        // Retrofit2
-        implementation(Dependencies.RETROFIT)
-        implementation(Dependencies.RETROFIT_CONVERTER_GSON)
-        implementation(Dependencies.RETROFIT_CONVERTER_SCALARS)
-
-        // Okhttp3
-        implementation(Dependencies.OKHTTP)
-        implementation(Dependencies.OKHTTP_LOGGING_INTERCEPTOR)
-
-        // Coroutine
-        implementation(Dependencies.COROUTINE_CORE)
-        implementation(Dependencies.COROUTINE_ANDROID)
-
-        // ViewModel
-        implementation(Dependencies.LIFECYCLE_VIEWMODEL_KTX)
-        implementation(Dependencies.LIFECYCLE_RUNTIME_KTX)
-        implementation(Dependencies.LIFECYCLE_SAVEDSTATE)
-
-        // ViewModel delegate
-        implementation(Dependencies.ACTIVITY_KTX)
-        implementation(Dependencies.FRAGMENT_KTX)
-
-        // ConcatAdapter
-        implementation(Dependencies.RECYCLERVIEW)
-
-        // DataStore
-        implementation(Dependencies.DATASTORE)
-
-        // Hilt
-        implementation(Dependencies.DAGGER_HILT)
-        kapt(Dependencies.DAGGER_HILT_KAPT)
-
-        // Glide
-        implementation(Dependencies.GLIDE)
-        kapt(Dependencies.GLIDE_COMPILER)
-
-        // Kakao login
-        implementation(Dependencies.KAKAO_AUTH)
-
-        // Google login
-        implementation(Dependencies.GOOGLE_AUTH)
-
-        // ProgressView
-        implementation(Dependencies.PROGRESSVIEW)
-
-        // Firebase
-        implementation(platform(Dependencies.FIREBASE_BOM))
-        implementation(Dependencies.FIREBASE_ANALYTICS)
-        implementation(Dependencies.FIREBASE_MESSAGING)
-
-        // Lottie
-        implementation(Dependencies.LOTTIE)
-
-        // Timber
-        implementation(Dependencies.TIMBER)
-    }
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 }
 

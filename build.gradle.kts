@@ -1,12 +1,13 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file where you can add configuration options common to all sub-projects/module
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(Plugins.ANDROID_APPLICATION) version Versions.AGP apply false
-    id(Plugins.ANDROID_LIBRARY) version Versions.AGP apply false
-    id(Plugins.KOTLIN_ANDROID) version Versions.KOTLIN apply false
-    id(Plugins.SAFEARGS) version Versions.NAVIGATION apply false
-    id(Plugins.SECRETS_GRADLE_PLUGIN) version Versions.SECRETS_GRADLE apply false
-    id(Plugins.DAGGER_HILT) version Versions.HILT apply false
-    id(Plugins.GOOGLE_SERVICE) version Versions.GOOGLE_SERVICE apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.navigation.safeargs) apply false
+    alias(libs.plugins.secrets.gradle.plugin) apply false
+    alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.google.service) apply false
 }
 
 tasks.register("clean", Delete::class) {
