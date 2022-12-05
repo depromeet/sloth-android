@@ -41,10 +41,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -64,10 +61,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -87,10 +81,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonFinishResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -110,10 +101,7 @@ class LessonRepositoryImpl @Inject constructor(
                         }
                         Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                     }
-                    401 -> {
-                        Result.Unauthorized(Exception(message()))
-                    }
-                    else -> Result.Error(Exception(message()))
+                    else -> Result.Error(Exception(message()), this.code())
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
         } catch (e: Exception) {
@@ -136,10 +124,7 @@ class LessonRepositoryImpl @Inject constructor(
 //                }
 //                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
 //            }
-//            401 -> {
-//                emit(Result.Unauthorized(Exception(response.message())))
-//            }
-//            else -> emit(Result.Error(Exception(response.message())))
+//            else -> emit(Result.Error(Exception(response.message()), response.code()))
 //        }
 //    }
 //        .catch { throwable -> emit(Result.Error(throwable)) }
@@ -160,10 +145,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonDetailResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -185,10 +167,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonRegisterResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -208,10 +187,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonDeleteResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -231,10 +207,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -254,10 +227,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -282,10 +252,7 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonUpdateResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }

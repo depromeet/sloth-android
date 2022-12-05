@@ -54,11 +54,19 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
-                            is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(result.data)
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(
+                                result.data
+                            )
                             is Result.Error -> {
-                                Timber.tag("fetch Error").d(result.throwable)
-                                showToast(getString(R.string.member_info_fetch_fail))
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        manageViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.member_info_fetch_fail))
+                                    }
+                                }
                             }
                         }
                     }
@@ -74,10 +82,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 showToast(getString(R.string.member_update_success))
                                 setMemberName(result.data.memberName)
                             }
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
-                                Timber.tag("update Error").d(result.throwable)
-                                showToast(getString(R.string.member_update_fail))
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        manageViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Update Error").d(result.throwable)
+                                        showToast(getString(R.string.member_update_fail))
+                                    }
+                                }
                             }
                         }
                     }
@@ -93,10 +107,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 showToast(getString(R.string.noti_update_complete))
                                 setMemberNotificationReceive(binding.scManageNotificationStatus.isChecked)
                             }
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
-                                Timber.tag("update Error").d(result.throwable)
-                                showToast(getString(R.string.noti_update_fail))
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        manageViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Update Error").d(result.throwable)
+                                        showToast(getString(R.string.noti_update_fail))
+                                    }
+                                }
                             }
                         }
                     }
@@ -109,10 +129,16 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> logout(requireContext()) { manageViewModel.removeAuthToken() }
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
-                                Timber.tag("logout Error").d(result.throwable)
-                                showToast(getString(R.string.logout_fail))
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        manageViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Logout Error").d(result.throwable)
+                                        showToast(getString(R.string.logout_fail))
+                                    }
+                                }
                             }
                         }
                     }
@@ -174,10 +200,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     //TODO Dialog 에 Databinding 적용
     private fun showProfileUpdateDialog() = with(dialogBinding) {
         val updateDialog = Dialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
-                .apply {
-                    window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    setContentView(dialogBinding.root)
-                }
+            .apply {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setContentView(dialogBinding.root)
+            }
 
         etManageProfileName.hint = manageViewModel.memberName.value
         focusInputForm(etManageProfileName, btnManageUpdateMemberInfo, requireContext())

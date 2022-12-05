@@ -21,6 +21,7 @@ import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
@@ -71,12 +72,18 @@ class RegisterLessonFirstFragment :
                                     registerLessonViewModel.lessonCategorySelectedItemPosition.value
                                 )
                             }
+                            is Result.Error -> {
+                                when(result.statusCode) {
+                                    401 ->  showForbiddenDialog(requireContext()) {
+                                        registerLessonViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                    }
+                                }
 
-                            is Result.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
                             }
-
-                            is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
                         }
                     }
             }
@@ -96,13 +103,16 @@ class RegisterLessonFirstFragment :
                                     registerLessonViewModel.lessonSiteSelectedItemPosition.value
                                 )
                             }
-                            // TODO Error 내부로 이동
-                            is Result.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
-                            }
-
                             is Result.Error -> {
-                                showToast(getString(R.string.cannot_get_lesson_category))
+                                when(result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        registerLessonViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                    }
+                                }
                             }
                         }
                     }

@@ -32,10 +32,7 @@ class MemberRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: MemberResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -59,10 +56,7 @@ class MemberRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: MemberUpdateResponse.EMPTY))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
@@ -83,10 +77,7 @@ class MemberRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
             }
-            401 -> {
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-            else -> emit(Result.Error(Exception(response.message())))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }

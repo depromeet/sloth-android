@@ -74,8 +74,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                                     Timber.d("fcmToken already existed")
                                 }
                             }
-                            is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
-                            is Result.Error -> Timber.tag("Error").d(result.throwable)
+                            is Result.Error ->
+                                when (result.statusCode) {
+                                    401 -> {
+                                        showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
+                                    }
+                                    else -> Timber.tag("Fetch Error").d(result.throwable)
+                                }
                         }
                     }
             }
@@ -87,8 +92,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                             is Result.Loading -> showProgress(this@HomeActivity)
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> Timber.d(result.data)
-                            is Result.Unauthorized -> showForbiddenDialog(this@HomeActivity) { homeViewModel.removeAuthToken() }
-                            is Result.Error -> Timber.tag("Error").d(result.throwable)
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(this@HomeActivity) {
+                                        homeViewModel.removeAuthToken()
+                                    }
+                                    else -> Timber.tag("Register Error").d(result.throwable)
+                                }
+                            }
                         }
                     }
             }
