@@ -22,6 +22,7 @@ import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,8 +55,17 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<List<LessonAllResponse>> -> setLessonList(result.data)
-                            is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
-                            is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                            is Result.Error -> {
+                                when(result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                            lessonListViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.lesson_info_fetch_fail))
+                                    }
+                                }
+                            }
                         }
                     }
             }

@@ -17,8 +17,7 @@ sealed class Result<out T> {
     object Loading : Result<Nothing>()
     object UnLoading : Result<Nothing>()
     data class Success<T>(val data: T) : Result<T>()
-    data class Unauthorized(val throwable: Throwable) : Result<Nothing>()
-    data class Error(val throwable: Throwable) : Result<Nothing>()
+    data class Error(val throwable: Throwable, val statusCode: Int? = 0) : Result<Nothing>()
 }
 
 // now in android Result class
@@ -56,18 +55,9 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
 //    }
 //}
 
-//fun <T> test(response: Response<T>) : Result<T?> {
-//    return when(response.code()) {
-//        200 -> Result.Success(response.body())
-//        401 -> Result.Error(Exception(response.message()))
-//        else -> Result.Error()
-//    }
-//}
-
-fun <T> handleResponse(response: Response<T>) : Result<T?> {
-    return when(response.code()) {
+fun <T> handleResponse(response: Response<T>): Result<T?> {
+    return when (response.code()) {
         200 -> Result.Success(response.body())
-        401 -> Result.Unauthorized(Exception(response.message()))
-        else -> Result.Error(Exception(response.message()))
+        else -> Result.Error(Exception(response.message()), response.code())
     }
 }

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class LessonUpdateCountRequest (
     @SerializedName("count")
-    private val count: Int,
+    val count: Int,
     @SerializedName("lessonId")
-    private val lessonId: Int
+    val lessonId: Int
 )

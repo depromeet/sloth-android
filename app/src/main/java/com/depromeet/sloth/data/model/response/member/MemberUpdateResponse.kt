@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MemberUpdateResponse(
     @SerializedName("memberName")
-    var memberName: String = ""
+    val memberName: String = ""
 ) {
     companion object {
         val EMPTY = MemberUpdateResponse("")

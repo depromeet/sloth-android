@@ -36,7 +36,6 @@ class LessonListAdapter(
                 ItemHomeLessonListPlanningBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
-
             BodyType.PASSED -> LessonListPassedViewHolder(
                 ItemHomeLessonListFinishedBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick

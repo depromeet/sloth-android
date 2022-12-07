@@ -1,13 +1,13 @@
 package com.depromeet.sloth.ui.list
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.repository.LessonRepository
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
+import com.depromeet.sloth.data.repository.LessonRepository
 import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
-import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,6 +29,10 @@ class LessonListViewModel @Inject constructor(
     val allLessonList: Flow<Result<List<LessonAllResponse>>> =
         lessonRepository.fetchAllLessonList()
 
+//    private val _updateLessonCountState = MutableSharedFlow<Result<LessonUpdateCountResponse>>()
+//    val updateLessonCountState:SharedFlow<Result<LessonUpdateCountResponse>>
+//            = _updateLessonCountState.asSharedFlow()
+
     private val _onRegisterLessonClick = MutableSharedFlow<Unit>()
     val onRegisterLessonClick: SharedFlow<Unit> = _onRegisterLessonClick.asSharedFlow()
 
@@ -43,6 +47,16 @@ class LessonListViewModel @Inject constructor(
         withContext(viewModelScope.coroutineContext) {
             lessonRepository.updateLessonCount(count = count, lessonId = lessonId)
         }
+
+//    fun updateLessonCount(count: Int, lessonId: Int) = viewModelScope.launch {
+//        lessonRepository.updateLessonCount(count, lessonId)
+//            .onEach {
+//                if (it is Result.Loading) _updateLessonCountState.emit(Result.Loading)
+//                else _updateLessonCountState.emit(Result.UnLoading)
+//            }.collect {
+//                _updateLessonCountState.emit(it)
+//            }
+//    }
 
     fun registerLessonClick() = viewModelScope.launch {
         _onRegisterLessonClick.emit(Unit)

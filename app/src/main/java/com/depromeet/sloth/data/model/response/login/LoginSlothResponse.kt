@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginSlothResponse(
     @SerializedName("accessToken")
-    var accessToken: String = "",
+    val accessToken: String = "",
     @SerializedName("accessTokenExpireTime")
-    var accessTokenExpireTime: String = "",
+    val accessTokenExpireTime: String = "",
     @SerializedName("refreshToken")
-    var refreshToken: String = "",
+    val refreshToken: String = "",
     @SerializedName("refreshTokenExpireTime")
-    var refreshTokenExpireTime: String = "",
+    val refreshTokenExpireTime: String = "",
     @SerializedName("isNewMember")
-    var isNewMember: Boolean = false
+    val isNewMember: Boolean = false
 )

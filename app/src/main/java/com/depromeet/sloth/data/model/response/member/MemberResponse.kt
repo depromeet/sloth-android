@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class MemberResponse(
     @SerializedName("email")
-    var email: String = "",
+    val email: String = "",
     @SerializedName("memberId")
-    var memberId: Int = 0,
+    val memberId: Int = 0,
     @SerializedName("memberName")
-    var memberName: String = "",
+    val memberName: String = "",
     @SerializedName("isEmailProvided")
-    var isEmailProvided: Boolean = false,
+    val isEmailProvided: Boolean = false,
     @SerializedName("isPushAlarmUse")
-    var isPushAlarmUse: Boolean = false,
+    val isPushAlarmUse: Boolean = false,
 ) {
     companion object {
         val EMPTY = MemberResponse("", 0, "", false, false)

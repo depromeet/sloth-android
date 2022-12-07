@@ -41,12 +41,17 @@ class RegisterLessonCheckFragment :
                                 showToast(getString(R.string.lesson_register_complete))
                                 requireActivity().finish()
                             }
-                            is Result.Unauthorized -> {
-                                showForbiddenDialog(requireContext()) { registerLessonViewModel.removeAuthToken() }
-                            }
                             is Result.Error -> {
-                                Timber.tag("Register Error").d(result.throwable)
-                                showToast(getString(R.string.lesson_register_fail))
+                                when(result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                            registerLessonViewModel.removeAuthToken()
+                                        }
+
+                                    else -> {
+                                        Timber.tag("Register Error").d(result.throwable)
+                                        showToast(getString(R.string.lesson_register_fail))
+                                    }
+                                }
                             }
                         }
                     }

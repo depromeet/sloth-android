@@ -59,8 +59,19 @@ class LessonDetailActivity :
                                 is Result.Success<LessonDetailResponse> -> {
                                     lessonDetailViewModel.setLessonDetailInfo(result.data)
                                 }
-                                is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
-                                is Result.Error -> Timber.tag("fetch Error").d(result.throwable)
+                                is Result.Error -> {
+                                    when (result.statusCode) {
+                                        401 -> {
+                                            showForbiddenDialog(this@LessonDetailActivity) {
+                                                lessonDetailViewModel.removeAuthToken()
+                                            }
+                                        }
+                                        else -> {
+                                            Timber.tag("Fetch Error").d(result.throwable)
+                                            showToast(getString(R.string.lesson_detail_info_fail))
+                                        }
+                                    }
+                                }
                             }
                         }
                 }
@@ -75,10 +86,16 @@ class LessonDetailActivity :
                                     showToast(getString(R.string.lesson_delete_complete))
                                     finish()
                                 }
-                                is Result.Unauthorized -> showForbiddenDialog(this@LessonDetailActivity) { lessonDetailViewModel.removeAuthToken() }
                                 is Result.Error -> {
-                                    Timber.tag("fetch Error").d(result.throwable)
-                                    showToast(getString(R.string.lesson_delete_fail))
+                                    when (result.statusCode) {
+                                        401 -> showForbiddenDialog(this@LessonDetailActivity) {
+                                            lessonDetailViewModel.removeAuthToken()
+                                        }
+                                        else -> {
+                                            Timber.tag("Fetch Error").d(result.throwable)
+                                            showToast(getString(R.string.lesson_delete_fail))
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -119,6 +136,6 @@ class LessonDetailActivity :
                 lessonDetailViewModel.deleteLesson()
             }
         }
-        dlg.start()
+        dlg.show()
     }
 }

@@ -34,12 +34,7 @@ class NotificationRepositoryImpl @Inject constructor(
                     }
                     emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
                 }
-                401 -> {
-                    preferences.removeAuthToken()
-                    emit(Result.Unauthorized(Exception(response.message())))
-                }
-
-                else -> emit(Result.Error(Exception(response.message())))
+                else -> emit(Result.Error(Exception(response.message()), response.code()))
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
@@ -62,12 +57,7 @@ class NotificationRepositoryImpl @Inject constructor(
                     }
                     emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
                 }
-                401 -> {
-                    preferences.removeAuthToken()
-                    emit(Result.Unauthorized(Exception(response.message())))
-                }
-
-                else -> emit(Result.Error(Exception(response.message())))
+                else -> emit(Result.Error(Exception(response.message()), response.code()))
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
@@ -92,11 +82,6 @@ class NotificationRepositoryImpl @Inject constructor(
 //                    }
 //                    emit(Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY))
 //                }
-//                401 -> {
-//                    preferences.removeAuthToken()
-//                    emit(Result.Unauthorized(Exception(response.message())))
-//                }
-//
 //                else -> emit(Result.Error(Exception(response.message())))
 //            }
 //        }
@@ -119,11 +104,6 @@ class NotificationRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: NotificationFetchResponse.EMPTY))
             }
-            401 -> {
-                preferences.removeAuthToken()
-                emit(Result.Unauthorized(Exception(response.message())))
-            }
-
             else -> emit(Result.Error(Exception(response.message())))
         }
     }

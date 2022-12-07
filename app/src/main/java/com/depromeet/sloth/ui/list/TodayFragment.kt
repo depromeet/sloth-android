@@ -75,8 +75,17 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         is Result.Loading -> showProgress()
                         is Result.UnLoading -> hideProgress()
                         is Result.Success -> setLessonList(result.data)
-                        is Result.Unauthorized -> showForbiddenDialog(requireContext()) { lessonListViewModel.removeAuthToken() }
-                        is Result.Error -> showToast(getString(R.string.lesson_info_fetch_fail))
+                        is Result.Error -> {
+                            when (result.statusCode) {
+                                401 -> showForbiddenDialog(requireContext()) {
+                                    lessonListViewModel.removeAuthToken()
+                                }
+                                else -> {
+                                    Timber.tag("Fetch Error").d(result.throwable)
+                                    showToast(getString(R.string.lesson_info_fetch_fail))
+                                }
+                            }
+                        }
                     }
                 }
         }
@@ -107,7 +116,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             }
 
             false -> {
-                Timber.d("lessonTodayList: $lessonTodayList")
                 val lessonFinishedList = mutableListOf<LessonTodayResponse>()
                 val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
                 lessonTodayList.forEach { lesson ->
@@ -129,7 +137,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     delayTime
                                 )
                             }
-
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
                                 updateLessonCount(
                                     lessonToday,
@@ -139,7 +146,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     delayTime
                                 )
                             }
-
                             else -> Unit
                         }
                     }
@@ -171,7 +177,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
                                 showCompleteDialog(lessonToday.lessonId.toString())
                             }
-
                             else -> {}
                         }
                     }
@@ -223,6 +228,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         }
     }
 
+    //TODO Flow 로 변경
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
@@ -231,41 +237,40 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         delayTime: Long
     ) {
         mainScope {
-            showProgress()
-
             lessonListViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
                 when (result) {
                     is Result.Loading -> showProgress()
+                    is Result.UnLoading -> hideProgress()
                     is Result.Success<LessonUpdateCountResponse> -> {
                         delay(delayTime)
-
                         when (bodyType) {
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (result.data.presentNumber == lesson.untilTodayNumber
                                 //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
                                 ) fetchLessonList()
                             }
-
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (result.data.presentNumber < lesson.untilTodayNumber ||
                                     result.data.presentNumber == lesson.totalNumber ||
                                     result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
                                 ) fetchLessonList()
                             }
-
                             else -> Unit
                         }
                     }
-
                     is Result.Error -> {
-                        showToast(getString(R.string.lesson_info_update_fail))
-                        Timber.tag("Error").d(result.throwable)
+                        when (result.statusCode) {
+                            401 -> showForbiddenDialog(requireContext()) {
+                                lessonListViewModel.removeAuthToken()
+                            }
+                            else -> {
+                                showToast(getString(R.string.lesson_info_update_fail))
+                                Timber.tag("Error").d(result.throwable)
+                            }
+                        }
                     }
-
-                    else -> Unit
                 }
             }
-            hideProgress()
         }
     }
 
@@ -276,7 +281,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                 finishLesson(lessonId)
             }
         }
-        completeDialog.start()
+        completeDialog.show()
     }
 
     private fun finishLesson(lessonId: String) {
@@ -293,16 +298,21 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             fetchLessonList()
                             showToast(getString(R.string.lesson_finish_complete))
                         }
-
-                        is Result.Unauthorized -> showForbiddenDialog(
-                            requireContext()
-                        ) { lessonListViewModel.removeAuthToken() }
-
-                        is Result.Error -> showToast(
-                            getString(
-                                R.string.lesson_finish_fail
-                            )
-                        )
+                        is Result.Error -> {
+                            when (result.statusCode) {
+                                401 -> showForbiddenDialog(requireContext()) {
+                                    lessonListViewModel.removeAuthToken()
+                                }
+                                else -> {
+                                    Timber.tag("Finish Error").d(result.throwable)
+                                    showToast(
+                                        getString(
+                                            R.string.lesson_finish_fail
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
         }

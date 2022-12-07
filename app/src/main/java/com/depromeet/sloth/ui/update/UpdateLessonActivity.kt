@@ -10,11 +10,11 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
+import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
@@ -71,10 +71,16 @@ class UpdateLessonActivity :
                                 showToast(getString(R.string.lesson_info_update_complete))
                                 finish()
                             }
-                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is Result.Error -> {
-                                Timber.tag("fetch Error").d(result.throwable)
-                                showToast(getString(R.string.lesson_info_update_fail))
+                                when(result.statusCode) {
+                                    401 -> showForbiddenDialog(this@UpdateLessonActivity) {
+                                        updateLessonViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.lesson_info_update_fail))
+                                    }
+                                }
                             }
                         }
                     }
@@ -86,16 +92,20 @@ class UpdateLessonActivity :
                         when (result) {
                             is Result.Loading -> showProgress(this@UpdateLessonActivity)
                             is Result.UnLoading -> hideProgress()
-                            //TODO UDF 에 위반 코드 개선
                             is Result.Success -> {
                                 setLessonCategoryInfo(result.data)
                                 bindLessonCategoryAdapter()
                             }
-                            // TODO Error 내부로 이동
-                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
                             is Result.Error -> {
-                                Timber.tag("fetch Error").d(result.throwable)
-                                showToast(getString(R.string.cannot_get_lesson_category))
+                                when(result.statusCode) {
+                                    401 ->  showForbiddenDialog(this@UpdateLessonActivity) {
+                                        updateLessonViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                    }
+                                }
                             }
                         }
                     }
@@ -112,9 +122,17 @@ class UpdateLessonActivity :
                                 setLessonSiteInfo(result.data)
                                 bindLessonSiteAdapter()
                             }
-                            // TODO Error 내부로 이동
-                            is Result.Unauthorized -> showForbiddenDialog(this@UpdateLessonActivity) { updateLessonViewModel.removeAuthToken() }
-                            is Result.Error -> showToast(getString(R.string.cannot_get_lesson_category))
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(this@UpdateLessonActivity) {
+                                        updateLessonViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                    }
+                                }
+                            }
                         }
                     }
             }

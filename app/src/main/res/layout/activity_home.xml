@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_home_menu_rounded"
-            android:elevation="20dp"
+            android:paddingVertical="8dp"
             app:itemBackground="@color/white"
             app:itemTextColor="@drawable/selector_menu_bottom_text"
             app:layout_constraintBottom_toBottomOf="parent"
