@@ -6,6 +6,7 @@ import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.service.MemberService
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch

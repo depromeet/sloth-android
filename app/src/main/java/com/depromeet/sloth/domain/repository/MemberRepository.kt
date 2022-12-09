@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.repository
+package com.depromeet.sloth.domain.repository
 
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest

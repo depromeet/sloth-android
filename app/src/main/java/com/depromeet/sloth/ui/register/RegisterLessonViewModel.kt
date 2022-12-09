@@ -9,8 +9,8 @@ import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.LessonRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow

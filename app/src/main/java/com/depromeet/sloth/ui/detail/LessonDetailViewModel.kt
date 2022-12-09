@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.LessonRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.common.Result
 import dagger.hilt.android.lifecycle.HiltViewModel

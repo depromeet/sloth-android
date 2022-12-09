@@ -12,6 +12,6 @@ interface SlothLoginService {
     @POST("api/oauth/login")
     suspend fun fetchSlothAuthInfo(
         @Header(KEY_AUTHORIZATION) accessToken: String?,
-        @Body request: LoginSlothRequest
+        @Body loginSlothRequest: LoginSlothRequest
     ): Response<LoginSlothResponse>?
 }

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.repository
+package com.depromeet.sloth.domain.repository
 
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
@@ -6,7 +6,7 @@ import com.depromeet.sloth.common.Result
 
 interface LoginRepository {
 
-    fun checkedLoggedIn(): Boolean
+    fun checkLoggedIn(): Boolean
 
     suspend fun fetchSlothAuthInfo(
         authToken: String,

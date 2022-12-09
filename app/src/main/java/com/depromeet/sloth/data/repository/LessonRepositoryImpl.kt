@@ -7,6 +7,7 @@ import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.*
 import com.depromeet.sloth.data.network.service.LessonService
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import kotlinx.coroutines.flow.catch

@@ -36,7 +36,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
         // 앱 진입시 fcm 토큰을 서버에 전달하는 방식으로 로직 변경
         if (savedInstanceState == null) {
-            homeViewModel.createAndRegisterFCMToken(deviceId)
+            homeViewModel.createAndRegisterNotificationToken(deviceId)
         }
 
         initNavigation()

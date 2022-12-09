@@ -7,8 +7,8 @@ import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
-import com.depromeet.sloth.data.repository.MemberRepository
-import com.depromeet.sloth.data.repository.NotificationRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE

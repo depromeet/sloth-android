@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
-import com.depromeet.sloth.data.repository.MemberRepository
-import com.depromeet.sloth.data.repository.NotificationRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,8 +33,8 @@ class HomeViewModel @Inject constructor(
     val notificationRegisterState: SharedFlow<Result<String>> =
         _notificationRegisterState.asSharedFlow()
 
-    fun fetchFCMToken(deviceId: String) = viewModelScope.launch {
-        notificationRepository.fetchFCMToken(deviceId)
+    fun fetchNotificationToken(deviceId: String) = viewModelScope.launch {
+        notificationRepository.fetchNotificationToken(deviceId)
             .onEach {
                 if (it is Result.Loading) _notificationFetchState.emit(Result.Loading)
                 else _notificationFetchState.emit(Result.UnLoading)
@@ -43,7 +43,7 @@ class HomeViewModel @Inject constructor(
             }
     }
 
-    fun createAndRegisterFCMToken(deviceId: String) {
+    fun createAndRegisterNotificationToken(deviceId: String) {
         messaging.token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Timber.w(task.exception, "Fetching FCM registration token failed")
@@ -51,14 +51,14 @@ class HomeViewModel @Inject constructor(
             }
             val fcmToken = task.result
             Timber.tag("FCM Token is created").d(fcmToken)
-            registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken))
+            registerNotificationToken(NotificationRegisterRequest(deviceId, fcmToken))
         }
     }
 
-    private fun registerFCMToken(
+    private fun registerNotificationToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
-        notificationRepository.registerFCMToken(notificationRegisterRequest)
+        notificationRepository.registerNotificationToken(notificationRegisterRequest)
             .onEach {
                 if (it is Result.Loading) _notificationRegisterState.emit(Result.Loading)
                 else _notificationRegisterState.emit(Result.UnLoading)

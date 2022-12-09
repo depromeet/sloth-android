@@ -17,7 +17,7 @@ interface LessonService {
 
     @PATCH("api/lesson/number")
     suspend fun updateLessonCount(
-        @Body request: LessonUpdateCountRequest
+        @Body lessonUpdateCountRequest: LessonUpdateCountRequest
     ): Response<LessonUpdateCountResponse>?
 
     @GET("api/lesson/detail/{lessonId}")

@@ -1,12 +1,12 @@
 package com.depromeet.sloth.di
 
-import com.depromeet.sloth.data.repository.LessonRepository
+import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.data.repository.LessonRepositoryImpl
-import com.depromeet.sloth.data.repository.LoginRepository
+import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.data.repository.LoginRepositoryImpl
-import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.data.repository.MemberRepositoryImpl
-import com.depromeet.sloth.data.repository.NotificationRepository
+import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.data.repository.NotificationRepositoryImpl
 import dagger.Binds
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.data.repository
+package com.depromeet.sloth.domain.repository
 
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
 
-    fun registerFCMToken(notificationRegisterRequest: NotificationRegisterRequest): Flow<Result<String>>
+    fun registerNotificationToken(notificationRegisterRequest: NotificationRegisterRequest): Flow<Result<String>>
 
     fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest): Flow<Result<String>>
 
-    fun fetchFCMToken(deviceId: String): Flow<Result<NotificationFetchResponse>>
+    fun fetchNotificationToken(deviceId: String): Flow<Result<NotificationFetchResponse>>
 }

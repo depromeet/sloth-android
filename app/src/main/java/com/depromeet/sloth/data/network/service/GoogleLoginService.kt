@@ -10,6 +10,6 @@ interface GoogleLoginService {
 
     @POST("oauth2/v4/token")
     suspend fun fetchGoogleAuthInfo(
-        @Body request: LoginGoogleRequest
+        @Body loginGoogleRequest: LoginGoogleRequest
     ): Response<LoginGoogleResponse>?
 }

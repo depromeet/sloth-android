@@ -5,8 +5,8 @@ import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.repository.MemberRepository
+import com.depromeet.sloth.domain.repository.LessonRepository
+import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

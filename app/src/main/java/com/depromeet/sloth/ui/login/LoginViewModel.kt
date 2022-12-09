@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.repository.LoginRepository
+import com.depromeet.sloth.domain.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun checkLoggedIn() = viewModelScope.launch {
-        _loginState.emit(loginRepository.checkedLoggedIn())
+        _loginState.emit(loginRepository.checkLoggedIn())
     }
 
     fun clickLoginBtn() = viewModelScope.launch {

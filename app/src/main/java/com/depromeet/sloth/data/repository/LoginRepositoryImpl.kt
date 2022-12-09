@@ -9,6 +9,7 @@ import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.data.network.service.GoogleLoginService
 import com.depromeet.sloth.data.network.service.SlothLoginService
 import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
 import retrofit2.Retrofit
@@ -20,7 +21,7 @@ class LoginRepositoryImpl @Inject constructor(
     private val googleLoginService: GoogleLoginService
 ) : LoginRepository {
 
-    override fun checkedLoggedIn(): Boolean {
+    override fun checkLoggedIn(): Boolean {
         return preferences.getAccessToken()
             .isNotEmpty() && preferences.getRefreshToken().isNotEmpty()
     }
