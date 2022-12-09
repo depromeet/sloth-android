@@ -8,7 +8,6 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -20,24 +19,22 @@ import javax.inject.Inject
  * 나나공 백엔드 설계대로는 처음 401 코드를 받았을 때 Access Token을 내려주지 않고, Refresh Token으로 재요청 해야 함
  * *** authenticate() 메서드 실행시 Response에 AccessToken 필드가 포함되어 있지 않으면 처음으로 401 응답 코드를 받은 상태 ***
  */
+// TODO DataStore 로 migration
 class AccessTokenAuthenticator @Inject constructor(
     private val preferences: Preferences
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
         val accessToken = preferences.getAccessToken()
-        Timber.tag("accessToken").d(accessToken)
 
         if (hasNotAccessTokenOnResponse(response)) {
             synchronized(this) {
                 val newAccessToken = preferences.getAccessToken()
                 if (accessToken != newAccessToken) {
-                    Timber.tag("newAccessToken").d(newAccessToken)
                     return newRequestWithAccessToken(response.request, newAccessToken)
                 }
 
                 val refreshToken = preferences.getRefreshToken()
-                Timber.tag("refreshToken").d(refreshToken)
                 return newRequestWithAccessToken(response.request, refreshToken)
             }
         }

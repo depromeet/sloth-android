@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.startup)
 
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
