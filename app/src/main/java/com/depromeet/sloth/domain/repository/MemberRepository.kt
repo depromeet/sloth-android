@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MemberRepository {
 
-    fun fetchMemberInfo(): Flow<Result<MemberResponse>>
+     fun fetchMemberInfo(): Flow<Result<MemberResponse>>
 
     // fun fetchMemberInfo(): Flow<MemberResponse>
 

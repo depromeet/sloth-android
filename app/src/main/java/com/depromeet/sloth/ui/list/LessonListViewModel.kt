@@ -1,13 +1,16 @@
 package com.depromeet.sloth.ui.list
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.domain.repository.LessonRepository
-import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.domain.use_case.lesson.FinishLessonUseCase
+import com.depromeet.sloth.domain.use_case.lesson.GetAllLessonListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.GetTodayLessonListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonCountUseCase
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,15 +22,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
-    private val lessonRepository: LessonRepository,
-    memberRepository: MemberRepository,
-) : BaseViewModel(memberRepository) {
+    getLessonTodayListUseCase: GetTodayLessonListUseCase,
+    getAllLessonListUseCase: GetAllLessonListUseCase,
+    private val updateLessonCountUseCase: UpdateLessonCountUseCase,
+    private val finishLessonUseCase: FinishLessonUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+) : ViewModel() {
 
     val todayLessonList: Flow<Result<List<LessonTodayResponse>>> =
-        lessonRepository.fetchTodayLessonList()
+        getLessonTodayListUseCase()
 
     val allLessonList: Flow<Result<List<LessonAllResponse>>> =
-        lessonRepository.fetchAllLessonList()
+        getAllLessonListUseCase()
 
 //    private val _updateLessonCountState = MutableSharedFlow<Result<LessonUpdateCountResponse>>()
 //    val updateLessonCountState:SharedFlow<Result<LessonUpdateCountResponse>>
@@ -41,11 +47,11 @@ class LessonListViewModel @Inject constructor(
         _onNavigateToNotificationListClick.asSharedFlow()
 
     fun finishLesson(lessonId: String): Flow<Result<LessonFinishResponse>> =
-        lessonRepository.finishLesson(lessonId)
+        finishLessonUseCase(lessonId)
 
     suspend fun updateLessonCount(count: Int, lessonId: Int) =
         withContext(viewModelScope.coroutineContext) {
-            lessonRepository.updateLessonCount(count = count, lessonId = lessonId)
+            updateLessonCountUseCase(count = count, lessonId = lessonId)
         }
 
 //    fun updateLessonCount(count: Int, lessonId: Int) = viewModelScope.launch {
@@ -64,5 +70,9 @@ class LessonListViewModel @Inject constructor(
 
     fun navigateToNotificationListClick() = viewModelScope.launch {
         _onNavigateToNotificationListClick.emit(Unit)
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 }

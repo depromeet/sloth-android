@@ -1,12 +1,13 @@
 package com.depromeet.sloth.ui.home
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
-import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.domain.repository.NotificationRepository
-import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.notification.GetNotificationTokenUseCase
+import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,10 +20,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val notificationRepository: NotificationRepository,
+    private val getNotificationTokenUseCase: GetNotificationTokenUseCase,
+    private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val messaging: FirebaseMessaging,
-    memberRepository: MemberRepository
-) : BaseViewModel(memberRepository) {
+) : ViewModel() {
 
     private val _notificationFetchState =
         MutableSharedFlow<Result<NotificationFetchResponse>>()
@@ -34,7 +36,7 @@ class HomeViewModel @Inject constructor(
         _notificationRegisterState.asSharedFlow()
 
     fun fetchNotificationToken(deviceId: String) = viewModelScope.launch {
-        notificationRepository.fetchNotificationToken(deviceId)
+        getNotificationTokenUseCase(deviceId)
             .onEach {
                 if (it is Result.Loading) _notificationFetchState.emit(Result.Loading)
                 else _notificationFetchState.emit(Result.UnLoading)
@@ -58,12 +60,16 @@ class HomeViewModel @Inject constructor(
     private fun registerNotificationToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
-        notificationRepository.registerNotificationToken(notificationRegisterRequest)
+        registerNotificationTokenUseCase(notificationRegisterRequest)
             .onEach {
                 if (it is Result.Loading) _notificationRegisterState.emit(Result.Loading)
                 else _notificationRegisterState.emit(Result.UnLoading)
             }.collect {
                 _notificationRegisterState.emit(it)
             }
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 }

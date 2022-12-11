@@ -1,13 +1,14 @@
 package com.depromeet.sloth.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.domain.repository.LessonRepository
-import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
+import com.depromeet.sloth.domain.use_case.lesson.GetLessonDetailUseCase
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -15,10 +16,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
-    private val lessonRepository: LessonRepository,
+    private val getLessonDetailUseCase: GetLessonDetailUseCase,
+    private val deleteLessonUseCase: DeleteLessonUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     savedStateHandle: SavedStateHandle,
-    memberRepository: MemberRepository,
-) : BaseViewModel(memberRepository) {
+) : ViewModel() {
 
     val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
@@ -41,7 +43,7 @@ class LessonDetailViewModel @Inject constructor(
         get() = _lessonDeleteClick
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        lessonRepository.fetchLessonDetail(lessonId)
+        getLessonDetailUseCase(lessonId)
             .onEach {
                 if (it is Result.Loading) _lessonDetailState.emit(Result.Loading)
                 else _lessonDetailState.emit(Result.UnLoading)
@@ -51,7 +53,7 @@ class LessonDetailViewModel @Inject constructor(
     }
 
     fun deleteLesson() = viewModelScope.launch {
-        lessonRepository.deleteLesson(lessonId)
+        deleteLessonUseCase(lessonId)
             .onEach {
                 if (it is Result.Loading) _lessonDeleteState.emit(Result.Loading)
                 else _lessonDeleteState.emit(Result.UnLoading)
@@ -70,6 +72,10 @@ class LessonDetailViewModel @Inject constructor(
 
     fun lessonDeleteClick() = viewModelScope.launch {
         _lessonDeleteClick.emit(Unit)
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 
     companion object {

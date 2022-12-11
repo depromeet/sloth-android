@@ -1,16 +1,19 @@
 package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
-import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.domain.repository.NotificationRepository
+import com.depromeet.sloth.domain.use_case.member.GetMemberInfoUseCase
+import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
+import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
-import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -20,15 +23,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    private val memberRepository: MemberRepository,
-    private val notificationRepository: NotificationRepository,
+    fetchMemberInfoUseCase: GetMemberInfoUseCase,
+    private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
+    private val logOutUseCase: LogOutUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
     savedStateHandle: SavedStateHandle
-) : BaseViewModel(memberRepository) {
+) : ViewModel() {
 
-    val memberState: Flow<Result<MemberResponse>> = memberRepository.fetchMemberInfo()
+    val memberState: Flow<Result<MemberResponse>> = fetchMemberInfoUseCase()
 
 //    val memberState: Flow<Result<MemberResponse>> =
-//        memberRepository.fetchMemberInfo().asResult()
+//        fetchMemberInfoUseCase().asResult()
 
     private val _memberUpdateState = MutableSharedFlow<Result<MemberUpdateResponse>>()
     val memberUpdateState: SharedFlow<Result<MemberUpdateResponse>> =
@@ -73,7 +79,7 @@ class ManageViewModel @Inject constructor(
     val withdrawalClick: SharedFlow<Unit> = _withdrawalClick.asSharedFlow()
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
-        memberRepository.updateMemberInfo(memberUpdateRequest)
+        updateMemberInfoUseCase(memberUpdateRequest)
             .onEach {
                 if (it is Result.Loading) _memberUpdateState.emit(Result.Loading)
                 else _memberUpdateState.emit(Result.UnLoading)
@@ -85,7 +91,7 @@ class ManageViewModel @Inject constructor(
     fun notificationSwitchClick(check: Boolean) {
         if (memberNotificationReceive.value != check) {
             viewModelScope.launch {
-                notificationRepository.updateNotificationStatus(NotificationUpdateRequest(check))
+                updateNotificationStatusUseCase(NotificationUpdateRequest(check))
                     .onEach {
                         if (it is Result.Loading) _notificationReceiveState.emit(Result.Loading)
                         else _notificationReceiveState.emit(Result.UnLoading)
@@ -131,13 +137,17 @@ class ManageViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        memberRepository.logout()
+        logOutUseCase()
             .onEach {
                 if (it is Result.Loading) _memberLogoutState.emit(Result.Loading)
                 else _memberLogoutState.emit(Result.UnLoading)
             }.collect {
                 _memberLogoutState.emit(it)
             }
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 
     companion object {
