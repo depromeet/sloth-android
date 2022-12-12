@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
+import com.depromeet.sloth.util.LoadingDialogUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -30,6 +31,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -56,6 +58,11 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
         _binding = FragmentLoginBottomBinding.inflate(inflater, container, false)
         binding = _binding!!
 
+        binding.apply {
+            vm = loginViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+
         val googleClientId = BuildConfig.GOOGLE_CLIENT_ID
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))
@@ -76,49 +83,64 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
 
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-        initViews()
+        initObserver()
 
         return binding.root
     }
 
-    private fun mainScope(block: suspend () -> Unit) {
-        lifecycleScope.launchWhenCreated {
-            block.invoke()
-        }
-    }
+    private fun initObserver() = with(loginViewModel) {
+        repeatOnStarted {
+            launch {
+                googleLoginClick
+                    .collect {
+                        loginWithGoogle()
+                    }
+            }
 
-    private fun initViews() = with(binding) {
-        clLoginButtonKakao.setOnClickListener { loginWithKakao() }
-        clLoginButtonGoogle.setOnClickListener { loginWithGoogle() }
-    }
+            launch {
+                kakaoLoginClick
+                    .collect {
+                        loginWithKakao()
+                    }
+            }
+            launch {
+                googleLoginState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> LoadingDialogUtil.showProgress(requireContext())
+                            is Result.UnLoading -> LoadingDialogUtil.hideProgress()
+                            is Result.Success<LoginGoogleResponse> -> {
+                                fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
+                            }
 
-    private fun loginWithKakao() {
-        mainScope {
-            try {
-                val oAuthToken = UserApiClient.loginWithKakao(requireContext())
-                Timber.tag(TAG).d("$oAuthToken")
-                loginViewModel.fetchSlothAuthInfo(oAuthToken.accessToken, KAKAO).let { result ->
-                    when (result) {
-                        is Result.Success<LoginSlothResponse> -> {
-                            if (result.data.isNewMember) {
-                                loginListener.onSuccessWithNewMember()
-                            } else {
-                                loginListener.onSuccessWithRegisteredMember()
+                            is Result.Error -> {
+                                Timber.tag("Google Login Fail").d(result.throwable)
+                                loginListener.onError()
                             }
                         }
-                        is Result.Error -> {
-                            Timber.tag("Login Fail").d(result.throwable)
-                            loginListener.onError()
-                        }
-                        else -> {}
                     }
-                }
-            } catch (error: Throwable) {
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    Timber.tag(TAG).d("사용자가 명시적으로 취소")
-                } else {
-                    Timber.tag(TAG).e(error, "인증 에러 발생")
-                }
+            }
+
+            launch {
+                slothLoginState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> LoadingDialogUtil.showProgress(requireContext())
+                            is Result.UnLoading -> LoadingDialogUtil.hideProgress()
+                            is Result.Success<LoginSlothResponse> -> {
+                                if (result.data.isNewMember) {
+                                    loginListener.onSuccessWithNewMember()
+                                } else {
+                                    loginListener.onSuccessWithRegisteredMember()
+                                }
+                            }
+
+                            is Result.Error -> {
+                                Timber.tag("Login Fail").d(result.throwable)
+                                loginListener.onError()
+                            }
+                        }
+                    }
             }
         }
     }
@@ -130,49 +152,27 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
-            mainScope {
-                val authCode = completedTask.getResult(ApiException::class.java)?.serverAuthCode
-                authCode?.run {
-                    var accessToken = ""
-                    loginViewModel.fetchGoogleAuthInfo(this).let { result ->
-                        when (result) {
-                            is Result.Success<LoginGoogleResponse> -> {
-                                Timber.tag("Google Login Success").d("${result.data}")
-                                accessToken = result.data.accessToken
-                            }
-                            is Result.Error -> {
-                                Timber.tag("Google Login Error").d(result.throwable)
-                                loginListener.onError()
-                            }
-                            else -> {}
-                        }
-                    }
-
-                    loginViewModel.fetchSlothAuthInfo(accessToken, GOOGLE).let { result ->
-                        when (result) {
-                            is Result.Success<LoginSlothResponse> -> {
-                                Timber.tag("Login Success").d("${result.data}")
-                                if (result.data.isNewMember) {
-                                    loginListener.onSuccessWithNewMember()
-                                } else {
-                                    loginListener.onSuccessWithRegisteredMember()
-                                }
-                            }
-
-                            is Result.Error -> {
-                                Timber.tag("Login Error").d(result.throwable)
-                                loginListener.onError()
-                            }
-
-                            else -> {}
-                        }
-                    }
-                } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
-            }
+            val authCode = completedTask.getResult(ApiException::class.java)?.serverAuthCode
+            authCode?.run {
+                loginViewModel.fetchGoogleAuthInfo(this)
+            } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Timber.tag("로그인 실패").e("signInResult:failed code=%s", e.statusCode)
+        }
+    }
+
+    private suspend fun loginWithKakao() {
+        try {
+            val oAuthToken = UserApiClient.loginWithKakao(requireContext())
+            loginViewModel.fetchSlothAuthInfo(oAuthToken.accessToken, KAKAO)
+        } catch (error: Throwable) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                Timber.tag(TAG).d("사용자가 명시적으로 취소")
+            } else {
+                Timber.tag(TAG).e(error, "인증 에러 발생")
+            }
         }
     }
 

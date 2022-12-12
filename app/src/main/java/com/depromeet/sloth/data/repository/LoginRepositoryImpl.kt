@@ -12,7 +12,9 @@ import com.depromeet.sloth.data.preferences.Preferences
 import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
-import retrofit2.Retrofit
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -26,52 +28,11 @@ class LoginRepositoryImpl @Inject constructor(
             .isNotEmpty() && preferences.getRefreshToken().isNotEmpty()
     }
 
-    override suspend fun fetchSlothAuthInfo(
-        authToken: String,
-        socialType: String
-    ): Result<LoginSlothResponse> {
-        slothLoginService.fetchSlothAuthInfo(authToken, LoginSlothRequest(socialType = socialType))?.run {
-            val accessToken = body()?.accessToken ?: DEFAULT_STRING_VALUE
-            val refreshToken = body()?.refreshToken ?: DEFAULT_STRING_VALUE
-            preferences.saveAuthToken(accessToken, refreshToken)
-
-            return Result.Success(this.body() ?: LoginSlothResponse())
-        } ?: return Result.Error(Exception("Login Exception"))
-    }
-
-//    override suspend fun fetchSlothAuthInfo(
-//        authToken: String,
-//        socialType: String
-//    ) = flow {
-//        emit(Result.Loading)
-//        val response = slothLoginService.fetchSlothAuthInfo(
-//            authToken,
-//            LoginSlothRequest(socialType = socialType)
-//        )
-//            ?: run {
-//                emit(Result.Error(Exception("Response is null")))
-//                return@flow
-//            }
-//        when (response.code()) {
-//            200 -> {
-//                val accessToken = body()?.accessToken ?: DEFAULT_STRING_VALUE
-//                val refreshToken = body()?.refreshToken ?: DEFAULT_STRING_VALUE
-//                preferences.saveAuthToken(accessToken, refreshToken)
-//
-//                return Result.Success(this.body() ?: LoginSlothResponse())
-//            }
-//
-//            else -> emit(Result.Error(Exception(response.message()), response.code()))
-//        }
-//    }
-//        .catch { throwable -> emit(Result.Error(throwable)) }
-//        .onCompletion { emit(Result.UnLoading) }
-
-    override suspend fun fetchGoogleAuthInfo(
+    override fun fetchGoogleAuthInfo(
         authCode: String
-    ): Result<LoginGoogleResponse> {
-        Retrofit.Builder()
-        googleLoginService.fetchGoogleAuthInfo(
+    ) = flow {
+        emit(Result.Loading)
+        val response = googleLoginService.fetchGoogleAuthInfo(
             LoginGoogleRequest(
                 grant_type = GRANT_TYPE,
                 client_id = BuildConfig.GOOGLE_CLIENT_ID,
@@ -79,8 +40,46 @@ class LoginRepositoryImpl @Inject constructor(
                 redirect_uri = DEFAULT_STRING_VALUE,
                 code = authCode
             )
-        )?.run {
-            return Result.Success(this.body() ?: LoginGoogleResponse())
-        } ?: return Result.Error(Exception("Retrofit Exception"))
+        ) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                emit(Result.Success(response.body() ?: LoginGoogleResponse.EMPTY))
+            }
+
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
     }
+        .catch { throwable -> emit(Result.Error(throwable)) }
+        .onCompletion { emit(Result.UnLoading) }
+
+    override fun fetchSlothAuthInfo(
+        authToken: String,
+        socialType: String
+    ) = flow {
+        emit(Result.Loading)
+        val response = slothLoginService.fetchSlothAuthInfo(
+            authToken,
+            LoginSlothRequest(socialType = socialType)
+        ) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val accessToken = response.body()?.accessToken ?: DEFAULT_STRING_VALUE
+                val refreshToken = response.body()?.refreshToken ?: DEFAULT_STRING_VALUE
+                preferences.saveAuthToken(accessToken, refreshToken)
+
+                emit(Result.Success(response.body() ?: LoginSlothResponse.EMPTY))
+            }
+
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable -> emit(Result.Error(throwable)) }
+        .onCompletion { emit(Result.UnLoading) }
 }
+
