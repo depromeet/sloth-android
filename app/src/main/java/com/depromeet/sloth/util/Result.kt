@@ -1,4 +1,4 @@
-package com.depromeet.sloth.common
+package com.depromeet.sloth.util
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

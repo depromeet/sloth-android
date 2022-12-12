@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*

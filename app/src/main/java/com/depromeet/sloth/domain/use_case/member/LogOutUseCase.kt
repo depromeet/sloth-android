@@ -1,7 +1,7 @@
 package com.depromeet.sloth.domain.use_case.member
 
 import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

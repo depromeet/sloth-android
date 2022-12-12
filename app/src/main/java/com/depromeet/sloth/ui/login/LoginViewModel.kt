@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.domain.use_case.login.CheckLoggedInUseCase

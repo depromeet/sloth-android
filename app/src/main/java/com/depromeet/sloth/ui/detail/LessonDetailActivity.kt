@@ -13,7 +13,7 @@ import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity

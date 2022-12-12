@@ -9,7 +9,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayBinding

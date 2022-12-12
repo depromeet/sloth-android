@@ -17,7 +17,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

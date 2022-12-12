@@ -32,7 +32,6 @@
                 android:textColor="#222222"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                android:translationY="-1.8sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -66,7 +65,6 @@
                 android:lineSpacingExtra="3sp"
                 android:text="@string/login_google"
                 android:textColor="#D9000000"
-                android:translationY="-1.6sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +100,6 @@
                 android:lineSpacingExtra="3sp"
                 android:text="@string/login_kakao"
                 android:textColor="#D9000000"
-                android:translationY="-1.6sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

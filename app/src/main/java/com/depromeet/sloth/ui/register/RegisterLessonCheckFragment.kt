@@ -9,7 +9,7 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber

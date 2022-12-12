@@ -2,7 +2,7 @@ package com.depromeet.sloth.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase

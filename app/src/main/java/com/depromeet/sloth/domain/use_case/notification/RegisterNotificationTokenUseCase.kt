@@ -2,7 +2,7 @@ package com.depromeet.sloth.domain.use_case.notification
 
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.domain.repository.NotificationRepository
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 
 import javax.inject.Inject

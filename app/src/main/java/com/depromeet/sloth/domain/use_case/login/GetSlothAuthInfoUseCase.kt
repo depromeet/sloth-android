@@ -1,6 +1,6 @@
 package com.depromeet.sloth.domain.use_case.login
 
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.Flow

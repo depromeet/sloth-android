@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted

@@ -1,7 +1,7 @@
 package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.login.LoginGoogleRequest
 import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse

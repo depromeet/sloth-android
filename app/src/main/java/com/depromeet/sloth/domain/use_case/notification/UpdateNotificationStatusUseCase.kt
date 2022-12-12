@@ -1,6 +1,6 @@
 package com.depromeet.sloth.domain.use_case.notification
 
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow

@@ -12,7 +12,7 @@ import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface LessonRepository {

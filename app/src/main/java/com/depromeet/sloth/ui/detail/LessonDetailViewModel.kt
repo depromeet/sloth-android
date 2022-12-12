@@ -3,7 +3,7 @@ package com.depromeet.sloth.ui.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase

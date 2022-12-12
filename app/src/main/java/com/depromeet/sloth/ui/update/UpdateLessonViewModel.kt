@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
