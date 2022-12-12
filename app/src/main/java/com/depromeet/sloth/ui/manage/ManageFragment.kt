@@ -42,7 +42,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             vm = manageViewModel
         }
         dialogBinding = DialogManageUpdateMemberInfoBinding.inflate(layoutInflater)
-
         initObserver()
     }
 

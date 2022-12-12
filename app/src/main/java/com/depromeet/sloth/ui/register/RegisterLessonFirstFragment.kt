@@ -51,7 +51,6 @@ class RegisterLessonFirstFragment :
         bind {
             vm = registerLessonViewModel
         }
-
         initViews()
         initObserver()
     }

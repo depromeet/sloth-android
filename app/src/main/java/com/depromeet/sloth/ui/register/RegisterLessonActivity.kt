@@ -17,6 +17,7 @@ class RegisterLessonActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         initNavigation()
         initListener()
     }

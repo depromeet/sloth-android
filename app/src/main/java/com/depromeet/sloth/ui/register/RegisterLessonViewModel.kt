@@ -180,23 +180,6 @@ class RegisterLessonViewModel @Inject constructor(
         initLessonStartDate()
     }
 
-//    private suspend fun fetchLessonCategoryList() {
-//        when(val lessonCategoryListResponse = lessonRepository.fetchLessonCategoryList()) {
-//            is Result.Success -> setLessonCategoryList(lessonCategoryListResponse.data)
-//            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
-//            else -> return
-//        }
-//    }
-
-    //initView 의 bindAdapter 와 타이밍 이슈
-//    private suspend fun fetchLessonSiteList() {
-//        when(val lessonSiteListResponse = lessonRepository.fetchLessonSiteList()) {
-//            is Result.Success -> setLessonSiteList(lessonSiteListResponse.data)
-//            is Result.Error -> { _errorToast.emit(stringResourcesProvider.getString(R.string.error_message))}
-//            else -> return
-//        }
-//    }
-
     fun setLessonStartDate(calendar: Calendar) {
         _startDate.value = calendar.time
         _lessonStartDate.value = getPickerDateToDash(startDate.value)

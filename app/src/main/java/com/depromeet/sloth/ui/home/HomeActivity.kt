@@ -38,7 +38,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
         if (savedInstanceState == null) {
             homeViewModel.createAndRegisterNotificationToken(deviceId)
         }
-
         initNavigation()
         initObserver()
     }

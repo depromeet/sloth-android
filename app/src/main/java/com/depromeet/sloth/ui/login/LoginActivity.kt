@@ -41,7 +41,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             }
 
             launch {
-                openLoginBottomSheetEvent
+                openLoginBottomSheet
                     .collect {
                         openLoginBottomSheet()
                     }

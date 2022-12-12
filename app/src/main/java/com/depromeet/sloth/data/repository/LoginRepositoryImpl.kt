@@ -39,6 +39,34 @@ class LoginRepositoryImpl @Inject constructor(
         } ?: return Result.Error(Exception("Login Exception"))
     }
 
+//    override suspend fun fetchSlothAuthInfo(
+//        authToken: String,
+//        socialType: String
+//    ) = flow {
+//        emit(Result.Loading)
+//        val response = slothLoginService.fetchSlothAuthInfo(
+//            authToken,
+//            LoginSlothRequest(socialType = socialType)
+//        )
+//            ?: run {
+//                emit(Result.Error(Exception("Response is null")))
+//                return@flow
+//            }
+//        when (response.code()) {
+//            200 -> {
+//                val accessToken = body()?.accessToken ?: DEFAULT_STRING_VALUE
+//                val refreshToken = body()?.refreshToken ?: DEFAULT_STRING_VALUE
+//                preferences.saveAuthToken(accessToken, refreshToken)
+//
+//                return Result.Success(this.body() ?: LoginSlothResponse())
+//            }
+//
+//            else -> emit(Result.Error(Exception(response.message()), response.code()))
+//        }
+//    }
+//        .catch { throwable -> emit(Result.Error(throwable)) }
+//        .onCompletion { emit(Result.UnLoading) }
+
     override suspend fun fetchGoogleAuthInfo(
         authCode: String
     ): Result<LoginGoogleResponse> {

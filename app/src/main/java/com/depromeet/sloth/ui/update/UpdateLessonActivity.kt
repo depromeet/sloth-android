@@ -53,7 +53,6 @@ class UpdateLessonActivity :
         bind {
             vm = updateLessonViewModel
         }
-
         initViews()
         initListener()
         initObserver()

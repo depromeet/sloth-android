@@ -13,5 +13,10 @@ interface LoginRepository {
         socialType: String,
     ): Result<LoginSlothResponse>
 
+//    suspend fun fetchSlothAuthInfo(
+//        authToken: String,
+//        socialType: String,
+//    ): Flow<Result<LoginSlothResponse>>
+
     suspend fun fetchGoogleAuthInfo(authCode: String): Result<LoginGoogleResponse>
 }

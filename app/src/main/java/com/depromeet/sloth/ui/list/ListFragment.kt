@@ -37,7 +37,6 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
         bind {
             vm = lessonListViewModel
         }
-
         initViews()
         initObserver()
     }

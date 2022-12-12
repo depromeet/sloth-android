@@ -8,6 +8,7 @@ import com.depromeet.sloth.domain.use_case.login.GetSlothAuthInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,12 +21,10 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _loginState = MutableSharedFlow<Boolean>(replay = 1)
-    val loginState: SharedFlow<Boolean>
-        get() = _loginState
+    val loginState: SharedFlow<Boolean> = _loginState.asSharedFlow()
 
-    private val _openLoginBottomSheetEvent = MutableSharedFlow<Unit>()
-    val openLoginBottomSheetEvent: SharedFlow<Unit>
-        get() = _openLoginBottomSheetEvent
+    private val _openLoginBottomSheet = MutableSharedFlow<Unit>()
+    val openLoginBottomSheet: SharedFlow<Unit> = _openLoginBottomSheet.asSharedFlow()
 
     init {
         checkLoggedIn()
@@ -36,7 +35,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun clickLoginBtn() = viewModelScope.launch {
-        _openLoginBottomSheetEvent.emit(Unit)
+        _openLoginBottomSheet.emit(Unit)
     }
 
     suspend fun fetchGoogleAuthInfo(authCode: String) =

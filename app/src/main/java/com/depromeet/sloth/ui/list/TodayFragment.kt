@@ -39,7 +39,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
         bind {
             vm = lessonListViewModel
         }
-
         initViews()
         fetchLessonList()
         initObserver()

@@ -63,6 +63,7 @@
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:launchMode="singleTask"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
