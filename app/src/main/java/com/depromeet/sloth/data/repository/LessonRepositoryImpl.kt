@@ -14,7 +14,7 @@ import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.data.network.service.LessonService
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
@@ -33,7 +33,7 @@ import javax.inject.Inject
 // TODO HTTP 코드 응답 처리 함수로 만들어 모듈화
 // TODO State emit helper 함수 적용
 class LessonRepositoryImpl @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: PreferenceManager,
     private val lessonService: LessonService
 ) : LessonRepository {
 

@@ -6,7 +6,7 @@ import javax.inject.Inject
 class CheckLoggedInUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
-    operator fun invoke(): Boolean {
+    suspend operator fun invoke(): Boolean {
         return loginRepository.checkLoggedIn()
     }
 }

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.common
+package com.depromeet.sloth.util
 
 import android.view.View
 import android.widget.ImageView
@@ -9,7 +9,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.extensions.changeDateFormat
 import com.depromeet.sloth.extensions.changeDateFormatToDot
 import com.depromeet.sloth.extensions.changeListToDot
-import com.depromeet.sloth.util.GlideApp
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 

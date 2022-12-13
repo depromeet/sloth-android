@@ -1,21 +1,21 @@
 package com.depromeet.sloth.data.repository
 
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.data.network.service.MemberService
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: PreferenceManager,
     private val memberService: MemberService
 ) : MemberRepository {
 
@@ -84,8 +84,7 @@ class MemberRepositoryImpl @Inject constructor(
         .catch { throwable -> emit(Result.Error(throwable)) }
         .onCompletion { emit(Result.UnLoading) }
 
-
-    override fun removeAuthToken() {
+    override suspend fun removeAuthToken() {
         preferences.removeAuthToken()
     }
 }

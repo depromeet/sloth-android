@@ -1,9 +1,11 @@
 package com.depromeet.sloth.data.network
 
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.KEY_CONTENT_TYPE
 import com.depromeet.sloth.util.VALUE_CONTENT_TYPE
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -19,22 +21,27 @@ import javax.inject.Inject
  * 나나공 백엔드 설계대로는 처음 401 코드를 받았을 때 Access Token을 내려주지 않고, Refresh Token으로 재요청 해야 함
  * *** authenticate() 메서드 실행시 Response에 AccessToken 필드가 포함되어 있지 않으면 처음으로 401 응답 코드를 받은 상태 ***
  */
-// TODO DataStore 로 migration
 class AccessTokenAuthenticator @Inject constructor(
-    private val preferences: Preferences
+    private val preferences: PreferenceManager
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        val accessToken = preferences.getAccessToken()
+        val accessToken = runBlocking {
+            preferences.getAccessToken().first()
+        }
 
         if (hasNotAccessTokenOnResponse(response)) {
             synchronized(this) {
-                val newAccessToken = preferences.getAccessToken()
+                val newAccessToken = runBlocking {
+                    preferences.getAccessToken().first()
+                }
                 if (accessToken != newAccessToken) {
                     return newRequestWithAccessToken(response.request, newAccessToken)
                 }
 
-                val refreshToken = preferences.getRefreshToken()
+                val refreshToken = runBlocking {
+                    preferences.getRefreshToken().first()
+                }
                 return newRequestWithAccessToken(response.request, refreshToken)
             }
         }

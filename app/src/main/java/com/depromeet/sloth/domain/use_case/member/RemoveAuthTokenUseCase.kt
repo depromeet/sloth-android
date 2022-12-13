@@ -6,7 +6,7 @@ import javax.inject.Inject
 class RemoveAuthTokenUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
-    operator fun invoke() {
+    suspend operator fun invoke() {
         memberRepository.removeAuthToken()
     }
 }

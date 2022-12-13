@@ -1,31 +1,34 @@
 package com.depromeet.sloth.data.repository
 
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.login.LoginGoogleRequest
 import com.depromeet.sloth.data.model.request.login.LoginSlothRequest
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.data.network.service.GoogleLoginService
 import com.depromeet.sloth.data.network.service.SlothLoginService
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: PreferenceManager,
     private val slothLoginService: SlothLoginService,
     private val googleLoginService: GoogleLoginService
 ) : LoginRepository {
 
-    override fun checkLoggedIn(): Boolean {
-        return preferences.getAccessToken()
-            .isNotEmpty() && preferences.getRefreshToken().isNotEmpty()
+    override suspend fun checkLoggedIn(): Boolean {
+        val accessToken = preferences.getAccessToken().first()
+        val refreshToken = preferences.getRefreshToken().first()
+
+        return accessToken != DEFAULT_STRING_VALUE && refreshToken != DEFAULT_STRING_VALUE
     }
 
     override fun fetchGoogleAuthInfo(
