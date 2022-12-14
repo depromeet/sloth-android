@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.util.Result
@@ -33,6 +30,11 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     private val lessonListViewModel: LessonListViewModel by activityViewModels()
 
+    override fun onStart() {
+        super.onStart()
+        lessonListViewModel.fetchTodayLessonList()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,7 +42,6 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             vm = lessonListViewModel
         }
         initViews()
-        fetchLessonList()
         initObserver()
     }
 
@@ -60,33 +61,59 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                         showWaitDialog(requireContext())
                     }
             }
-        }
-    }
 
-    private fun fetchLessonList() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.todayLessonList
+            launch {
+                todayLessonListState
 //                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
 //                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { result ->
-                    when (result) {
-                        is Result.Loading -> showProgress()
-                        is Result.UnLoading -> hideProgress()
-                        is Result.Success -> setLessonList(result.data)
-                        is Result.Error -> {
-                            when (result.statusCode) {
-                                401 -> showForbiddenDialog(requireContext()) {
-                                    lessonListViewModel.removeAuthToken()
-                                }
-                                else -> {
-                                    Timber.tag("Fetch Error").d(result.throwable)
-                                    showToast(getString(R.string.lesson_info_fetch_fail))
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success -> setLessonList(result.data)
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        lessonListViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(getString(R.string.lesson_info_fetch_fail))
+                                    }
                                 }
                             }
                         }
                     }
-                }
+            }
+
+            launch {
+                finishLessonState
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success -> {
+                                showToast(getString(R.string.lesson_finish_complete))
+                                lessonListViewModel.fetchTodayLessonList()
+                            }
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        lessonListViewModel.removeAuthToken()
+                                    }
+                                    else -> {
+                                        Timber.tag("Finish Error").d(result.throwable)
+                                        showToast(
+                                            getString(
+                                                R.string.lesson_finish_fail
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 
@@ -228,6 +255,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
     }
 
     //TODO Flow 로 변경
+    //TODO 뷰에서 명령을 내리면 안됨
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
@@ -246,13 +274,15 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             TodayLessonAdapter.BodyType.NOT_FINISHED -> {
                                 if (result.data.presentNumber == lesson.untilTodayNumber
                                 //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
-                                ) fetchLessonList()
+                                )
+                                lessonListViewModel.fetchTodayLessonList()
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (result.data.presentNumber < lesson.untilTodayNumber ||
                                     result.data.presentNumber == lesson.totalNumber ||
                                     result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
-                                ) fetchLessonList()
+                                )
+                                lessonListViewModel.fetchTodayLessonList()
                             }
                             else -> Unit
                         }
@@ -264,7 +294,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                             }
                             else -> {
                                 showToast(getString(R.string.lesson_info_update_fail))
-                                Timber.tag("Error").d(result.throwable)
+                                Timber.tag("Update Error").d(result.throwable)
                             }
                         }
                     }
@@ -272,48 +302,39 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             }
         }
     }
+
+//    private suspend fun updateLessonTodayList(
+//        lesson: LessonTodayResponse,
+//        bodyType: TodayLessonAdapter.BodyType,
+//        clickType: TodayLessonAdapter.ClickType,
+//        delayTime: Long,
+//        result: Result.Success<LessonUpdateCountResponse>,
+//    ) {
+//        delay(delayTime)
+//        when (bodyType) {
+//            TodayLessonAdapter.BodyType.NOT_FINISHED -> {
+//                if (result.data.presentNumber == lesson.untilTodayNumber
+//                //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
+//                ) lessonListViewModel.fetchTodayLessonList()
+//            }
+//            TodayLessonAdapter.BodyType.FINISHED -> {
+//                if (result.data.presentNumber < lesson.untilTodayNumber ||
+//                    result.data.presentNumber == lesson.totalNumber ||
+//                    result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
+//                )
+//                lessonListViewModel.fetchTodayLessonList()
+//            }
+//            else -> Unit
+//        }
+//    }
 
     private fun showCompleteDialog(lessonId: String) {
         val completeDialog = SlothDialog(requireContext(), DialogState.COMPLETE)
         completeDialog.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
-                finishLesson(lessonId)
+                lessonListViewModel.finishLesson(lessonId)
             }
         }
         completeDialog.show()
-    }
-
-    private fun finishLesson(lessonId: String) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            lessonListViewModel.finishLesson(lessonId)
-                //.onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-                //.onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { result ->
-                    when (result) {
-                        is Result.Loading -> showProgress()
-                        is Result.UnLoading -> hideProgress()
-                        is Result.Success -> {
-                            fetchLessonList()
-                            showToast(getString(R.string.lesson_finish_complete))
-                        }
-                        is Result.Error -> {
-                            when (result.statusCode) {
-                                401 -> showForbiddenDialog(requireContext()) {
-                                    lessonListViewModel.removeAuthToken()
-                                }
-                                else -> {
-                                    Timber.tag("Finish Error").d(result.throwable)
-                                    showToast(
-                                        getString(
-                                            R.string.lesson_finish_fail
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-        }
     }
 }
