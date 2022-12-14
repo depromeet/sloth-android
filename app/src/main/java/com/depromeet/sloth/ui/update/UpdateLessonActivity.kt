@@ -10,15 +10,13 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseActivity
 import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
-import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
-import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -64,7 +62,7 @@ class UpdateLessonActivity :
                 updateLessonState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(getString(R.string.lesson_info_update_complete))
@@ -89,7 +87,7 @@ class UpdateLessonActivity :
                 lessonCategoryListState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 setLessonCategoryInfo(result.data)
@@ -114,7 +112,7 @@ class UpdateLessonActivity :
                 lessonSiteListState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> showProgress(this@UpdateLessonActivity)
+                            is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 //TODO UDF 에 위반 코드 개선

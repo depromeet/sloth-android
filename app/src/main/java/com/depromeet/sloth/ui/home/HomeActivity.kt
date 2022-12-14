@@ -8,13 +8,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.databinding.ActivityHomeBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
-import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -59,7 +57,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
                 notificationRegisterState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> showProgress(this@HomeActivity)
+                            is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> Timber.d(result.data)
                             is Result.Error -> {

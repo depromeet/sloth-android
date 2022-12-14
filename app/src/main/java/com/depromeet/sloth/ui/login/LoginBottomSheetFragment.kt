@@ -10,14 +10,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.depromeet.sloth.BuildConfig
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
-import com.depromeet.sloth.util.LoadingDialogUtil
+import com.depromeet.sloth.util.Result
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -107,8 +106,8 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 googleLoginState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> LoadingDialogUtil.showProgress(requireContext())
-                            is Result.UnLoading -> LoadingDialogUtil.hideProgress()
+                            is Result.Loading -> (activity as LoginActivity).showProgress()
+                            is Result.UnLoading -> (activity as LoginActivity).hideProgress()
                             is Result.Success<LoginGoogleResponse> -> {
                                 fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                             }
@@ -125,8 +124,8 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 slothLoginState
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> LoadingDialogUtil.showProgress(requireContext())
-                            is Result.UnLoading -> LoadingDialogUtil.hideProgress()
+                            is Result.Loading -> (activity as LoginActivity).showProgress()
+                            is Result.UnLoading -> (activity as LoginActivity).hideProgress()
                             is Result.Success<LoginSlothResponse> -> {
                                 if (result.data.isNewMember) {
                                     loginListener.onSuccessWithNewMember()

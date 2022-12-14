@@ -7,19 +7,17 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.ui.update.UpdateLessonActivity
 import com.depromeet.sloth.util.LESSON_DETAIL
-import com.depromeet.sloth.util.LoadingDialogUtil.hideProgress
-import com.depromeet.sloth.util.LoadingDialogUtil.showProgress
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -54,7 +52,7 @@ class LessonDetailActivity :
                     lessonDetailState
                         .collect { result ->
                             when (result) {
-                                is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.Loading -> showProgress()
                                 is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDetailResponse> -> {
                                     lessonDetailViewModel.setLessonDetailInfo(result.data)
@@ -80,7 +78,7 @@ class LessonDetailActivity :
                     lessonDeleteState
                         .collect { result ->
                             when (result) {
-                                is Result.Loading -> showProgress(this@LessonDetailActivity)
+                                is Result.Loading -> showProgress()
                                 is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDeleteResponse> -> {
                                     showToast(getString(R.string.lesson_delete_complete))
@@ -121,6 +119,12 @@ class LessonDetailActivity :
                             showLessonDeleteDialog()
                         }
                 }
+
+//                launch {
+//                    isLoading.collect {
+//                        if (it) showProgress() else hideProgress()
+//                    }
+//                }
             }
         }
     }
