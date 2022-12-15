@@ -90,20 +90,20 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
             launch {
-                googleLoginClick
+                googleLoginClickEvent
                     .collect {
                         loginWithGoogle()
                     }
             }
 
             launch {
-                kakaoLoginClick
+                kakaoLoginClickEvent
                     .collect {
                         loginWithKakao()
                     }
             }
             launch {
-                googleLoginState
+                googleLoginEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> (activity as LoginActivity).showProgress()
@@ -121,7 +121,7 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             launch {
-                slothLoginState
+                slothLoginEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> (activity as LoginActivity).showProgress()

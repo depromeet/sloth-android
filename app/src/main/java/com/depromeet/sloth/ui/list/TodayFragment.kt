@@ -47,23 +47,22 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
     override fun initViews() {
         binding.rvTodayLesson.apply {
-            if (itemDecorationCount == 0) addItemDecoration(
-                LessonItemDecoration(requireContext(), 16)
-            )
+            if (itemDecorationCount == 0)
+                addItemDecoration(LessonItemDecoration(requireContext(), 16))
         }
     }
 
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
             launch {
-                onNavigateToNotificationListClick
+                navigateToNotificationListEvent
                     .collect {
                         showWaitDialog(requireContext())
                     }
             }
 
             launch {
-                todayLessonListState
+                fetchTodayLessonListEvent
 //                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
 //                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                     .collect { result ->
@@ -87,7 +86,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
             }
 
             launch {
-                finishLessonState
+                finishLessonEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -151,6 +150,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
 
                 val notFinishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
+
                 val notFinishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
@@ -177,6 +177,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                     }
                 val finishedHeader =
                     HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
+
                 val finishedLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday, delayTime ->
                         when (clickType) {
@@ -188,6 +189,7 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                     TodayLessonAdapter.ClickType.CLICK_PLUS,
                                     delayTime
                                 )
+                                // lessonListViewModel.updateLessonCount()
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
@@ -275,14 +277,14 @@ class TodayFragment : BaseFragment<FragmentTodayBinding>(R.layout.fragment_today
                                 if (result.data.presentNumber == lesson.untilTodayNumber
                                 //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
                                 )
-                                lessonListViewModel.fetchTodayLessonList()
+                                    lessonListViewModel.fetchTodayLessonList()
                             }
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (result.data.presentNumber < lesson.untilTodayNumber ||
                                     result.data.presentNumber == lesson.totalNumber ||
                                     result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
                                 )
-                                lessonListViewModel.fetchTodayLessonList()
+                                    lessonListViewModel.fetchTodayLessonList()
                             }
                             else -> Unit
                         }

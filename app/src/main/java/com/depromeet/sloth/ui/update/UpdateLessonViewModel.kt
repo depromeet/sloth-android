@@ -33,14 +33,14 @@ class UpdateLessonViewModel @Inject constructor(
 
     val lessonDetail: LessonDetailResponse = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _updateLessonState = MutableSharedFlow<Result<LessonUpdateResponse>>()
+    private val _updateLessonEvent = MutableSharedFlow<Result<LessonUpdateResponse>>()
     val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
-        get() = _updateLessonState
+        get() = _updateLessonEvent
 
-    val lessonCategoryListState: Flow<Result<List<LessonCategoryResponse>>> =
+    val fetchLessonCategoryListEvent: Flow<Result<List<LessonCategoryResponse>>> =
         getLessonCategoryListUseCase()
 
-    val lessonSiteListState: Flow<Result<List<LessonSiteResponse>>> =
+    val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
         getLessonSiteListUseCase()
 
     // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
@@ -114,10 +114,10 @@ class UpdateLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value,
             )
         ).onEach {
-            if (it is Result.Loading) _updateLessonState.emit(Result.Loading)
-            else _updateLessonState.emit(Result.UnLoading)
+            if (it is Result.Loading) _updateLessonEvent.emit(Result.Loading)
+            else _updateLessonEvent.emit(Result.UnLoading)
         }.collect {
-            _updateLessonState.emit(it)
+            _updateLessonEvent.emit(it)
         }
     }
 

@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    fetchMemberInfoUseCase: GetMemberInfoUseCase,
+    getMemberInfoUseCase: GetMemberInfoUseCase,
     private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
@@ -31,26 +31,26 @@ class ManageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val memberState: Flow<Result<MemberResponse>> = fetchMemberInfoUseCase()
+    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> = getMemberInfoUseCase()
 
-//    val memberState: Flow<Result<MemberResponse>> =
-//        fetchMemberInfoUseCase().asResult()
+//    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> =
+//        getMemberInfoUseCase().asResult()
 
-    private val _memberUpdateState = MutableSharedFlow<Result<MemberUpdateResponse>>()
-    val memberUpdateState: SharedFlow<Result<MemberUpdateResponse>> =
-        _memberUpdateState.asSharedFlow()
+    private val _updateMemberInfoEvent = MutableSharedFlow<Result<MemberUpdateResponse>>()
+    val updateMemberInfoEvent: SharedFlow<Result<MemberUpdateResponse>> =
+        _updateMemberInfoEvent.asSharedFlow()
 
-    private val _notificationReceiveState = MutableSharedFlow<Result<String>>()
-    val notificationReceiveState: SharedFlow<Result<String>> =
-        _notificationReceiveState.asSharedFlow()
+    private val _updateToReceiveNotificationEvent = MutableSharedFlow<Result<String>>()
+    val updateToReceiveNotificationEvent: SharedFlow<Result<String>> =
+        _updateToReceiveNotificationEvent.asSharedFlow()
 
     // api response 변경 후
 //    private val _notificationReceiveState = MutableSharedFlow<Result<NotificationUpdateResponse>>()
 //    val notificationReceiveState: SharedFlow<Result<NotificationUpdateResponse>> =
 //        _notificationReceiveState.asSharedFlow()
 
-    private val _memberLogoutState = MutableSharedFlow<Result<String>>()
-    val memberLogoutState: SharedFlow<Result<String>> = _memberLogoutState.asSharedFlow()
+    private val _logoutEvent = MutableSharedFlow<Result<String>>()
+    val logoutEvent: SharedFlow<Result<String>> = _logoutEvent.asSharedFlow()
 
     private val _member = MutableStateFlow(MemberResponse())
     val member: StateFlow<MemberResponse> = _member.asStateFlow()
@@ -63,28 +63,28 @@ class ManageViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NOTIFICATION_RECEIVE, false)
     val memberNotificationReceive: StateFlow<Boolean> = _memberNotificationReceive.asStateFlow()
 
-    private val _profileClick = MutableSharedFlow<Unit>()
-    val profileClick: SharedFlow<Unit> = _profileClick.asSharedFlow()
+    private val _showUpdateProfileDialogEvent = MutableSharedFlow<Unit>()
+    val showUpdateProfileDialogEvent: SharedFlow<Unit> = _showUpdateProfileDialogEvent.asSharedFlow()
 
-    private val _contactClick = MutableSharedFlow<Unit>()
-    val contactButtonClick: SharedFlow<Unit> = _contactClick.asSharedFlow()
+    private val _navigateToContactEvent = MutableSharedFlow<Unit>()
+    val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
 
-    private val _privatePolicyClick = MutableSharedFlow<Unit>()
-    val privatePolicyClick: SharedFlow<Unit> = _privatePolicyClick.asSharedFlow()
+    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<Unit>()
+    val navigateToPrivatePolicyEvent: SharedFlow<Unit> = _navigateToPrivatePolicyEvent.asSharedFlow()
 
-    private val _logoutClick = MutableSharedFlow<Unit>()
-    val logoutClick: SharedFlow<Unit> = _logoutClick.asSharedFlow()
+    private val _showLogoutDialogEvent = MutableSharedFlow<Unit>()
+    val showLogoutDialogEvent: SharedFlow<Unit> = _showLogoutDialogEvent.asSharedFlow()
 
-    private val _withdrawalClick = MutableSharedFlow<Unit>()
-    val withdrawalClick: SharedFlow<Unit> = _withdrawalClick.asSharedFlow()
+    private val _showWithdrawalDialogEvent = MutableSharedFlow<Unit>()
+    val showWithdrawalDialogEvent: SharedFlow<Unit> = _showWithdrawalDialogEvent.asSharedFlow()
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         updateMemberInfoUseCase(memberUpdateRequest)
             .onEach {
-                if (it is Result.Loading) _memberUpdateState.emit(Result.Loading)
-                else _memberUpdateState.emit(Result.UnLoading)
+                if (it is Result.Loading) _updateMemberInfoEvent.emit(Result.Loading)
+                else _updateMemberInfoEvent.emit(Result.UnLoading)
             }.collect {
-                _memberUpdateState.emit(it)
+                _updateMemberInfoEvent.emit(it)
             }
     }
 
@@ -93,10 +93,10 @@ class ManageViewModel @Inject constructor(
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
                     .onEach {
-                        if (it is Result.Loading) _notificationReceiveState.emit(Result.Loading)
-                        else _notificationReceiveState.emit(Result.UnLoading)
+                        if (it is Result.Loading) _updateToReceiveNotificationEvent.emit(Result.Loading)
+                        else _updateToReceiveNotificationEvent.emit(Result.UnLoading)
                     }.collect {
-                        _notificationReceiveState.emit(it)
+                        _updateToReceiveNotificationEvent.emit(it)
                     }
             }
         }
@@ -117,32 +117,32 @@ class ManageViewModel @Inject constructor(
     }
 
     fun profileClick() = viewModelScope.launch {
-        _profileClick.emit(Unit)
+        _showUpdateProfileDialogEvent.emit(Unit)
     }
 
     fun privacyPolicyClick() = viewModelScope.launch {
-        _privatePolicyClick.emit(Unit)
+        _navigateToPrivatePolicyEvent.emit(Unit)
     }
 
     fun contactClick() = viewModelScope.launch {
-        _contactClick.emit(Unit)
+        _navigateToContactEvent.emit(Unit)
     }
 
     fun logoutClick() = viewModelScope.launch {
-        _logoutClick.emit(Unit)
+        _showLogoutDialogEvent.emit(Unit)
     }
 
     fun withdrawalClick() = viewModelScope.launch {
-        _withdrawalClick.emit(Unit)
+        _showWithdrawalDialogEvent.emit(Unit)
     }
 
     fun logout() = viewModelScope.launch {
         logOutUseCase()
             .onEach {
-                if (it is Result.Loading) _memberLogoutState.emit(Result.Loading)
-                else _memberLogoutState.emit(Result.UnLoading)
+                if (it is Result.Loading) _logoutEvent.emit(Result.Loading)
+                else _logoutEvent.emit(Result.UnLoading)
             }.collect {
-                _memberLogoutState.emit(it)
+                _logoutEvent.emit(it)
             }
     }
 

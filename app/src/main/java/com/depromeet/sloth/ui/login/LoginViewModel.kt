@@ -23,61 +23,62 @@ class LoginViewModel @Inject constructor(
     private val getSlothAuthInfoUseCase: GetSlothAuthInfoUseCase,
 ) : ViewModel() {
 
-    private val _loginState = MutableSharedFlow<Boolean>(replay = 1)
-    val loginState: SharedFlow<Boolean> = _loginState.asSharedFlow()
+    private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
+    val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
 
-    private val _openLoginBottomSheet = MutableSharedFlow<Unit>()
-    val openLoginBottomSheet: SharedFlow<Unit> = _openLoginBottomSheet.asSharedFlow()
+    private val _showLoginBottomSheetEvent = MutableSharedFlow<Unit>()
+    val showLoginBottomSheetEvent: SharedFlow<Unit> = _showLoginBottomSheetEvent.asSharedFlow()
 
-    private val _googleLoginClick = MutableSharedFlow<Unit>()
-    val googleLoginClick: SharedFlow<Unit> = _googleLoginClick.asSharedFlow()
+    private val _googleLoginClickEvent = MutableSharedFlow<Unit>()
+    val googleLoginClickEvent: SharedFlow<Unit> = _googleLoginClickEvent.asSharedFlow()
 
-    private val _googleLoginState = MutableSharedFlow<Result<LoginGoogleResponse>>()
-    val googleLoginState: SharedFlow<Result<LoginGoogleResponse>> = _googleLoginState.asSharedFlow()
+    private val _googleLoginEvent = MutableSharedFlow<Result<LoginGoogleResponse>>()
+    val googleLoginEvent: SharedFlow<Result<LoginGoogleResponse>> = _googleLoginEvent.asSharedFlow()
 
-    private val _kakaoLoginClick = MutableSharedFlow<Unit>()
-    val kakaoLoginClick: SharedFlow<Unit> = _kakaoLoginClick.asSharedFlow()
+    private val _kakaoLoginClickEvent = MutableSharedFlow<Unit>()
+    val kakaoLoginClickEvent: SharedFlow<Unit> = _kakaoLoginClickEvent.asSharedFlow()
 
-    private val _slothLoginState = MutableSharedFlow<Result<LoginSlothResponse>>()
-    val slothLoginState: SharedFlow<Result<LoginSlothResponse>> = _slothLoginState.asSharedFlow()
+    private val _slothLoginEvent = MutableSharedFlow<Result<LoginSlothResponse>>()
+    val slothLoginEvent: SharedFlow<Result<LoginSlothResponse>> = _slothLoginEvent.asSharedFlow()
 
     init {
         checkLoggedIn()
+
     }
 
     private fun checkLoggedIn() = viewModelScope.launch {
-        _loginState.emit(checkLoggedInUseCase())
+        _autoLoginEvent.emit(checkLoggedInUseCase())
     }
 
     fun clickLoginBtn() = viewModelScope.launch {
-        _openLoginBottomSheet.emit(Unit)
+        _showLoginBottomSheetEvent.emit(Unit)
     }
 
     fun googleLoginClick() = viewModelScope.launch {
-        _googleLoginClick.emit(Unit)
+        _googleLoginClickEvent.emit(Unit)
     }
 
     fun kakaoLoginClick() = viewModelScope.launch {
-        _kakaoLoginClick.emit(Unit)
+        _kakaoLoginClickEvent.emit(Unit)
     }
 
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
         getGoogleAuthInfoUseCase(authCode = authCode)
             .onEach {
-                if (it is Result.Loading) _googleLoginState.emit(Result.Loading)
-                else _googleLoginState.emit(Result.UnLoading)
+                if (it is Result.Loading) _googleLoginEvent.emit(Result.Loading)
+                else _googleLoginEvent.emit(Result.UnLoading)
             }.collect {
-                _googleLoginState.emit(it)
+                _googleLoginEvent.emit(it)
             }
     }
 
     fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
         getSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
             .onEach {
-                if (it is Result.Loading) _slothLoginState.emit(Result.Loading)
-                else _slothLoginState.emit(Result.UnLoading)
+                if (it is Result.Loading) _slothLoginEvent.emit(Result.Loading)
+                else _slothLoginEvent.emit(Result.UnLoading)
             }.collect {
-                _slothLoginState.emit(it)
+                _slothLoginEvent.emit(it)
             }
     }
 }

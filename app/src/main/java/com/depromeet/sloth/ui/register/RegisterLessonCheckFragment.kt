@@ -32,7 +32,7 @@ class RegisterLessonCheckFragment :
     private fun initObserver() = with(registerLessonViewModel) {
         repeatOnStarted {
             launch {
-                registerLessonState
+                registerLessonEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -58,7 +58,7 @@ class RegisterLessonCheckFragment :
             }
 
             launch {
-                onNavigateToRegisterLessonSecondClick
+                navigateToRegisterLessonSecondEvent
                     .collect {
                         navigateToRegisterLessonSecond()
                     }

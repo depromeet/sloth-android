@@ -31,7 +31,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
             launch {
-                loginState
+                autoLoginEvent
                     .collect { loginState ->
                         when (loginState) {
                             true -> moveHomeActivity()
@@ -41,7 +41,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login
             }
 
             launch {
-                openLoginBottomSheet
+                showLoginBottomSheetEvent
                     .collect {
                         openLoginBottomSheet()
                     }

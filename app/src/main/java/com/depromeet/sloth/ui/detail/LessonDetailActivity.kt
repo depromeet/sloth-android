@@ -49,7 +49,7 @@ class LessonDetailActivity :
         lifecycleScope.launch {
             repeatOnStarted {
                 launch {
-                    lessonDetailState
+                    fetchLessonDetailEvent
                         .collect { result ->
                             when (result) {
                                 is Result.Loading -> showProgress()
@@ -75,7 +75,7 @@ class LessonDetailActivity :
                 }
 
                 launch {
-                    lessonDeleteState
+                    deleteLessonEvent
                         .collect { result ->
                             when (result) {
                                 is Result.Loading -> showProgress()
@@ -100,7 +100,7 @@ class LessonDetailActivity :
                 }
 
                 launch {
-                    lessonUpdateClick
+                    navigateToUpdateLessonEvent
                         .collect { lessonDetail ->
                             startActivity(
                                 Intent(
@@ -114,7 +114,7 @@ class LessonDetailActivity :
                 }
 
                 launch {
-                    lessonDeleteClick
+                    showDeleteLessonDialogEvent
                         .collect {
                             showLessonDeleteDialog()
                         }

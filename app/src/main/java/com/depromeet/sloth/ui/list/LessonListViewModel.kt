@@ -6,6 +6,7 @@ import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.domain.use_case.lesson.FinishLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetAllLessonListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetTodayLessonListUseCase
@@ -26,33 +27,36 @@ class LessonListViewModel @Inject constructor(
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
 ) : ViewModel() {
 
-    private val _todayLessonListState = MutableSharedFlow<Result<List<LessonTodayResponse>>>()
-    val todayLessonListState: SharedFlow<Result<List<LessonTodayResponse>>> = _todayLessonListState.asSharedFlow()
+    private val _fetchTodayLessonListEvent = MutableSharedFlow<Result<List<LessonTodayResponse>>>()
+    val fetchTodayLessonListEvent: SharedFlow<Result<List<LessonTodayResponse>>> = _fetchTodayLessonListEvent.asSharedFlow()
 
-    val allLessonList: Flow<Result<List<LessonAllResponse>>> =
+    val fetchAllLessonListEvent: Flow<Result<List<LessonAllResponse>>> =
         getAllLessonListUseCase()
 
-//    private val _updateLessonCountState = MutableSharedFlow<Result<LessonUpdateCountResponse>>()
-//    val updateLessonCountState:SharedFlow<Result<LessonUpdateCountResponse>>
-//            = _updateLessonCountState.asSharedFlow()
+    private val _updateLessonCountEvent = MutableSharedFlow<Result<LessonUpdateCountResponse>>()
+    val updateLessonCountEvent:SharedFlow<Result<LessonUpdateCountResponse>>
+            = _updateLessonCountEvent.asSharedFlow()
 
-    private val _finishLessonState = MutableSharedFlow<Result<LessonFinishResponse>>()
-    val finishLessonState: SharedFlow<Result<LessonFinishResponse>> = _finishLessonState
+    private val _finishLessonEvent = MutableSharedFlow<Result<LessonFinishResponse>>()
+    val finishLessonEvent: SharedFlow<Result<LessonFinishResponse>> = _finishLessonEvent
 
-    private val _onRegisterLessonClick = MutableSharedFlow<Unit>()
-    val onRegisterLessonClick: SharedFlow<Unit> = _onRegisterLessonClick.asSharedFlow()
+    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
+    val navigateRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
 
-    private val _onNavigateToNotificationListClick = MutableSharedFlow<Unit>()
-    val onNavigateToNotificationListClick: SharedFlow<Unit> =
-        _onNavigateToNotificationListClick.asSharedFlow()
+    private val _navigateToNotificationListEvent = MutableSharedFlow<Unit>()
+    val navigateToNotificationListEvent: SharedFlow<Unit> =
+        _navigateToNotificationListEvent.asSharedFlow()
+
+    private val _navigateToLessonDetailEvent = MutableSharedFlow<LessonAllResponse>()
+    val navigateToLessonDetailEvent: SharedFlow<LessonAllResponse> = _navigateToLessonDetailEvent.asSharedFlow()
 
     fun fetchTodayLessonList() = viewModelScope.launch {
         getLessonTodayListUseCase()
             .onEach {
-                if (it is Result.Loading) _todayLessonListState.emit(Result.Loading)
-                else _todayLessonListState.emit(Result.UnLoading)
+                if (it is Result.Loading) _fetchTodayLessonListEvent.emit(Result.Loading)
+                else _fetchTodayLessonListEvent.emit(Result.UnLoading)
             }.collect {
-                _todayLessonListState.emit(it)
+                _fetchTodayLessonListEvent.emit(it)
             }
     }
 
@@ -74,19 +78,23 @@ class LessonListViewModel @Inject constructor(
     fun finishLesson(lessonId: String) = viewModelScope.launch {
         finishLessonUseCase(lessonId)
             .onEach {
-                if (it is Result.Loading) _finishLessonState.emit(Result.Loading)
-                else _finishLessonState.emit(Result.UnLoading)
+                if (it is Result.Loading) _finishLessonEvent.emit(Result.Loading)
+                else _finishLessonEvent.emit(Result.UnLoading)
             }.collect {
-                _finishLessonState.emit(it)
+                _finishLessonEvent.emit(it)
             }
     }
 
-    fun registerLessonClick() = viewModelScope.launch {
-        _onRegisterLessonClick.emit(Unit)
+    fun navigateToRegisterLesson() = viewModelScope.launch {
+        _navigateToRegisterLessonEvent.emit(Unit)
     }
 
-    fun navigateToNotificationListClick() = viewModelScope.launch {
-        _onNavigateToNotificationListClick.emit(Unit)
+    fun navigateToNotificationList() = viewModelScope.launch {
+        _navigateToNotificationListEvent.emit(Unit)
+    }
+
+    fun navigateToLessonDetail(lesson: LessonAllResponse) = viewModelScope.launch {
+        _navigateToLessonDetailEvent.emit(lesson)
     }
 
     fun removeAuthToken() = viewModelScope.launch {

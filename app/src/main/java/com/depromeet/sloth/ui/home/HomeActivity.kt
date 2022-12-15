@@ -54,7 +54,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     private fun initObserver() = with(homeViewModel) {
         repeatOnStarted {
             launch {
-                notificationRegisterState
+                registerNotificationTokenEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()

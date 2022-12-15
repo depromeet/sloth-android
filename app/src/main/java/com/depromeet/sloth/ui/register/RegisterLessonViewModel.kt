@@ -36,14 +36,14 @@ class RegisterLessonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _registerLessonState = MutableSharedFlow<Result<LessonRegisterResponse>>()
-    val registerLessonState: SharedFlow<Result<LessonRegisterResponse>> =
-        _registerLessonState.asSharedFlow()
+    private val _registerLessonEvent = MutableSharedFlow<Result<LessonRegisterResponse>>()
+    val registerLessonEvent: SharedFlow<Result<LessonRegisterResponse>> =
+        _registerLessonEvent.asSharedFlow()
 
-    val lessonCategoryListState: Flow<Result<List<LessonCategoryResponse>>> =
+    val fetchLessonCategoryListEvent: Flow<Result<List<LessonCategoryResponse>>> =
         getLessonCategoryListUseCase()
 
-    val lessonSiteListState: Flow<Result<List<LessonSiteResponse>>> =
+    val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
         getLessonSiteListUseCase()
 
     private val _lessonName =
@@ -110,9 +110,9 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonEndDateSelectedItemPosition: StateFlow<Int> =
         _lessonEndDateSelectedItemPosition.asStateFlow()
 
-    private val _lessonEndDateSelectedState = MutableStateFlow(false)
-    private val lessonEndDateSelectedState: StateFlow<Boolean> =
-        _lessonEndDateSelectedState.asStateFlow()
+    private val _lessonEndDateSelectEvent = MutableStateFlow(false)
+    private val lessonEndDateSelectEvent: StateFlow<Boolean> =
+        _lessonEndDateSelectEvent.asStateFlow()
 
     private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
     val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
@@ -126,23 +126,23 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
-    private val _onNavigateToRegisterLessonSecondClick = MutableSharedFlow<Unit>()
-    val onNavigateToRegisterLessonSecondClick: SharedFlow<Unit> =
-        _onNavigateToRegisterLessonSecondClick.asSharedFlow()
+    private val _navigateToRegisterLessonSecondEvent = MutableSharedFlow<Unit>()
+    val navigateToRegisterLessonSecondEvent: SharedFlow<Unit> =
+        _navigateToRegisterLessonSecondEvent.asSharedFlow()
 
-    private val _onNavigateToRegisterLessonCheckClick = MutableSharedFlow<Unit>()
-    val onNavigateToRegisterLessonCheckClick: SharedFlow<Unit> =
-        _onNavigateToRegisterLessonCheckClick.asSharedFlow()
+    private val _navigateToRegisterLessonCheckEvent = MutableSharedFlow<Unit>()
+    val navigateToRegisterLessonCheckEvent: SharedFlow<Unit> =
+        _navigateToRegisterLessonCheckEvent.asSharedFlow()
 
     private val _lessonDateRangeValidation = MutableStateFlow(true)
     val lessonDateRangeValidation: StateFlow<Boolean> = _lessonDateRangeValidation.asStateFlow()
 
-    private val _onRegisterLessonStartDateClick = MutableSharedFlow<Date>()
-    val onRegisterLessonStartDateClick: SharedFlow<Date> =
-        _onRegisterLessonStartDateClick.asSharedFlow()
+    private val _registerLessonStartDateEvent = MutableSharedFlow<Date>()
+    val registerLessonStartDateEvent: SharedFlow<Date> =
+        _registerLessonStartDateEvent.asSharedFlow()
 
-    private val _registerLessonEndDate = MutableSharedFlow<Date>()
-    val registerLessonEndDate: SharedFlow<Date> = _registerLessonEndDate.asSharedFlow()
+    private val _registerLessonEndDateEvent = MutableSharedFlow<Date>()
+    val registerLessonEndDateEvent: SharedFlow<Date> = _registerLessonEndDateEvent.asSharedFlow()
 
     val navigateToLessonSecondButtonState = combine(
         lessonName,
@@ -159,7 +159,7 @@ class RegisterLessonViewModel @Inject constructor(
     )
 
     val navigateToLessonCheckButtonState = combine(
-        lessonEndDateSelectedState,
+        lessonEndDateSelectEvent,
         lessonDateRangeValidation
     ) { endDateSelectedState, dateRangeValidation ->
         endDateSelectedState && dateRangeValidation
@@ -254,10 +254,10 @@ class RegisterLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value
             )
         ).onEach {
-            if (it is Result.Loading) _registerLessonState.emit(Result.Loading)
-            else _registerLessonState.emit(Result.UnLoading)
+            if (it is Result.Loading) _registerLessonEvent.emit(Result.Loading)
+            else _registerLessonEvent.emit(Result.UnLoading)
         }.collect {
-            _registerLessonState.emit(it)
+            _registerLessonEvent.emit(it)
         }
     }
 
@@ -271,7 +271,7 @@ class RegisterLessonViewModel @Inject constructor(
 
     fun setLessonEndDateSelectedItemPosition(position: Int) {
         _lessonEndDateSelectedItemPosition.value = position
-        _lessonEndDateSelectedState.value = lessonEndDateSelectedItemPosition.value != 0
+        _lessonEndDateSelectEvent.value = lessonEndDateSelectedItemPosition.value != 0
     }
 
     fun setLessonName(lessonName: String) {
@@ -307,19 +307,19 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun navigateToRegisterLessonSecondClick() = viewModelScope.launch {
-        _onNavigateToRegisterLessonSecondClick.emit(Unit)
+        _navigateToRegisterLessonSecondEvent.emit(Unit)
     }
 
     fun navigateToRegisterLessonCheckClick() = viewModelScope.launch {
-        _onNavigateToRegisterLessonCheckClick.emit(Unit)
+        _navigateToRegisterLessonCheckEvent.emit(Unit)
     }
 
     fun registerLessonStartDateClick() = viewModelScope.launch {
-        _onRegisterLessonStartDateClick.emit(startDate.value)
+        _registerLessonStartDateEvent.emit(startDate.value)
     }
 
     fun registerLessonEndDate() = viewModelScope.launch {
-        _registerLessonEndDate.emit(endDate.value)
+        _registerLessonEndDateEvent.emit(endDate.value)
     }
 
     fun removeAuthToken() = viewModelScope.launch {

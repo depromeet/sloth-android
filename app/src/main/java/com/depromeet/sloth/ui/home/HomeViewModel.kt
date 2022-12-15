@@ -26,22 +26,25 @@ class HomeViewModel @Inject constructor(
     private val messaging: FirebaseMessaging,
 ) : ViewModel() {
 
-    private val _notificationFetchState =
+    private val _fetchNotificationTokenEvent =
         MutableSharedFlow<Result<NotificationFetchResponse>>()
-    val notificationFetchState: SharedFlow<Result<NotificationFetchResponse>> =
-        _notificationFetchState.asSharedFlow()
+    val fetchNotificationTokenEvent: SharedFlow<Result<NotificationFetchResponse>> =
+        _fetchNotificationTokenEvent.asSharedFlow()
 
-    private val _notificationRegisterState = MutableSharedFlow<Result<String>>()
-    val notificationRegisterState: SharedFlow<Result<String>> =
-        _notificationRegisterState.asSharedFlow()
+    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>()
+    val registerNotificationTokenEvent: SharedFlow<Result<String>> =
+        _registerNotificationTokenEvent.asSharedFlow()
 
     fun fetchNotificationToken(deviceId: String) = viewModelScope.launch {
         getNotificationTokenUseCase(deviceId)
             .onEach {
-                if (it is Result.Loading) _notificationFetchState.emit(Result.Loading)
-                else _notificationFetchState.emit(Result.UnLoading)
+                if (it is Result.Loading) _fetchNotificationTokenEvent.emit(Result.Loading)
+                // else _notificationFetchState.emit(Result.UnLoading)
             }.collect {
-                _notificationFetchState.emit(it)
+                when(it) {
+                    is Result.Loading -> return@collect
+                    else -> _fetchNotificationTokenEvent.emit(it)
+                }
             }
     }
 
@@ -62,10 +65,13 @@ class HomeViewModel @Inject constructor(
     ) = viewModelScope.launch {
         registerNotificationTokenUseCase(notificationRegisterRequest)
             .onEach {
-                if (it is Result.Loading) _notificationRegisterState.emit(Result.Loading)
-                else _notificationRegisterState.emit(Result.UnLoading)
+                if (it is Result.Loading) _registerNotificationTokenEvent.emit(Result.Loading)
+                // else _notificationRegisterState.emit(Result.UnLoading)
             }.collect {
-                _notificationRegisterState.emit(it)
+                when(it) {
+                    is Result.Loading -> return@collect
+                    else -> _registerNotificationTokenEvent.emit(it)
+                }
             }
     }
 

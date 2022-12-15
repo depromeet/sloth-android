@@ -24,41 +24,39 @@ class LessonDetailViewModel @Inject constructor(
 
     val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
 
-    private val _lessonDetailState = MutableSharedFlow<Result<LessonDetailResponse>>()
-    val lessonDetailState: SharedFlow<Result<LessonDetailResponse>> = _lessonDetailState.asSharedFlow()
+    private val _fetchLessonDetailEvent = MutableSharedFlow<Result<LessonDetailResponse>>()
+    val fetchLessonDetailEvent: SharedFlow<Result<LessonDetailResponse>> = _fetchLessonDetailEvent.asSharedFlow()
 
-    private val _lessonDeleteState = MutableSharedFlow<Result<LessonDeleteResponse>>()
-    val lessonDeleteState: SharedFlow<Result<LessonDeleteResponse>> =
-        _lessonDeleteState.asSharedFlow()
+    private val _deleteLessonEvent = MutableSharedFlow<Result<LessonDeleteResponse>>()
+    val deleteLessonEvent: SharedFlow<Result<LessonDeleteResponse>> =
+        _deleteLessonEvent.asSharedFlow()
 
     private val _lessonDetail = MutableStateFlow(LessonDetailResponse())
     val lessonDetail: StateFlow<LessonDetailResponse> = _lessonDetail.asStateFlow()
 
-    private val _lessonUpdateClick = MutableSharedFlow<LessonDetailResponse>()
-    val lessonUpdateClick: SharedFlow<LessonDetailResponse>
-        get() = _lessonUpdateClick
+    private val _navigateToUpdateLessonEvent = MutableSharedFlow<LessonDetailResponse>()
+    val navigateToUpdateLessonEvent: SharedFlow<LessonDetailResponse> = _navigateToUpdateLessonEvent.asSharedFlow()
 
-    private val _lessonDeleteClick = MutableSharedFlow<Unit>()
-    val lessonDeleteClick: SharedFlow<Unit>
-        get() = _lessonDeleteClick
+    private val _showDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
+    val showDeleteLessonDialogEvent: SharedFlow<Unit> = _showDeleteLessonDialogEvent.asSharedFlow()
 
     fun fetchLessonDetail() = viewModelScope.launch {
         getLessonDetailUseCase(lessonId)
             .onEach {
-                if (it is Result.Loading) _lessonDetailState.emit(Result.Loading)
-                else _lessonDetailState.emit(Result.UnLoading)
+                if (it is Result.Loading) _fetchLessonDetailEvent.emit(Result.Loading)
+                else _fetchLessonDetailEvent.emit(Result.UnLoading)
             }.collect {
-                _lessonDetailState.emit(it)
+                _fetchLessonDetailEvent.emit(it)
             }
     }
 
     fun deleteLesson() = viewModelScope.launch {
         deleteLessonUseCase(lessonId)
             .onEach {
-                if (it is Result.Loading) _lessonDeleteState.emit(Result.Loading)
-                else _lessonDeleteState.emit(Result.UnLoading)
+                if (it is Result.Loading) _deleteLessonEvent.emit(Result.Loading)
+                else _deleteLessonEvent.emit(Result.UnLoading)
             }.collect {
-                _lessonDeleteState.emit(it)
+                _deleteLessonEvent.emit(it)
             }
     }
 
@@ -66,12 +64,12 @@ class LessonDetailViewModel @Inject constructor(
         _lessonDetail.value = lessonDetailResponse
     }
 
-    fun lessonUpdateClick(lessonDetailResponse: LessonDetailResponse) = viewModelScope.launch {
-        _lessonUpdateClick.emit(lessonDetailResponse)
+    fun navigateToUpdateLesson(lessonDetailResponse: LessonDetailResponse) = viewModelScope.launch {
+        _navigateToUpdateLessonEvent.emit(lessonDetailResponse)
     }
 
-    fun lessonDeleteClick() = viewModelScope.launch {
-        _lessonDeleteClick.emit(Unit)
+    fun showDeleteLessonDialog() = viewModelScope.launch {
+        _showDeleteLessonDialogEvent.emit(Unit)
     }
 
     fun removeAuthToken() = viewModelScope.launch {

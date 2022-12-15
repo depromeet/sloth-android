@@ -62,14 +62,14 @@ class RegisterLessonSecondFragment :
     private fun initObserver() = with(registerLessonViewModel) {
         repeatOnStarted {
             launch {
-                onRegisterLessonStartDateClick
+                registerLessonStartDateEvent
                     .collect {
                         registerLessonStartDate()
                     }
             }
 
             launch {
-                registerLessonEndDate
+                registerLessonEndDateEvent
                     .collect {
                         registerLessonEndDateByCalendar()
                     }
@@ -86,7 +86,7 @@ class RegisterLessonSecondFragment :
             }
 
             launch {
-                onNavigateToRegisterLessonCheckClick
+                navigateToRegisterLessonCheckEvent
                     .collect {
                         registerLessonViewModel.setLessonInfo()
                         navigateToRegisterLessonCheck()

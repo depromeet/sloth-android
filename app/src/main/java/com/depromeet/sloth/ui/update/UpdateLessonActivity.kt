@@ -84,7 +84,7 @@ class UpdateLessonActivity :
             }
 
             launch {
-                lessonCategoryListState
+                fetchLessonCategoryListEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -109,7 +109,7 @@ class UpdateLessonActivity :
             }
 
             launch {
-                lessonSiteListState
+                fetchLessonSiteListEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()

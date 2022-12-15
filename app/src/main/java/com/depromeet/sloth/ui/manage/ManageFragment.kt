@@ -48,7 +48,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     private fun initObserver() = with(manageViewModel) {
         repeatOnStarted {
             launch {
-                memberState
+                fetchMemberInfoEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -72,7 +72,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                memberUpdateState
+                updateMemberInfoEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -97,7 +97,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                notificationReceiveState
+                updateToReceiveNotificationEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -122,7 +122,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                memberLogoutState
+                logoutEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -144,21 +144,21 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                profileClick
+                showUpdateProfileDialogEvent
                     .collect {
                         showProfileUpdateDialog()
                     }
             }
 
             launch {
-                contactButtonClick
+                navigateToContactEvent
                     .collect {
                         sendEmail()
                     }
             }
 
             launch {
-                privatePolicyClick
+                navigateToPrivatePolicyEvent
                     .collect {
                         startActivity(
                             Intent(
@@ -170,14 +170,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                logoutClick
+                showLogoutDialogEvent
                     .collect {
                         showLogoutDialog()
                     }
             }
 
             launch {
-                withdrawalClick
+                showWithdrawalDialogEvent
                     .collect {
                         showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
                     }

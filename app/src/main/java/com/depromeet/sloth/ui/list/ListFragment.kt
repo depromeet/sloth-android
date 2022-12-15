@@ -48,7 +48,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
             launch {
-                allLessonList
+                fetchAllLessonListEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -70,14 +70,14 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             }
 
             launch {
-                onRegisterLessonClick
+                navigateRegisterLessonEvent
                     .collect {
                         moveRegisterActivity()
                     }
             }
 
             launch {
-                onNavigateToNotificationListClick
+                navigateToNotificationListEvent
                     .collect {
                         showWaitDialog(requireContext())
                     }
@@ -102,7 +102,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
             true -> {
                 binding.ivLessonListRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { _ -> moveRegisterActivity() }
+                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { moveRegisterActivity() }
 
                 nothingLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
                 binding.rvLessonList.adapter = nothingLessonAdapter
