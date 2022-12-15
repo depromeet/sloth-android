@@ -1,9 +1,9 @@
-package com.depromeet.sloth.ui.list.viewholder
+package com.depromeet.sloth.ui.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonNothingBinding
-import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
+import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
 
 class TodayLessonNothingViewHolder(
     private val binding: ItemHomeTodayLessonNothingBinding,

@@ -1,16 +1,17 @@
-package com.depromeet.sloth.ui.list.viewholder
+package com.depromeet.sloth.ui.adapter.viewholder
 
-import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
-import com.depromeet.sloth.ui.list.adapter.TodayLessonAdapter
+import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
+import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
 
-class TodayLessonDoingViewHolder(
-    private val binding: ItemHomeTodayLessonDoingBinding,
+class TodayLessonFinishedViewHolder(
+    private val binding: ItemHomeTodayLessonFinishedBinding,
     private val currentList: List<LessonTodayResponse>,
-    private val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
+    val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var nowProgress = 0
@@ -20,11 +21,22 @@ class TodayLessonDoingViewHolder(
             binding.apply {
                 init(lessonToday)
 
+                if(lessonToday.totalNumber == lessonToday.presentNumber) {
+                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_finished_top)
+                    clTodayFinishedBottom.visibility = View.VISIBLE
+                } else {
+                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_not_finished_top)
+                    clTodayFinishedBottom.visibility = View.GONE
+                }
+
+                clTodayFinishedBottom.setOnClickListener {
+                    onClick(TodayLessonAdapter.ClickType.CLICK_COMPLETE, lessonToday, DELAY_TIME)
+                }
+
                 btnTodayLessonPlus.setOnClickListener {
-                    viewTodayLessonLottie.playAnimation()
                     updateLessonCountOnServer(true, lessonToday)
-                    updateProgress(true, lessonToday.untilTodayNumber)
-                    updateText(true, lessonToday.untilTodayNumber)
+                    updateProgress(true, lessonToday.totalNumber)
+                    updateText(true, lessonToday.totalNumber)
                 }
 
                 btnTodayLessonMinus.setOnClickListener {
@@ -45,11 +57,6 @@ class TodayLessonDoingViewHolder(
         tvTodayLessonTotalNum.text = lessonToday.untilTodayNumber.toString()
         nowProgress = lessonToday.presentNumber
 
-        pbTodayLessonBar.let {
-            it.max = lessonToday.untilTodayNumber * 1000
-            it.progress = lessonToday.presentNumber * 1000
-        }
-
         if (lessonToday.untilTodayFinished) {
             tvTodayLessonRemain.setTextColor(Color.WHITE)
         } else {
@@ -60,24 +67,12 @@ class TodayLessonDoingViewHolder(
         }
     }
 
-    private fun updateProgress(isUp: Boolean, totalNum: Int) = with(binding) {
+    private fun updateProgress(isUp: Boolean, totalNum: Int) {
         if (((nowProgress == 0) && isUp.not()) || ((nowProgress >= totalNum) && isUp)) return
 
         when (isUp) {
             true -> nowProgress++
             false -> nowProgress--
-        }
-
-        pbTodayLessonBar.let {
-            val animation = ObjectAnimator.ofInt(
-                pbTodayLessonBar,
-                "progress",
-                pbTodayLessonBar.progress, nowProgress * 1000
-            )
-
-            animation.apply {
-                duration = DELAY_TIME
-            }.start()
         }
     }
 
@@ -104,6 +99,6 @@ class TodayLessonDoingViewHolder(
     }
 
     companion object {
-        const val DELAY_TIME = 350L
+        const val DELAY_TIME = 200L
     }
 }

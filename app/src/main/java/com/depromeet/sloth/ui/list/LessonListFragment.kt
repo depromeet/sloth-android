@@ -4,22 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.FragmentListBinding
+import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
+import com.depromeet.sloth.ui.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.detail.LessonDetailActivity
-import com.depromeet.sloth.ui.list.adapter.HeaderAdapter
-import com.depromeet.sloth.ui.list.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,9 +27,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
+class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
-    private val lessonListViewModel: LessonListViewModel by activityViewModels()
+    private val lessonListViewModel: LessonListViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

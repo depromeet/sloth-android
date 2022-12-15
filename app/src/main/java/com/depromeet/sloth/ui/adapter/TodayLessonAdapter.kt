@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.list.adapter
+package com.depromeet.sloth.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,9 +9,9 @@ import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonNothingBinding
-import com.depromeet.sloth.ui.list.viewholder.TodayLessonDoingViewHolder
-import com.depromeet.sloth.ui.list.viewholder.TodayLessonFinishedViewHolder
-import com.depromeet.sloth.ui.list.viewholder.TodayLessonNothingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonDoingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonFinishedViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonNothingViewHolder
 
 
 class TodayLessonAdapter(

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.list.adapter
+package com.depromeet.sloth.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,10 +10,10 @@ import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListNothingBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListPlanningBinding
-import com.depromeet.sloth.ui.list.viewholder.LessonListDoingViewHolder
-import com.depromeet.sloth.ui.list.viewholder.LessonListNothingViewHolder
-import com.depromeet.sloth.ui.list.viewholder.LessonListPassedViewHolder
-import com.depromeet.sloth.ui.list.viewholder.LessonListPlanningViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.LessonListDoingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.LessonListNothingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.LessonListPassedViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.LessonListPlanningViewHolder
 
 class LessonListAdapter(
     private val bodyType: BodyType,
@@ -43,7 +43,15 @@ class LessonListAdapter(
         }
     }
 
+    // 뷰홀더가 한개가 아니라 binding이 먹지 않음
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//        getItem(position)?.let {
+//            holder.binding.executeAfter {
+//                viewModel = lessonListViewModel
+//                lifecycleOwner = holder.itemView.findViewTreeLifecycleOwner()
+//                lesson = it
+//            }
+//        }
         when (bodyType) {
             BodyType.NOTHING -> (holder as LessonListNothingViewHolder).bind(currentList[position])
             BodyType.DOING -> (holder as LessonListDoingViewHolder).bind(currentList[position])

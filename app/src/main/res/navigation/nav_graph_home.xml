@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/navigation_today"
-        android:name="com.depromeet.sloth.ui.list.TodayFragment"
+        android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
         android:label="TodayFragment"
-        tools:layout="@layout/fragment_today"/>
+        tools:layout="@layout/fragment_today_lesson"/>
 
     <fragment
         android:id="@+id/navigation_list"
-        android:name="com.depromeet.sloth.ui.list.ListFragment"
+        android:name="com.depromeet.sloth.ui.list.LessonListFragment"
         android:label="ListFragment"
-        tools:layout="@layout/fragment_list"/>
+        tools:layout="@layout/fragment_lesson_list"/>
 
     <fragment
         android:id="@+id/navigation_manage"

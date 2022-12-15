@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.list.LessonListViewModel" />
+            type="com.depromeet.sloth.ui.today.TodayLessonViewModel" />
 
     </data>
 
