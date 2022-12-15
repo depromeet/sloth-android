@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.secrets.gradle.plugin) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.google.service) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }
 
 tasks.register("clean", Delete::class) {
