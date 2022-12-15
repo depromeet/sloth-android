@@ -15,6 +15,15 @@ import java.text.DecimalFormat
 // TODO 바인딩어댑터 함수들 단일 책임의 원칙을 만족하도록 수정
 // TODO visibility 관련 작업은 xml에서 직접
 
+@BindingAdapter("onSingleClick")
+fun bindOnSingleClick(view: View, onClickListener: View.OnClickListener) {
+    view.setOnClickListener(object : OnSingleClickListener() {
+        override fun onSingleClick(v: View) {
+            onClickListener.onClick(v)
+        }
+    })
+}
+
 @BindingAdapter("currentProgressRate", "goalProgressRate")
 fun setLessonSummaryImage(view: ImageView, currentProgressRate: Float, goalProgressRate: Float) {
     // 시작 하지 않음
