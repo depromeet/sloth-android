@@ -1,37 +1,34 @@
 package com.depromeet.sloth.ui.detail
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
+import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.databinding.ActivityLessonDetailBinding
+import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
-import com.depromeet.sloth.ui.base.BaseActivity
+import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.update.UpdateLessonActivity
-import com.depromeet.sloth.util.LESSON_DETAIL
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 @AndroidEntryPoint
-class LessonDetailActivity :
-    BaseActivity<ActivityLessonDetailBinding>(R.layout.activity_lesson_detail) {
+class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
 
     private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    // private val args: LessonDetailFragmentArgs by navArgs()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         bind {
             vm = lessonDetailViewModel
@@ -42,6 +39,7 @@ class LessonDetailActivity :
 
     override fun onStart() {
         super.onStart()
+        // lessonDetailViewModel.fetchLessonDetail(args.lessonId)
         lessonDetailViewModel.fetchLessonDetail()
     }
 
@@ -60,7 +58,7 @@ class LessonDetailActivity :
                                 is Result.Error -> {
                                     when (result.statusCode) {
                                         401 -> {
-                                            showForbiddenDialog(this@LessonDetailActivity) {
+                                            showForbiddenDialog(requireContext()) {
                                                 lessonDetailViewModel.removeAuthToken()
                                             }
                                         }
@@ -82,11 +80,14 @@ class LessonDetailActivity :
                                 is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDeleteResponse> -> {
                                     showToast(getString(R.string.lesson_delete_complete))
-                                    finish()
+                                    //뒤로가기
+                                    if (!findNavController().navigateUp()) {
+                                        requireActivity().finish()
+                                    }
                                 }
                                 is Result.Error -> {
                                     when (result.statusCode) {
-                                        401 -> showForbiddenDialog(this@LessonDetailActivity) {
+                                        401 -> showForbiddenDialog(requireContext()) {
                                             lessonDetailViewModel.removeAuthToken()
                                         }
                                         else -> {
@@ -102,14 +103,10 @@ class LessonDetailActivity :
                 launch {
                     navigateToUpdateLessonEvent
                         .collect { lessonDetail ->
-                            startActivity(
-                                Intent(
-                                    this@LessonDetailActivity,
-                                    UpdateLessonActivity::class.java
-                                ).apply {
-                                    putExtra(LESSON_DETAIL, lessonDetail)
-                                }
+                            val action = LessonDetailFragmentDirections.actionLessonDetailToUpdateLesson(
+                                lessonDetail
                             )
+                            findNavController().safeNavigate(action)
                         }
                 }
 
@@ -130,13 +127,18 @@ class LessonDetailActivity :
     }
 
     private fun initListener() = with(binding) {
-        tbDetailLesson.setNavigationOnClickListener { finish() }
+        tbDetailLesson.setNavigationOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun showLessonDeleteDialog() {
-        val dlg = SlothDialog(this@LessonDetailActivity, DialogState.DELETE_LESSON)
+        val dlg = SlothDialog(requireContext(), DialogState.DELETE_LESSON)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
+                // lessonDetailViewModel.deleteLesson(args.lessonId)
                 lessonDetailViewModel.deleteLesson()
             }
         }

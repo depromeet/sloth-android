@@ -3,35 +3,33 @@ package com.depromeet.sloth.ui.update
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.MotionEvent
 import android.view.View
 import android.widget.*
-import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
-import com.depromeet.sloth.databinding.ActivityUpdateLessonBinding
-import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.ui.base.BaseActivity
-import com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN
-import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
+import com.depromeet.sloth.extensions.clearEditTextFocus
+import com.depromeet.sloth.extensions.hideKeyBoard
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.DecimalFormat
 
-
 @AndroidEntryPoint
-class UpdateLessonActivity :
-    BaseActivity<ActivityUpdateLessonBinding>(R.layout.activity_update_lesson) {
+class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {
 
     private val updateLessonViewModel: UpdateLessonViewModel by viewModels()
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
-            this,
+            requireContext(),
             R.layout.item_spinner,
             updateLessonViewModel.lessonCategoryList.value
         )
@@ -39,14 +37,14 @@ class UpdateLessonActivity :
 
     private val lessonSiteAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
-            this,
+            requireContext(),
             R.layout.item_spinner,
             updateLessonViewModel.lessonSiteList.value
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         bind {
             vm = updateLessonViewModel
@@ -66,11 +64,13 @@ class UpdateLessonActivity :
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(getString(R.string.lesson_info_update_complete))
-                                finish()
+                                if (!findNavController().navigateUp()) {
+                                    requireActivity().finish()
+                                }
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
-                                    401 -> showForbiddenDialog(this@UpdateLessonActivity) {
+                                    401 -> showForbiddenDialog(requireContext()) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -95,7 +95,7 @@ class UpdateLessonActivity :
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
-                                    401 ->  showForbiddenDialog(this@UpdateLessonActivity) {
+                                    401 ->  showForbiddenDialog(requireContext()) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -121,7 +121,7 @@ class UpdateLessonActivity :
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(this@UpdateLessonActivity) {
+                                    401 -> showForbiddenDialog(requireContext()) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -147,7 +147,12 @@ class UpdateLessonActivity :
     }
 
     private fun initListener() = with(binding) {
-        tbUpdateLesson.setNavigationOnClickListener { finish() }
+        tbUpdateLesson.setNavigationOnClickListener {
+            // 뒤로 가기
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     override fun initViews() = with(binding) {
@@ -201,7 +206,7 @@ class UpdateLessonActivity :
     }
 
     private fun validateCountInputForm(editText: EditText) = with(binding) {
-        var result = DEFAULT_STRING_VALUE
+        var result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -213,7 +218,7 @@ class UpdateLessonActivity :
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                if (!android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
                     updateLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
                     result = updateLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
@@ -230,8 +235,8 @@ class UpdateLessonActivity :
                     }
                 }
 
-                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = DEFAULT_STRING_VALUE
+                if (android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
                     editText.setText(result)
                     tvUpdateLessonCountInfo.apply {
                         text = result
@@ -246,8 +251,8 @@ class UpdateLessonActivity :
     }
 
     private fun validatePriceInputForm(editText: EditText) = with(binding) {
-        var result = DEFAULT_STRING_VALUE
-        val decimalFormat = DecimalFormat(DECIMAL_FORMAT_PATTERN)
+        var result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+        val decimalFormat = DecimalFormat(com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN)
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -259,7 +264,7 @@ class UpdateLessonActivity :
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
+                if (!android.text.TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
                     updateLessonViewModel.setLessonPrice(
                         charSequence.toString().replace(",", "").toInt()
                     )
@@ -277,8 +282,8 @@ class UpdateLessonActivity :
                     }
                 }
 
-                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = DEFAULT_STRING_VALUE
+                if (android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
                     editText.setText(result)
                     tvUpdateLessonPriceInfo.apply {
                         text = result
@@ -311,8 +316,8 @@ class UpdateLessonActivity :
     private fun focusSpinnerForm(spinner: Spinner): Unit = with(binding) {
         spinner.apply {
             setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    hideKeyBoard(this@UpdateLessonActivity)
+                if (event.action == android.view.MotionEvent.ACTION_DOWN) {
+                    hideKeyBoard(requireActivity())
                 }
                 false
             }

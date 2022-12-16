@@ -22,7 +22,7 @@ class LessonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val lessonId: String = checkNotNull(savedStateHandle[LESSON_ID])
+    val lessonId: String = checkNotNull(savedStateHandle[KEY_LESSON_ID])
 
     private val _fetchLessonDetailEvent = MutableSharedFlow<Result<LessonDetailResponse>>()
     val fetchLessonDetailEvent: SharedFlow<Result<LessonDetailResponse>> = _fetchLessonDetailEvent.asSharedFlow()
@@ -77,6 +77,6 @@ class LessonDetailViewModel @Inject constructor(
     }
 
     companion object {
-        private const val LESSON_ID = "lessonId"
+        private const val KEY_LESSON_ID = "lessonId"
     }
 }

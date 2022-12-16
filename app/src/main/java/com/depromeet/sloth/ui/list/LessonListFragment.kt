@@ -5,18 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
-import com.depromeet.sloth.ui.detail.LessonDetailActivity
 import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import com.depromeet.sloth.util.Result
@@ -85,16 +86,16 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         }
     }
 
+    //TODO 강의 등록 화면 프래그먼트로 변경
     private fun moveRegisterActivity() {
         startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
     }
 
-    private fun moveDetailActivity(lessonInfo: LessonAllResponse) {
-        startActivity(
-            Intent(requireContext(), LessonDetailActivity::class.java).apply {
-                putExtra(LESSON_ID, lessonInfo.lessonId.toString())
-            }
+    private fun navigateToLessonDetail(lessonInfo: LessonAllResponse) {
+        val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
+            lessonInfo.lessonId.toString()
         )
+        findNavController().safeNavigate(action)
     }
 
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
@@ -127,15 +128,15 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                 val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
                 val doingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-                        moveDetailActivity(lesson)
+                        navigateToLessonDetail(lesson)
                     }
                 val planningLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-                        moveDetailActivity(lesson)
+                        navigateToLessonDetail(lesson)
                     }
                 val passedLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-                        moveDetailActivity(lesson)
+                        navigateToLessonDetail(lesson)
                     }
                 val concatAdapter = ConcatAdapter(
                     doingHeader,
@@ -190,7 +191,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     }
 
     companion object {
-        private const val LESSON_ID = "lessonId"
         private const val PAST = "PAST"
     }
 }

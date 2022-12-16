@@ -3,23 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_home"
-    app:startDestination="@id/navigation_today">
+    app:startDestination="@id/lesson_today">
 
     <fragment
-        android:id="@+id/navigation_today"
+        android:id="@+id/lesson_today"
         android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
-        android:label="TodayFragment"
-        tools:layout="@layout/fragment_today_lesson"/>
+        android:label="TodayLessonFragment"
+        tools:layout="@layout/fragment_today_lesson" />
 
     <fragment
-        android:id="@+id/navigation_list"
+        android:id="@+id/lesson_list"
         android:name="com.depromeet.sloth.ui.list.LessonListFragment"
-        android:label="ListFragment"
-        tools:layout="@layout/fragment_lesson_list"/>
+        android:label="LessonListFragment"
+        tools:layout="@layout/fragment_lesson_list">
+        <action
+            android:id="@+id/action_lesson_list_to_lesson_detail"
+            app:destination="@id/lesson_detail"/>
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_manage"
+        android:id="@+id/manage"
         android:name="com.depromeet.sloth.ui.manage.ManageFragment"
         android:label="ManageFragment"
-        tools:layout="@layout/fragment_manage"/>
+        tools:layout="@layout/fragment_manage" />
+
+    <fragment
+        android:id="@+id/lesson_detail"
+        android:name="com.depromeet.sloth.ui.detail.LessonDetailFragment"
+        android:label="LessonDetailFragment"
+        tools:layout="@layout/fragment_lesson_detail">
+        <action
+            android:id="@+id/action_lesson_detail_to_update_lesson"
+            app:destination="@id/update_lesson">
+        </action>
+
+        <argument
+            android:name="lessonId"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/update_lesson"
+        android:name="com.depromeet.sloth.ui.update.UpdateLessonFragment"
+        android:label="UpdateLessonFragment"
+        tools:layout="@layout/fragment_update_lesson" >
+        <argument
+            android:name="lessonDetail"
+            app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse"
+            app:nullable="false"/>
+    </fragment>
+
 </navigation>
