@@ -105,6 +105,11 @@
             <meta-data
                 android:name="com.depromeet.sloth.initialize.NightModeInitializer"
                 android:value="androidx.startup" />
+
+            <meta-data
+                android:name="com.depromeet.sloth.initialize.FirebaseCrashlyticsInitializer"
+                android:value="androidx.startup" />
+
         </provider>
 
     </application>
