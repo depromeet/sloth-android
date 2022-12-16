@@ -212,7 +212,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:enabled="@{vm.navigateToLessonCheckButtonState}"
-            android:onClick="@{()-> vm.navigateToRegisterLessonCheckClick()}"
+            android:onClick="@{()-> vm.navigateToRegisterLessonCheck()}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

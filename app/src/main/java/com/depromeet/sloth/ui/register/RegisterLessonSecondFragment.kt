@@ -89,7 +89,8 @@ class RegisterLessonSecondFragment :
                 navigateToRegisterLessonCheckEvent
                     .collect {
                         registerLessonViewModel.setLessonInfo()
-                        navigateToRegisterLessonCheck()
+                        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
+                        findNavController().safeNavigate(action)
                     }
             }
         }
@@ -99,11 +100,6 @@ class RegisterLessonSecondFragment :
         bindAdapter()
         validateInputForm(etRegisterLessonPrice)
         focusInputFormOptional(etRegisterLessonMessage)
-    }
-
-    private fun navigateToRegisterLessonCheck() {
-        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
-        findNavController().safeNavigate(action)
     }
 
     private fun registerLessonStartDate() = with(binding) {

@@ -120,7 +120,9 @@ class RegisterLessonFirstFragment :
             launch {
                 navigateToRegisterLessonSecondEvent
                     .collect {
-                        navigateToRegisterLessonSecond()
+                        val action =
+                            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
+                        findNavController().safeNavigate(action)
                     }
             }
         }
@@ -139,12 +141,6 @@ class RegisterLessonFirstFragment :
             adapter = arrayAdapter
             setSelection(position)
         }
-    }
-
-    private fun navigateToRegisterLessonSecond() {
-        val action =
-            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
-        findNavController().safeNavigate(action)
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -306,11 +306,11 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonMessage.value = lessonMessage
     }
 
-    fun navigateToRegisterLessonSecondClick() = viewModelScope.launch {
+    fun navigateToRegisterLessonSecond() = viewModelScope.launch {
         _navigateToRegisterLessonSecondEvent.emit(Unit)
     }
 
-    fun navigateToRegisterLessonCheckClick() = viewModelScope.launch {
+    fun navigateToRegisterLessonCheck() = viewModelScope.launch {
         _navigateToRegisterLessonCheckEvent.emit(Unit)
     }
 
