@@ -39,12 +39,9 @@ class HomeViewModel @Inject constructor(
         getNotificationTokenUseCase(deviceId)
             .onEach {
                 if (it is Result.Loading) _fetchNotificationTokenEvent.emit(Result.Loading)
-                // else _notificationFetchState.emit(Result.UnLoading)
+                else _fetchNotificationTokenEvent.emit(Result.UnLoading)
             }.collect {
-                when(it) {
-                    is Result.Loading -> return@collect
-                    else -> _fetchNotificationTokenEvent.emit(it)
-                }
+                _fetchNotificationTokenEvent.emit(it)
             }
     }
 
@@ -66,12 +63,9 @@ class HomeViewModel @Inject constructor(
         registerNotificationTokenUseCase(notificationRegisterRequest)
             .onEach {
                 if (it is Result.Loading) _registerNotificationTokenEvent.emit(Result.Loading)
-                // else _notificationRegisterState.emit(Result.UnLoading)
+                else _registerNotificationTokenEvent.emit(Result.UnLoading)
             }.collect {
-                when(it) {
-                    is Result.Loading -> return@collect
-                    else -> _registerNotificationTokenEvent.emit(it)
-                }
+                _registerNotificationTokenEvent.emit(it)
             }
     }
 
