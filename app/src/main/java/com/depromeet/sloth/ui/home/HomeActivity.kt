@@ -70,7 +70,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             itemIconTintList = null
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.lesson_today || destination.id == R.id.lesson_list
+            if (destination.id == R.id.today_lesson || destination.id == R.id.lesson_list
                 || destination.id == R.id.manage) {
                 bnvHome.visibility = View.VISIBLE
             }
@@ -102,4 +102,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             }
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
 }

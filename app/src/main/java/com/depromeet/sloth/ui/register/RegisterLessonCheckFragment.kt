@@ -2,11 +2,12 @@ package com.depromeet.sloth.ui.register
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.activityViewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.Result
@@ -18,7 +19,7 @@ import timber.log.Timber
 class RegisterLessonCheckFragment :
     BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.register_lesson_graph)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,7 +27,16 @@ class RegisterLessonCheckFragment :
         bind {
             vm = registerLessonViewModel
         }
+        initListener()
         initObserver()
+    }
+
+    private fun initListener() {
+        binding.tbRegisterLesson.setNavigationOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun initObserver() = with(registerLessonViewModel) {
@@ -39,13 +49,15 @@ class RegisterLessonCheckFragment :
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
                                 showToast(getString(R.string.lesson_register_complete))
-                                requireActivity().finish()
+                                val action =
+                                    RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
+                                findNavController().safeNavigate(action)
                             }
                             is Result.Error -> {
-                                when(result.statusCode) {
+                                when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext()) {
-                                            registerLessonViewModel.removeAuthToken()
-                                        }
+                                        registerLessonViewModel.removeAuthToken()
+                                    }
 
                                     else -> {
                                         Timber.tag("Register Error").d(result.throwable)
@@ -60,13 +72,9 @@ class RegisterLessonCheckFragment :
             launch {
                 navigateToRegisterLessonSecondEvent
                     .collect {
-                        navigateToRegisterLessonSecond()
+                        findNavController().navigateUp()
                     }
             }
         }
-    }
-
-    private fun navigateToRegisterLessonSecond() {
-        findNavController().navigateUp()
     }
 }

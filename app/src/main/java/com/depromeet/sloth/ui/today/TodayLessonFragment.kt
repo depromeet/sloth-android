@@ -1,25 +1,25 @@
 package com.depromeet.sloth.ui.today
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showWaitDialog
+import com.depromeet.sloth.ui.adapter.HeaderAdapter
+import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.adapter.HeaderAdapter
-import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
-import com.depromeet.sloth.ui.register.RegisterLessonActivity
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -116,17 +116,15 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
         }
     }
 
-    private fun moveRegisterActivity() {
-        startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
-    }
-
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
                 val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
                 val nothingLessonAdapter =
                     TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _, _ ->
-                        moveRegisterActivity()
+                        val action =
+                            TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
+                        findNavController().safeNavigate(action)
                     }
                 val concatAdapter = ConcatAdapter(
                     nothingHeader,

@@ -11,7 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.fragment.app.activityViewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonSecondBinding
@@ -39,7 +39,7 @@ import java.util.*
 class RegisterLessonSecondFragment :
     BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.register_lesson_graph)
 
     private val lessonEndDateAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
@@ -56,7 +56,16 @@ class RegisterLessonSecondFragment :
             vm = registerLessonViewModel
         }
         initViews()
+        initListener()
         initObserver()
+    }
+
+    private fun initListener() {
+        binding.tbRegisterLesson.setNavigationOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun initObserver() = with(registerLessonViewModel) {
@@ -89,7 +98,8 @@ class RegisterLessonSecondFragment :
                 navigateToRegisterLessonCheckEvent
                     .collect {
                         registerLessonViewModel.setLessonInfo()
-                        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
+                        val action =
+                            RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
                         findNavController().safeNavigate(action)
                     }
             }

@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.list
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -18,7 +17,6 @@ import com.depromeet.sloth.ui.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
-import com.depromeet.sloth.ui.register.RegisterLessonActivity
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,7 +71,9 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 navigateRegisterLessonEvent
                     .collect {
-                        moveRegisterActivity()
+                        val action =
+                            LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                        findNavController().safeNavigate(action)
                     }
             }
 
@@ -84,11 +84,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     }
             }
         }
-    }
-
-    //TODO 강의 등록 화면 프래그먼트로 변경
-    private fun moveRegisterActivity() {
-        startActivity(Intent(requireActivity(), RegisterLessonActivity::class.java))
     }
 
     private fun navigateToLessonDetail(lessonInfo: LessonAllResponse) {
@@ -103,7 +98,11 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             true -> {
                 binding.ivLessonListRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) { moveRegisterActivity() }
+                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) {
+                        val action =
+                            LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                        findNavController().safeNavigate(action)
+                    }
 
                 nothingLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
                 binding.rvLessonList.adapter = nothingLessonAdapter

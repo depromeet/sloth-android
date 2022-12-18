@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/lesson_today"
+        android:id="@+id/today_lesson"
         android:enabled="true"
         android:icon="@drawable/selector_home_today"
         android:title="@string/menu_today"/>

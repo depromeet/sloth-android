@@ -2,14 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_home"
-    app:startDestination="@id/lesson_today">
+    android:id="@+id/main_graph"
+    app:startDestination="@id/today_lesson">
 
     <fragment
-        android:id="@+id/lesson_today"
+        android:id="@+id/today_lesson"
         android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
         android:label="TodayLessonFragment"
-        tools:layout="@layout/fragment_today_lesson" />
+        tools:layout="@layout/fragment_today_lesson" >
+        <action
+            android:id="@+id/action_today_lesson_to_register_lesson_first"
+            app:destination="@id/register_lesson_graph" />
+    </fragment>
 
     <fragment
         android:id="@+id/lesson_list"
@@ -19,6 +23,9 @@
         <action
             android:id="@+id/action_lesson_list_to_lesson_detail"
             app:destination="@id/lesson_detail"/>
+        <action
+            android:id="@+id/action_lesson_list_to_register_lesson_first"
+            app:destination="@id/register_lesson_graph" />
     </fragment>
 
     <fragment
@@ -54,4 +61,46 @@
             app:nullable="false"/>
     </fragment>
 
+    <navigation android:id="@+id/register_lesson_graph"
+        app:startDestination="@id/register_lesson_first">
+
+        <fragment
+            android:id="@+id/register_lesson_first"
+            android:name="com.depromeet.sloth.ui.register.RegisterLessonFirstFragment"
+            android:label="RegisterLessonFirstFragment"
+            tools:layout="@layout/fragment_register_lesson_first">
+            <action
+                android:id="@+id/action_register_lesson_first_to_register_lesson_second"
+                app:destination="@id/register_lesson_second"
+                app:enterAnim="@anim/slide_right_enter"
+                app:exitAnim="@anim/slide_right_exit"
+                app:popEnterAnim="@anim/slide_left_enter"
+                app:popExitAnim="@anim/slide_left_exit" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/register_lesson_second"
+            android:name="com.depromeet.sloth.ui.register.RegisterLessonSecondFragment"
+            android:label="RegisterLessonSecondFragment"
+            tools:layout="@layout/fragment_register_lesson_second">
+            <action
+                android:id="@+id/action_register_lesson_second_to_register_lesson_check"
+                app:destination="@id/register_lesson_check"
+                app:enterAnim="@anim/slide_right_enter"
+                app:exitAnim="@anim/slide_right_exit"
+                app:popEnterAnim="@anim/slide_left_enter"
+                app:popExitAnim="@anim/slide_left_exit" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/register_lesson_check"
+            android:name="com.depromeet.sloth.ui.register.RegisterLessonCheckFragment"
+            android:label="RegisterLessonCheckFragment"
+            tools:layout="@layout/fragment_register_lesson_check" />
+        <action
+            android:id="@+id/action_register_lesson_check_to_lesson_list"
+            app:destination="@id/lesson_list"
+            app:popUpToInclusive="true"/>
+
+    </navigation>
 </navigation>

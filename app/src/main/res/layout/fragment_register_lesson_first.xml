@@ -16,6 +16,34 @@
         android:layout_height="match_parent"
         tools:context=".ui.register.RegisterLessonActivity">
 
+<!--        <include-->
+<!--            android:id="@+id/tb_register_lesson"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            layout= "@layout/toolbar_register_lesson"/>-->
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tb_register_lesson"
+            style="?attr/toolbarWithArrowButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_register_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/register_new_lesson"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+        </androidx.appcompat.widget.Toolbar>
+
         <TextView
             android:id="@+id/tv_register_guide"
             style="@style/Widget.Sloth.TextView.HeadLine"
@@ -27,7 +55,7 @@
             android:text="@string/setup_lecture"
             app:layout_constraintBottom_toTopOf="@id/sv_register_lesson"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tb_register_lesson" />
 
         <ScrollView
             android:id="@+id/sv_register_lesson"
