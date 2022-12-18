@@ -135,6 +135,7 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
                     tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+                    ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
                 }
             }
 
