@@ -116,23 +116,23 @@ class ManageViewModel @Inject constructor(
         _memberNotificationReceive.value = check
     }
 
-    fun profileClick() = viewModelScope.launch {
+    fun showUpdateProfileDialog() = viewModelScope.launch {
         _showUpdateProfileDialogEvent.emit(Unit)
     }
 
-    fun privacyPolicyClick() = viewModelScope.launch {
+    fun navigateToPrivacyPolicy() = viewModelScope.launch {
         _navigateToPrivatePolicyEvent.emit(Unit)
     }
 
-    fun contactClick() = viewModelScope.launch {
+    fun navigateToContact() = viewModelScope.launch {
         _navigateToContactEvent.emit(Unit)
     }
 
-    fun logoutClick() = viewModelScope.launch {
+    fun showLogoutDialog() = viewModelScope.launch {
         _showLogoutDialogEvent.emit(Unit)
     }
 
-    fun withdrawalClick() = viewModelScope.launch {
+    fun showWithdrawalDialog() = viewModelScope.launch {
         _showWithdrawalDialogEvent.emit(Unit)
     }
 

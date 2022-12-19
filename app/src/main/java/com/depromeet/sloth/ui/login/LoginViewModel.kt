@@ -43,7 +43,6 @@ class LoginViewModel @Inject constructor(
 
     init {
         checkLoggedIn()
-
     }
 
     private fun checkLoggedIn() = viewModelScope.launch {
