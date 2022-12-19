@@ -19,7 +19,7 @@ import timber.log.Timber
 class RegisterLessonCheckFragment :
     BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.register_lesson_graph)
+    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

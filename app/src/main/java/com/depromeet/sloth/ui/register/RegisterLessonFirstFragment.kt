@@ -30,7 +30,7 @@ import timber.log.Timber
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.register_lesson_graph)
+    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(

@@ -25,8 +25,6 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
 
     private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
 
-    // private val args: LessonDetailFragmentArgs by navArgs()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,7 +37,6 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
 
     override fun onStart() {
         super.onStart()
-        // lessonDetailViewModel.fetchLessonDetail(args.lessonId)
         lessonDetailViewModel.fetchLessonDetail()
     }
 
