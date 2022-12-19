@@ -108,7 +108,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                 }
 
                 launch {
-                    showDeleteLessonDialogEvent
+                    navigateToDeleteLessonDialogEvent
                         .collect {
                             showLessonDeleteDialog()
                         }
@@ -135,7 +135,6 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
         val dlg = SlothDialog(requireContext(), DialogState.DELETE_LESSON)
         dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
             override fun onItemClicked() {
-                // lessonDetailViewModel.deleteLesson(args.lessonId)
                 lessonDetailViewModel.deleteLesson()
             }
         }

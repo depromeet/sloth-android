@@ -97,7 +97,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                updateToReceiveNotificationEvent
+                updateNotificationReceiveEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -144,7 +144,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                showUpdateProfileDialogEvent
+                navigateToUpdateProfileDialogEvent
                     .collect {
                         showProfileUpdateDialog()
                     }
@@ -166,14 +166,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                showLogoutDialogEvent
+                navigateToLogoutDialogEvent
                     .collect {
                         showLogoutDialog()
                     }
             }
 
             launch {
-                showWithdrawalDialogEvent
+                navigateToWithdrawalDialogEvent
                     .collect {
                         showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
                     }
