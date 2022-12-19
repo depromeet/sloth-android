@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//TODO Click 이 붙은 함수 이름 변경
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val checkLoggedInUseCase: CheckLoggedInUseCase,
@@ -49,7 +50,7 @@ class LoginViewModel @Inject constructor(
         _autoLoginEvent.emit(checkLoggedInUseCase())
     }
 
-    fun clickLoginBtn() = viewModelScope.launch {
+    fun showLoginBottomSheet() = viewModelScope.launch {
         _showLoginBottomSheetEvent.emit(Unit)
     }
 
