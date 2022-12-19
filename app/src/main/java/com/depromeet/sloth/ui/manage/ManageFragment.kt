@@ -8,9 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
@@ -20,9 +20,9 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -160,12 +160,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             launch {
                 navigateToPrivatePolicyEvent
                     .collect {
-                        startActivity(
-                            Intent(
-                                requireContext(),
-                                SlothPolicyWebViewActivity::class.java
-                            )
-                        )
+                        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview()
+                        findNavController().safeNavigate(action)
                     }
             }
 

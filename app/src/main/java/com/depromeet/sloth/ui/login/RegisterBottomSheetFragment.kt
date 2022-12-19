@@ -38,6 +38,7 @@ class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    //TODO 로그인 화면 까지 네비게이션에 포함시켜야 진정으로 웹뷰 액티비티를 제거할 수 있음
     private fun openSlothPolicy() {
         startActivity(
             Intent(requireContext(), SlothPolicyWebViewActivity::class.java)

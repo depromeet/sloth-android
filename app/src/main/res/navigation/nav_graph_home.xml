@@ -5,6 +5,8 @@
     android:id="@+id/nav_graph_home"
     app:startDestination="@id/today_lesson">
 
+    <include app:graph="@navigation/nav_register_lesson"/>
+
     <fragment
         android:id="@+id/today_lesson"
         android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
@@ -32,7 +34,22 @@
         android:id="@+id/manage"
         android:name="com.depromeet.sloth.ui.manage.ManageFragment"
         android:label="ManageFragment"
-        tools:layout="@layout/fragment_manage" />
+        tools:layout="@layout/fragment_manage" >
+        <action
+            android:id="@+id/action_manage_to_sloth_policy_webview"
+            app:destination="@id/sloth_policy_webview" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sloth_policy_webview"
+        android:name="com.depromeet.sloth.ui.login.SlothPolicyWebViewFragment"
+        android:label="SlothPolicyWebViewFragment"
+        tools:layout="@layout/fragment_sloth_policy_web_view">
+        <action
+            android:id="@+id/action_sloth_policy_webview_to_manage"
+            app:destination="@id/manage"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/lesson_detail"
@@ -60,7 +77,5 @@
             app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse"
             app:nullable="false"/>
     </fragment>
-
-    <include app:graph="@navigation/nav_register_lesson"/>
 
 </navigation>
