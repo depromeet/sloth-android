@@ -61,7 +61,7 @@ class RegisterLessonSecondFragment :
     }
 
     private fun initListener() {
-        binding.tbRegisterLesson.setNavigationOnClickListener {
+        binding.tbLayout.tbRegisterLesson.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
