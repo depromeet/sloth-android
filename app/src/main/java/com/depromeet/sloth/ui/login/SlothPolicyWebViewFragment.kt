@@ -66,4 +66,10 @@ class SlothPolicyWebViewFragment :
             binding.pbSlothPolicyContentLoading.progress = newProgress //DEFAULT
         }
     }
+
+    // WebView 를 Fragment 에서 사용시 destroy 처리 필요
+    override fun onDestroyView() {
+        binding.wvWebView.destroy()
+        super.onDestroyView()
+    }
 }

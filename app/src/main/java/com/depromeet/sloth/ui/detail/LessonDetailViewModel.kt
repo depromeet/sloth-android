@@ -37,8 +37,8 @@ class LessonDetailViewModel @Inject constructor(
     private val _navigateToUpdateLessonEvent = MutableSharedFlow<LessonDetailResponse>()
     val navigateToUpdateLessonEvent: SharedFlow<LessonDetailResponse> = _navigateToUpdateLessonEvent.asSharedFlow()
 
-    private val _showDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
-    val showDeleteLessonDialogEvent: SharedFlow<Unit> = _showDeleteLessonDialogEvent.asSharedFlow()
+    private val _navigateToDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToDeleteLessonDialogEvent: SharedFlow<Unit> = _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
     fun fetchLessonDetail() = viewModelScope.launch {
         getLessonDetailUseCase(lessonId)
@@ -68,8 +68,8 @@ class LessonDetailViewModel @Inject constructor(
         _navigateToUpdateLessonEvent.emit(lessonDetailResponse)
     }
 
-    fun showDeleteLessonDialog() = viewModelScope.launch {
-        _showDeleteLessonDialogEvent.emit(Unit)
+    fun navigateToDeleteLessonDialog() = viewModelScope.launch {
+        _navigateToDeleteLessonDialogEvent.emit(Unit)
     }
 
     fun removeAuthToken() = viewModelScope.launch {

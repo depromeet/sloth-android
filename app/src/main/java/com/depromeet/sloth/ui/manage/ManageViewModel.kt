@@ -41,13 +41,8 @@ class ManageViewModel @Inject constructor(
         _updateMemberInfoEvent.asSharedFlow()
 
     private val _updateToReceiveNotificationEvent = MutableSharedFlow<Result<String>>()
-    val updateToReceiveNotificationEvent: SharedFlow<Result<String>> =
+    val updateNotificationReceiveEvent: SharedFlow<Result<String>> =
         _updateToReceiveNotificationEvent.asSharedFlow()
-
-    // api response 변경 후
-//    private val _notificationReceiveState = MutableSharedFlow<Result<NotificationUpdateResponse>>()
-//    val notificationReceiveState: SharedFlow<Result<NotificationUpdateResponse>> =
-//        _notificationReceiveState.asSharedFlow()
 
     private val _logoutEvent = MutableSharedFlow<Result<String>>()
     val logoutEvent: SharedFlow<Result<String>> = _logoutEvent.asSharedFlow()
@@ -63,8 +58,8 @@ class ManageViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NOTIFICATION_RECEIVE, false)
     val memberNotificationReceive: StateFlow<Boolean> = _memberNotificationReceive.asStateFlow()
 
-    private val _showUpdateProfileDialogEvent = MutableSharedFlow<Unit>()
-    val showUpdateProfileDialogEvent: SharedFlow<Unit> = _showUpdateProfileDialogEvent.asSharedFlow()
+    private val _navigateToUpdateProfileDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToUpdateProfileDialogEvent: SharedFlow<Unit> = _navigateToUpdateProfileDialogEvent.asSharedFlow()
 
     private val _navigateToContactEvent = MutableSharedFlow<Unit>()
     val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
@@ -72,11 +67,11 @@ class ManageViewModel @Inject constructor(
     private val _navigateToPrivatePolicyEvent = MutableSharedFlow<Unit>()
     val navigateToPrivatePolicyEvent: SharedFlow<Unit> = _navigateToPrivatePolicyEvent.asSharedFlow()
 
-    private val _showLogoutDialogEvent = MutableSharedFlow<Unit>()
-    val showLogoutDialogEvent: SharedFlow<Unit> = _showLogoutDialogEvent.asSharedFlow()
+    private val _navigateToLogoutDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToLogoutDialogEvent: SharedFlow<Unit> = _navigateToLogoutDialogEvent.asSharedFlow()
 
-    private val _showWithdrawalDialogEvent = MutableSharedFlow<Unit>()
-    val showWithdrawalDialogEvent: SharedFlow<Unit> = _showWithdrawalDialogEvent.asSharedFlow()
+    private val _navigateToWithdrawalDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToWithdrawalDialogEvent: SharedFlow<Unit> = _navigateToWithdrawalDialogEvent.asSharedFlow()
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         updateMemberInfoUseCase(memberUpdateRequest)
@@ -88,7 +83,7 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-    fun notificationSwitchClick(check: Boolean) {
+    fun updateNotificationSwitch(check: Boolean) {
         if (memberNotificationReceive.value != check) {
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
@@ -116,8 +111,8 @@ class ManageViewModel @Inject constructor(
         _memberNotificationReceive.value = check
     }
 
-    fun showUpdateProfileDialog() = viewModelScope.launch {
-        _showUpdateProfileDialogEvent.emit(Unit)
+    fun navigateToUpdateProfileDialog() = viewModelScope.launch {
+        _navigateToUpdateProfileDialogEvent.emit(Unit)
     }
 
     fun navigateToPrivacyPolicy() = viewModelScope.launch {
@@ -128,12 +123,12 @@ class ManageViewModel @Inject constructor(
         _navigateToContactEvent.emit(Unit)
     }
 
-    fun showLogoutDialog() = viewModelScope.launch {
-        _showLogoutDialogEvent.emit(Unit)
+    fun navigateToLogoutDialog() = viewModelScope.launch {
+        _navigateToLogoutDialogEvent.emit(Unit)
     }
 
-    fun showWithdrawalDialog() = viewModelScope.launch {
-        _showWithdrawalDialogEvent.emit(Unit)
+    fun navigateToWithdrawalDialog() = viewModelScope.launch {
+        _navigateToWithdrawalDialogEvent.emit(Unit)
     }
 
     fun logout() = viewModelScope.launch {
