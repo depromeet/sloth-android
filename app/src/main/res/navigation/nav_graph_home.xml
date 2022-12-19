@@ -2,24 +2,80 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_home"
-    app:startDestination="@id/navigation_today">
+    android:id="@+id/nav_graph_home"
+    app:startDestination="@id/today_lesson">
+
+    <include app:graph="@navigation/nav_register_lesson"/>
 
     <fragment
-        android:id="@+id/navigation_today"
-        android:name="com.depromeet.sloth.ui.list.TodayFragment"
-        android:label="TodayFragment"
-        tools:layout="@layout/fragment_today"/>
+        android:id="@+id/today_lesson"
+        android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
+        android:label="TodayLessonFragment"
+        tools:layout="@layout/fragment_today_lesson" >
+        <action
+            android:id="@+id/action_today_lesson_to_register_lesson_first"
+            app:destination="@id/nav_register_lesson" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_list"
-        android:name="com.depromeet.sloth.ui.list.ListFragment"
-        android:label="ListFragment"
-        tools:layout="@layout/fragment_list"/>
+        android:id="@+id/lesson_list"
+        android:name="com.depromeet.sloth.ui.list.LessonListFragment"
+        android:label="LessonListFragment"
+        tools:layout="@layout/fragment_lesson_list">
+        <action
+            android:id="@+id/action_lesson_list_to_lesson_detail"
+            app:destination="@id/lesson_detail"/>
+        <action
+            android:id="@+id/action_lesson_list_to_register_lesson_first"
+            app:destination="@id/nav_register_lesson" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_manage"
+        android:id="@+id/manage"
         android:name="com.depromeet.sloth.ui.manage.ManageFragment"
         android:label="ManageFragment"
-        tools:layout="@layout/fragment_manage"/>
+        tools:layout="@layout/fragment_manage" >
+        <action
+            android:id="@+id/action_manage_to_sloth_policy_webview"
+            app:destination="@id/sloth_policy_webview" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sloth_policy_webview"
+        android:name="com.depromeet.sloth.ui.login.SlothPolicyWebViewFragment"
+        android:label="SlothPolicyWebViewFragment"
+        tools:layout="@layout/fragment_sloth_policy_web_view">
+        <action
+            android:id="@+id/action_sloth_policy_webview_to_manage"
+            app:destination="@id/manage"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/lesson_detail"
+        android:name="com.depromeet.sloth.ui.detail.LessonDetailFragment"
+        android:label="LessonDetailFragment"
+        tools:layout="@layout/fragment_lesson_detail">
+        <action
+            android:id="@+id/action_lesson_detail_to_update_lesson"
+            app:destination="@id/update_lesson">
+        </action>
+
+        <argument
+            android:name="lessonId"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/update_lesson"
+        android:name="com.depromeet.sloth.ui.update.UpdateLessonFragment"
+        android:label="UpdateLessonFragment"
+        tools:layout="@layout/fragment_update_lesson" >
+        <argument
+            android:name="lessonDetail"
+            app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse"
+            app:nullable="false"/>
+    </fragment>
+
 </navigation>

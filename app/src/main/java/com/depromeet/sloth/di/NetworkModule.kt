@@ -4,7 +4,7 @@ import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.data.network.AccessTokenAuthenticator
 import com.depromeet.sloth.data.network.AuthenticationInterceptor
 import com.depromeet.sloth.data.network.service.*
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.util.CONNECT_TIME_OUT
 import com.depromeet.sloth.util.READ_TIME_OUT
 import com.depromeet.sloth.util.WRITE_TIME_OUT
@@ -40,14 +40,14 @@ object NetworkModule {
 
     @Provides
     fun provideAccessTokenAuthenticator(
-        preferences: Preferences
+        preferences: PreferenceManager
     ): AccessTokenAuthenticator {
         return AccessTokenAuthenticator(preferences)
     }
 
     @Provides
     fun provideAuthenticationInterceptor(
-        preferences: Preferences
+        preferences: PreferenceManager
     ): AuthenticationInterceptor {
         return AuthenticationInterceptor(preferences)
     }
@@ -57,7 +57,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         accessTokenAuthenticator: AccessTokenAuthenticator,
-        authenticationInterceptor: AuthenticationInterceptor
+        authenticationInterceptor: AuthenticationInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)

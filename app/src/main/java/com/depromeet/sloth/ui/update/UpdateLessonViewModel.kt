@@ -1,52 +1,47 @@
 package com.depromeet.sloth.ui.update
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
-import com.depromeet.sloth.data.repository.LessonRepository
-import com.depromeet.sloth.data.repository.MemberRepository
 import com.depromeet.sloth.di.StringResourcesProvider
+import com.depromeet.sloth.domain.use_case.lesson.GetLessonCategoryListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.GetLessonSiteListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonUseCase
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
-import com.depromeet.sloth.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
-    private val lessonRepository: LessonRepository,
-    savedStateHandle: SavedStateHandle,
+    private val updateLessonUseCase: UpdateLessonUseCase,
+    getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
+    getLessonSiteListUseCase: GetLessonSiteListUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
-    memberRepository: MemberRepository,
-) : BaseViewModel(memberRepository) {
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
 
     val lessonDetail: LessonDetailResponse = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _updateLessonState = MutableSharedFlow<Result<LessonUpdateResponse>>()
+    private val _updateLessonEvent = MutableSharedFlow<Result<LessonUpdateResponse>>()
     val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
-        get() = _updateLessonState
+        get() = _updateLessonEvent
 
-    val lessonCategoryListState: Flow<Result<List<LessonCategoryResponse>>> =
-        lessonRepository.fetchLessonCategoryList()
+    val fetchLessonCategoryListEvent: Flow<Result<List<LessonCategoryResponse>>> =
+        getLessonCategoryListUseCase()
 
-    val lessonSiteListState: Flow<Result<List<LessonSiteResponse>>> =
-        lessonRepository.fetchLessonSiteList()
+    val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
+        getLessonSiteListUseCase()
 
     // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
     private val _lessonName =
@@ -109,7 +104,7 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     fun updateLesson() = viewModelScope.launch {
-        lessonRepository.updateLesson(
+        updateLessonUseCase(
             lessonDetail.lessonId.toString(),
             LessonUpdateRequest(
                 lessonName = lessonName.value,
@@ -119,10 +114,10 @@ class UpdateLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value,
             )
         ).onEach {
-            if (it is Result.Loading) _updateLessonState.emit(Result.Loading)
-            else _updateLessonState.emit(Result.UnLoading)
+            if (it is Result.Loading) _updateLessonEvent.emit(Result.Loading)
+            else _updateLessonEvent.emit(Result.UnLoading)
         }.collect {
-            _updateLessonState.emit(it)
+            _updateLessonEvent.emit(it)
         }
     }
 
@@ -186,6 +181,10 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 
     companion object {

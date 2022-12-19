@@ -14,4 +14,8 @@ data class LoginSlothResponse(
     val refreshTokenExpireTime: String = "",
     @SerializedName("isNewMember")
     val isNewMember: Boolean = false
-)
+) {
+    companion object {
+        val EMPTY = LoginSlothResponse("", "", "", "", false)
+    }
+}

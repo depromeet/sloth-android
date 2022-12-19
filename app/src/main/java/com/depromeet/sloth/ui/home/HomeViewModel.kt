@@ -1,12 +1,13 @@
 package com.depromeet.sloth.ui.home
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.common.Result
+import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
-import com.depromeet.sloth.data.repository.MemberRepository
-import com.depromeet.sloth.data.repository.NotificationRepository
-import com.depromeet.sloth.ui.base.BaseViewModel
+import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.notification.GetNotificationTokenUseCase
+import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,31 +20,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val notificationRepository: NotificationRepository,
+    private val getNotificationTokenUseCase: GetNotificationTokenUseCase,
+    private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
+    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val messaging: FirebaseMessaging,
-    memberRepository: MemberRepository
-) : BaseViewModel(memberRepository) {
+) : ViewModel() {
 
-    private val _notificationFetchState =
+    private val _fetchNotificationTokenEvent =
         MutableSharedFlow<Result<NotificationFetchResponse>>()
-    val notificationFetchState: SharedFlow<Result<NotificationFetchResponse>> =
-        _notificationFetchState.asSharedFlow()
+    val fetchNotificationTokenEvent: SharedFlow<Result<NotificationFetchResponse>> =
+        _fetchNotificationTokenEvent.asSharedFlow()
 
-    private val _notificationRegisterState = MutableSharedFlow<Result<String>>()
-    val notificationRegisterState: SharedFlow<Result<String>> =
-        _notificationRegisterState.asSharedFlow()
+    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>()
+    val registerNotificationTokenEvent: SharedFlow<Result<String>> =
+        _registerNotificationTokenEvent.asSharedFlow()
 
-    fun fetchFCMToken(deviceId: String) = viewModelScope.launch {
-        notificationRepository.fetchFCMToken(deviceId)
+    fun fetchNotificationToken(deviceId: String) = viewModelScope.launch {
+        getNotificationTokenUseCase(deviceId)
             .onEach {
-                if (it is Result.Loading) _notificationFetchState.emit(Result.Loading)
-                else _notificationFetchState.emit(Result.UnLoading)
+                if (it is Result.Loading) _fetchNotificationTokenEvent.emit(Result.Loading)
+                else _fetchNotificationTokenEvent.emit(Result.UnLoading)
             }.collect {
-                _notificationFetchState.emit(it)
+                _fetchNotificationTokenEvent.emit(it)
             }
     }
 
-    fun createAndRegisterFCMToken(deviceId: String) {
+    fun createAndRegisterNotificationToken(deviceId: String) {
         messaging.token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Timber.w(task.exception, "Fetching FCM registration token failed")
@@ -51,19 +53,23 @@ class HomeViewModel @Inject constructor(
             }
             val fcmToken = task.result
             Timber.tag("FCM Token is created").d(fcmToken)
-            registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken))
+            registerNotificationToken(NotificationRegisterRequest(deviceId, fcmToken))
         }
     }
 
-    private fun registerFCMToken(
+    private fun registerNotificationToken(
         notificationRegisterRequest: NotificationRegisterRequest
     ) = viewModelScope.launch {
-        notificationRepository.registerFCMToken(notificationRegisterRequest)
+        registerNotificationTokenUseCase(notificationRegisterRequest)
             .onEach {
-                if (it is Result.Loading) _notificationRegisterState.emit(Result.Loading)
-                else _notificationRegisterState.emit(Result.UnLoading)
+                if (it is Result.Loading) _registerNotificationTokenEvent.emit(Result.Loading)
+                else _registerNotificationTokenEvent.emit(Result.UnLoading)
             }.collect {
-                _notificationRegisterState.emit(it)
+                _registerNotificationTokenEvent.emit(it)
             }
+    }
+
+    fun removeAuthToken() = viewModelScope.launch {
+        removeAuthTokenUseCase()
     }
 }

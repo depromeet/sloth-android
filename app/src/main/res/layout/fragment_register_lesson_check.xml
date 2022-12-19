@@ -13,8 +13,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.register.RegisterLessonActivity">
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/tb_layout"
+            layout="@layout/toolbar_register_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <ScrollView
             android:id="@+id/sv_register_lesson"
@@ -24,7 +29,7 @@
             app:layout_constraintBottom_toTopOf="@id/cl_register_lesson_select"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/tb_layout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -341,7 +346,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="16dp"
-                android:onClick="@{()-> vm.navigateToRegisterLessonSecondClick()}"
+                android:onClick="@{()-> vm.navigateToRegisterLessonSecond()}"
                 android:text="@string/lesson_update"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btn_register_lesson_accept"

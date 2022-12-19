@@ -1,79 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.login.SlothPolicyWebViewActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
    <androidx.constraintlayout.widget.ConstraintLayout
-       android:id="@+id/tb_web_view"
-       android:layout_width="0dp"
-       android:layout_height="?attr/actionBarSize"
-       android:background="@color/white"
-       android:elevation="4dp"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent">
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tools:context=".ui.login.SlothPolicyWebViewActivity">
 
-      <EditText
-          android:id="@+id/et_web_view_address_bar"
+      <com.google.android.material.appbar.MaterialToolbar
+          android:id="@+id/tb_sloth_policy"
+          style="?attr/toolbarWithArrowButtonStyle"
           android:layout_width="0dp"
-          android:layout_height="32dp"
-          android:background="@drawable/bg_webview_address_bar"
-          android:imeOptions="actionDone"
-          android:inputType="textUri"
-          android:paddingHorizontal="16dp"
-          android:selectAllOnFocus="true"
-          android:textSize="14dp"
-          android:layout_marginHorizontal="16dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintHorizontal_weight="4"
-          app:layout_constraintEnd_toStartOf="@id/iv_web_view_close"/>
-
-      <ImageView
-          android:id="@+id/iv_web_view_close"
-          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="16dp"
-          android:src="@drawable/ic_webview_close"
-          app:layout_constraintHorizontal_weight="1"
-          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
 
-   </androidx.constraintlayout.widget.ConstraintLayout>
+         <EditText
+             android:id="@+id/et_sloth_policy_address_bar"
+             android:layout_width="280dp"
+             android:layout_height="32dp"
+             android:background="@drawable/bg_sloth_policy_address_bar"
+             android:imeOptions="actionDone"
+             android:inputType="textUri"
+             android:paddingHorizontal="16dp"
+             android:selectAllOnFocus="true"
+             android:textSize="14dp"
+             android:gravity="center_vertical"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />
 
-   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-       android:id="@+id/srl_web_view"
-       android:layout_width="0dp"
-       android:layout_height="0dp"
-       app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintLeft_toLeftOf="parent"
-       app:layout_constraintRight_toRightOf="parent"
-       app:layout_constraintTop_toBottomOf="@id/tb_web_view">
+      </com.google.android.material.appbar.MaterialToolbar>
 
       <WebView
-          android:id="@+id/wv_sloth_policy"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent" />
+          android:id="@+id/wv_web_view"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          app:layout_constraintTop_toBottomOf="@id/tb_sloth_policy"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent" />
 
-   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+      <androidx.core.widget.ContentLoadingProgressBar
+          android:id="@+id/pb_sloth_policy_content_loading"
+          android:layout_width="0dp"
+          android:layout_height="2dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/tb_sloth_policy"
+          style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+          app:layout_constraintRight_toRightOf="parent" />
 
-   <androidx.core.widget.ContentLoadingProgressBar
-       android:id="@+id/pb_web_view"
-       android:layout_width="0dp"
-       android:layout_height="2dp"
-       app:layout_constraintLeft_toLeftOf="parent"
-       app:layout_constraintTop_toBottomOf="@id/tb_web_view"
-       style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-       app:layout_constraintRight_toRightOf="parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--    android:imeOptions="actionDone" 입력을 종료하면 키보드가 내려감-->
-    <!--    android:background="?attr/selectableItemBackground" 버튼 클릭시 이벤트(애니메이션?)-->
-    <!--    elevation을 줄때 색깔을 지정해야 그림자가 생김 색을 지정하지 않으면 투명한 것이라 그림자도 생기지 않음-->
-    <!--    swipelayout은 스크롤이 가능한 영역을 감싸는 형식으로 구현-->
+   </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

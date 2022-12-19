@@ -11,23 +11,26 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.fragment.app.activityViewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+//TODO 키보드가 올라왔을 때  다음 버튼이 굳이 키보드 위로 올라올 필요가 없음
+// 강의 이름 적고 바로 강의 수 텍스트필드 입력칸으로 이동하는게 뭔가 부자연스러움
+// 툴바를 include 로 추가했을 때 이슈
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by activityViewModels()
+    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
@@ -51,15 +54,23 @@ class RegisterLessonFirstFragment :
         bind {
             vm = registerLessonViewModel
         }
-
         initViews()
+        initListener()
         initObserver()
+    }
+
+    private fun initListener() {
+        binding.tbLayout.tbRegisterLesson.setNavigationOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun initObserver() = with(registerLessonViewModel) {
         repeatOnStarted {
             launch {
-                lessonCategoryListState
+                fetchLessonCategoryListEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -73,8 +84,8 @@ class RegisterLessonFirstFragment :
                                 )
                             }
                             is Result.Error -> {
-                                when(result.statusCode) {
-                                    401 ->  showForbiddenDialog(requireContext()) {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
                                         registerLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -89,7 +100,7 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                lessonSiteListState
+                fetchLessonSiteListEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -104,7 +115,7 @@ class RegisterLessonFirstFragment :
                                 )
                             }
                             is Result.Error -> {
-                                when(result.statusCode) {
+                                when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext()) {
                                         registerLessonViewModel.removeAuthToken()
                                     }
@@ -119,9 +130,11 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                onNavigateToRegisterLessonSecondClick
+                navigateToRegisterLessonSecondEvent
                     .collect {
-                        navigateToRegisterLessonSecond()
+                        val action =
+                            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
+                        findNavController().safeNavigate(action)
                     }
             }
         }
@@ -140,12 +153,6 @@ class RegisterLessonFirstFragment :
             adapter = arrayAdapter
             setSelection(position)
         }
-    }
-
-    private fun navigateToRegisterLessonSecond() {
-        val action =
-            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
-        findNavController().safeNavigate(action)
     }
 
     @SuppressLint("ClickableViewAccessibility")

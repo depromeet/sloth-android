@@ -175,5 +175,6 @@
     <string name="passed_lesson">지난 강의</string>
     <string name="error_message">문제가 발생했어요</string>
     <string name="lesson_detail_info_fail">강의 상세 정보를 가져오지 못했어요</string>
+    <string name="test_crash">Test Crash</string>
 
 </resources>

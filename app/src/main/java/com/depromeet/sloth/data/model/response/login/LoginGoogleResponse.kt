@@ -14,4 +14,8 @@ data class LoginGoogleResponse(
     val tokenType: String = "",
     @SerializedName("id_token")
     val idToken: String = "",
-)
+) {
+    companion object {
+        val EMPTY = LoginGoogleResponse("", 0, "","")
+    }
+}

@@ -8,9 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
@@ -20,9 +20,9 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,14 +42,13 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             vm = manageViewModel
         }
         dialogBinding = DialogManageUpdateMemberInfoBinding.inflate(layoutInflater)
-
         initObserver()
     }
 
     private fun initObserver() = with(manageViewModel) {
         repeatOnStarted {
             launch {
-                memberState
+                fetchMemberInfoEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -73,7 +72,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                memberUpdateState
+                updateMemberInfoEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -98,7 +97,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                notificationReceiveState
+                updateToReceiveNotificationEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -123,7 +122,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                memberLogoutState
+                logoutEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -145,40 +144,36 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                profileClick
+                showUpdateProfileDialogEvent
                     .collect {
                         showProfileUpdateDialog()
                     }
             }
 
             launch {
-                contactButtonClick
+                navigateToContactEvent
                     .collect {
                         sendEmail()
                     }
             }
 
             launch {
-                privatePolicyClick
+                navigateToPrivatePolicyEvent
                     .collect {
-                        startActivity(
-                            Intent(
-                                requireContext(),
-                                SlothPolicyWebViewActivity::class.java
-                            )
-                        )
+                        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview()
+                        findNavController().safeNavigate(action)
                     }
             }
 
             launch {
-                logoutClick
+                showLogoutDialogEvent
                     .collect {
                         showLogoutDialog()
                     }
             }
 
             launch {
-                withdrawalClick
+                showWithdrawalDialogEvent
                     .collect {
                         showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
                     }

@@ -10,6 +10,7 @@ plugins {
     id(libs.plugins.hilt.android.get().pluginId)
     id(libs.plugins.secrets.gradle.plugin.get().pluginId)
     id(libs.plugins.navigation.safeargs.get().pluginId)
+    id(libs.plugins.firebase.crashlytics.get().pluginId)
 }
 
 android {
@@ -92,6 +93,8 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.fragment)
+    implementation(libs.startup)
 
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
@@ -107,5 +110,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.crashlytics)
 }
 

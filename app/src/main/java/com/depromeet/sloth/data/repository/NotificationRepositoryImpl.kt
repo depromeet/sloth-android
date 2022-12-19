@@ -1,24 +1,25 @@
 package com.depromeet.sloth.data.repository
 
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.sloth.data.network.service.NotificationService
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
+import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: PreferenceManager,
     private val notificationService: NotificationService,
 ) : NotificationRepository {
 
-    override fun registerFCMToken(notificationRegisterRequest: NotificationRegisterRequest) =
+    override fun registerNotificationToken(notificationRegisterRequest: NotificationRegisterRequest) =
         flow {
             emit(Result.Loading)
             val response = notificationService.registerFCMToken(notificationRegisterRequest) ?: run {
@@ -90,7 +91,7 @@ class NotificationRepositoryImpl @Inject constructor(
 
 
     //TODO 안드로이드 의존성을 가지고 있는 datasource 를 만들어 거기서 devideId 를 주입
-    override fun fetchFCMToken(deviceId: String) = flow {
+    override fun fetchNotificationToken(deviceId: String) = flow {
         emit(Result.Loading)
         val response = notificationService.fetchFCMToken(deviceId) ?: run {
             emit(Result.Error(Exception("Response is null")))

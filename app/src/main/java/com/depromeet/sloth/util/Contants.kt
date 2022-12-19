@@ -1,6 +1,9 @@
 package com.depromeet.sloth.util
 
-const val KEY_PREFERENCES = "shared_pref"
+const val KEY_PREFERENCES = "preferences_datastore"
+
+const val KEY_ACCESS_TOKEN = "accessToken"
+const val KEY_REFRESH_TOKEN = "refreshToken"
 
 const val GOOGLE = "GOOGLE"
 const val KAKAO = "KAKAO"

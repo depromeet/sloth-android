@@ -1,14 +1,24 @@
 package com.depromeet.sloth.data.repository
 
-import com.depromeet.sloth.common.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
-import com.depromeet.sloth.data.model.response.lesson.*
+import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.data.network.service.LessonService
-import com.depromeet.sloth.data.preferences.Preferences
+import com.depromeet.sloth.data.preferences.PreferenceManager
+import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
+import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -23,7 +33,7 @@ import javax.inject.Inject
 // TODO HTTP 코드 응답 처리 함수로 만들어 모듈화
 // TODO State emit helper 함수 적용
 class LessonRepositoryImpl @Inject constructor(
-    private val preferences: Preferences,
+    private val preferences: PreferenceManager,
     private val lessonService: LessonService
 ) : LessonRepository {
 
