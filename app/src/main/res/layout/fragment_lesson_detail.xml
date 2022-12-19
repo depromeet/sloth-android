@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.detail.LessonDetailActivity">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_detail_lesson"
             style="?attr/toolbarWithArrowButtonStyle"
             android:layout_width="0dp"
@@ -37,7 +37,7 @@
                 android:textColor="@color/gray_600"
                 android:textSize="16dp" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <ScrollView
             android:layout_width="0dp"

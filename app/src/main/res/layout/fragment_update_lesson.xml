@@ -19,7 +19,7 @@
         android:focusableInTouchMode="true"
         tools:context=".ui.update.UpdateLessonActivity">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_update_lesson"
             style="?attr/toolbarWithArrowButtonStyle"
             android:layout_width="0dp"
@@ -38,7 +38,7 @@
                 android:textColor="@color/gray_600"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <ScrollView
             android:id="@+id/nsv_update_lesson"

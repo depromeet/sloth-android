@@ -102,6 +102,4 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             }
         }
     }
-
-    override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
 }
