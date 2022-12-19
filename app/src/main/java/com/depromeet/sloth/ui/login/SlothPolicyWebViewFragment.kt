@@ -63,7 +63,6 @@ class SlothPolicyWebViewFragment :
     inner class WebChromeClient : android.webkit.WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
-
             binding.pbSlothPolicyContentLoading.progress = newProgress //DEFAULT
         }
     }

@@ -20,9 +20,9 @@
 
         <include
             android:id="@+id/tb_layout"
+            layout="@layout/toolbar_register_lesson"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout= "@layout/toolbar_register_lesson"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_register_guide"
@@ -84,7 +84,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_rounded_spinner_gray"
-                    android:onClick="@{()->vm.registerLessonStartDateClick()}"
+                    android:onClick="@{()->vm.registerLessonStartDate()}"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -124,6 +124,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:onClick="@{()->vm.registerLessonEndDate()}"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
                     android:visibility="@{vm.lessonEndDateSelectedItemPosition == 0 ? View.GONE : View.VISIBLE}"

@@ -314,7 +314,7 @@ class RegisterLessonViewModel @Inject constructor(
         _navigateToRegisterLessonCheckEvent.emit(Unit)
     }
 
-    fun registerLessonStartDateClick() = viewModelScope.launch {
+    fun registerLessonStartDate() = viewModelScope.launch {
         _registerLessonStartDateEvent.emit(startDate.value)
     }
 

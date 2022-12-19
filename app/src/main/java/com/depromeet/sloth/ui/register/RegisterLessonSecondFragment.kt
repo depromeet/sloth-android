@@ -73,14 +73,16 @@ class RegisterLessonSecondFragment :
             launch {
                 registerLessonStartDateEvent
                     .collect {
-                        registerLessonStartDate()
+                        showLessonStartDateCalendar()
                     }
             }
 
             launch {
                 registerLessonEndDateEvent
                     .collect {
-                        registerLessonEndDateByCalendar()
+                        if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                            showLessonEndDateCalendar()
+                        }
                     }
             }
 
@@ -88,7 +90,11 @@ class RegisterLessonSecondFragment :
                 lessonDateRangeValidation
                     .collect { isEnable ->
                         when (isEnable) {
-                            false -> showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                            false -> {
+                                if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                                    showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                                }
+                            }
                             else -> Unit
                         }
                     }
@@ -112,7 +118,7 @@ class RegisterLessonSecondFragment :
         focusInputFormOptional(etRegisterLessonMessage)
     }
 
-    private fun registerLessonStartDate() = with(binding) {
+    private fun showLessonStartDateCalendar() = with(binding) {
         val materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
             setTitleText(getString(R.string.lesson_start_date))
         }
@@ -123,17 +129,13 @@ class RegisterLessonSecondFragment :
                 calendar.time = Date(it)
                 registerLessonViewModel.setLessonStartDate(calendar)
                 // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
-                updateLessonEndDate()
+                registerLessonViewModel.setLessonEndDateBySpinner(registerLessonViewModel.lessonEndDateSelectedItemPosition.value)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
-    private fun updateLessonEndDate() {
-        registerLessonViewModel.setLessonEndDateBySpinner(registerLessonViewModel.lessonEndDateSelectedItemPosition.value)
-    }
-
-    private fun registerLessonEndDateByCalendar() = with(binding) {
+    private fun showLessonEndDateCalendar() = with(binding) {
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.from(registerLessonViewModel.startDate.value.time + DAY))
