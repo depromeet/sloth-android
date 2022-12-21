@@ -96,6 +96,10 @@
         <item name="android:textColor">@color/gray_600</item>
     </style>
 
+    <style name="Widget.Sloth.Button.Retry" parent="Widget.Sloth.Button">
+        <item name="android:layout_height">42dp</item>
+    </style>
+
     <style name="circleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>

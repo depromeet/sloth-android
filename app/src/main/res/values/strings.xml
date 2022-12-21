@@ -176,5 +176,8 @@
     <string name="error_message">문제가 발생했어요</string>
     <string name="lesson_detail_info_fail">강의 상세 정보를 가져오지 못했어요</string>
     <string name="test_crash">Test Crash</string>
+    <string name="network_error">인터넷이 연결되어 있지 않아요</string>
+    <string name="retry">연결 후 다시 실행해주세요</string>
+    <string name="retry_btn_text">다시 연결하기</string>
 
 </resources>
