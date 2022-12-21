@@ -85,7 +85,7 @@
                     app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_today_title_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

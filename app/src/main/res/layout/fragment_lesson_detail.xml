@@ -152,7 +152,7 @@
                         app:layout_constraintTop_toBottomOf="@id/gl_detail"
                         tools:text="@string/d_remain_day" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <TextView
                         android:id="@+id/tv_detail_lesson_warning"
                         goalProgressRate="@{vm.lessonDetail.goalProgressRate}"
                         remainDay="@{vm.lessonDetail.remainDay}"

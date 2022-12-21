@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_remain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 tools:ignore="HardcodedText"
                 tools:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_price_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/vw_lesson_list_goal_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
                 app:layout_constraintEnd_toEndOf="@id/vw_lesson_list_current_line"
                 app:layout_constraintTop_toTopOf="@id/pb_lesson_list_bar">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_lesson_list_goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_lesson_list_goal_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_price_start" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_class_lesson_percent_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -212,7 +212,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -250,7 +250,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_current_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_number_slash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
