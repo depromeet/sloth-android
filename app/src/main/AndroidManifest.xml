@@ -39,11 +39,13 @@
             android:name=".ui.login.SlothPolicyWebViewActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
