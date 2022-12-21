@@ -67,14 +67,6 @@ abstract class BaseFragment<B : ViewDataBinding>(
     protected fun showToast(msg: String) =
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 
-//    protected fun showProgress() {
-//        LoadingDialogUtil.showProgress(requireActivity())
-//    }
-//
-//    protected fun hideProgress() {
-//        LoadingDialogUtil.hideProgress()
-//    }
-
     fun showProgress() {
         if (!loadingDialog.isShowing) {
             loadingDialog.show()
