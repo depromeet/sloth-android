@@ -3,17 +3,22 @@ package com.depromeet.sloth.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.provider.Settings
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
+import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
 import com.depromeet.sloth.util.Result
@@ -25,7 +30,6 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
@@ -34,32 +38,24 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginBottomSheetFragment : BottomSheetDialogFragment() {
+class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBinding>(R.layout.fragment_login_bottom) {
 
-    private val loginViewModel: LoginViewModel by viewModels()
-
-    private lateinit var binding: FragmentLoginBottomBinding
-    private var _binding: FragmentLoginBottomBinding? = null
+    // private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_login)
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
     private lateinit var loginListener: LoginListener
 
-    fun setLoginListener(loginListener: LoginListener) {
-        this.loginListener = loginListener
+    private val deviceId: String by lazy {
+        Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginBottomBinding.inflate(inflater, container, false)
-        binding = _binding!!
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        bind {
             vm = loginViewModel
-            lifecycleOwner = viewLifecycleOwner
         }
 
         val googleClientId = BuildConfig.GOOGLE_CLIENT_ID
@@ -83,8 +79,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         initObserver()
-
-        return binding.root
     }
 
     private fun initObserver() = with(loginViewModel) {
@@ -106,8 +100,8 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 googleLoginEvent
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> (activity as LoginActivity).showProgress()
-                            is Result.UnLoading -> (activity as LoginActivity).hideProgress()
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<LoginGoogleResponse> -> {
                                 fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                             }
@@ -124,13 +118,14 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 slothLoginEvent
                     .collect { result ->
                         when (result) {
-                            is Result.Loading -> (activity as LoginActivity).showProgress()
-                            is Result.UnLoading -> (activity as LoginActivity).hideProgress()
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
                             is Result.Success<LoginSlothResponse> -> {
                                 if (result.data.isNewMember) {
-                                    loginListener.onSuccessWithNewMember()
+                                    val action = LoginBottomSheetFragmentDirections.actionLoginBottomToRegisterBottom()
+                                    findNavController().safeNavigate(action)
                                 } else {
-                                    loginListener.onSuccessWithRegisteredMember()
+                                    createAndRegisterNotificationToken(deviceId)
                                 }
                             }
 
@@ -141,7 +136,41 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                     }
             }
+
+            launch {
+                registerNotificationTokenEvent
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<String> -> {
+                                closeLoginBottomSheet()
+
+                                startActivity(
+                                    Intent(requireContext(), HomeActivity::class.java)
+                                )
+                                requireActivity().finish()
+
+                                // TODO navigateToLessonTodayFragment
+                                // findNavController().navigate(R.id.action_nav_login_to_today_lesson)
+                            }
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        removeAuthToken()
+                                    }
+                                    else -> Timber.tag("Register Error").d(result.throwable)
+                                }
+                            }
+                        }
+                    }
+            }
         }
+    }
+
+    private fun closeLoginBottomSheet() {
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToLogin()
+        findNavController().safeNavigate(action)
     }
 
     private fun loginWithGoogle() {
@@ -173,11 +202,6 @@ class LoginBottomSheetFragment : BottomSheetDialogFragment() {
                 Timber.tag(TAG).e(error, "인증 에러 발생")
             }
         }
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     companion object {

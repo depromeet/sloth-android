@@ -64,8 +64,8 @@ class ManageViewModel @Inject constructor(
     private val _navigateToContactEvent = MutableSharedFlow<Unit>()
     val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
 
-    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<Unit>()
-    val navigateToPrivatePolicyEvent: SharedFlow<Unit> = _navigateToPrivatePolicyEvent.asSharedFlow()
+    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<String>()
+    val navigateToPrivatePolicyEvent: SharedFlow<String> = _navigateToPrivatePolicyEvent.asSharedFlow()
 
     private val _navigateToLogoutDialogEvent = MutableSharedFlow<Unit>()
     val navigateToLogoutDialogEvent: SharedFlow<Unit> = _navigateToLogoutDialogEvent.asSharedFlow()
@@ -116,7 +116,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun navigateToPrivacyPolicy() = viewModelScope.launch {
-        _navigateToPrivatePolicyEvent.emit(Unit)
+        _navigateToPrivatePolicyEvent.emit(TAG)
     }
 
     fun navigateToContact() = viewModelScope.launch {
@@ -146,6 +146,7 @@ class ManageViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TAG = "ManageFragment"
         private const val KEY_MEMBER_NAME = "memberName"
         private const val KEY_MEMBER_NOTIFICATION_RECEIVE = "notificationReceive"
     }

@@ -36,23 +36,34 @@ class LoginViewModel @Inject constructor(
     val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
-    val navigateToLoginBottomSheetEvent: SharedFlow<Unit> = _navigateToLoginBottomSheetEvent.asSharedFlow()
+    val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
+        _navigateToLoginBottomSheetEvent.asSharedFlow()
 
     private val _googleLoginClickEvent = MutableSharedFlow<Unit>()
     val googleLoginClickEvent: SharedFlow<Unit> = _googleLoginClickEvent.asSharedFlow()
 
-    private val _googleLoginEvent = MutableSharedFlow<Result<LoginGoogleResponse>>()
+    private val _googleLoginEvent = MutableSharedFlow<Result<LoginGoogleResponse>>(replay = 1)
     val googleLoginEvent: SharedFlow<Result<LoginGoogleResponse>> = _googleLoginEvent.asSharedFlow()
 
     private val _kakaoLoginClickEvent = MutableSharedFlow<Unit>()
     val kakaoLoginClickEvent: SharedFlow<Unit> = _kakaoLoginClickEvent.asSharedFlow()
 
-    private val _slothLoginEvent = MutableSharedFlow<Result<LoginSlothResponse>>()
+    private val _slothLoginEvent = MutableSharedFlow<Result<LoginSlothResponse>>(replay = 1)
     val slothLoginEvent: SharedFlow<Result<LoginSlothResponse>> = _slothLoginEvent.asSharedFlow()
 
-    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>()
+    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>(replay = 1)
     val registerNotificationTokenEvent: SharedFlow<Result<String>> =
         _registerNotificationTokenEvent.asSharedFlow()
+
+    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<String>()
+    val navigateToPrivatePolicyEvent: SharedFlow<String> =
+        _navigateToPrivatePolicyEvent.asSharedFlow()
+
+    private val _registerAgreeEvent = MutableSharedFlow<Unit>()
+    val registerAgreeEvent: SharedFlow<Unit> = _registerAgreeEvent.asSharedFlow()
+
+    private val _registerCancelEvent = MutableSharedFlow<Unit>()
+    val registerCancelEvent: SharedFlow<Unit> = _registerCancelEvent.asSharedFlow()
 
     init {
         checkLoggedIn()
@@ -72,6 +83,18 @@ class LoginViewModel @Inject constructor(
 
     fun kakaoLoginClick() = viewModelScope.launch {
         _kakaoLoginClickEvent.emit(Unit)
+    }
+
+    fun navigateToSlothPolicyWebview() = viewModelScope.launch {
+        _navigateToPrivatePolicyEvent.emit(TAG)
+    }
+
+    fun registerAgree() = viewModelScope.launch {
+        _registerAgreeEvent.emit(Unit)
+    }
+
+    fun registerCancel() = viewModelScope.launch {
+        _registerCancelEvent.emit(Unit)
     }
 
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
@@ -120,5 +143,9 @@ class LoginViewModel @Inject constructor(
 
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
+    }
+
+    companion object {
+        const val TAG = "RegisterBottomSheetFragment"
     }
 }

@@ -3,69 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="vm"
-            type="com.depromeet.sloth.ui.login.LoginViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context=".ui.login.LoginActivity">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_login_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="46dp"
-            android:lineSpacingExtra="6dp"
-            android:maxLines="2"
-            android:text="@string/title_main"
-            android:textSize="28dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_login_sub_title"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="12dp"
-            android:gravity="top"
-            android:lineSpacingExtra="3sp"
-            android:text="@string/title_sub"
-            android:textSize="14dp"
-            android:translationY="-1.4sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_login_sloth"
-            android:contentDescription="@string/ic_login_sloth"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_login_container"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.622"
-            app:layout_constraintWidth_percent="0.85" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_login_start"
-            style="@style/Widget.Sloth.Button.Login"
-            android:layout_width="match_parent"
-            android:layout_margin="24dp"
-            android:lineSpacingExtra="3sp"
-            android:onClick="@{() -> vm.navigateToLoginBottomSheet()}"
-            android:text="@string/start_sloth"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:navGraph="@navigation/nav_login" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

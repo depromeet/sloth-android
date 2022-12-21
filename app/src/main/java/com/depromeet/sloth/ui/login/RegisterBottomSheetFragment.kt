@@ -1,55 +1,107 @@
 package com.depromeet.sloth.ui.login
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.depromeet.sloth.databinding.FragmentRegisterBottomBinding
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.content.Intent
+import android.os.Bundle
+import android.provider.Settings
+import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.depromeet.sloth.R
+import com.depromeet.sloth.databinding.FragmentRegisterBottomBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
+import com.depromeet.sloth.ui.home.HomeActivity
+import com.depromeet.sloth.util.Result
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class RegisterBottomSheetFragment : BottomSheetDialogFragment() {
+@AndroidEntryPoint
+class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBottomBinding>(R.layout.fragment_register_bottom) {
 
-    private lateinit var binding: FragmentRegisterBottomBinding
-    private var _binding: FragmentRegisterBottomBinding? = null
+    // private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_login)
+    private val loginViewModel: LoginViewModel by activityViewModels()
 
-    private lateinit var registerListener: RegisterListener
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRegisterBottomBinding.inflate(inflater, container, false)
-        binding = _binding!!
-
-        binding.tvLoginPolicySloth.setOnClickListener {
-            openSlothPolicy()
-        }
-
-        binding.btnLoginPolicyCancel.setOnClickListener {
-            registerListener.onCancel()
-        }
-
-        binding.btnLoginPolicyAgree.setOnClickListener {
-            registerListener.onAgree()
-        }
-
-        return binding.root
+    private val deviceId: String by lazy {
+        Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    //TODO 로그인 화면 까지 네비게이션에 포함시켜야 진정으로 웹뷰 액티비티를 제거할 수 있음
-    private fun openSlothPolicy() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bind {
+            vm = loginViewModel
+        }
+
+        initObserver()
+    }
+
+    private fun initObserver() = with(loginViewModel) {
+        repeatOnStarted {
+            launch {
+                navigateToPrivatePolicyEvent.collect { tag ->
+                    showSlothPolicyWebview(tag)
+                }
+            }
+
+            launch {
+                registerAgreeEvent.collect {
+                    createAndRegisterNotificationToken(deviceId)
+                }
+            }
+
+            launch {
+                registerCancelEvent.collect {
+                    val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomToLogin()
+                    findNavController().safeNavigate(action)
+                }
+            }
+
+            launch {
+                registerNotificationTokenEvent
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<String> -> {
+                                closeRegisterBottomSheet()
+
+                                startActivity(
+                                    Intent(requireContext(), HomeActivity::class.java)
+                                )
+                                requireActivity().finish()
+
+                                // TODO navigateToLessonTodayFragment
+                                // findNavController().navigate(R.id.action_nav_login_to_today_lesson)
+                            }
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(requireContext()) {
+                                        removeAuthToken()
+                                    }
+                                    else -> Timber.tag("Register Error").d(result.throwable)
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun closeRegisterBottomSheet() {
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomToLogin()
+        findNavController().safeNavigate(action)
+    }
+
+    //TODO 웹뷰 액티비티를 제거
+    private fun showSlothPolicyWebview(tag: String) {
         startActivity(
             Intent(requireContext(), SlothPolicyWebViewActivity::class.java)
         )
-    }
-
-    fun setRegisterListener(registerListener: RegisterListener) {
-        this.registerListener = registerListener
-    }
-
-    companion object {
-        const val TAG = "RegisterBottomSheetFragment"
+//        val action =
+//            RegisterBottomSheetFragmentDirections.actionRegisterBottomToSlothPolicyWebview(tag)
+//        findNavController().safeNavigate(action)
     }
 }

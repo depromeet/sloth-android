@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_login"
+    app:startDestination="@id/login">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.depromeet.sloth.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_login_bottom"
+            app:destination="@id/login_bottom" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sloth_policy_webview"
+        android:name="com.depromeet.sloth.ui.login.SlothPolicyWebViewFragment"
+        android:label="SlothPolicyWebViewFragment"
+        tools:layout="@layout/fragment_sloth_policy_web_view">
+        <action
+            android:id="@+id/action_sloth_policy_webview_to_register_bottom"
+            app:destination="@id/register_bottom"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="tag"
+            app:argType="string" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/login_bottom"
+        android:name="com.depromeet.sloth.ui.login.LoginBottomSheetFragment"
+        android:label="LoginBottomSheetFragment"
+        tools:layout="@layout/fragment_login_bottom">
+        <action
+            android:id="@+id/action_login_bottom_to_register_bottom"
+            app:destination="@id/register_bottom" />
+        <action
+            android:id="@+id/action_login_bottom_to_login"
+            app:destination="@id/login"
+            app:popUpToInclusive="true" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/register_bottom"
+        android:name="com.depromeet.sloth.ui.login.RegisterBottomSheetFragment"
+        android:label="RegisterBottomSheetFragment"
+        tools:layout="@layout/fragment_register_bottom">
+        <action
+            android:id="@+id/action_register_bottom_to_sloth_policy_webview"
+            app:destination="@id/sloth_policy_webview" />
+        <action
+            android:id="@+id/action_register_bottom_to_login"
+            app:destination="@id/login" />
+    </dialog>
+
+</navigation>

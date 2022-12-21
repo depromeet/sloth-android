@@ -6,6 +6,11 @@
     app:startDestination="@id/today_lesson">
 
     <include app:graph="@navigation/nav_register_lesson"/>
+<!--    <include app:graph="@navigation/nav_login"/>-->
+
+<!--    <action-->
+<!--        android:id="@+id/action_nav_login_to_today_lesson"-->
+<!--        app:destination="@id/today_lesson"/>-->
 
     <fragment
         android:id="@+id/today_lesson"
@@ -49,6 +54,9 @@
             android:id="@+id/action_sloth_policy_webview_to_manage"
             app:destination="@id/manage"
             app:popUpToInclusive="true"/>
+        <argument
+            android:name="tag"
+            app:argType="string" />
     </fragment>
 
     <fragment
