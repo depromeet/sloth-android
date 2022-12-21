@@ -23,9 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-//TODO 키보드가 올라왔을 때  다음 버튼이 굳이 키보드 위로 올라올 필요가 없음
-// 강의 이름 적고 바로 강의 수 텍스트필드 입력칸으로 이동하는게 뭔가 부자연스러움
-// 툴바를 include 로 추가했을 때 이슈
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {

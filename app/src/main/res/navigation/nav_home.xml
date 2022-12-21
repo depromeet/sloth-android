@@ -72,10 +72,10 @@
         android:name="com.depromeet.sloth.ui.update.UpdateLessonFragment"
         android:label="UpdateLessonFragment"
         tools:layout="@layout/fragment_update_lesson" >
+
         <argument
             android:name="lessonDetail"
-            app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse"
-            app:nullable="false"/>
+            app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse" />
     </fragment>
 
 </navigation>

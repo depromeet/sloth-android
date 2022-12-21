@@ -29,3 +29,5 @@
 
 # retrofit 사용시 json을 생성/파싱을 위한 class들에 대해 난독화 제외
 -keep class com.depromeet.sloth.data.network.** { *; }
+
+-keep class com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
