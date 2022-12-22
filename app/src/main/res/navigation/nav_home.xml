@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_home"
-    app:startDestination="@id/today_lesson">
+    app:startDestination="@id/login">
 
     <include app:graph="@navigation/nav_register_lesson"/>
 

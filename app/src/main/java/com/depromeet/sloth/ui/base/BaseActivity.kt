@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.lifecycleScope
 import com.depromeet.sloth.databinding.DialogLoadingBinding
 
 abstract class BaseActivity<B: ViewDataBinding>(
@@ -39,12 +38,6 @@ abstract class BaseActivity<B: ViewDataBinding>(
     }
 
     open fun initViews() = Unit
-
-    fun mainScope(block: suspend () -> Unit) {
-        lifecycleScope.launchWhenCreated {
-            block.invoke()
-        }
-    }
 
     protected inline fun bind(block: B.() -> Unit) {
         binding.apply(block)
