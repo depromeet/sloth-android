@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
+    implementation(libs.splash)
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.android.test)
 
