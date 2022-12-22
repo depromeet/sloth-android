@@ -12,6 +12,7 @@ import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
@@ -61,7 +62,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                                         }
                                         else -> {
                                             Timber.tag("Fetch Error").d(result.throwable)
-                                            showToast(getString(R.string.lesson_detail_info_fail))
+                                            showToast(requireContext(), getString(R.string.lesson_detail_info_fail))
                                         }
                                     }
                                 }
@@ -76,7 +77,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                                 is Result.Loading -> showProgress()
                                 is Result.UnLoading -> hideProgress()
                                 is Result.Success<LessonDeleteResponse> -> {
-                                    showToast(getString(R.string.lesson_delete_complete))
+                                    showToast(requireContext(), getString(R.string.lesson_delete_complete))
                                     //뒤로가기
                                     if (!findNavController().navigateUp()) {
                                         requireActivity().finish()
@@ -89,7 +90,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                                         }
                                         else -> {
                                             Timber.tag("Fetch Error").d(result.throwable)
-                                            showToast(getString(R.string.lesson_delete_fail))
+                                            showToast(requireContext(), getString(R.string.lesson_delete_fail))
                                         }
                                     }
                                 }

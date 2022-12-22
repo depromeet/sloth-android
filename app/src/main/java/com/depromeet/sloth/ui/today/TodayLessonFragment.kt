@@ -9,10 +9,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
-import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
-import com.depromeet.sloth.extensions.showWaitDialog
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -26,7 +23,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
+class TodayLessonFragment :
+    BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
     private val todayLessonViewModel: TodayLessonViewModel by viewModels()
 
@@ -72,12 +70,18 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                             is Result.Success -> setLessonList(result.data)
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
+                                    401 -> showForbiddenDialog(
+                                        requireContext(),
+                                        this@TodayLessonFragment
+                                    ) {
                                         todayLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.lesson_info_fetch_fail))
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.lesson_info_fetch_fail)
+                                        )
                                     }
                                 }
                             }
@@ -92,18 +96,24 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
-                                showToast(getString(R.string.lesson_finish_complete))
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.lesson_finish_complete)
+                                )
                                 todayLessonViewModel.fetchTodayLessonList()
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
+                                    401 -> showForbiddenDialog(
+                                        requireContext(),
+                                        this@TodayLessonFragment
+                                    ) {
                                         todayLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Finish Error").d(result.throwable)
                                         showToast(
-                                            getString(
+                                            requireContext(), getString(
                                                 R.string.lesson_finish_fail
                                             )
                                         )
@@ -294,7 +304,7 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                                 todayLessonViewModel.removeAuthToken()
                             }
                             else -> {
-                                showToast(getString(R.string.lesson_info_update_fail))
+                                showToast(requireContext(), getString(R.string.lesson_info_update_fail))
                                 Timber.tag("Update Error").d(result.throwable)
                             }
                         }

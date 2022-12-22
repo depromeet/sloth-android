@@ -9,10 +9,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
-import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
-import com.depromeet.sloth.extensions.showWaitDialog
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -60,7 +57,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.lesson_info_fetch_fail))
+                                        showToast(requireContext(), getString(R.string.lesson_info_fetch_fail))
                                     }
                                 }
                             }

@@ -63,7 +63,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.member_info_fetch_fail))
+                                        showToast(requireContext(), getString(R.string.member_info_fetch_fail))
                                     }
                                 }
                             }
@@ -78,7 +78,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<MemberUpdateResponse> -> {
-                                showToast(getString(R.string.member_update_success))
+                                showToast(requireContext(), getString(R.string.member_update_success))
                                 setMemberName(result.data.memberName)
                             }
                             is Result.Error -> {
@@ -88,7 +88,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     }
                                     else -> {
                                         Timber.tag("Update Error").d(result.throwable)
-                                        showToast(getString(R.string.member_update_fail))
+                                        showToast(requireContext(), getString(R.string.member_update_fail))
                                     }
                                 }
                             }
@@ -103,7 +103,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
-                                showToast(getString(R.string.noti_update_complete))
+                                showToast(requireContext(), getString(R.string.noti_update_complete))
                                 setMemberNotificationReceive(binding.scManageNotificationStatus.isChecked)
                             }
                             is Result.Error -> {
@@ -113,7 +113,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     }
                                     else -> {
                                         Timber.tag("Update Error").d(result.throwable)
-                                        showToast(getString(R.string.noti_update_fail))
+                                        showToast(requireContext(), getString(R.string.noti_update_fail))
                                     }
                                 }
                             }
@@ -138,7 +138,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     }
                                     else -> {
                                         Timber.tag("Logout Error").d(result.throwable)
-                                        showToast(getString(R.string.logout_fail))
+                                        showToast(requireContext(), getString(R.string.logout_fail))
                                     }
                                 }
                             }
@@ -210,7 +210,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 manageViewModel.updateMemberInfo(MemberUpdateRequest(memberName = etManageProfileName.text.toString()))
             } else {
                 hideKeyBoard(requireActivity())
-                showToast(getString(R.string.input_same_nickname))
+                showToast(requireContext(), getString(R.string.input_same_nickname))
             }
             updateDialog.dismiss()
         }

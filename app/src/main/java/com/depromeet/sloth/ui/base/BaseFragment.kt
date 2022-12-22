@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatDialog
 import androidx.databinding.DataBindingUtil
@@ -63,9 +62,6 @@ abstract class BaseFragment<B : ViewDataBinding>(
     }
 
     open fun initViews() = Unit
-
-    protected fun showToast(msg: String) =
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 
     fun showProgress() {
         if (!loadingDialog.isShowing) {

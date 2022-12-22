@@ -9,6 +9,7 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +49,7 @@ class RegisterLessonCheckFragment :
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
-                                showToast(getString(R.string.lesson_register_complete))
+                                showToast(requireContext(), getString(R.string.lesson_register_complete))
                                 val action =
                                     RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
                                 findNavController().safeNavigate(action)
@@ -61,7 +62,7 @@ class RegisterLessonCheckFragment :
 
                                     else -> {
                                         Timber.tag("Register Error").d(result.throwable)
-                                        showToast(getString(R.string.lesson_register_fail))
+                                        showToast(requireContext(), getString(R.string.lesson_register_fail))
                                     }
                                 }
                             }

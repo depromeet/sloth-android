@@ -60,7 +60,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
-                                showToast(getString(R.string.lesson_info_update_complete))
+                                showToast(requireContext(), getString(R.string.lesson_info_update_complete))
                                 val action = UpdateLessonFragmentDirections.actionUpdateLessonToLessonDetail(lessonDetail.lessonId.toString())
                                 findNavController().safeNavigate(action)
                             }
@@ -71,7 +71,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.lesson_info_update_fail))
+                                        showToast(requireContext(), getString(R.string.lesson_info_update_fail))
                                     }
                                 }
                             }
@@ -96,7 +96,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
                                     }
                                 }
                             }
@@ -122,7 +122,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
                                     }
                                 }
                             }
@@ -134,7 +134,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                 lessonTotalNumberValidation
                     .collect { isEnable ->
                         when (isEnable) {
-                            false -> showToast(getString(R.string.lesson_number_validation_error))
+                            false -> showToast(requireContext(), getString(R.string.lesson_number_validation_error))
                             else -> Unit
                         }
                     }

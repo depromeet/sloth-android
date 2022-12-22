@@ -92,7 +92,7 @@ class RegisterLessonSecondFragment :
                         when (isEnable) {
                             false -> {
                                 if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
-                                    showToast(getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                                    showToast(requireContext(), getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
                                 }
                             }
                             else -> Unit

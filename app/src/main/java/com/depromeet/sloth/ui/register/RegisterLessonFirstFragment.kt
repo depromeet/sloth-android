@@ -88,7 +88,7 @@ class RegisterLessonFirstFragment :
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
                                     }
                                 }
 
@@ -119,7 +119,7 @@ class RegisterLessonFirstFragment :
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(getString(R.string.cannot_get_lesson_category))
+                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
                                     }
                                 }
                             }

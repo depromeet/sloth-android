@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
@@ -17,6 +16,7 @@ import com.depromeet.sloth.databinding.DialogLoadingBinding
 abstract class BaseActivity<B: ViewDataBinding>(
     @LayoutRes val layoutId: Int
 ) : AppCompatActivity() {
+
     protected lateinit var binding: B
 
     private val loadingDialog: AppCompatDialog by lazy {
@@ -39,10 +39,6 @@ abstract class BaseActivity<B: ViewDataBinding>(
     }
 
     open fun initViews() = Unit
-
-    protected fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
 
     fun mainScope(block: suspend () -> Unit) {
         lifecycleScope.launchWhenCreated {
