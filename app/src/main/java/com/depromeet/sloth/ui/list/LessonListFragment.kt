@@ -55,7 +55,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                             is Result.Success<List<LessonAllResponse>> -> setLessonList(result.data)
                             is Result.Error -> {
                                 when(result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@LessonListFragment) {
                                             lessonListViewModel.removeAuthToken()
                                     }
                                     else -> {

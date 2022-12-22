@@ -72,7 +72,7 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                             is Result.Success -> setLessonList(result.data)
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
                                         todayLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -97,7 +97,7 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
                                         todayLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -290,7 +290,7 @@ class TodayLessonFragment : BaseFragment<FragmentTodayLessonBinding>(R.layout.fr
                     }
                     is Result.Error -> {
                         when (result.statusCode) {
-                            401 -> showForbiddenDialog(requireContext()) {
+                            401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
                                 todayLessonViewModel.removeAuthToken()
                             }
                             else -> {

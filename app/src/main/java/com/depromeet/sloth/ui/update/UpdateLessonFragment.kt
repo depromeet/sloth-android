@@ -11,10 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
-import com.depromeet.sloth.extensions.clearEditTextFocus
-import com.depromeet.sloth.extensions.hideKeyBoard
-import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,13 +61,12 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(getString(R.string.lesson_info_update_complete))
-                                if (!findNavController().navigateUp()) {
-                                    requireActivity().finish()
-                                }
+                                val action = UpdateLessonFragmentDirections.actionUpdateLessonToLessonDetail(lessonDetail.lessonId.toString())
+                                findNavController().safeNavigate(action)
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -95,7 +91,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
-                                    401 ->  showForbiddenDialog(requireContext()) {
+                                    401 ->  showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -121,7 +117,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
                                         updateLessonViewModel.removeAuthToken()
                                     }
                                     else -> {

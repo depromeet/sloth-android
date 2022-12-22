@@ -23,32 +23,14 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_sloth_logo" />
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/sloth" />
-
-        <activity
-            android:name=".ui.login.SlothPolicyWebViewActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
@@ -67,6 +49,13 @@
                     android:scheme="@string/kakao_native_key" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_sloth_logo" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/sloth" />
 
         <service
             android:name=".service.FirebaseService"

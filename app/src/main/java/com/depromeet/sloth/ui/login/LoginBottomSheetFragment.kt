@@ -7,7 +7,7 @@ import android.provider.Settings
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.activityViewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
@@ -18,7 +18,6 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
-import com.depromeet.sloth.ui.home.HomeActivity
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
 import com.depromeet.sloth.util.Result
@@ -40,8 +39,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBinding>(R.layout.fragment_login_bottom) {
 
-    // private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_login)
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
@@ -85,16 +83,12 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
         repeatOnStarted {
             launch {
                 googleLoginClickEvent
-                    .collect {
-                        loginWithGoogle()
-                    }
+                    .collect { loginWithGoogle() }
             }
 
             launch {
                 kakaoLoginClickEvent
-                    .collect {
-                        loginWithKakao()
-                    }
+                    .collect { loginWithKakao() }
             }
             launch {
                 googleLoginEvent
@@ -105,7 +99,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             is Result.Success<LoginGoogleResponse> -> {
                                 fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                             }
-
                             is Result.Error -> {
                                 Timber.tag("Google Login Fail").d(result.throwable)
                                 loginListener.onError()
@@ -122,13 +115,11 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LoginSlothResponse> -> {
                                 if (result.data.isNewMember) {
-                                    val action = LoginBottomSheetFragmentDirections.actionLoginBottomToRegisterBottom()
-                                    findNavController().safeNavigate(action)
+                                    showRegisterBottom()
                                 } else {
                                     createAndRegisterNotificationToken(deviceId)
                                 }
                             }
-
                             is Result.Error -> {
                                 Timber.tag("Login Fail").d(result.throwable)
                                 loginListener.onError()
@@ -138,6 +129,8 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
             }
 
             launch {
+                // 로그인이 성공하면 토큰을 서버에 전달해주는 방식으로 로직 변경
+                // 토큰을 전달한 다음 홈 화면으로 이동
                 registerNotificationTokenEvent
                     .collect { result ->
                         when (result) {
@@ -145,18 +138,11 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
                                 closeLoginBottomSheet()
-
-                                startActivity(
-                                    Intent(requireContext(), HomeActivity::class.java)
-                                )
-                                requireActivity().finish()
-
-                                // TODO navigateToLessonTodayFragment
-                                // findNavController().navigate(R.id.action_nav_login_to_today_lesson)
+                                navigateToTodayLesson()
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@LoginBottomSheetFragment) {
                                         removeAuthToken()
                                     }
                                     else -> Timber.tag("Register Error").d(result.throwable)
@@ -166,6 +152,16 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                     }
             }
         }
+    }
+
+    private fun navigateToTodayLesson() {
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToTodayLesson()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun showRegisterBottom() {
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToTodayLesson()
+        findNavController().safeNavigate(action)
     }
 
     private fun closeLoginBottomSheet() {

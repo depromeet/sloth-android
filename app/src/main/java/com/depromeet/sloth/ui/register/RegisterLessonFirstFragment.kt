@@ -83,7 +83,7 @@ class RegisterLessonFirstFragment :
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@RegisterLessonFirstFragment) {
                                         registerLessonViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -114,7 +114,7 @@ class RegisterLessonFirstFragment :
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@RegisterLessonFirstFragment) {
                                         registerLessonViewModel.removeAuthToken()
                                     }
                                     else -> {

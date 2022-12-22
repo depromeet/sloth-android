@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
@@ -19,7 +20,6 @@ import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.ui.login.SlothPolicyWebViewActivity
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import com.depromeet.sloth.util.Result
@@ -58,7 +58,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             )
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@ManageFragment) {
                                         manageViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -83,7 +83,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@ManageFragment) {
                                         manageViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -108,7 +108,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@ManageFragment) {
                                         manageViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -127,10 +127,13 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
-                            is Result.Success<String> -> logout(requireContext()) { manageViewModel.removeAuthToken() }
+                            is Result.Success<String> -> logout(
+                                requireContext(),
+                                this@ManageFragment
+                            ) { manageViewModel.removeAuthToken() }
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext()) {
+                                    401 -> showForbiddenDialog(requireContext(), this@ManageFragment) {
                                         manageViewModel.removeAuthToken()
                                     }
                                     else -> {
@@ -145,50 +148,39 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 navigateToUpdateProfileDialogEvent
-                    .collect {
-                        showProfileUpdateDialog()
-                    }
+                    .collect { showProfileUpdateDialog() }
             }
 
             launch {
                 navigateToContactEvent
-                    .collect {
-                        sendEmail()
-                    }
+                    .collect { sendEmail() }
             }
 
             launch {
                 navigateToPrivatePolicyEvent
-                    .collect { tag ->
-                        showPrivatePolicy(tag)
-                    }
+                    .collect { tag -> showPrivatePolicy(tag) }
             }
 
             launch {
                 navigateToLogoutDialogEvent
-                    .collect {
-                        showLogoutDialog()
-                    }
+                    .collect { showLogoutDialog() }
             }
 
             launch {
                 navigateToWithdrawalDialogEvent
                     .collect {
-                        showWithdrawalDialog(requireContext()) { manageViewModel.removeAuthToken() }
+                        showWithdrawalDialog(
+                            requireContext(),
+                            this@ManageFragment
+                        ) { manageViewModel.removeAuthToken() }
                     }
             }
         }
     }
 
     private fun showPrivatePolicy(tag: String) {
-        startActivity(
-            Intent(
-                requireContext(),
-                SlothPolicyWebViewActivity::class.java
-            )
-        )
-//        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview(tag)
-//        findNavController().safeNavigate(action)
+        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview(tag)
+        findNavController().safeNavigate(action)
     }
 
     private fun showLogoutDialog() {

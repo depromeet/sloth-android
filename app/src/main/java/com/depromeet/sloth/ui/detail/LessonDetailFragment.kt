@@ -55,7 +55,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                                 is Result.Error -> {
                                     when (result.statusCode) {
                                         401 -> {
-                                            showForbiddenDialog(requireContext()) {
+                                            showForbiddenDialog(requireContext(), this@LessonDetailFragment) {
                                                 lessonDetailViewModel.removeAuthToken()
                                             }
                                         }
@@ -84,7 +84,7 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
                                 }
                                 is Result.Error -> {
                                     when (result.statusCode) {
-                                        401 -> showForbiddenDialog(requireContext()) {
+                                        401 -> showForbiddenDialog(requireContext(), this@LessonDetailFragment) {
                                             lessonDetailViewModel.removeAuthToken()
                                         }
                                         else -> {

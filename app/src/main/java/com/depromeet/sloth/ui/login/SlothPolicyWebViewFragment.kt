@@ -5,10 +5,12 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentSlothPolicyWebViewBinding
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,25 +27,21 @@ class SlothPolicyWebViewFragment :
         initListener()
     }
 
-    // TODO 뒤로가기가 분기가 필요
-    // args 의 값을 판단하여 manage, registerBottom 이동하는 방식으로 구햔
-    // 다른 액티비티에 있는 액션이라 가져올 수 가 없다.
-    // nested graph 로 구현해야만하나
     private fun initListener() {
         val tag = args.tag
 
-//        binding.tbSlothPolicy.setNavigationOnClickListener {
-//            when (tag) {
-//                MANAGE -> {
-//                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToManage()
-//                    findNavController().safeNavigate(action)
-//                }
-//                REGISTER_BOTTOM -> {
-//                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToRegisterBottom()
-//                    findNavController().safeNavigate(action)
-//                }
-//            }
-//        }
+        binding.tbSlothPolicy.setNavigationOnClickListener {
+            when (tag) {
+                MANAGE -> {
+                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToManage()
+                    findNavController().safeNavigate(action)
+                }
+                REGISTER_BOTTOM -> {
+                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToRegisterBottom()
+                    findNavController().safeNavigate(action)
+                }
+            }
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
