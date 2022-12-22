@@ -16,6 +16,9 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
+// TODO 스플래시 API 적용 후, 처음 소셜 로그인하였을 때 네비게이션이 먹지 않는 문제
+// 그 후로는 정상 작동하는데 흠...
+// 비동기 이슈 같음 Post 관련
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
