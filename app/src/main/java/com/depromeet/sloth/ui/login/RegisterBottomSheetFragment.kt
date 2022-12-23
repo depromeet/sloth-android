@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.login
 
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
@@ -21,10 +20,6 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
 
     private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
 
-    private val deviceId: String by lazy {
-        Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,7 +36,7 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
             }
 
             launch {
-                registerAgreeEvent.collect { createAndRegisterNotificationToken(deviceId) }
+                registerAgreeEvent.collect { createAndRegisterNotificationToken() }
             }
 
             launch {

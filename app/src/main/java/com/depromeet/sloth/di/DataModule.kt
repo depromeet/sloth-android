@@ -13,6 +13,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
+    @Provides
+    @Singleton
+    fun providePreferenceManager(@ApplicationContext context: Context) = PreferenceManager(context)
+
 //    @Provides
 //    @Singleton
 //    fun provideSharedPreferences(
@@ -28,9 +32,5 @@ object DataModule {
 //    ): Preferences {
 //        return PreferencesImpl(sharedPreferences)
 //    }
-
-    @Provides
-    @Singleton
-    fun providePreferenceManager(@ApplicationContext context: Context) = PreferenceManager(context)
 }
 

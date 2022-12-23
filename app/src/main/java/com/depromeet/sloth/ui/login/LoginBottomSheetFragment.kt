@@ -3,7 +3,6 @@ package com.depromeet.sloth.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,10 +44,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
-
-    private val deviceId: String by lazy {
-        Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,7 +119,7 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                                 if (result.data.isNewMember) {
                                     showRegisterBottom()
                                 } else {
-                                    createAndRegisterNotificationToken(deviceId)
+                                    createAndRegisterNotificationToken()
                                 }
                             }
                             is Result.Error -> {

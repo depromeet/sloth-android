@@ -2,8 +2,6 @@ package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.domain.use_case.login.CheckLoggedInUseCase
@@ -11,6 +9,7 @@ import com.depromeet.sloth.domain.use_case.login.GetGoogleAuthInfoUseCase
 import com.depromeet.sloth.domain.use_case.login.GetSlothAuthInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
+import com.depromeet.sloth.util.Result
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -117,7 +116,7 @@ class LoginViewModel @Inject constructor(
             }
     }
 
-    fun createAndRegisterNotificationToken(deviceId: String) {
+    fun createAndRegisterNotificationToken() {
         messaging.token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Timber.w(task.exception, "Fetching FCM registration token failed")
@@ -125,14 +124,14 @@ class LoginViewModel @Inject constructor(
             }
             val fcmToken = task.result
             Timber.tag("FCM Token is created").d(fcmToken)
-            registerNotificationToken(NotificationRegisterRequest(deviceId, fcmToken))
+            registerNotificationToken(fcmToken)
         }
     }
 
     private fun registerNotificationToken(
-        notificationRegisterRequest: NotificationRegisterRequest
+        fcmToken: String
     ) = viewModelScope.launch {
-        registerNotificationTokenUseCase(notificationRegisterRequest)
+        registerNotificationTokenUseCase(fcmToken)
             .onEach {
                 if (it is Result.Loading) _registerNotificationTokenEvent.emit(Result.Loading)
                 else _registerNotificationTokenEvent.emit(Result.UnLoading)
