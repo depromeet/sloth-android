@@ -158,7 +158,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 navigateToPrivatePolicyEvent
-                    .collect { tag -> showPrivatePolicy() }
+                    .collect { showPrivatePolicy() }
             }
 
             launch {
