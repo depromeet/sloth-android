@@ -55,8 +55,8 @@ class LoginViewModel @Inject constructor(
     val registerNotificationTokenEvent: SharedFlow<Result<String>> =
         _registerNotificationTokenEvent.asSharedFlow()
 
-    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<String>()
-    val navigateToPrivatePolicyEvent: SharedFlow<String> =
+    private val _navigateToPrivatePolicyEvent = MutableSharedFlow<Unit>()
+    val navigateToPrivatePolicyEvent: SharedFlow<Unit> =
         _navigateToPrivatePolicyEvent.asSharedFlow()
 
     private val _registerAgreeEvent = MutableSharedFlow<Unit>()
@@ -86,7 +86,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun navigateToSlothPolicyWebview() = viewModelScope.launch {
-        _navigateToPrivatePolicyEvent.emit(TAG)
+        _navigateToPrivatePolicyEvent.emit(Unit)
     }
 
     fun registerAgree() = viewModelScope.launch {
@@ -143,9 +143,5 @@ class LoginViewModel @Inject constructor(
 
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
-    }
-
-    companion object {
-        const val TAG = "RegisterBottomSheetFragment"
     }
 }

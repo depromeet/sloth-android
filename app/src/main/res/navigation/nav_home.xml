@@ -31,17 +31,7 @@
         android:name="com.depromeet.sloth.ui.login.SlothPolicyWebViewFragment"
         android:label="SlothPolicyWebViewFragment"
         tools:layout="@layout/fragment_sloth_policy_web_view">
-        <action
-            android:id="@+id/action_sloth_policy_webview_to_register_bottom"
-            app:destination="@id/register_bottom"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="tag"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_sloth_policy_webview_to_manage"
-            app:destination="@id/manage"
-            app:popUpToInclusive="true"/>
+
     </fragment>
 
     <dialog

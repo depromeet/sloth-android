@@ -6,19 +6,15 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentSlothPolicyWebViewBinding
-import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SlothPolicyWebViewFragment :
     BaseFragment<FragmentSlothPolicyWebViewBinding>(R.layout.fragment_sloth_policy_web_view) {
-
-    val args: SlothPolicyWebViewFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,18 +24,10 @@ class SlothPolicyWebViewFragment :
     }
 
     private fun initListener() {
-        val tag = args.tag
-
         binding.tbSlothPolicy.setNavigationOnClickListener {
-            when (tag) {
-                MANAGE -> {
-                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToManage()
-                    findNavController().safeNavigate(action)
-                }
-                REGISTER_BOTTOM -> {
-                    val action = SlothPolicyWebViewFragmentDirections.actionSlothPolicyWebviewToRegisterBottom()
-                    findNavController().safeNavigate(action)
-                }
+            // 뒤로 가기
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
             }
         }
     }
@@ -84,10 +72,5 @@ class SlothPolicyWebViewFragment :
     override fun onDestroyView() {
         binding.wvWebView.destroy()
         super.onDestroyView()
-    }
-
-    companion object {
-        private const val MANAGE = "ManageFragment"
-        private const val REGISTER_BOTTOM = "RegisterBottomSheetFragment"
     }
 }

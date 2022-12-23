@@ -37,7 +37,7 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
             launch {
-                navigateToPrivatePolicyEvent.collect { tag -> showPrivatePolicy(tag) }
+                navigateToPrivatePolicyEvent.collect { showPrivatePolicy() }
             }
 
             launch {
@@ -82,9 +82,9 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
         findNavController().safeNavigate(action)
     }
 
-    private fun showPrivatePolicy(tag: String) {
+    private fun showPrivatePolicy() {
         val action =
-            RegisterBottomSheetFragmentDirections.actionRegisterBottomToSlothPolicyWebview(tag)
+            RegisterBottomSheetFragmentDirections.actionRegisterBottomToSlothPolicyWebview()
         findNavController().safeNavigate(action)
     }
 }

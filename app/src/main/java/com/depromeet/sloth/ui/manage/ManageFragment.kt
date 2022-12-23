@@ -158,7 +158,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 navigateToPrivatePolicyEvent
-                    .collect { tag -> showPrivatePolicy(tag) }
+                    .collect { tag -> showPrivatePolicy() }
             }
 
             launch {
@@ -178,8 +178,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         }
     }
 
-    private fun showPrivatePolicy(tag: String) {
-        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview(tag)
+    private fun showPrivatePolicy() {
+        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview()
         findNavController().safeNavigate(action)
     }
 
