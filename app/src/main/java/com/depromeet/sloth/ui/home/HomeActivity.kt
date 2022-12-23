@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -16,13 +15,8 @@ import com.depromeet.sloth.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
-// TODO 스플래시 API 적용 후, 처음 소셜 로그인하였을 때 네비게이션이 먹지 않는 문제
-// 그 후로는 정상 작동하는데 흠...
-// 비동기 이슈 같음 Post 관련
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
-
-    private val homeViewModel: HomeViewModel by viewModels()
 
     private lateinit var navController: NavController
 
@@ -35,8 +29,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     }
 
     override fun initViews() {
-        super.initViews()
-
         // Crashlytics 비정상 종료 테스트
         val crashButton = Button(this)
         crashButton.text = getString(R.string.test_crash)
@@ -51,7 +43,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             )
         )
     }
-
 
     private fun initNavigation() = with(binding) {
         val navHostFragment =
