@@ -42,16 +42,16 @@ class LoginViewModel @Inject constructor(
     private val _googleLoginClickEvent = MutableSharedFlow<Unit>()
     val googleLoginClickEvent: SharedFlow<Unit> = _googleLoginClickEvent.asSharedFlow()
 
-    private val _googleLoginEvent = MutableSharedFlow<Result<LoginGoogleResponse>>(replay = 1)
+    private val _googleLoginEvent = MutableSharedFlow<Result<LoginGoogleResponse>>()
     val googleLoginEvent: SharedFlow<Result<LoginGoogleResponse>> = _googleLoginEvent.asSharedFlow()
 
     private val _kakaoLoginClickEvent = MutableSharedFlow<Unit>()
     val kakaoLoginClickEvent: SharedFlow<Unit> = _kakaoLoginClickEvent.asSharedFlow()
 
-    private val _slothLoginEvent = MutableSharedFlow<Result<LoginSlothResponse>>(replay = 1)
+    private val _slothLoginEvent = MutableSharedFlow<Result<LoginSlothResponse>>()
     val slothLoginEvent: SharedFlow<Result<LoginSlothResponse>> = _slothLoginEvent.asSharedFlow()
 
-    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>(replay = 1)
+    private val _registerNotificationTokenEvent = MutableSharedFlow<Result<String>>()
     val registerNotificationTokenEvent: SharedFlow<Result<String>> =
         _registerNotificationTokenEvent.asSharedFlow()
 
