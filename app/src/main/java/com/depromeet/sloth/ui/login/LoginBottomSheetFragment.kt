@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -43,19 +45,16 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
-    private lateinit var loginListener: LoginListener
 
     private val deviceId: String by lazy {
         Settings.Secure.getString(requireActivity().contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        bind {
-            vm = loginViewModel
-        }
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val googleClientId = BuildConfig.GOOGLE_CLIENT_ID
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))
@@ -76,6 +75,15 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
 
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bind {
+            vm = loginViewModel
+        }
         initObserver()
     }
 
@@ -101,7 +109,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             }
                             is Result.Error -> {
                                 Timber.tag("Google Login Fail").d(result.throwable)
-                                loginListener.onError()
                             }
                         }
                     }
@@ -122,7 +129,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             }
                             is Result.Error -> {
                                 Timber.tag("Login Fail").d(result.throwable)
-                                loginListener.onError()
                             }
                         }
                     }
@@ -130,14 +136,13 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
 
             launch {
                 // 로그인이 성공하면 토큰을 서버에 전달해주는 방식으로 로직 변경
-                // 토큰을 전달한 다음 홈 화면으로 이동
+                // 토큰을 전달한 다음 투데이 화면으로 이동
                 registerNotificationTokenEvent
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
-                                closeLoginBottomSheet()
                                 navigateToTodayLesson()
                             }
                             is Result.Error -> {
@@ -161,11 +166,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
 
     private fun showRegisterBottom() {
         val action = LoginBottomSheetFragmentDirections.actionLoginBottomToTodayLesson()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun closeLoginBottomSheet() {
-        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToLogin()
         findNavController().safeNavigate(action)
     }
 

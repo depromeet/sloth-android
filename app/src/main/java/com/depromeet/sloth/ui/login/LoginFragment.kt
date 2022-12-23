@@ -40,7 +40,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 autoLoginEvent
                     .collect { loginState ->
                         when (loginState) {
-                            true -> loginViewModel.createAndRegisterNotificationToken(deviceId)
+                            true -> createAndRegisterNotificationToken(deviceId)
                             else -> Unit
                         }
                     }

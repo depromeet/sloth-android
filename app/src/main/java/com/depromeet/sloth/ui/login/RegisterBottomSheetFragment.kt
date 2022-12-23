@@ -55,7 +55,6 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<String> -> {
-                                closeRegisterBottomSheet()
                                 navigateToTodayLesson()
                             }
                             is Result.Error -> {

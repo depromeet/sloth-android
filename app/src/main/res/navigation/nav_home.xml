@@ -43,10 +43,6 @@
             android:id="@+id/action_login_bottom_to_register_bottom"
             app:destination="@id/register_bottom" />
         <action
-            android:id="@+id/action_login_bottom_to_login"
-            app:destination="@id/login"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_login_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
             app:popUpToInclusive="true"/>
