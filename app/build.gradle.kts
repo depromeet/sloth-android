@@ -4,13 +4,13 @@ import java.util.Properties
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
     id(libs.plugins.kotlin.parcelize.get().pluginId)
     id(libs.plugins.google.service.get().pluginId)
     id(libs.plugins.hilt.android.get().pluginId)
     id(libs.plugins.secrets.gradle.plugin.get().pluginId)
     id(libs.plugins.navigation.safeargs.get().pluginId)
     id(libs.plugins.firebase.crashlytics.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
 }
 
 android {
