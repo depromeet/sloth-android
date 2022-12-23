@@ -295,6 +295,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <include
+                android:id="@+id/item_network_error"
+                layout="@layout/item_network_error"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
