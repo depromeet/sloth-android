@@ -91,7 +91,6 @@ class RegisterLessonFirstFragment :
                                         showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
                                     }
                                 }
-
                             }
                         }
                     }

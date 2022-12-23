@@ -4,11 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonCategoryListUseCase
@@ -18,14 +16,17 @@ import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
+import com.depromeet.sloth.ui.item.Lesson
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+//TODO LessonItem 클래스를 LessonRequest 로 변환할 Mapper 필요
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,
@@ -45,6 +46,9 @@ class RegisterLessonViewModel @Inject constructor(
 
     val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
         getLessonSiteListUseCase()
+
+    private val _lesson = MutableStateFlow(Lesson())
+    val lesson: StateFlow<Lesson> = _lesson.asStateFlow()
 
     private val _lessonName =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
@@ -86,9 +90,6 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonMessage =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
-
-    private val _lesson = MutableStateFlow(LessonResponse())
-    val lesson: StateFlow<LessonResponse> = _lesson.asStateFlow()
 
     private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
     val startDate: StateFlow<Date> = _startDate.asStateFlow()
@@ -227,8 +228,9 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonDateRangeValidation.value = startDate.value <= endDate.value
     }
 
+
     fun setLessonInfo() {
-        _lesson.value = LessonResponse(
+        _lesson.value = Lesson(
             categoryName = lessonCategoryName.value,
             endDate = changeDateStringToArrayList(lessonEndDate.value),
             lessonName = lessonName.value,
