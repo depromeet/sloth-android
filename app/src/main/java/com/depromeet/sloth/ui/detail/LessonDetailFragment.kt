@@ -3,7 +3,6 @@ package com.depromeet.sloth.ui.detail
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
@@ -22,7 +21,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
+class LessonDetailFragment :
+    BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
 
     private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
 
@@ -42,86 +42,104 @@ class LessonDetailFragment : BaseFragment<FragmentLessonDetailBinding>(R.layout.
     }
 
     private fun initObserver() = with(lessonDetailViewModel) {
-        lifecycleScope.launch {
-            repeatOnStarted {
-                launch {
-                    fetchLessonDetailEvent
-                        .collect { result ->
-                            when (result) {
-                                is Result.Loading -> showProgress()
-                                is Result.UnLoading -> hideProgress()
-                                is Result.Success<LessonDetailResponse> -> {
-                                    lessonDetailViewModel.setLessonDetailInfo(result.data)
-                                }
-                                is Result.Error -> {
-                                    when (result.statusCode) {
-                                        401 -> {
-                                            showForbiddenDialog(requireContext(), this@LessonDetailFragment) {
-                                                lessonDetailViewModel.removeAuthToken()
-                                            }
-                                        }
-                                        else -> {
-                                            Timber.tag("Fetch Error").d(result.throwable)
-                                            showToast(requireContext(), getString(R.string.lesson_detail_info_fail))
-                                        }
-                                    }
-                                }
+        repeatOnStarted {
+            launch {
+                fetchLessonDetailEvent
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<LessonDetailResponse> -> {
+                                lessonDetailViewModel.setLessonDetailInfo(result.data)
                             }
-                        }
-                }
 
-                launch {
-                    deleteLessonEvent
-                        .collect { result ->
-                            when (result) {
-                                is Result.Loading -> showProgress()
-                                is Result.UnLoading -> hideProgress()
-                                is Result.Success<LessonDeleteResponse> -> {
-                                    showToast(requireContext(), getString(R.string.lesson_delete_complete))
-                                    //뒤로가기
-                                    if (!findNavController().navigateUp()) {
-                                        requireActivity().finish()
-                                    }
-                                }
-                                is Result.Error -> {
-                                    when (result.statusCode) {
-                                        401 -> showForbiddenDialog(requireContext(), this@LessonDetailFragment) {
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> {
+                                        showForbiddenDialog(
+                                            requireContext(),
+                                            this@LessonDetailFragment
+                                        ) {
                                             lessonDetailViewModel.removeAuthToken()
                                         }
-                                        else -> {
-                                            Timber.tag("Fetch Error").d(result.throwable)
-                                            showToast(requireContext(), getString(R.string.lesson_delete_fail))
-                                        }
+                                    }
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.lesson_detail_info_fail)
+                                        )
                                     }
                                 }
                             }
                         }
-                }
+                    }
+            }
 
-                launch {
-                    navigateToUpdateLessonEvent
-                        .collect { lessonDetail ->
-                            val action = LessonDetailFragmentDirections.actionLessonDetailToUpdateLesson(
+            launch {
+                deleteLessonEvent
+                    .collect { result ->
+                        when (result) {
+                            is Result.Loading -> showProgress()
+                            is Result.UnLoading -> hideProgress()
+                            is Result.Success<LessonDeleteResponse> -> {
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.lesson_delete_complete)
+                                )
+                                //뒤로가기
+                                if (!findNavController().navigateUp()) {
+                                    requireActivity().finish()
+                                }
+                            }
+
+                            is Result.Error -> {
+                                when (result.statusCode) {
+                                    401 -> showForbiddenDialog(
+                                        requireContext(),
+                                        this@LessonDetailFragment
+                                    ) {
+                                        lessonDetailViewModel.removeAuthToken()
+                                    }
+
+                                    else -> {
+                                        Timber.tag("Fetch Error").d(result.throwable)
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.lesson_delete_fail)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
+
+            launch {
+                navigateToUpdateLessonEvent
+                    .collect { lessonDetail ->
+                        val action =
+                            LessonDetailFragmentDirections.actionLessonDetailToUpdateLesson(
                                 lessonDetail
                             )
-                            findNavController().safeNavigate(action)
-                        }
-                }
-
-                launch {
-                    navigateToDeleteLessonDialogEvent
-                        .collect {
-                            showLessonDeleteDialog()
-                        }
-                }
-
-//                launch {
-//                    isLoading.collect {
-//                        if (it) showProgress() else hideProgress()
-//                    }
-//                }
+                        findNavController().safeNavigate(action)
+                    }
             }
+
+            launch {
+                navigateToDeleteLessonDialogEvent
+                    .collect {
+                        showLessonDeleteDialog()
+                    }
+            }
+
+//            launch {
+//                isLoading.collect {
+//                    if (it) showProgress() else hideProgress()
+//                }
+//            }
         }
+
     }
 
     private fun initListener() = with(binding) {
