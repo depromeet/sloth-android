@@ -97,6 +97,7 @@
     </style>
 
     <style name="Widget.Sloth.Button.Retry" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/sloth</item>
         <item name="android:layout_height">42dp</item>
     </style>
 

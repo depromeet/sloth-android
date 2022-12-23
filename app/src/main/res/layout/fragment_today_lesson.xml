@@ -80,10 +80,10 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
-                    tools:src="@drawable/ic_home_today_sloth_not_register"
                     app:layout_constraintEnd_toStartOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_home_today_sloth_not_register" />
 
                 <TextView
                     android:id="@+id/tv_today_title_message"
@@ -109,11 +109,19 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toStartOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_today_sloth" />
+                    app:layout_constraintTop_toBottomOf="@id/iv_today_sloth"
+                    tools:listitem="@layout/item_home_today_lesson_doing" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/item_network_error"
+            layout="@layout/item_network_error"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
