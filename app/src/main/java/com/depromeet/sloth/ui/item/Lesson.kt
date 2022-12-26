@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.item
 
 data class Lesson(
-    val alertDays: String? = null,
     val categoryName: String = "",
     val endDate: ArrayList<String> = arrayListOf(),
     val lessonName: String = "",
