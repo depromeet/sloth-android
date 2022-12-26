@@ -43,15 +43,7 @@ class LessonListAdapter(
         }
     }
 
-    // 뷰홀더가 한개가 아니라 binding이 먹지 않음
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        getItem(position)?.let {
-//            holder.binding.executeAfter {
-//                viewModel = lessonListViewModel
-//                lifecycleOwner = holder.itemView.findViewTreeLifecycleOwner()
-//                lesson = it
-//            }
-//        }
         when (bodyType) {
             BodyType.NOTHING -> (holder as LessonListNothingViewHolder).bind(currentList[position])
             BodyType.DOING -> (holder as LessonListDoingViewHolder).bind(currentList[position])

@@ -2,9 +2,7 @@ package com.depromeet.sloth.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ItemHomeTodayHeaderBinding
 
 class HeaderAdapter(
@@ -23,11 +21,10 @@ class HeaderAdapter(
         return HEADER_TITLE_COUNT
     }
 
-    inner class HeaderViewHolder(binding: ItemHomeTodayHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val todayItemTitle: TextView = itemView.findViewById(R.id.tv_today_item_title)
+    inner class HeaderViewHolder(private val binding: ItemHomeTodayHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun setHeaderText(headerType: HeaderType) {
-            todayItemTitle.text = headerType.title
+            binding.tvTodayItemTitle.text = headerType.title
         }
     }
 
