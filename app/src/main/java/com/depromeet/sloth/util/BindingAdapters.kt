@@ -189,3 +189,13 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
         } else return
     }
 
+@BindingAdapter("email", "isEmailProvided")
+fun setMemberEmail(view: TextView, email: String, isEmailProvided: Boolean) =
+    with(view) {
+        text = if(isEmailProvided) {
+            email
+        } else {
+            DEFAULT_STRING_VALUE
+        }
+    }
+
