@@ -125,7 +125,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
         when (lessonInfo.isEmpty()) {
             true -> {
-                // binding.ivLessonListRegister.visibility = View.INVISIBLE
+                binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = false
                 val nothingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.NOTHING) {
                         val action =
@@ -138,8 +138,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             false -> {
-                // binding.ivLessonRegister.visibility = View.VISIBLE
-
+                binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = true
                 val lessonDoingList = mutableListOf<LessonAllResponse>()
                 val lessonPlanningList = mutableListOf<LessonAllResponse>()
                 val lessonPassedList = mutableListOf<LessonAllResponse>()
