@@ -27,6 +27,10 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private val lessonListViewModel: LessonListViewModel by viewModels()
 
+    override fun onStart() {
+        super.onStart()
+        lessonListViewModel.fetchAllLessonList()
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -34,11 +38,18 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             vm = lessonListViewModel
         }
         initViews()
+        initListener()
         initObserver()
     }
 
     override fun initViews() = with(binding) {
         rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
+    }
+
+    private fun initListener() = with(binding) {
+        itemNetworkError.btnRetry.setOnClickListener {
+            lessonListViewModel.fetchAllLessonList()
+        }
     }
 
     private fun initObserver() = with(lessonListViewModel) {
@@ -49,7 +60,10 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
-                            is Result.Success<List<LessonAllResponse>> -> setLessonList(result.data)
+                            is Result.Success<List<LessonAllResponse>> -> {
+                                binding.itemNetworkError.itemNetworkError.visibility = View.GONE
+                                setLessonList(result.data)
+                            }
                             is Result.Error -> {
                                 when(result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@LessonListFragment) {
@@ -58,6 +72,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
                                         showToast(requireContext(), getString(R.string.lesson_info_fetch_fail))
+                                        binding.itemNetworkError.itemNetworkError.visibility = View.VISIBLE
                                     }
                                 }
                             }

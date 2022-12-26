@@ -40,6 +40,7 @@ class TodayLessonFragment :
             vm = todayLessonViewModel
         }
         initViews()
+        initListener()
         initObserver()
     }
 
@@ -50,15 +51,16 @@ class TodayLessonFragment :
         }
     }
 
+    private fun initListener() = with(binding) {
+
+
+        itemNetworkError.btnRetry.setOnClickListener {
+            todayLessonViewModel.fetchTodayLessonList()
+        }
+    }
+
     private fun initObserver() = with(todayLessonViewModel) {
         repeatOnStarted {
-            launch {
-                navigateToNotificationListEvent
-                    .collect {
-                        showWaitDialog(requireContext())
-                    }
-            }
-
             launch {
                 fetchTodayLessonListEvent
 //                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
@@ -67,7 +69,11 @@ class TodayLessonFragment :
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
-                            is Result.Success -> setLessonList(result.data)
+                            is Result.Success -> {
+                                binding.itemNetworkError.itemNetworkError.visibility =
+                                    View.GONE
+                                setLessonList(result.data)
+                            }
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(
@@ -82,6 +88,8 @@ class TodayLessonFragment :
                                             requireContext(),
                                             getString(R.string.lesson_info_fetch_fail)
                                         )
+                                        binding.itemNetworkError.itemNetworkError.visibility =
+                                            View.VISIBLE
                                     }
                                 }
                             }
@@ -102,6 +110,7 @@ class TodayLessonFragment :
                                 )
                                 todayLessonViewModel.fetchTodayLessonList()
                             }
+
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(
@@ -110,6 +119,7 @@ class TodayLessonFragment :
                                     ) {
                                         todayLessonViewModel.removeAuthToken()
                                     }
+
                                     else -> {
                                         Timber.tag("Finish Error").d(result.throwable)
                                         showToast(
@@ -121,6 +131,13 @@ class TodayLessonFragment :
                                 }
                             }
                         }
+                    }
+            }
+
+            launch {
+                navigateToNotificationListEvent
+                    .collect {
+                        showWaitDialog(requireContext())
                     }
             }
         }
@@ -172,6 +189,7 @@ class TodayLessonFragment :
                                     delayTime
                                 )
                             }
+
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
                                 updateLessonCount(
                                     lessonToday,
@@ -181,6 +199,7 @@ class TodayLessonFragment :
                                     delayTime
                                 )
                             }
+
                             else -> Unit
                         }
                     }
@@ -214,6 +233,7 @@ class TodayLessonFragment :
                             TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
                                 showCompleteDialog(lessonToday.lessonId.toString())
                             }
+
                             else -> {}
                         }
                     }
@@ -288,6 +308,7 @@ class TodayLessonFragment :
                                 )
                                     todayLessonViewModel.fetchTodayLessonList()
                             }
+
                             TodayLessonAdapter.BodyType.FINISHED -> {
                                 if (result.data.presentNumber < lesson.untilTodayNumber ||
                                     result.data.presentNumber == lesson.totalNumber ||
@@ -295,16 +316,22 @@ class TodayLessonFragment :
                                 )
                                     todayLessonViewModel.fetchTodayLessonList()
                             }
+
                             else -> Unit
                         }
                     }
+
                     is Result.Error -> {
                         when (result.statusCode) {
                             401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
                                 todayLessonViewModel.removeAuthToken()
                             }
+
                             else -> {
-                                showToast(requireContext(), getString(R.string.lesson_info_update_fail))
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.lesson_info_update_fail)
+                                )
                                 Timber.tag("Update Error").d(result.throwable)
                             }
                         }

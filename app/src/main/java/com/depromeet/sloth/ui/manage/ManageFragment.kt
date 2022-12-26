@@ -35,6 +35,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     lateinit var dialogBinding: DialogManageUpdateMemberInfoBinding
 
+    override fun onStart() {
+        super.onStart()
+        manageViewModel.fetchMemberInfo()
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,7 +46,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             vm = manageViewModel
         }
         dialogBinding = DialogManageUpdateMemberInfoBinding.inflate(layoutInflater)
+        initListener()
         initObserver()
+    }
+
+    private fun  initListener() = with(binding) {
+        itemNetworkError.btnRetry.setOnClickListener {
+            manageViewModel.fetchMemberInfo()
+        }
     }
 
     private fun initObserver() = with(manageViewModel) {
@@ -53,9 +64,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                         when (result) {
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
-                            is Result.Success<MemberResponse> -> manageViewModel.setMemberInfo(
-                                result.data
-                            )
+                            is Result.Success<MemberResponse> -> {
+                                binding.itemNetworkError.itemNetworkError.visibility = View.GONE
+                                manageViewModel.setMemberInfo(result.data)
+                            }
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@ManageFragment) {
@@ -64,6 +76,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
                                         showToast(requireContext(), getString(R.string.member_info_fetch_fail))
+                                        binding.itemNetworkError.itemNetworkError.visibility = View.VISIBLE
                                     }
                                 }
                             }

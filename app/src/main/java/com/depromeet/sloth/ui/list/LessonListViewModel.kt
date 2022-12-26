@@ -7,21 +7,24 @@ import com.depromeet.sloth.domain.use_case.lesson.GetAllLessonListUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
-    getAllLessonListUseCase: GetAllLessonListUseCase,
+    private val getAllLessonListUseCase: GetAllLessonListUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
 ) : ViewModel() {
 
-    val fetchAllLessonListEvent: Flow<Result<List<LessonAllResponse>>> =
-        getAllLessonListUseCase()
+//    val fetchAllLessonListEvent: Flow<Result<List<LessonAllResponse>>> =
+//        getAllLessonListUseCase()
+
+    private val _fetchAllLessonListEvent = MutableSharedFlow<Result<List<LessonAllResponse>>>()
+    val fetchAllLessonListEvent: SharedFlow<Result<List<LessonAllResponse>>> = _fetchAllLessonListEvent.asSharedFlow()
 
     private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
     val navigateRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
@@ -32,6 +35,16 @@ class LessonListViewModel @Inject constructor(
 
     private val _navigateToLessonDetailEvent = MutableSharedFlow<LessonAllResponse>()
     val navigateToLessonDetailEvent: SharedFlow<LessonAllResponse> = _navigateToLessonDetailEvent.asSharedFlow()
+
+    fun fetchAllLessonList() = viewModelScope.launch {
+        getAllLessonListUseCase()
+            .onEach {
+                if (it is Result.Loading) _fetchAllLessonListEvent.emit(Result.Loading)
+                else _fetchAllLessonListEvent.emit(Result.UnLoading)
+            }.collect {
+                _fetchAllLessonListEvent.emit(it)
+            }
+    }
 
     fun navigateToRegisterLesson() = viewModelScope.launch {
         _navigateToRegisterLessonEvent.emit(Unit)

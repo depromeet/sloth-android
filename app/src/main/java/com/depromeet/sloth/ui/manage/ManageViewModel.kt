@@ -3,7 +3,6 @@ package com.depromeet.sloth.ui.manage
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
@@ -14,16 +13,24 @@ import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
+import com.depromeet.sloth.ui.item.Member
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    getMemberInfoUseCase: GetMemberInfoUseCase,
+    private val getMemberInfoUseCase: GetMemberInfoUseCase,
     private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
@@ -31,10 +38,12 @@ class ManageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> = getMemberInfoUseCase()
+//    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> = getMemberInfoUseCase()
 
 //    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> =
 //        getMemberInfoUseCase().asResult()
+    private val _fetchMemberInfoEvent = MutableSharedFlow<Result<MemberResponse>>()
+    val fetchMemberInfoEvent:SharedFlow<Result<MemberResponse>> = _fetchMemberInfoEvent.asSharedFlow()
 
     private val _updateMemberInfoEvent = MutableSharedFlow<Result<MemberUpdateResponse>>()
     val updateMemberInfoEvent: SharedFlow<Result<MemberUpdateResponse>> =
@@ -47,8 +56,8 @@ class ManageViewModel @Inject constructor(
     private val _logoutEvent = MutableSharedFlow<Result<String>>()
     val logoutEvent: SharedFlow<Result<String>> = _logoutEvent.asSharedFlow()
 
-    private val _member = MutableStateFlow(MemberResponse())
-    val member: StateFlow<MemberResponse> = _member.asStateFlow()
+    private val _member = MutableStateFlow(Member())
+    val member: StateFlow<Member> = _member.asStateFlow()
 
     private val _memberName =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
@@ -72,6 +81,16 @@ class ManageViewModel @Inject constructor(
 
     private val _navigateToWithdrawalDialogEvent = MutableSharedFlow<Unit>()
     val navigateToWithdrawalDialogEvent: SharedFlow<Unit> = _navigateToWithdrawalDialogEvent.asSharedFlow()
+
+    fun fetchMemberInfo() = viewModelScope.launch {
+        getMemberInfoUseCase()
+            .onEach {
+                if (it is Result.Loading) _fetchMemberInfoEvent.emit(Result.Loading)
+                else _fetchMemberInfoEvent.emit(Result.UnLoading)
+            }.collect {
+                _fetchMemberInfoEvent.emit(it)
+            }
+    }
 
     fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
         updateMemberInfoUseCase(memberUpdateRequest)
@@ -98,7 +117,12 @@ class ManageViewModel @Inject constructor(
     }
 
     fun setMemberInfo(memberResponse: MemberResponse) {
-        _member.value = memberResponse
+        _member.value = Member(
+            email = memberResponse.email,
+            memberName = memberResponse.memberName,
+            isEmailProvided = memberResponse.isEmailProvided,
+            isPushAlarmUse = memberResponse.isPushAlarmUse
+        )
         setMemberName(memberResponse.memberName)
         _memberNotificationReceive.value = memberResponse.isPushAlarmUse
     }
