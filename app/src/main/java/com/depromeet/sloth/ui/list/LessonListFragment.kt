@@ -16,6 +16,7 @@ import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,6 +50,22 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     private fun initListener() = with(binding) {
         itemNetworkError.btnRetry.setOnClickListener {
             lessonListViewModel.fetchAllLessonList()
+        }
+
+        tbLessonList.apply {
+            setOnMenuItemSingleClickListener {
+                when (it.itemId) {
+                    R.id.menu_register_lesson -> {
+                        lessonListViewModel.navigateToRegisterLesson()
+                        true
+                    }
+                    R.id.menu_notification_list -> {
+                        lessonListViewModel.navigateToNotificationList()
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
     }
 
@@ -108,7 +125,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
         when (lessonInfo.isEmpty()) {
             true -> {
-                binding.ivLessonListRegister.visibility = View.INVISIBLE
+                // binding.ivLessonListRegister.visibility = View.INVISIBLE
                 val nothingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.NOTHING) {
                         val action =
@@ -121,7 +138,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             false -> {
-                binding.ivLessonListRegister.visibility = View.VISIBLE
+                // binding.ivLessonRegister.visibility = View.VISIBLE
 
                 val lessonDoingList = mutableListOf<LessonAllResponse>()
                 val lessonPlanningList = mutableListOf<LessonAllResponse>()

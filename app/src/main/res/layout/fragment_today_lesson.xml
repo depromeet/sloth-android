@@ -15,35 +15,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tb_lesson_today"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_today_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F5F5F5"
-            android:elevation="0dp"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/tb_today_lesson"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/gray_100"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/today_lesson_menu" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_today_alarm"
-                    android:layout_width="23dp"
-                    android:layout_height="26dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/ic_home_lesson_list_alarm"
-                    android:onClick="@{()-> vm.navigateToNotificationList()}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
@@ -53,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_lesson_today">
+            app:layout_constraintTop_toBottomOf="@id/ab_today_lesson">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -66,8 +55,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
-                    app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@drawable/ic_home_today_sloth_not_register" />
 
@@ -78,10 +67,10 @@
                     android:layout_marginStart="24dp"
                     android:textColor="@color/black"
                     android:textSize="24dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/iv_today_sloth"
                     app:layout_constraintEnd_toStartOf="@id/iv_today_sloth"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/iv_today_sloth"
                     app:layout_constraintVertical_bias="0.50"
                     tools:text="@string/home_today_title_lose" />
@@ -89,13 +78,13 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_today_lesson"
                     android:layout_width="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginHorizontal="16dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
                     android:clipToPadding="false"
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_today_sloth"
                     tools:listitem="@layout/item_home_today_lesson_doing" />
 
@@ -106,9 +95,9 @@
         <include
             android:id="@+id/item_network_error"
             layout="@layout/item_network_error"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

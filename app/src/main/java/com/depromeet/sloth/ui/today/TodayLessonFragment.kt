@@ -17,6 +17,7 @@ import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,10 +53,20 @@ class TodayLessonFragment :
     }
 
     private fun initListener() = with(binding) {
-
-
         itemNetworkError.btnRetry.setOnClickListener {
             todayLessonViewModel.fetchTodayLessonList()
+        }
+
+        tbTodayLesson.apply {
+            setOnMenuItemSingleClickListener {
+                when (it.itemId) {
+                    R.id.menu_notification_list -> {
+                        todayLessonViewModel.navigateToNotificationList()
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
     }
 

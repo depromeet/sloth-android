@@ -179,5 +179,7 @@
     <string name="network_error">인터넷이 연결되어 있지 않아요</string>
     <string name="retry">연결 후 다시 실행해주세요</string>
     <string name="retry_btn_text">다시 연결하기</string>
+    <string name="menu_notification_list">알림 목록</string>
+    <string name="menu_register_lesson">강의 등록</string>
 
 </resources>
