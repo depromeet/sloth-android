@@ -23,6 +23,7 @@
         <action
             android:id="@+id/action_login_to_today_lesson"
             app:destination="@id/today_lesson"
+            app:popUpTo="@id/login"
             app:popUpToInclusive="true"/>
     </fragment>
 
@@ -128,7 +129,9 @@
             app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse" />
         <action
             android:id="@+id/action_update_lesson_to_lesson_detail"
-            app:destination="@id/lesson_detail" />
+            app:destination="@id/lesson_detail"
+            app:popUpTo="@id/lesson_detail"
+            app:popUpToInclusive="true"/>
     </fragment>
 
 </navigation>
