@@ -41,6 +41,7 @@
     <action
         android:id="@+id/action_register_lesson_check_to_lesson_list"
         app:destination="@id/lesson_list"
+        app:popUpTo="@id/lesson_list"
         app:popUpToInclusive="true" />
 
 </navigation>
