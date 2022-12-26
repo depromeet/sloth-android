@@ -9,6 +9,7 @@ import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonDetailUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.ui.item.LessonDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,11 +32,11 @@ class LessonDetailViewModel @Inject constructor(
     val deleteLessonEvent: SharedFlow<Result<LessonDeleteResponse>> =
         _deleteLessonEvent.asSharedFlow()
 
-    private val _lessonDetail = MutableStateFlow(LessonDetailResponse())
-    val lessonDetail: StateFlow<LessonDetailResponse> = _lessonDetail.asStateFlow()
+    private val _lessonDetail = MutableStateFlow(LessonDetail())
+    val lessonDetail: StateFlow<LessonDetail> = _lessonDetail.asStateFlow()
 
-    private val _navigateToUpdateLessonEvent = MutableSharedFlow<LessonDetailResponse>()
-    val navigateToUpdateLessonEvent: SharedFlow<LessonDetailResponse> = _navigateToUpdateLessonEvent.asSharedFlow()
+    private val _navigateToUpdateLessonEvent = MutableSharedFlow<LessonDetail>()
+    val navigateToUpdateLessonEvent: SharedFlow<LessonDetail> = _navigateToUpdateLessonEvent.asSharedFlow()
 
     private val _navigateToDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
     val navigateToDeleteLessonDialogEvent: SharedFlow<Unit> = _navigateToDeleteLessonDialogEvent.asSharedFlow()
@@ -61,11 +62,26 @@ class LessonDetailViewModel @Inject constructor(
     }
 
     fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {
-        _lessonDetail.value = lessonDetailResponse
+        _lessonDetail.value = LessonDetail (
+            categoryName = lessonDetailResponse.categoryName,
+            currentProgressRate= lessonDetailResponse.currentProgressRate,
+            endDate = lessonDetailResponse.endDate,
+            goalProgressRate = lessonDetailResponse.goalProgressRate,
+            isFinished = lessonDetailResponse.isFinished,
+            lessonName = lessonDetailResponse.lessonName,
+            message = lessonDetailResponse.message,
+            presentNumber= lessonDetailResponse.presentNumber,
+            price = lessonDetailResponse.price,
+            remainDay = lessonDetailResponse.remainDay,
+            siteName = lessonDetailResponse.siteName,
+            startDate = lessonDetailResponse.startDate,
+            totalNumber = lessonDetailResponse.totalNumber,
+            wastePrice = lessonDetailResponse.wastePrice,
+        )
     }
 
-    fun navigateToUpdateLesson(lessonDetailResponse: LessonDetailResponse) = viewModelScope.launch {
-        _navigateToUpdateLessonEvent.emit(lessonDetailResponse)
+    fun navigateToUpdateLesson(lessonDetail: LessonDetail) = viewModelScope.launch {
+        _navigateToUpdateLessonEvent.emit(lessonDetail)
     }
 
     fun navigateToDeleteLessonDialog() = viewModelScope.launch {

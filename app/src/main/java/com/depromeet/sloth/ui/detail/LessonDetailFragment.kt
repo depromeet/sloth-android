@@ -50,6 +50,7 @@ class LessonDetailFragment :
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonDetailResponse> -> {
+                                binding.itemNetworkError.itemNetworkError.visibility = View.GONE
                                 lessonDetailViewModel.setLessonDetailInfo(result.data)
                             }
 
@@ -69,6 +70,7 @@ class LessonDetailFragment :
                                             requireContext(),
                                             getString(R.string.lesson_detail_info_fail)
                                         )
+                                        binding.itemNetworkError.itemNetworkError.visibility = View.VISIBLE
                                     }
                                 }
                             }
@@ -143,6 +145,10 @@ class LessonDetailFragment :
     }
 
     private fun initListener() = with(binding) {
+        itemNetworkError.btnRetry.setOnClickListener {
+            lessonDetailViewModel.fetchLessonDetail()
+        }
+
         tbDetailLesson.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()

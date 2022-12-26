@@ -126,7 +126,7 @@
 
         <argument
             android:name="lessonDetail"
-            app:argType="com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse" />
+            app:argType="com.depromeet.sloth.ui.item.LessonDetail" />
         <action
             android:id="@+id/action_update_lesson_to_lesson_detail"
             app:destination="@id/lesson_detail"
