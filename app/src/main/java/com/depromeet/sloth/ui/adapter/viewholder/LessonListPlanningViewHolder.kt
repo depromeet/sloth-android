@@ -11,7 +11,6 @@ class LessonListPlanningViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(lessonInfo: LessonAllResponse) {
-
         itemView.apply {
             binding.apply {
                 tvLessonListCategory.text = lessonInfo.categoryName

@@ -61,7 +61,6 @@ class LessonListDoingViewHolder(
                     interpolator = DecelerateInterpolator()
                 }.start()
 
-
                 clLessonList.setOnClickListener { onClick(lessonInfo) }
             }
         }

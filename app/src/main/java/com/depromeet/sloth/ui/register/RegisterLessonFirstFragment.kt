@@ -103,7 +103,6 @@ class RegisterLessonFirstFragment :
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
-                                //TODO UDF 에 위반 -> 코드 개선
                                 registerLessonViewModel.setLessonSiteList(result.data)
                                 bindAdapter(
                                     lessonSiteAdapter,

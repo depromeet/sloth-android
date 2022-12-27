@@ -228,7 +228,6 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonDateRangeValidation.value = startDate.value <= endDate.value
     }
 
-
     fun setLessonInfo() {
         _lesson.value = Lesson(
             categoryName = lessonCategoryName.value,
