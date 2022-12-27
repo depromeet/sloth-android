@@ -8,7 +8,6 @@
 
     <style name="Widget.Sloth.Toolbar.WithArrow" parent="Widget.Sloth.Toolbar">
         <item name="navigationIcon">@drawable/ic_toolbar_arrow_back</item>
-        <item name="android:background">@color/white</item>
     </style>
 
     <style name="Widget.Sloth.EditText" parent="Widget.AppCompat.EditText">

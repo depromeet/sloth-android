@@ -142,6 +142,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                 val lessonDoingList = mutableListOf<LessonAllResponse>()
                 val lessonPlanningList = mutableListOf<LessonAllResponse>()
                 val lessonPassedList = mutableListOf<LessonAllResponse>()
+
                 lessonInfo.forEach { lesson ->
                     when (getLessonType(lesson)) {
                         LessonListAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)

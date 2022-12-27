@@ -8,7 +8,7 @@
 
       <com.google.android.material.appbar.MaterialToolbar
           android:id="@+id/tb_sloth_policy"
-          style="?attr/toolbarWithArrowButtonStyle"
+          style="@style/Widget.Sloth.Toolbar.WithArrow"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           app:layout_constraintEnd_toEndOf="parent"

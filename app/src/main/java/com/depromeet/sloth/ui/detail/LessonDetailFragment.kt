@@ -149,7 +149,7 @@ class LessonDetailFragment :
             lessonDetailViewModel.fetchLessonDetail()
         }
 
-        tbDetailLesson.setNavigationOnClickListener {
+        tbLessonDetail.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }

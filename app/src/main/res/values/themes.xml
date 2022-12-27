@@ -13,8 +13,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" >@color/white</item>
         <!-- Customize your theme here. -->
-        <item name="toolbarStyle">@style/Widget.Sloth.Toolbar</item>
-        <item name="toolbarWithArrowButtonStyle">@style/Widget.Sloth.Toolbar.WithArrow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
