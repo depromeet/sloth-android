@@ -119,6 +119,7 @@
     <string name="one_hundred_percent">100%</string>
     <string name="input_lesson_count">%1$s개</string>
     <string name="input_lesson_price">%1$s원</string>
+    <string name="doing_lesson_count"> &#160;%1$s개</string>
 
     <string name="current_lesson_progress">&#160;%d개 중 %d개</string>
 

@@ -3,29 +3,25 @@ package com.depromeet.sloth.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.databinding.ItemHomeTodayHeaderBinding
+import com.depromeet.sloth.databinding.ItemHomeHeaderBinding
+import com.depromeet.sloth.ui.adapter.viewholder.HeaderViewHolder
 
 class HeaderAdapter(
-    private val headerType: HeaderType
-) : RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
+    private val headerType: HeaderType,
+    private val count: Int? = null,
+) : RecyclerView.Adapter<HeaderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
-        val binding = ItemHomeTodayHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemHomeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HeaderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.setHeaderText(headerType)
+        holder.bind(holder.itemView.context, headerType, count)
     }
 
     override fun getItemCount(): Int {
         return HEADER_TITLE_COUNT
-    }
-
-    inner class HeaderViewHolder(private val binding: ItemHomeTodayHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun setHeaderText(headerType: HeaderType) {
-            binding.tvTodayItemTitle.text = headerType.title
-        }
     }
 
     enum class HeaderType(val title: String) {
