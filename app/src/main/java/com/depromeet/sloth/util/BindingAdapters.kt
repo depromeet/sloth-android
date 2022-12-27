@@ -1,5 +1,6 @@
 package com.depromeet.sloth.util
 
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -118,6 +119,9 @@ fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = wi
                 visibility = View.VISIBLE
                 text = view.context.getString(R.string.d_day)
             } else {
+                if (d_day < 10) {
+                    view.setTextColor(Color.RED)
+                }
                 visibility = View.VISIBLE
                 text = view.context.getString(R.string.d_day_minus_format, d_day)
             }

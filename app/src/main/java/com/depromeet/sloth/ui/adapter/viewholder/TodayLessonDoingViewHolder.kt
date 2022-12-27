@@ -53,10 +53,11 @@ class TodayLessonDoingViewHolder(
         if (lessonToday.untilTodayFinished) {
             tvTodayLessonRemain.setTextColor(Color.WHITE)
         } else {
-            when (lessonToday.remainDay) {
-                in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
-                else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
-            }
+//            when (lessonToday.remainDay) {
+//                in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
+//                else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
+//            }
+            tvTodayLessonRemain.setTextColor(Color.parseColor("#53E183"))
         }
     }
 
