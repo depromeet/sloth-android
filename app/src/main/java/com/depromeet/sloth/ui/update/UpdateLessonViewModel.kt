@@ -4,10 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.di.StringResourcesProvider
@@ -16,6 +14,8 @@ import com.depromeet.sloth.domain.use_case.lesson.GetLessonSiteListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
+import com.depromeet.sloth.ui.item.LessonDetail
+import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ class UpdateLessonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val lessonDetail: LessonDetailResponse = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
+    val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
     private val _updateLessonEvent = MutableSharedFlow<Result<LessonUpdateResponse>>()
     val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
@@ -105,7 +105,7 @@ class UpdateLessonViewModel @Inject constructor(
 
     fun updateLesson() = viewModelScope.launch {
         updateLessonUseCase(
-            lessonDetail.lessonId.toString(),
+            lessonDetail.lessonId,
             LessonUpdateRequest(
                 lessonName = lessonName.value,
                 price = lessonPrice.value,

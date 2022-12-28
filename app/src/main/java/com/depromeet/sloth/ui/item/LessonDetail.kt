@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LessonDetail(
+    val lessonId: String = "",
     val categoryName: String = "",
     val currentProgressRate: Int = 0,
     val endDate: ArrayList<String> = ArrayList(),

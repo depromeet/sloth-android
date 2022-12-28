@@ -63,6 +63,7 @@ class LessonDetailViewModel @Inject constructor(
 
     fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {
         _lessonDetail.value = LessonDetail (
+            lessonId = lessonDetailResponse.lessonId.toString(),
             categoryName = lessonDetailResponse.categoryName,
             currentProgressRate= lessonDetailResponse.currentProgressRate,
             endDate = lessonDetailResponse.endDate,
