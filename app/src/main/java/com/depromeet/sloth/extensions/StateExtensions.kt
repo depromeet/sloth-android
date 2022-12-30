@@ -23,7 +23,7 @@ fun showForbiddenDialog(context: Context, view: Fragment, removeAuthToken: () ->
 fun logout(context: Context, view: Fragment, removeAuthToken: () -> Job) {
     Toast.makeText(context, context.getString(R.string.logout_complete), Toast.LENGTH_SHORT).show()
     removeAuthToken()
-    view.findNavController().navigate(R.id.action_logout)
+    view.findNavController().navigate(R.id.action_global_logout)
 }
 
 fun showWithdrawalDialog(context: Context, view: Fragment, removeAuthToken: () -> Job) {
@@ -40,7 +40,7 @@ fun showWithdrawalDialog(context: Context, view: Fragment, removeAuthToken: () -
 fun withdrawal(context: Context, view: Fragment, removeAuthToken: () -> Job) {
     Toast.makeText(context, context.getString(R.string.withdrawal_complete), Toast.LENGTH_SHORT).show()
     removeAuthToken()
-    view.findNavController().navigate(R.id.action_logout)
+    view.findNavController().navigate(R.id.action_global_logout)
 }
 
 fun showWaitDialog(context: Context) {
