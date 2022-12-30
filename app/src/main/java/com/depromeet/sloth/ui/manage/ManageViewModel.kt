@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -42,8 +43,22 @@ class ManageViewModel @Inject constructor(
 
 //    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> =
 //        getMemberInfoUseCase().asResult()
+
+    init {
+        Timber.d("ManageViewModel init")
+    }
+
+    private val _memberName =
+        savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
+    val memberName: StateFlow<String> = _memberName.asStateFlow()
+
+    private val _previousMemberName =
+        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
+    val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
+
     private val _fetchMemberInfoEvent = MutableSharedFlow<Result<MemberResponse>>()
-    val fetchMemberInfoEvent:SharedFlow<Result<MemberResponse>> = _fetchMemberInfoEvent.asSharedFlow()
+    val fetchMemberInfoEvent: SharedFlow<Result<MemberResponse>> =
+        _fetchMemberInfoEvent.asSharedFlow()
 
     private val _updateMemberInfoEvent = MutableSharedFlow<Result<MemberUpdateResponse>>()
     val updateMemberInfoEvent: SharedFlow<Result<MemberUpdateResponse>> =
@@ -59,28 +74,30 @@ class ManageViewModel @Inject constructor(
     private val _member = MutableStateFlow(Member())
     val member: StateFlow<Member> = _member.asStateFlow()
 
-    private val _memberName =
-        savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
-    val memberName: StateFlow<String> = _memberName.asStateFlow()
-
     private val _memberNotificationReceive =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NOTIFICATION_RECEIVE, false)
     val memberNotificationReceive: StateFlow<Boolean> = _memberNotificationReceive.asStateFlow()
 
     private val _navigateToUpdateProfileDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToUpdateProfileDialogEvent: SharedFlow<Unit> = _navigateToUpdateProfileDialogEvent.asSharedFlow()
+    val navigateToUpdateProfileDialogEvent: SharedFlow<Unit> =
+        _navigateToUpdateProfileDialogEvent.asSharedFlow()
 
     private val _navigateToContactEvent = MutableSharedFlow<Unit>()
     val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
 
     private val _navigateToPrivatePolicyEvent = MutableSharedFlow<Unit>()
-    val navigateToPrivatePolicyEvent: SharedFlow<Unit> = _navigateToPrivatePolicyEvent.asSharedFlow()
+    val navigateToPrivatePolicyEvent: SharedFlow<Unit> =
+        _navigateToPrivatePolicyEvent.asSharedFlow()
 
     private val _navigateToLogoutDialogEvent = MutableSharedFlow<Unit>()
     val navigateToLogoutDialogEvent: SharedFlow<Unit> = _navigateToLogoutDialogEvent.asSharedFlow()
 
     private val _navigateToWithdrawalDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToWithdrawalDialogEvent: SharedFlow<Unit> = _navigateToWithdrawalDialogEvent.asSharedFlow()
+    val navigateToWithdrawalDialogEvent: SharedFlow<Unit> =
+        _navigateToWithdrawalDialogEvent.asSharedFlow()
+
+    private val _updateMemberValidation = MutableStateFlow(false)
+    val updateMemberValidation: StateFlow<Boolean> = _updateMemberValidation.asStateFlow()
 
     fun fetchMemberInfo() = viewModelScope.launch {
         getMemberInfoUseCase()
@@ -92,8 +109,8 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-    fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = viewModelScope.launch {
-        updateMemberInfoUseCase(memberUpdateRequest)
+    fun updateMemberInfo() = viewModelScope.launch {
+        updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
             .onEach {
                 if (it is Result.Loading) _updateMemberInfoEvent.emit(Result.Loading)
                 else _updateMemberInfoEvent.emit(Result.UnLoading)
@@ -124,15 +141,24 @@ class ManageViewModel @Inject constructor(
             isPushAlarmUse = memberResponse.isPushAlarmUse
         )
         setMemberName(memberResponse.memberName)
-        _memberNotificationReceive.value = memberResponse.isPushAlarmUse
+        setPreviousMemberName(memberResponse.memberName)
+        setMemberNotificationReceive(memberResponse.isPushAlarmUse)
     }
 
     fun setMemberName(memberName: String) {
         _memberName.value = memberName
     }
 
+    fun setPreviousMemberName(previousMemberName: String) {
+        _previousMemberName.value = previousMemberName
+    }
+
     fun setMemberNotificationReceive(check: Boolean) {
         _memberNotificationReceive.value = check
+    }
+
+    fun setUpdateMemberValidation(isEnable: Boolean) {
+        _updateMemberValidation.value = isEnable
     }
 
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
@@ -171,6 +197,12 @@ class ManageViewModel @Inject constructor(
 
     companion object {
         private const val KEY_MEMBER_NAME = "memberName"
+        private const val KEY_PREVIOUS_MEMBER_NAME = "previousMemberName"
         private const val KEY_MEMBER_NOTIFICATION_RECEIVE = "notificationReceive"
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.d("onCleared")
     }
 }

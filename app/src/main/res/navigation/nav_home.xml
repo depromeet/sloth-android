@@ -8,9 +8,9 @@
     <include app:graph="@navigation/nav_register_lesson"/>
 
     <action
-        android:id="@+id/action_logout"
+        android:id="@+id/action_global_logout"
         app:destination="@id/login"
-        app:popUpTo="@id/login"
+        app:popUpTo="@id/today_lesson"
         app:popUpToInclusive="true"/>
 
     <fragment
@@ -47,6 +47,7 @@
         <action
             android:id="@+id/action_login_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
+            app:popUpTo="@id/login"
             app:popUpToInclusive="true"/>
     </dialog>
 
@@ -64,6 +65,7 @@
         <action
             android:id="@+id/action_register_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
+            app:popUpTo="@id/login"
             app:popUpToInclusive="true"/>
     </dialog>
 
@@ -102,6 +104,9 @@
         <action
             android:id="@+id/action_manage_to_sloth_policy_webview2"
             app:destination="@id/sloth_policy_webview" />
+        <action
+            android:id="@+id/action_manage_to_updateMemberFragment"
+            app:destination="@id/update_member" />
     </fragment>
 
     <fragment
@@ -134,5 +139,17 @@
             app:popUpTo="@id/lesson_detail"
             app:popUpToInclusive="true"/>
     </fragment>
+
+    <dialog
+        android:id="@+id/update_member"
+        android:name="com.depromeet.sloth.ui.manage.UpdateMemberFragment"
+        android:label="UpdateMemberFragment"
+        tools:layout="@layout/fragment_update_member">
+        <action
+            android:id="@+id/action_updateMemberFragment_to_manage"
+            app:destination="@id/manage"
+            app:popUpTo="@id/manage"
+            app:popUpToInclusive="true"/>
+    </dialog>
 
 </navigation>

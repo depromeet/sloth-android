@@ -182,5 +182,6 @@
     <string name="retry_btn_text">다시 연결하기</string>
     <string name="menu_notification_list">알림 목록</string>
     <string name="menu_register_lesson">강의 등록</string>
+    <string name="previous_member_name">이전 유저 닉네임</string>
 
 </resources>
