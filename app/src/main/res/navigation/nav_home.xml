@@ -47,8 +47,12 @@
         <action
             android:id="@+id/action_login_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/login"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </dialog>
 
     <dialog
@@ -65,8 +69,12 @@
         <action
             android:id="@+id/action_register_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/login"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </dialog>
 
 
@@ -77,7 +85,11 @@
         tools:layout="@layout/fragment_today_lesson" >
         <action
             android:id="@+id/action_today_lesson_to_register_lesson_first"
-            app:destination="@id/nav_register_lesson" />
+            app:destination="@id/nav_register_lesson"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -87,10 +99,18 @@
         tools:layout="@layout/fragment_lesson_list">
         <action
             android:id="@+id/action_lesson_list_to_lesson_detail"
-            app:destination="@id/lesson_detail"/>
+            app:destination="@id/lesson_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_lesson_list_to_register_lesson_first"
-            app:destination="@id/nav_register_lesson" />
+            app:destination="@id/nav_register_lesson"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -103,10 +123,18 @@
             app:destination="@id/sloth_policy_webview" />
         <action
             android:id="@+id/action_manage_to_sloth_policy_webview2"
-            app:destination="@id/sloth_policy_webview" />
+            app:destination="@id/sloth_policy_webview"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/slide_right_exit" />
         <action
             android:id="@+id/action_manage_to_updateMemberFragment"
-            app:destination="@id/update_member" />
+            app:destination="@id/update_member"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -116,7 +144,11 @@
         tools:layout="@layout/fragment_lesson_detail">
         <action
             android:id="@+id/action_lesson_detail_to_update_lesson"
-            app:destination="@id/update_lesson" />
+            app:destination="@id/update_lesson"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <argument
             android:name="lessonId"
@@ -141,8 +173,12 @@
         <action
             android:id="@+id/action_update_lesson_to_lesson_detail"
             app:destination="@id/lesson_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/lesson_detail"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <dialog
@@ -153,8 +189,12 @@
         <action
             android:id="@+id/action_updateMemberFragment_to_manage"
             app:destination="@id/manage"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/manage"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </dialog>
 
 </navigation>
