@@ -122,6 +122,11 @@
             android:name="lessonId"
             app:argType="string"
             app:nullable="false"/>
+        <action
+            android:id="@+id/action_lesson_detail_to_lesson_list"
+            app:destination="@id/lesson_list"
+            app:popUpTo="@id/lesson_list"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment

@@ -89,10 +89,8 @@ class LessonDetailFragment :
                                     requireContext(),
                                     getString(R.string.lesson_delete_complete)
                                 )
-                                // TODO 뒤로가기 확실한 방법이지만 구분 필요
-                                if (!findNavController().navigateUp()) {
-                                    requireActivity().finish()
-                                }
+                                val action = LessonDetailFragmentDirections.actionLessonDetailToLessonList()
+                                findNavController().safeNavigate(action)
                             }
 
                             is Result.Error -> {
