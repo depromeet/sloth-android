@@ -165,7 +165,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnUpdateLessonCategory.adapter = lessonCategoryAdapter
         spnUpdateLessonCategory.setSelection(updateLessonViewModel.lessonCategorySelectedItemPosition.value)
-
     }
 
     private fun bindLessonSiteAdapter() = with(binding) {
@@ -174,7 +173,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         spnUpdateLessonSite.setSelection(updateLessonViewModel.lessonSiteSelectedItemPosition.value)
     }
 
-    // LessonName clearFocus 가 되지 않는 문제
     private fun focusInputForm(editText: EditText) {
         editText.apply {
             addTextChangedListener(object : TextWatcher {
@@ -305,7 +303,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
         }
 
-        // 이 함수에 with(binding)을 호출하면 initViews 함수에 에러 발생 - 이유 확인
         clearEditTextFocus(editText)
         binding.clUpdateLesson.clearFocus()
     }
@@ -322,33 +319,42 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
 
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    if (spinner.selectedItemPosition == 0) {
-                        if (spinner == spnUpdateLessonCategory) {
-                            updateLessonViewModel.setLessonCategorySelectedItemPosition(
-                                spnUpdateLessonCategory.selectedItemPosition
-                            )
-                        } else {
-                            updateLessonViewModel.setLessonSiteSelectedItemPosition(
-                                spnUpdateLessonSite.selectedItemPosition
-                            )
+                    when(selectedItemPosition) {
+                        0 -> {
+                            when(spinner) {
+                                spnUpdateLessonCategory -> {
+                                    updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                        spnUpdateLessonCategory.selectedItemPosition
+                                    )
+                                }
+                                else -> {
+                                    updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                        spnUpdateLessonSite.selectedItemPosition
+                                    )
+                                }
+                            }
                         }
-                    } else {
-                        if (spinner == spnUpdateLessonCategory) {
-                            updateLessonViewModel.setLessonCategoryId(
-                                updateLessonViewModel.lessonCategoryMap.value.filterValues
-                                { it == spnUpdateLessonCategory.selectedItem }.keys.first()
-                            )
-                            updateLessonViewModel.setLessonCategorySelectedItemPosition(
-                                spnUpdateLessonCategory.selectedItemPosition
-                            )
-                        } else {
-                            updateLessonViewModel.setLessonSiteId(
-                                updateLessonViewModel.lessonSiteMap.value.filterValues
-                                { it == spnUpdateLessonSite.selectedItem }.keys.first()
-                            )
-                            updateLessonViewModel.setLessonSiteSelectedItemPosition(
-                                spnUpdateLessonSite.selectedItemPosition
-                            )
+                        else -> {
+                            when(spinner) {
+                                spnUpdateLessonCategory -> {
+                                    updateLessonViewModel.setLessonCategoryId(
+                                        updateLessonViewModel.lessonCategoryMap.value.filterValues
+                                        { it == spnUpdateLessonCategory.selectedItem }.keys.first()
+                                    )
+                                    updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                        spnUpdateLessonCategory.selectedItemPosition
+                                    )
+                                }
+                                else -> {
+                                    updateLessonViewModel.setLessonSiteId(
+                                        updateLessonViewModel.lessonSiteMap.value.filterValues
+                                        { it == spnUpdateLessonSite.selectedItem }.keys.first()
+                                    )
+                                    updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                        spnUpdateLessonSite.selectedItemPosition
+                                    )
+                                }
+                            }
                         }
                     }
                     clUpdateLesson.clearFocus()

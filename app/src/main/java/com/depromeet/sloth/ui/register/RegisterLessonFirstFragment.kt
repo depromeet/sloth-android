@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
+//TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
+// 재시도의 경우 두 함수 모두 호출 필요
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
@@ -81,14 +83,22 @@ class RegisterLessonFirstFragment :
                                     lessonCategorySelectedItemPosition.value
                                 )
                             }
+
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@RegisterLessonFirstFragment) {
+                                    401 -> showForbiddenDialog(
+                                        requireContext(),
+                                        this@RegisterLessonFirstFragment
+                                    ) {
                                         removeAuthToken()
                                     }
+
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.cannot_get_lesson_category)
+                                        )
                                     }
                                 }
                             }
@@ -110,14 +120,22 @@ class RegisterLessonFirstFragment :
                                     registerLessonViewModel.lessonSiteSelectedItemPosition.value
                                 )
                             }
+
                             is Result.Error -> {
                                 when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@RegisterLessonFirstFragment) {
+                                    401 -> showForbiddenDialog(
+                                        requireContext(),
+                                        this@RegisterLessonFirstFragment
+                                    ) {
                                         registerLessonViewModel.removeAuthToken()
                                     }
+
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.cannot_get_lesson_site)
+                                        )
                                     }
                                 }
                             }
@@ -163,31 +181,44 @@ class RegisterLessonFirstFragment :
 
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    if (spinner.selectedItemPosition == 0) {
-                        if (spinner == spnRegisterLessonCategory) {
-                            registerLessonViewModel.setLessonCategorySelectedItemPosition(
-                                spnRegisterLessonCategory.selectedItemPosition
-                            )
-                        } else {
-                            registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                    when (spinner.selectedItemPosition) {
+                        0 -> {
+                            when (spinner) {
+                                spnRegisterLessonCategory -> {
+                                    registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                        spnRegisterLessonCategory.selectedItemPosition
+                                    )
+                                }
+
+                                else -> {
+                                    registerLessonViewModel.setLessonSiteItemPosition(
+                                        spnRegisterLessonSite.selectedItemPosition
+                                    )
+                                }
+                            }
                         }
-                    } else {
-                        if (spinner == spnRegisterLessonCategory) {
-                            registerLessonViewModel.setLessonCategoryId(
-                                registerLessonViewModel.lessonCategoryMap.value.filterValues
-                                { it == spnRegisterLessonCategory.selectedItem }.keys.first()
-                            )
-                            registerLessonViewModel.setLessonCategoryName(spinner.selectedItem.toString())
-                            registerLessonViewModel.setLessonCategorySelectedItemPosition(
-                                spnRegisterLessonCategory.selectedItemPosition
-                            )
-                        } else {
-                            registerLessonViewModel.setLessonSiteId(
-                                registerLessonViewModel.lessonSiteMap.value.filterValues
-                                { it == spnRegisterLessonSite.selectedItem }.keys.first()
-                            )
-                            registerLessonViewModel.setLessonSiteName(spinner.selectedItem.toString())
-                            registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+
+                        else -> {
+                            when (spinner) {
+                                spnRegisterLessonCategory -> {
+                                    registerLessonViewModel.setLessonCategoryId(
+                                        registerLessonViewModel.lessonCategoryMap.value.filterValues
+                                        { it == spnRegisterLessonCategory.selectedItem }.keys.first()
+                                    )
+                                    registerLessonViewModel.setLessonCategoryName(spinner.selectedItem.toString())
+                                    registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                        spnRegisterLessonCategory.selectedItemPosition
+                                    )
+                                }
+                                else -> {
+                                    registerLessonViewModel.setLessonSiteId(
+                                        registerLessonViewModel.lessonSiteMap.value.filterValues
+                                        { it == spnRegisterLessonSite.selectedItem }.keys.first()
+                                    )
+                                    registerLessonViewModel.setLessonSiteName(spinner.selectedItem.toString())
+                                    registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                                }
+                            }
                         }
                     }
                     clearFocus(etRegisterLessonTotalNumber)
