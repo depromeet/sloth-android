@@ -152,8 +152,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                 }
 
                 val doingHeader = HeaderAdapter(HeaderAdapter.HeaderType.DOING, lessonDoingList.size)
-                val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING)
-                val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED)
+                val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING, lessonPlanningList.size)
+                val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED, lessonPassedList.size)
                 val doingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
                         navigateToLessonDetail(lesson)
