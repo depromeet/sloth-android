@@ -62,7 +62,11 @@
         tools:layout="@layout/fragment_register_bottom">
         <action
             android:id="@+id/action_register_bottom_to_sloth_policy_webview"
-            app:destination="@id/sloth_policy_webview" />
+            app:destination="@id/sloth_policy_webview"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_register_bottom_to_login"
             app:destination="@id/login" />
@@ -157,8 +161,12 @@
         <action
             android:id="@+id/action_lesson_detail_to_lesson_list"
             app:destination="@id/lesson_list"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/lesson_list"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
