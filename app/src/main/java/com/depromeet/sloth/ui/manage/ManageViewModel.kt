@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -43,17 +42,12 @@ class ManageViewModel @Inject constructor(
 
 //    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> =
 //        getMemberInfoUseCase().asResult()
-
-    init {
-        Timber.d("ManageViewModel init")
-    }
-
     private val _memberName =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
     private val _previousMemberName =
-        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, "Default String")
+        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
 
     private val _fetchMemberInfoEvent = MutableSharedFlow<Result<MemberResponse>>()
@@ -199,10 +193,5 @@ class ManageViewModel @Inject constructor(
         private const val KEY_MEMBER_NAME = "memberName"
         private const val KEY_PREVIOUS_MEMBER_NAME = "previousMemberName"
         private const val KEY_MEMBER_NOTIFICATION_RECEIVE = "notificationReceive"
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Timber.d("onCleared")
     }
 }

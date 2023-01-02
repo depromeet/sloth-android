@@ -67,7 +67,8 @@ class UpdateMemberFragment :
                                 )
                                 setMemberName(result.data.memberName)
                                 setPreviousMemberName(result.data.memberName)
-                                Timber.d("${memberName.value} ${previousMemberName.value}")
+                                // btnMemberName 활성 상태 초기화
+                                setUpdateMemberValidation(false)
                                 closeProfileUpdateDialog()
                             }
 
@@ -102,17 +103,15 @@ class UpdateMemberFragment :
                 i1: Int,
                 i2: Int,
                 i3: Int
-            ) {
-            }
+            ) {}
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
             override fun afterTextChanged(editable: Editable?) {
                 Timber.d(memberName.value)
                 if (memberName.value.isEmpty() || memberName.value == previousMemberName.value) {
-                // if (memberName.value.isEmpty()) {
                     setUpdateMemberValidation(false)
-                    Timber.d("${memberName.value} == ${previousMemberName.value} setUpdateMemberValidation False")
                 } else {
+                    Timber.d(memberName.value)
                     setUpdateMemberValidation(true)
                 }
             }
@@ -140,5 +139,4 @@ class UpdateMemberFragment :
         binding.etMemberName.setOnEditorActionListener(null)
         super.onDestroyView()
     }
-
 }
