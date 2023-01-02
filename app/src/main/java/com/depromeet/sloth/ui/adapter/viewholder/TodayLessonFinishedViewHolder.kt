@@ -22,10 +22,10 @@ class TodayLessonFinishedViewHolder(
                 init(lessonToday)
 
                 if(lessonToday.totalNumber == lessonToday.presentNumber) {
-                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_finished_top)
+                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_finished_top)
                     clTodayFinishedBottom.visibility = View.VISIBLE
                 } else {
-                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_home_today_not_finished_top)
+                    clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_not_finished_top)
                     clTodayFinishedBottom.visibility = View.GONE
                 }
 
