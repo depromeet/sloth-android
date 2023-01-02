@@ -84,7 +84,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                             is Result.Error -> {
                                 when(result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@LessonListFragment) {
-                                            lessonListViewModel.removeAuthToken()
+                                            removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
@@ -216,6 +216,21 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             isPlanning -> LessonListAdapter.BodyType.PLANNING
             else -> LessonListAdapter.BodyType.DOING
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.d("onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("onDestroy")
     }
 
     companion object {

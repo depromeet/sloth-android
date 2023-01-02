@@ -74,8 +74,6 @@ class TodayLessonFragment :
         repeatOnStarted {
             launch {
                 fetchTodayLessonListEvent
-//                .onStart { binding.ivTodaySloth.visibility = View.INVISIBLE }
-//                .onCompletion { binding.ivTodaySloth.visibility = View.VISIBLE }
                     .collect { result ->
                         when (result) {
                             is Result.Loading -> showProgress()
@@ -91,7 +89,7 @@ class TodayLessonFragment :
                                         requireContext(),
                                         this@TodayLessonFragment
                                     ) {
-                                        todayLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
@@ -119,7 +117,7 @@ class TodayLessonFragment :
                                     requireContext(),
                                     getString(R.string.lesson_finish_complete)
                                 )
-                                todayLessonViewModel.fetchTodayLessonList()
+                                fetchTodayLessonList()
                             }
 
                             is Result.Error -> {
@@ -128,7 +126,7 @@ class TodayLessonFragment :
                                         requireContext(),
                                         this@TodayLessonFragment
                                     ) {
-                                        todayLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
 
                                     else -> {
@@ -385,5 +383,20 @@ class TodayLessonFragment :
             }
         }
         completeDialog.show()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.d("onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("onDestroy")
     }
 }

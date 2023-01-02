@@ -51,7 +51,7 @@ class LessonDetailFragment :
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonDetailResponse> -> {
                                 binding.itemNetworkError.itemNetworkError.visibility = View.GONE
-                                lessonDetailViewModel.setLessonDetailInfo(result.data)
+                                setLessonDetailInfo(result.data)
                             }
 
                             is Result.Error -> {
@@ -61,7 +61,7 @@ class LessonDetailFragment :
                                             requireContext(),
                                             this@LessonDetailFragment
                                         ) {
-                                            lessonDetailViewModel.removeAuthToken()
+                                            removeAuthToken()
                                         }
                                     }
                                     else -> {
@@ -89,7 +89,7 @@ class LessonDetailFragment :
                                     requireContext(),
                                     getString(R.string.lesson_delete_complete)
                                 )
-                                //뒤로가기
+                                // TODO 뒤로가기 확실한 방법이지만 구분 필요
                                 if (!findNavController().navigateUp()) {
                                     requireActivity().finish()
                                 }
@@ -101,7 +101,7 @@ class LessonDetailFragment :
                                         requireContext(),
                                         this@LessonDetailFragment
                                     ) {
-                                        lessonDetailViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
 
                                     else -> {

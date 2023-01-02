@@ -74,17 +74,17 @@ class RegisterLessonFirstFragment :
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
-                                registerLessonViewModel.setLessonCategoryList(result.data)
+                                setLessonCategoryList(result.data)
                                 bindAdapter(
                                     lessonCategoryAdapter,
                                     binding.spnRegisterLessonCategory,
-                                    registerLessonViewModel.lessonCategorySelectedItemPosition.value
+                                    lessonCategorySelectedItemPosition.value
                                 )
                             }
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@RegisterLessonFirstFragment) {
-                                        registerLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)

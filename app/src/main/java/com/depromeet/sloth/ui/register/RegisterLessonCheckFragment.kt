@@ -57,7 +57,7 @@ class RegisterLessonCheckFragment :
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@RegisterLessonCheckFragment) {
-                                        registerLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
 
                                     else -> {

@@ -61,13 +61,15 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(requireContext(), getString(R.string.lesson_info_update_complete))
-                                val action = UpdateLessonFragmentDirections.actionUpdateLessonToLessonDetail(lessonDetail.lessonId.toString())
+                                val action = UpdateLessonFragmentDirections.actionUpdateLessonToLessonDetail(
+                                    lessonDetail.lessonId
+                                )
                                 findNavController().safeNavigate(action)
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        updateLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
@@ -92,7 +94,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.Error -> {
                                 when(result.statusCode) {
                                     401 ->  showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        updateLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
@@ -118,7 +120,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        updateLessonViewModel.removeAuthToken()
+                                        removeAuthToken()
                                     }
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)

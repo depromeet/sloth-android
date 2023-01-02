@@ -103,7 +103,7 @@ class RegisterLessonSecondFragment :
             launch {
                 navigateToRegisterLessonCheckEvent
                     .collect {
-                        registerLessonViewModel.setLessonInfo()
+                       setLessonInfo()
                         val action =
                             RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
                         findNavController().safeNavigate(action)
