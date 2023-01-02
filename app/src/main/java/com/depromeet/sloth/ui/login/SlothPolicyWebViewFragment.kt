@@ -12,6 +12,7 @@ import com.depromeet.sloth.databinding.FragmentSlothPolicyWebViewBinding
 import com.depromeet.sloth.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
+//TODO 잘 모르는 함수 주석
 @AndroidEntryPoint
 class SlothPolicyWebViewFragment :
     BaseFragment<FragmentSlothPolicyWebViewBinding>(R.layout.fragment_sloth_policy_web_view) {
@@ -23,23 +24,25 @@ class SlothPolicyWebViewFragment :
         initListener()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun initViews() {
+        binding.wvWebView.apply {
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+            // 자바 스크립트 허용
+            settings.javaScriptEnabled = true
+            // 로컬 스토리지 허용
+            settings.domStorageEnabled = true
+            loadUrl(BuildConfig.POLICY_WEB_VIEW_URL)
+        }
+    }
+
     private fun initListener() {
         binding.tbSlothPolicy.setNavigationOnClickListener {
             // 뒤로 가기
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun initViews() {
-        binding.wvWebView.apply {
-            webViewClient = WebViewClient()
-            webChromeClient = WebChromeClient()
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            loadUrl(BuildConfig.POLICY_WEB_VIEW_URL)
         }
     }
 
@@ -54,17 +57,14 @@ class SlothPolicyWebViewFragment :
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
 
-            with(binding) {
-                pbSlothPolicyContentLoading.hide()
-                etSlothPolicyAddressBar.setText(BuildConfig.POLICY_WEB_VIEW_URL)
-            }
+            binding.pbSlothPolicyContentLoading.hide()
         }
     }
 
     inner class WebChromeClient : android.webkit.WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
-            binding.pbSlothPolicyContentLoading.progress = newProgress //DEFAULT
+            binding.pbSlothPolicyContentLoading.progress = newProgress
         }
     }
 
