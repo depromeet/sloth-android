@@ -5,8 +5,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="32dp"
-        android:paddingBottom="16dp">
+        android:paddingStart="4dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="4dp">
 
         <TextView
             android:id="@+id/tv_header_title"
@@ -22,8 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/primary_500"
-            android:textStyle="bold"
             android:textSize="18dp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/tv_header_title"
             app:layout_constraintTop_toTopOf="parent" />
 
