@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
@@ -30,7 +30,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val manageViewModel: ManageViewModel by viewModels()
+    private val manageViewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_home)
 
     override fun onStart() {
         super.onStart()
@@ -64,7 +64,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.Success<MemberResponse> -> {
                                 binding.itemNetworkError.itemNetworkError.visibility = View.GONE
                                 setMemberInfo(result.data)
-                                Timber.d(memberName.value)
+                                Timber.d("${memberName.value} ${previousMemberName.value}")
                             }
 
                             is Result.Error -> {
@@ -72,9 +72,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                     401 -> showForbiddenDialog(
                                         requireContext(),
                                         this@ManageFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
+                                    ) { removeAuthToken() }
 
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)

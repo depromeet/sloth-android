@@ -53,7 +53,7 @@ class ManageViewModel @Inject constructor(
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
     private val _previousMemberName =
-        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
+        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, "Default String")
     val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
 
     private val _fetchMemberInfoEvent = MutableSharedFlow<Result<MemberResponse>>()
