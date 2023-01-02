@@ -1,10 +1,10 @@
 package com.depromeet.sloth.ui.list
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.domain.use_case.lesson.GetAllLessonListUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LessonListViewModel @Inject constructor(
     private val getAllLessonListUseCase: GetAllLessonListUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
 
 //    val fetchAllLessonListEvent: Flow<Result<List<LessonAllResponse>>> =
 //        getAllLessonListUseCase()
@@ -60,5 +60,9 @@ class LessonListViewModel @Inject constructor(
 
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
+    }
+
+    override fun retry() {
+        fetchAllLessonList()
     }
 }

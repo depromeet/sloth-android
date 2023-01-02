@@ -93,7 +93,8 @@
         </androidx.core.widget.NestedScrollView>
 
         <include
-            android:id="@+id/item_network_error"
+            android:id="@+id/today_lesson_network_error"
+            app:vm="@{vm}"
             layout="@layout/item_network_error"
             android:layout_width="0dp"
             android:layout_height="0dp"

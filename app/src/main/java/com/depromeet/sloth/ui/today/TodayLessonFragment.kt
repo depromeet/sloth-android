@@ -53,10 +53,6 @@ class TodayLessonFragment :
     }
 
     private fun initListener() = with(binding) {
-        itemNetworkError.btnRetry.setOnClickListener {
-            todayLessonViewModel.fetchTodayLessonList()
-        }
-
         tbTodayLesson.apply {
             setOnMenuItemSingleClickListener {
                 when (it.itemId) {
@@ -79,7 +75,7 @@ class TodayLessonFragment :
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success -> {
-                                binding.itemNetworkError.itemNetworkError.visibility =
+                                binding.todayLessonNetworkError.itemNetworkError.visibility =
                                     View.GONE
                                 setLessonList(result.data)
                             }
@@ -97,7 +93,7 @@ class TodayLessonFragment :
                                             requireContext(),
                                             getString(R.string.lesson_info_fetch_fail)
                                         )
-                                        binding.itemNetworkError.itemNetworkError.visibility =
+                                        binding.todayLessonNetworkError.itemNetworkError.visibility =
                                             View.VISIBLE
                                     }
                                 }

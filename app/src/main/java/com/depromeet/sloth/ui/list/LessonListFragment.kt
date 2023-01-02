@@ -48,10 +48,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     }
 
     private fun initListener() = with(binding) {
-        itemNetworkError.btnRetry.setOnClickListener {
-            lessonListViewModel.fetchAllLessonList()
-        }
-
         tbLessonList.apply {
             setOnMenuItemSingleClickListener {
                 when (it.itemId) {
@@ -78,7 +74,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<List<LessonAllResponse>> -> {
-                                binding.itemNetworkError.itemNetworkError.visibility = View.GONE
+                                binding.lessonListNetworkError.itemNetworkError.visibility = View.GONE
                                 setLessonList(result.data)
                             }
                             is Result.Error -> {
@@ -89,7 +85,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
                                         showToast(requireContext(), getString(R.string.lesson_info_fetch_fail))
-                                        binding.itemNetworkError.itemNetworkError.visibility = View.VISIBLE
+                                        binding.lessonListNetworkError.itemNetworkError.visibility = View.VISIBLE
                                     }
                                 }
                             }

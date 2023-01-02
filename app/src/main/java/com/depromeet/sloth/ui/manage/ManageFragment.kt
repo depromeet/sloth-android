@@ -43,14 +43,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         bind {
             vm = manageViewModel
         }
-        initListener()
         initObserver()
-    }
-
-    private fun initListener() = with(binding) {
-        itemNetworkError.btnRetry.setOnClickListener {
-            manageViewModel.fetchMemberInfo()
-        }
     }
 
     private fun initObserver() = with(manageViewModel) {
@@ -62,9 +55,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             is Result.Loading -> showProgress()
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<MemberResponse> -> {
-                                binding.itemNetworkError.itemNetworkError.visibility = View.GONE
+                                binding.manageNetworkError.itemNetworkError.visibility = View.GONE
                                 setMemberInfo(result.data)
-                                Timber.d("${memberName.value} ${previousMemberName.value}")
                             }
 
                             is Result.Error -> {
@@ -80,7 +72,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                             requireContext(),
                                             getString(R.string.member_info_fetch_fail)
                                         )
-                                        binding.itemNetworkError.itemNetworkError.visibility =
+                                        binding.manageNetworkError.itemNetworkError.visibility =
                                             View.VISIBLE
                                     }
                                 }

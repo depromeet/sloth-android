@@ -1,7 +1,6 @@
 package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
@@ -13,6 +12,7 @@ import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.Member
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.Result
@@ -36,7 +36,7 @@ class ManageViewModel @Inject constructor(
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : BaseViewModel() {
 
 //    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> = getMemberInfoUseCase()
 
@@ -187,6 +187,10 @@ class ManageViewModel @Inject constructor(
 
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
+    }
+
+    override fun retry() {
+        fetchMemberInfo()
     }
 
     companion object {

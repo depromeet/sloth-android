@@ -1,6 +1,5 @@
 package com.depromeet.sloth.ui.today
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
@@ -10,6 +9,7 @@ import com.depromeet.sloth.domain.use_case.lesson.FinishLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetTodayLessonListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +26,7 @@ class TodayLessonViewModel @Inject constructor(
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val finishLessonUseCase: FinishLessonUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _fetchTodayLessonListEvent = MutableSharedFlow<Result<List<LessonTodayResponse>>>()
     val fetchTodayLessonListEvent: SharedFlow<Result<List<LessonTodayResponse>>> = _fetchTodayLessonListEvent.asSharedFlow()
@@ -93,5 +93,9 @@ class TodayLessonViewModel @Inject constructor(
 
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
+    }
+
+    override fun retry() {
+        fetchTodayLessonList()
     }
 }

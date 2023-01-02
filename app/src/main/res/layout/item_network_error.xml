@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="vm"
+            type="com.depromeet.sloth.ui.base.BaseViewModel" />
+
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/item_network_error"
         android:layout_width="match_parent"
@@ -51,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="@string/retry_btn_text"
+            android:onClick="@{()->vm.retry()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_network_error_retry" />
