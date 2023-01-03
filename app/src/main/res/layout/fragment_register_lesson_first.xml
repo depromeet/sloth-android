@@ -173,14 +173,14 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:enabled="@{vm.navigateToLessonSecondButtonState}"
-            android:onClick="@{()-> vm.navigateToRegisterLessonSecond()}"
+            onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <include
-            android:id="@+id/item_network_error"
+            android:id="@+id/register_lesson_network_error"
             layout="@layout/item_network_error"
             android:visibility="gone"
             android:layout_width="match_parent"

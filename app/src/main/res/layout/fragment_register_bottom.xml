@@ -21,7 +21,7 @@
             android:layout_marginBottom="24dp"
             android:lineSpacingExtra="5dp"
             android:paddingTop="36dp"
-            android:onClick="@{() -> vm.navigateToSlothPolicyWebview()}"
+            onSingleClick="@{() -> vm.navigateToSlothPolicyWebview()}"
             android:text="@string/register_title"
             android:textSize="24dp"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
             android:text="@string/cancel"
-            android:onClick="@{() -> vm.registerCancel()}"
+            onSingleClick="@{() -> vm.registerCancel()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_login_policy_agree"
             app:layout_constraintStart_toStartOf="parent" />
@@ -60,7 +60,7 @@
             android:layout_width="0dp"
             android:layout_marginBottom="24dp"
             android:text="@string/agree_and_start"
-            android:onClick="@{() -> vm.registerAgree()}"
+            onSingleClick="@{() -> vm.registerAgree()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_login_policy_cancel" />

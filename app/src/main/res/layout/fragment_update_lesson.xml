@@ -312,7 +312,7 @@
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
                     android:enabled="@{vm.updateLessonButtonState}"
-                    android:onClick="@{()->vm.updateLesson()}"
+                    onSingleClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -324,7 +324,7 @@
         </ScrollView>
 
         <include
-            android:id="@+id/item_network_error"
+            android:id="@+id/update_lesson_network_error"
             layout="@layout/item_network_error"
             android:visibility="gone"
             android:layout_width="match_parent"

@@ -45,7 +45,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/bg_login_google"
             android:paddingHorizontal="11dp"
-            android:onClick="@{()-> vm.googleLoginClick()}"
+            onSingleClick="@{()-> vm.googleLoginClick()}"
             app:layout_constraintBottom_toTopOf="@id/cl_login_button_kakao"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -80,7 +80,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/bg_login_kakao"
             android:paddingHorizontal="11dp"
-            android:onClick="@{()-> vm.kakaoLoginClick()}"
+            onSingleClick="@{()-> vm.kakaoLoginClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

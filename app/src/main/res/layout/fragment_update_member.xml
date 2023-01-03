@@ -56,7 +56,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="40dp"
             android:enabled="@{vm.updateMemberValidation}"
-            android:onClick="@{() -> vm.updateMemberInfo()}"
+            onSingleClick="@{() -> vm.updateMemberInfo()}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
