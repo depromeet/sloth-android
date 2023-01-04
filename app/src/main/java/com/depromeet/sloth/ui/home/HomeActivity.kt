@@ -1,6 +1,5 @@
 package com.depromeet.sloth.ui.home
 
-import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -22,15 +21,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
     private lateinit var navController: NavController
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun preload() {
         installSplashScreen()
-        super.onCreate(savedInstanceState)
+    }
 
+    override fun init() {
         // initViews()
         initNavigation()
     }
 
-    override fun initViews() {
+    private fun initViews() {
         // Crashlytics 비정상 종료 테스트
         val crashButton = Button(this)
         crashButton.text = getString(R.string.test_crash)
