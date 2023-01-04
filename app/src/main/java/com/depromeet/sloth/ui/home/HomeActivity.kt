@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -47,11 +49,39 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
     private fun initNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_home_container) as NavHostFragment
+        val graphInflater = navHostFragment.navController.navInflater
+        val navGraph = graphInflater.inflate(R.navigation.nav_home)
+
         navController = navHostFragment.findNavController()
+
+        //startDestination 투데이 화면으로 변경
+        navGraph.setStartDestination(R.id.today_lesson)
+        navController.graph = navGraph
 
         bnvHome.apply {
             setupWithNavController(navController)
             itemIconTintList = null
+
+            //system back button 을 누를 경우 startDestination 만 back stack 에 남도록 설정
+            setOnItemSelectedListener { menuItem ->
+                val builder = NavOptions.Builder()
+                    .setPopUpTo(navController.graph.findStartDestination().id, inclusive = false)
+                    .setLaunchSingleTop(true)
+                    // default animation 추가
+                    .setEnterAnim(R.anim.nav_default_enter_anim)
+                    .setExitAnim(R.anim.nav_default_exit_anim)
+                    .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                    .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+
+                val graph = navController.currentDestination?.parent
+                val destination = graph?.findNode(menuItem.itemId)
+                val options = builder.build()
+                destination?.id?.let {id ->
+                    navController.navigate(id, null, options)
+                }
+
+                return@setOnItemSelectedListener true
+            }
         }
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
