@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -18,8 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
-
-    private lateinit var navController: NavController
 
     override fun preload() {
         installSplashScreen()
@@ -49,14 +46,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private fun initNavigation() = with(binding) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_home_container) as NavHostFragment
-        val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_home)
 
-        navController = navHostFragment.findNavController()
-
-        //startDestination 투데이 화면으로 변경
-        navGraph.setStartDestination(R.id.today_lesson)
-        navController.graph = navGraph
+        val navController = navHostFragment.findNavController()
 
         bnvHome.apply {
             setupWithNavController(navController)
@@ -76,7 +67,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 val graph = navController.currentDestination?.parent
                 val destination = graph?.findNode(menuItem.itemId)
                 val options = builder.build()
-                destination?.id?.let {id ->
+                destination?.id?.let { id ->
                     navController.navigate(id, null, options)
                 }
 
@@ -87,6 +78,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             when (destination.id) {
                 R.id.today_lesson, R.id.lesson_list, R.id.manage -> bnvHome.visibility =
                     View.VISIBLE
+
                 else -> bnvHome.visibility = View.GONE
             }
         }
