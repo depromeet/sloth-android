@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_home"
-    app:startDestination="@id/login">
+    app:startDestination="@id/today_lesson">
 
     <include app:graph="@navigation/nav_register_lesson"/>
 
@@ -12,6 +12,10 @@
         app:destination="@id/login"
         app:popUpTo="@id/today_lesson"
         app:popUpToInclusive="true"/>
+
+<!--    <action-->
+<!--        android:id="@+id/action_global_to_sloth_dialog"-->
+<!--        app:destination="@id/sloth_dialog"/>-->
 
     <fragment
         android:id="@+id/login"
@@ -94,6 +98,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_today_lesson_to_login"
+            app:destination="@id/login" />
     </fragment>
 
     <fragment
@@ -204,5 +211,15 @@
             app:popUpTo="@id/manage"
             app:popUpToInclusive="true" />
     </dialog>
+
+<!--    <dialog-->
+<!--        android:id="@+id/sloth_dialog"-->
+<!--        android:name="com.depromeet.sloth.ui.custom.SlothDialogFragment"-->
+<!--        android:label="SlothDialogFragment"-->
+<!--        tools:layout="@layout/dialog_sloth">-->
+<!--        <argument-->
+<!--            android:name="dialogState"-->
+<!--            app:argType="com.depromeet.sloth.ui.custom.DialogState" />-->
+<!--    </dialog>-->
 
 </navigation>

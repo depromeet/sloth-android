@@ -130,8 +130,6 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
             }
 
             launch {
-                // 로그인이 성공하면 토큰을 서버에 전달해주는 방식으로 로직 변경
-                // 토큰을 전달한 다음 투데이 화면으로 이동
                 registerNotificationTokenEvent
                     .collect { result ->
                         when (result) {

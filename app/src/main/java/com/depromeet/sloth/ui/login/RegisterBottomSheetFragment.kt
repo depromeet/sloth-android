@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+//TODO 여기 로직이 이게 맞나?
 @AndroidEntryPoint
 class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBottomBinding>(R.layout.fragment_register_bottom) {
 
@@ -36,7 +37,9 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
             }
 
             launch {
-                registerAgreeEvent.collect { createAndRegisterNotificationToken() }
+                registerAgreeEvent.collect {
+                    createAndRegisterNotificationToken()
+                }
             }
 
             launch {
