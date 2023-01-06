@@ -18,6 +18,7 @@ import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
@@ -124,6 +125,7 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
                             }
                             is Result.Error -> {
                                 Timber.tag("Login Fail").d(result.throwable)
+                                showToast(requireContext(), getString(R.string.login_fail))
                             }
                         }
                     }

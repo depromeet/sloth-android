@@ -5,17 +5,17 @@
     android:id="@+id/nav_home"
     app:startDestination="@id/today_lesson">
 
-    <include app:graph="@navigation/nav_register_lesson"/>
+    <include app:graph="@navigation/nav_register_lesson" />
 
     <action
         android:id="@+id/action_global_logout"
         app:destination="@id/login"
         app:popUpTo="@id/today_lesson"
-        app:popUpToInclusive="true"/>
+        app:popUpToInclusive="true" />
 
-<!--    <action-->
-<!--        android:id="@+id/action_global_to_sloth_dialog"-->
-<!--        app:destination="@id/sloth_dialog"/>-->
+    <!--    <action-->
+    <!--        android:id="@+id/action_global_to_sloth_dialog"-->
+    <!--        app:destination="@id/sloth_dialog"/>-->
 
     <fragment
         android:id="@+id/login"
@@ -29,7 +29,7 @@
             android:id="@+id/action_login_to_today_lesson"
             app:destination="@id/today_lesson"
             app:popUpTo="@id/login"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -73,7 +73,9 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_register_bottom_to_login"
-            app:destination="@id/login" />
+            app:destination="@id/login"
+            app:popUpTo="@id/login_bottom"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_register_bottom_to_today_lesson"
             app:destination="@id/today_lesson"
@@ -90,7 +92,7 @@
         android:id="@+id/today_lesson"
         android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
         android:label="TodayLessonFragment"
-        tools:layout="@layout/fragment_today_lesson" >
+        tools:layout="@layout/fragment_today_lesson">
         <action
             android:id="@+id/action_today_lesson_to_register_lesson_first"
             app:destination="@id/nav_register_lesson"
@@ -102,7 +104,7 @@
             android:id="@+id/action_today_lesson_to_login"
             app:destination="@id/login"
             app:popUpTo="@id/today_lesson"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -130,7 +132,7 @@
         android:id="@+id/manage"
         android:name="com.depromeet.sloth.ui.manage.ManageFragment"
         android:label="ManageFragment"
-        tools:layout="@layout/fragment_manage" >
+        tools:layout="@layout/fragment_manage">
         <action
             android:id="@+id/action_manage_to_sloth_policy_webview"
             app:destination="@id/sloth_policy_webview" />
@@ -166,14 +168,14 @@
         <argument
             android:name="lessonId"
             app:argType="string"
-            app:nullable="false"/>
+            app:nullable="false" />
     </fragment>
 
     <fragment
         android:id="@+id/update_lesson"
         android:name="com.depromeet.sloth.ui.update.UpdateLessonFragment"
         android:label="UpdateLessonFragment"
-        tools:layout="@layout/fragment_update_lesson" >
+        tools:layout="@layout/fragment_update_lesson">
 
         <argument
             android:name="lessonDetail"
@@ -184,16 +186,16 @@
         android:id="@+id/update_member"
         android:name="com.depromeet.sloth.ui.manage.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member"/>
+        tools:layout="@layout/fragment_update_member" />
 
-<!--    <dialog-->
-<!--        android:id="@+id/sloth_dialog"-->
-<!--        android:name="com.depromeet.sloth.ui.custom.SlothDialogFragment"-->
-<!--        android:label="SlothDialogFragment"-->
-<!--        tools:layout="@layout/dialog_sloth">-->
-<!--        <argument-->
-<!--            android:name="dialogState"-->
-<!--            app:argType="com.depromeet.sloth.ui.custom.DialogState" />-->
-<!--    </dialog>-->
+    <!--    <dialog-->
+    <!--        android:id="@+id/sloth_dialog"-->
+    <!--        android:name="com.depromeet.sloth.ui.custom.SlothDialogFragment"-->
+    <!--        android:label="SlothDialogFragment"-->
+    <!--        tools:layout="@layout/dialog_sloth">-->
+    <!--        <argument-->
+    <!--            android:name="dialogState"-->
+    <!--            app:argType="com.depromeet.sloth.ui.custom.DialogState" />-->
+    <!--    </dialog>-->
 
 </navigation>
