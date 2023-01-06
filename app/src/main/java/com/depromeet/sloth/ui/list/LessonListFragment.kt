@@ -214,21 +214,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("onCreate")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.d("onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("onDestroy")
-    }
-
     companion object {
         private const val PAST = "PAST"
     }
