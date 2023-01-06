@@ -34,6 +34,10 @@ class LessonDetailViewModel @Inject constructor(
     private val _fetchLessonDetailEvent = MutableSharedFlow<Result<LessonDetailResponse>>()
     val fetchLessonDetailEvent: SharedFlow<Result<LessonDetailResponse>> = _fetchLessonDetailEvent.asSharedFlow()
 
+    init {
+        fetchLessonDetail()
+    }
+
     private val _deleteLessonEvent = MutableSharedFlow<Result<LessonDeleteResponse>>()
     val deleteLessonEvent: SharedFlow<Result<LessonDeleteResponse>> =
         _deleteLessonEvent.asSharedFlow()
@@ -47,11 +51,11 @@ class LessonDetailViewModel @Inject constructor(
     private val _navigateToDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
     val navigateToDeleteLessonDialogEvent: SharedFlow<Unit> = _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
-    fun fetchLessonDetail() = viewModelScope.launch {
+    private fun fetchLessonDetail() = viewModelScope.launch {
         getLessonDetailUseCase(lessonId)
             .onEach {
                 if (it is Result.Loading) _fetchLessonDetailEvent.emit(Result.Loading)
-                else _fetchLessonDetailEvent.emit(Result.UnLoading)
+                // else _fetchLessonDetailEvent.emit(Result.UnLoading)
             }.collect {
                 _fetchLessonDetailEvent.emit(it)
             }
@@ -61,7 +65,7 @@ class LessonDetailViewModel @Inject constructor(
         deleteLessonUseCase(lessonId)
             .onEach {
                 if (it is Result.Loading) _deleteLessonEvent.emit(Result.Loading)
-                else _deleteLessonEvent.emit(Result.UnLoading)
+                // else _deleteLessonEvent.emit(Result.UnLoading)
             }.collect {
                 _deleteLessonEvent.emit(it)
             }

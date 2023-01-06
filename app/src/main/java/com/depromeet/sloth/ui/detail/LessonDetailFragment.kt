@@ -36,11 +36,6 @@ class LessonDetailFragment :
         initObserver()
     }
 
-    override fun onStart() {
-        super.onStart()
-        lessonDetailViewModel.fetchLessonDetail()
-    }
-
     private fun initObserver() = with(lessonDetailViewModel) {
         repeatOnStarted {
             launch {
