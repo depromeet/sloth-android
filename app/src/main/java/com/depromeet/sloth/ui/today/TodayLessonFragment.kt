@@ -29,14 +29,8 @@ class TodayLessonFragment :
 
     private val todayLessonViewModel: TodayLessonViewModel by viewModels()
 
-    override fun onStart() {
-        super.onStart()
-        todayLessonViewModel.fetchTodayLessonList()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         bind {
             vm = todayLessonViewModel
         }
@@ -60,6 +54,7 @@ class TodayLessonFragment :
                         todayLessonViewModel.navigateToNotificationList()
                         true
                     }
+
                     else -> false
                 }
             }
@@ -68,6 +63,20 @@ class TodayLessonFragment :
 
     private fun initObserver() = with(todayLessonViewModel) {
         repeatOnStarted {
+            launch {
+                autoLoginEvent
+                    .collect { loginState ->
+                        when (loginState) {
+                            true -> fetchTodayLessonList()
+                            else -> {
+                                val action =
+                                    TodayLessonFragmentDirections.actionTodayLessonToLogin()
+                                findNavController().safeNavigate(action)
+                            }
+                        }
+                    }
+            }
+
             launch {
                 fetchTodayLessonListEvent
                     .collect { result ->
@@ -79,6 +88,7 @@ class TodayLessonFragment :
                                     View.GONE
                                 setLessonList(result.data)
                             }
+
                             is Result.Error -> {
                                 when (result.statusCode) {
                                     401 -> showForbiddenDialog(
@@ -87,6 +97,7 @@ class TodayLessonFragment :
                                     ) {
                                         removeAuthToken()
                                     }
+
                                     else -> {
                                         Timber.tag("Fetch Error").d(result.throwable)
                                         showToast(
@@ -379,20 +390,5 @@ class TodayLessonFragment :
             }
         }
         completeDialog.show()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("onCreate")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.d("onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("onDestroy")
     }
 }
