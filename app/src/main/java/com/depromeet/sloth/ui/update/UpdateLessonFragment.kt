@@ -51,6 +51,23 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         initObserver()
     }
 
+    override fun initViews() = with(binding) {
+        focusInputForm(etUpdateLessonName)
+        validateCountInputForm(etUpdateLessonCount)
+        focusSpinnerForm(spnUpdateLessonCategory)
+        focusSpinnerForm(spnUpdateLessonSite)
+        validatePriceInputForm(etUpdateLessonPrice)
+    }
+
+    private fun initListener() = with(binding) {
+        tbUpdateLesson.setNavigationOnClickListener {
+            // 뒤로 가기
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
+    }
+
     private fun initObserver() = with(updateLessonViewModel) {
         repeatOnStarted {
             launch {
@@ -61,10 +78,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             is Result.UnLoading -> hideProgress()
                             is Result.Success<LessonUpdateResponse> -> {
                                 showToast(requireContext(), getString(R.string.lesson_info_update_complete))
-                                val action = UpdateLessonFragmentDirections.actionUpdateLessonToLessonDetail(
-                                    lessonDetail.lessonId
-                                )
-                                findNavController().safeNavigate(action)
+                                navigateToLessonDetail()
                             }
                             is Result.Error -> {
                                 when(result.statusCode) {
@@ -144,21 +158,10 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         }
     }
 
-    private fun initListener() = with(binding) {
-        tbUpdateLesson.setNavigationOnClickListener {
-            // 뒤로 가기
-            if (!findNavController().navigateUp()) {
-                requireActivity().finish()
-            }
+    private fun navigateToLessonDetail() {
+        if (!findNavController().navigateUp()) {
+            requireActivity().finish()
         }
-    }
-
-    override fun initViews() = with(binding) {
-        focusInputForm(etUpdateLessonName)
-        validateCountInputForm(etUpdateLessonCount)
-        focusSpinnerForm(spnUpdateLessonCategory)
-        focusSpinnerForm(spnUpdateLessonSite)
-        validatePriceInputForm(etUpdateLessonPrice)
     }
 
     private fun bindLessonCategoryAdapter() = with(binding) {

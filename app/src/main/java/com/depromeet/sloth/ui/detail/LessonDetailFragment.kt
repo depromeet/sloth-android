@@ -36,6 +36,14 @@ class LessonDetailFragment :
         initObserver()
     }
 
+    private fun initListener() = with(binding) {
+        tbLessonDetail.setNavigationOnClickListener {
+            if (!findNavController().navigateUp()) {
+                requireActivity().finish()
+            }
+        }
+    }
+
     private fun initObserver() = with(lessonDetailViewModel) {
         repeatOnStarted {
             launch {
@@ -84,8 +92,7 @@ class LessonDetailFragment :
                                     requireContext(),
                                     getString(R.string.lesson_delete_complete)
                                 )
-                                val action = LessonDetailFragmentDirections.actionLessonDetailToLessonList()
-                                findNavController().safeNavigate(action)
+                                navigateToLessonList()
                             }
 
                             is Result.Error -> {
@@ -136,11 +143,9 @@ class LessonDetailFragment :
         }
     }
 
-    private fun initListener() = with(binding) {
-        tbLessonDetail.setNavigationOnClickListener {
-            if (!findNavController().navigateUp()) {
-                requireActivity().finish()
-            }
+    private fun navigateToLessonList() {
+        if (!findNavController().navigateUp()) {
+            requireActivity().finish()
         }
     }
 

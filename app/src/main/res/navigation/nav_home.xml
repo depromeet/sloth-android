@@ -100,7 +100,9 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_today_lesson_to_login"
-            app:destination="@id/login" />
+            app:destination="@id/login"
+            app:popUpTo="@id/today_lesson"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -165,15 +167,6 @@
             android:name="lessonId"
             app:argType="string"
             app:nullable="false"/>
-        <action
-            android:id="@+id/action_lesson_detail_to_lesson_list"
-            app:destination="@id/lesson_list"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/lesson_list"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -185,32 +178,13 @@
         <argument
             android:name="lessonDetail"
             app:argType="com.depromeet.sloth.ui.item.LessonDetail" />
-        <action
-            android:id="@+id/action_update_lesson_to_lesson_detail"
-            app:destination="@id/lesson_detail"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/lesson_detail"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <dialog
         android:id="@+id/update_member"
         android:name="com.depromeet.sloth.ui.manage.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member">
-        <action
-            android:id="@+id/action_updateMemberFragment_to_manage"
-            app:destination="@id/manage"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/manage"
-            app:popUpToInclusive="true" />
-    </dialog>
+        tools:layout="@layout/fragment_update_member"/>
 
 <!--    <dialog-->
 <!--        android:id="@+id/sloth_dialog"-->

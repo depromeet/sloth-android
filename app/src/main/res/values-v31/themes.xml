@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.Sloth.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_sloth_logo</item>
@@ -7,7 +8,7 @@
         <item name="postSplashScreenTheme">@style/Theme.Sloth</item>
 
         <!-- Status bar and Nav bar configs -->
-        <item name="android:statusBarColor" >@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
