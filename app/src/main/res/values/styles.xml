@@ -103,5 +103,22 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="SlothBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/SlothBottomSheet</item>
+    </style>
+
+    <style name = "SlothBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/SlothShapeAppearanceBottomSheetDialog</item>
+
+    </style>
+
+    <style name="SlothShapeAppearanceBottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
 
 </resources>

@@ -11,8 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_login_bottom_rounded_white">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -40,12 +39,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_login_button_google"
+            onSingleClick="@{()-> vm.googleLoginClick()}"
             android:layout_width="320dp"
             android:layout_height="44dp"
             android:layout_margin="8dp"
             android:background="@drawable/bg_login_google"
             android:paddingHorizontal="11dp"
-            onSingleClick="@{()-> vm.googleLoginClick()}"
             app:layout_constraintBottom_toTopOf="@id/cl_login_button_kakao"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -74,13 +73,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_login_button_kakao"
+            onSingleClick="@{()-> vm.kakaoLoginClick()}"
             android:layout_width="320dp"
             android:layout_height="44dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/bg_login_kakao"
             android:paddingHorizontal="11dp"
-            onSingleClick="@{()-> vm.kakaoLoginClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

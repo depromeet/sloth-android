@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.login.LoginViewModel" />
@@ -11,17 +12,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_login_bottom_rounded_white">
+        android:layout_height="match_parent">
 
         <TextView
+            onSingleClick="@{() -> vm.navigateToSlothPolicyWebview()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="24dp"
             android:lineSpacingExtra="5dp"
             android:paddingTop="36dp"
-            onSingleClick="@{() -> vm.navigateToSlothPolicyWebview()}"
             android:text="@string/register_title"
             android:textSize="24dp"
             android:textStyle="bold"
@@ -44,11 +44,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login_policy_cancel"
             style="@style/Widget.Sloth.Button.Cancel"
+            onSingleClick="@{() -> vm.registerCancel()}"
             android:layout_width="0dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
             android:text="@string/cancel"
-            onSingleClick="@{() -> vm.registerCancel()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_login_policy_agree"
             app:layout_constraintStart_toStartOf="parent" />
@@ -56,11 +56,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login_policy_agree"
             style="@style/Widget.Sloth.Button.Start"
-            android:layout_marginHorizontal="16dp"
+            onSingleClick="@{() -> vm.registerAgree()}"
             android:layout_width="0dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
             android:text="@string/agree_and_start"
-            onSingleClick="@{() -> vm.registerAgree()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_login_policy_cancel" />

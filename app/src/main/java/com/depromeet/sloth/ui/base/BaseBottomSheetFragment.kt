@@ -11,6 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.DialogLoadingBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -66,6 +67,10 @@ abstract class BaseBottomSheetFragment<B : ViewDataBinding>(
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
         }
+    }
+
+    override fun getTheme(): Int {
+        return R.style.SlothBottomSheetDialog
     }
 
     override fun onDestroyView() {
