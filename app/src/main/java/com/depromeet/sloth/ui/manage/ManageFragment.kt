@@ -106,7 +106,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                                 }
                             }
 
-                            false -> Unit
+                            false -> {
+                                showToast(requireContext(), getString(R.string.logout_fail))
+                            }
                         }
                     }
             }
