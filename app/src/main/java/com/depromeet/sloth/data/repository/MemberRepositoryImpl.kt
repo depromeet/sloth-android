@@ -11,7 +11,6 @@ import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
@@ -37,7 +36,6 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun updateMemberInfo(
         memberUpdateRequest: MemberUpdateRequest
@@ -61,12 +59,11 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun logout() = flow {
         emit(Result.Loading)
         val response = memberService.logout() ?: run {
-            emit(Result.Error(Exception("Response is nukk")))
+            emit(Result.Error(Exception("Response is null")))
             return@flow
         }
 
@@ -82,7 +79,6 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override suspend fun removeAuthToken() {
         preferences.removeAuthToken()

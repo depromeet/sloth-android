@@ -1,49 +1,75 @@
 package com.depromeet.sloth.ui.update
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonCategoryListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonSiteListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.LessonDetail
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+//TODO category, site combine으로 묶어서
 @HiltViewModel
 class UpdateLessonViewModel @Inject constructor(
     private val updateLessonUseCase: UpdateLessonUseCase,
-    getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
-    getLessonSiteListUseCase: GetLessonSiteListUseCase,
+    private val getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
+    private val getLessonSiteListUseCase: GetLessonSiteListUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : BaseViewModel() {
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _updateLessonEvent = MutableSharedFlow<Result<LessonUpdateResponse>>()
-    val updateLessonState: SharedFlow<Result<LessonUpdateResponse>>
-        get() = _updateLessonEvent
+    private val _updateLessonSuccess = MutableSharedFlow<Unit>()
+    val updateLessonSuccess: SharedFlow<Unit> = _updateLessonSuccess.asSharedFlow()
 
-    val fetchLessonCategoryListEvent: Flow<Result<List<LessonCategoryResponse>>> =
-        getLessonCategoryListUseCase()
+    private val _updateLessonFail = MutableSharedFlow<Int>()
+    val updateLessonFail: SharedFlow<Int> = _updateLessonFail.asSharedFlow()
 
-    val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
-        getLessonSiteListUseCase()
+    private val _fetchLessonCategoryListSuccess =
+        MutableSharedFlow<List<LessonCategoryResponse>>()
+    val fetchLessonCategoryListSuccess: SharedFlow<List<LessonCategoryResponse>> =
+        _fetchLessonCategoryListSuccess.asSharedFlow()
 
-    // helper class 를 만들어 기존의 형태에 맞춰 값을 set 할 수 있게 변경
+    private val _fetchLessonSiteListSuccess = MutableSharedFlow<List<LessonSiteResponse>>()
+    val fetchLessonSiteListSuccess: SharedFlow<List<LessonSiteResponse>> =
+        _fetchLessonSiteListSuccess.asSharedFlow()
+
+    private val _fetchLessonCategoryListFail =
+        MutableSharedFlow<Int>()
+    val fetchLessonCategoryListFail: SharedFlow<Int> = _fetchLessonCategoryListFail.asSharedFlow()
+
+    private val _fetchLessonSiteListFail = MutableSharedFlow<Int>()
+    val fetchLessonSiteListFail: SharedFlow<Int> = _fetchLessonSiteListFail.asSharedFlow()
+
+    init {
+        fetchLessonCategoryList()
+        fetchLessonSiteList()
+    }
+
     private val _lessonName =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
@@ -52,7 +78,8 @@ class UpdateLessonViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
+    private val _lessonPrice =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
     val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     // TODO 굳이 stateflow 로 관리할 이유가
@@ -69,14 +96,14 @@ class UpdateLessonViewModel @Inject constructor(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
 
+    val lessonCategorySelectedItemPosition: StateFlow<Int> =
+        _lessonCategorySelectedItemPosition.asStateFlow()
+
     private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
     val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
 
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
-
-    val lessonCategorySelectedItemPosition: StateFlow<Int> =
-        _lessonCategorySelectedItemPosition.asStateFlow()
 
     private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
     val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
@@ -113,12 +140,49 @@ class UpdateLessonViewModel @Inject constructor(
                 siteId = lessonSiteId.value,
                 totalNumber = lessonTotalNumber.value,
             )
-        ).onEach {
-            if (it is Result.Loading) _updateLessonEvent.emit(Result.Loading)
-            else _updateLessonEvent.emit(Result.UnLoading)
-        }.collect {
-            _updateLessonEvent.emit(it)
+        ).onEach { result ->
+            setLoading(result is Result.Loading)
+        }.collect {result ->
+            when(result) {
+                is Result.Loading -> return@collect
+                is Result.Success -> _updateLessonSuccess.emit(Unit)
+                is Result.Error -> result.statusCode?.let { _updateLessonFail.emit(it)}
+            }
         }
+    }
+
+    private fun fetchLessonCategoryList() = viewModelScope.launch {
+        getLessonCategoryListUseCase()
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        setLessonCategoryInfo(result.data)
+                        _fetchLessonCategoryListSuccess.emit(result.data)
+                    }
+
+                    is Result.Error -> result.statusCode?.let { _fetchLessonCategoryListFail.emit(it) }
+                }
+            }
+    }
+
+    private fun fetchLessonSiteList() = viewModelScope.launch {
+        getLessonSiteListUseCase()
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        setLessonSiteInfo(result.data)
+                        _fetchLessonSiteListSuccess.emit(result.data)
+                    }
+
+                    is Result.Error -> result.statusCode?.let { _fetchLessonSiteListFail.emit(it) }
+                }
+            }
     }
 
     fun setLessonCategoryId(lessonCategoryId: Int) {
@@ -148,7 +212,7 @@ class UpdateLessonViewModel @Inject constructor(
         lessonSiteSelectedItemPosition,
         lessonTotalNumberValidation
     ) { name, categorySelectedItemPosition, siteSelectedItemPosition, totalNumberValidation ->
-        name.isNotBlank()  && categorySelectedItemPosition != 0
+        name.isNotBlank() && categorySelectedItemPosition != 0
                 && siteSelectedItemPosition != 0 && totalNumberValidation
     }.stateIn(
         scope = viewModelScope,
@@ -156,20 +220,21 @@ class UpdateLessonViewModel @Inject constructor(
         initialValue = false
     )
 
-    fun setLessonCategoryInfo(data: List<LessonCategoryResponse>) {
+    private fun setLessonCategoryInfo(data: List<LessonCategoryResponse>) {
         setLessonCategoryList(data)
         setLessonCategoryId(lessonCategoryMap.value.filterValues { it == lessonDetail.categoryName }.keys.first())
         setLessonCategorySelectedItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap.value[lessonCategoryId.value]))
     }
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
-        _lessonCategoryMap.value = data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+        _lessonCategoryMap.value =
+            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
-    fun setLessonSiteInfo(data: List<LessonSiteResponse>) {
+    private fun setLessonSiteInfo(data: List<LessonSiteResponse>) {
         setLessonSiteList(data)
         setLessonSiteId(lessonSiteMap.value.filterValues { it == lessonDetail.siteName }.keys.first())
         setLessonSiteSelectedItemPosition(lessonSiteList.value.indexOf(lessonSiteMap.value[lessonSiteId.value]))
@@ -186,6 +251,8 @@ class UpdateLessonViewModel @Inject constructor(
     fun removeAuthToken() = viewModelScope.launch {
         removeAuthTokenUseCase()
     }
+
+    override fun retry() = Unit
 
     companion object {
         private const val KEY_LESSON_DETAIL = "lessonDetail"

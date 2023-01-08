@@ -2,7 +2,6 @@ package com.depromeet.sloth.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonDetailUseCase
@@ -31,16 +30,21 @@ class LessonDetailViewModel @Inject constructor(
 
     val lessonId: String = checkNotNull(savedStateHandle[KEY_LESSON_ID])
 
-    private val _fetchLessonDetailEvent = MutableSharedFlow<Result<LessonDetailResponse>>()
-    val fetchLessonDetailEvent: SharedFlow<Result<LessonDetailResponse>> = _fetchLessonDetailEvent.asSharedFlow()
+    private val _fetchLessonDetailSuccess = MutableSharedFlow<Unit>()
+    val fetchLessonDetailSuccess: SharedFlow<Unit> = _fetchLessonDetailSuccess.asSharedFlow()
+
+    private val _fetchLessonDetailFail = MutableSharedFlow<Int>()
+    val fetchLessonDetailFail: SharedFlow<Int> = _fetchLessonDetailFail.asSharedFlow()
+
+    private val _deleteLessonSuccess = MutableSharedFlow<Unit>()
+    val deleteLessonSuccess: SharedFlow<Unit> = _deleteLessonSuccess.asSharedFlow()
+
+    private val _deleteLessonFail = MutableSharedFlow<Int>()
+    val deleteLessonFail: SharedFlow<Int> = _deleteLessonFail.asSharedFlow()
 
     init {
         fetchLessonDetail()
     }
-
-    private val _deleteLessonEvent = MutableSharedFlow<Result<LessonDeleteResponse>>()
-    val deleteLessonEvent: SharedFlow<Result<LessonDeleteResponse>> =
-        _deleteLessonEvent.asSharedFlow()
 
     private val _lessonDetail = MutableStateFlow(LessonDetail())
     val lessonDetail: StateFlow<LessonDetail> = _lessonDetail.asStateFlow()
@@ -53,25 +57,34 @@ class LessonDetailViewModel @Inject constructor(
 
     private fun fetchLessonDetail() = viewModelScope.launch {
         getLessonDetailUseCase(lessonId)
-            .onEach {
-                if (it is Result.Loading) _fetchLessonDetailEvent.emit(Result.Loading)
-                // else _fetchLessonDetailEvent.emit(Result.UnLoading)
-            }.collect {
-                _fetchLessonDetailEvent.emit(it)
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when(result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _fetchLessonDetailSuccess.emit(Unit)
+                        setLessonDetailInfo(result.data)
+                    }
+                    is Result.Error -> result.statusCode?.let { _fetchLessonDetailFail.emit(it) }
+                }
             }
     }
 
     fun deleteLesson() = viewModelScope.launch {
         deleteLessonUseCase(lessonId)
-            .onEach {
-                if (it is Result.Loading) _deleteLessonEvent.emit(Result.Loading)
-                // else _deleteLessonEvent.emit(Result.UnLoading)
-            }.collect {
-                _deleteLessonEvent.emit(it)
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect {result ->
+                when(result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> _deleteLessonSuccess.emit(Unit)
+                    is Result.Error -> result.statusCode?.let { _deleteLessonFail.emit(it) }
+                }
             }
     }
 
-    fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {
+    private fun setLessonDetailInfo(lessonDetailResponse: LessonDetailResponse) {
         _lessonDetail.value = LessonDetail (
             lessonId = lessonDetailResponse.lessonId.toString(),
             categoryName = lessonDetailResponse.categoryName,

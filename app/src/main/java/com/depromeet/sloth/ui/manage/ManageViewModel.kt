@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
-import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.domain.use_case.member.GetMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
@@ -28,6 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+//TODO 데이터의 단일화
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val getMemberInfoUseCase: GetMemberInfoUseCase,
@@ -38,10 +38,27 @@ class ManageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
-//    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> = getMemberInfoUseCase()
+    private val _fetchMemberSuccess = MutableSharedFlow<Unit>()
+    val fetchMemberSuccess: SharedFlow<Unit> = _fetchMemberSuccess.asSharedFlow()
 
-//    val fetchMemberInfoEvent: Flow<Result<MemberResponse>> =
-//        getMemberInfoUseCase().asResult()
+    private val _fetchMemberFail = MutableSharedFlow<Int>()
+    val fetchMemberFail: SharedFlow<Int> = _fetchMemberFail.asSharedFlow()
+
+    private val _updateMemberSuccess = MutableSharedFlow<Unit>()
+    val updateMemberSuccess: SharedFlow<Unit> = _updateMemberSuccess.asSharedFlow()
+
+    private val _updateMemberFail = MutableSharedFlow<Int>()
+    val updateMemberFail: SharedFlow<Int> = _updateMemberFail.asSharedFlow()
+
+    private val _updateNotificationSuccess = MutableSharedFlow<Unit>()
+    val updateNotificationSuccess: SharedFlow<Unit> = _updateNotificationSuccess.asSharedFlow()
+
+    private val _updateNotificationFail = MutableSharedFlow<Int>()
+    val updateNotificationFail: SharedFlow<Int> = _updateNotificationFail.asSharedFlow()
+
+    private val _logout = MutableStateFlow(false)
+    val logout: StateFlow<Boolean> = _logout.asStateFlow()
+
     private val _memberName =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
@@ -50,23 +67,11 @@ class ManageViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
 
-    private val _fetchMemberInfoEvent = MutableSharedFlow<Result<MemberResponse>>()
-    val fetchMemberInfoEvent: SharedFlow<Result<MemberResponse>> =
-        _fetchMemberInfoEvent.asSharedFlow()
-
-    private val _updateMemberInfoEvent = MutableSharedFlow<Result<MemberUpdateResponse>>()
-    val updateMemberInfoEvent: SharedFlow<Result<MemberUpdateResponse>> =
-        _updateMemberInfoEvent.asSharedFlow()
-
-    private val _updateToReceiveNotificationEvent = MutableSharedFlow<Result<String>>()
-    val updateNotificationReceiveEvent: SharedFlow<Result<String>> =
-        _updateToReceiveNotificationEvent.asSharedFlow()
-
-    private val _logoutEvent = MutableSharedFlow<Result<String>>()
-    val logoutEvent: SharedFlow<Result<String>> = _logoutEvent.asSharedFlow()
-
     private val _member = MutableStateFlow(Member())
     val member: StateFlow<Member> = _member.asStateFlow()
+
+//    private val _member = MutableStateFlow(MemberUiState())
+//    val member: StateFlow<MemberUiState> = _member.asStateFlow()
 
     private val _memberNotificationReceive =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NOTIFICATION_RECEIVE, false)
@@ -95,21 +100,41 @@ class ManageViewModel @Inject constructor(
 
     fun fetchMemberInfo() = viewModelScope.launch {
         getMemberInfoUseCase()
-            .onEach {
-                if (it is Result.Loading) _fetchMemberInfoEvent.emit(Result.Loading)
-                else _fetchMemberInfoEvent.emit(Result.UnLoading)
-            }.collect {
-                _fetchMemberInfoEvent.emit(it)
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _fetchMemberSuccess.emit(Unit)
+                        setMemberInfo(result.data)
+                    }
+                    is Result.Error -> {
+                        result.statusCode?.let { _fetchMemberFail.emit(it) }
+                    }
+                }
             }
     }
 
     fun updateMemberInfo() = viewModelScope.launch {
-        updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
-            .onEach {
-                if (it is Result.Loading) _updateMemberInfoEvent.emit(Result.Loading)
-                else _updateMemberInfoEvent.emit(Result.UnLoading)
-            }.collect {
-                _updateMemberInfoEvent.emit(it)
+        updateMemberInfoUseCase(MemberUpdateRequest(member.value.memberName))
+            .onEach {result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _updateMemberSuccess.emit(Unit)
+                        setMemberName(result.data.memberName)
+                        setPreviousMemberName(result.data.memberName)
+                        // btnMemberName 활성 상태 초기화
+                        setUpdateMemberValidation(false)
+                    }
+
+                    is Result.Error -> {
+                        result.statusCode?.let { _updateMemberFail.emit(it) }
+                    }
+                }
             }
     }
 
@@ -118,16 +143,25 @@ class ManageViewModel @Inject constructor(
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
                     .onEach {
-                        if (it is Result.Loading) _updateToReceiveNotificationEvent.emit(Result.Loading)
-                        else _updateToReceiveNotificationEvent.emit(Result.UnLoading)
-                    }.collect {
-                        _updateToReceiveNotificationEvent.emit(it)
+                        setLoading(it is Result.Loading)
+                    }.collect { result ->
+                        when (result) {
+                            is Result.Loading -> return@collect
+                            is Result.Success -> {
+                                _updateNotificationSuccess.emit(Unit)
+                                setMemberNotificationReceive(check)
+                            }
+
+                            is Result.Error -> {
+                                result.statusCode?.let { _updateNotificationFail.emit(it) }
+                            }
+                        }
                     }
             }
         }
     }
 
-    fun setMemberInfo(memberResponse: MemberResponse) {
+    private fun setMemberInfo(memberResponse: MemberResponse) {
         _member.value = Member(
             email = memberResponse.email,
             memberName = memberResponse.memberName,
@@ -147,7 +181,7 @@ class ManageViewModel @Inject constructor(
         _previousMemberName.value = previousMemberName
     }
 
-    fun setMemberNotificationReceive(check: Boolean) {
+    private fun setMemberNotificationReceive(check: Boolean) {
         _memberNotificationReceive.value = check
     }
 
@@ -177,11 +211,19 @@ class ManageViewModel @Inject constructor(
 
     fun logout() = viewModelScope.launch {
         logOutUseCase()
-            .onEach {
-                if (it is Result.Loading) _logoutEvent.emit(Result.Loading)
-                else _logoutEvent.emit(Result.UnLoading)
-            }.collect {
-                _logoutEvent.emit(it)
+            .onEach {result ->
+                setLoading(result is Result.Loading)
+            }.collect {result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _logout.value = true
+                    }
+
+                    is Result.Error -> {
+                        result.statusCode?.let { _fetchMemberFail.emit(it) }
+                    }
+                }
             }
     }
 
@@ -192,6 +234,14 @@ class ManageViewModel @Inject constructor(
     override fun retry() {
         fetchMemberInfo()
     }
+
+//    data class MemberUiState(
+//        val email: String = "",
+//        val memberName: String = "",
+//        val previousMemberName: String = "",
+//        val isEmailProvided: Boolean = false,
+//        val isPushAlarmUse: Boolean = false,
+//    )
 
     companion object {
         private const val KEY_MEMBER_NAME = "memberName"

@@ -39,7 +39,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_login_button_google"
-            onSingleClick="@{()-> vm.googleLoginClick()}"
+            onSingleClick="@{()-> vm.googleLogin()}"
             android:layout_width="320dp"
             android:layout_height="44dp"
             android:layout_margin="8dp"
@@ -73,7 +73,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_login_button_kakao"
-            onSingleClick="@{()-> vm.kakaoLoginClick()}"
+            onSingleClick="@{()-> vm.kakaoLogin()}"
             android:layout_width="320dp"
             android:layout_height="44dp"
             android:layout_marginTop="8dp"

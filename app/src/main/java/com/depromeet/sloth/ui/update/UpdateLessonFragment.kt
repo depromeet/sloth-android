@@ -9,14 +9,11 @@ import android.widget.*
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.DecimalFormat
 
 @AndroidEntryPoint
@@ -70,77 +67,89 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
 
     private fun initObserver() = with(updateLessonViewModel) {
         repeatOnStarted {
+
             launch {
-                updateLessonState
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<LessonUpdateResponse> -> {
-                                showToast(requireContext(), getString(R.string.lesson_info_update_complete))
-                                navigateToLessonDetail()
+                updateLessonSuccess
+                    .collect {
+                        showToast(requireContext(), getString(R.string.lesson_info_update_complete))
+                        navigateToLessonDetail()
+                    }
+            }
+
+            launch {
+                updateLessonFail
+                    .collect {statusCode->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@UpdateLessonFragment
+                            ) {
+                                removeAuthToken()
                             }
-                            is Result.Error -> {
-                                when(result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        removeAuthToken()
-                                    }
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.lesson_info_update_fail))
-                                    }
-                                }
+
+                            else -> {
+                                showToast(requireContext(), getString(R.string.lesson_info_update_fail))
                             }
                         }
                     }
             }
 
             launch {
-                fetchLessonCategoryListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                setLessonCategoryInfo(result.data)
-                                bindLessonCategoryAdapter()
+                fetchLessonCategoryListSuccess
+                    .collect {
+                        bindAdapter(
+                            lessonCategoryAdapter,
+                            binding.spnUpdateLessonCategory,
+                            lessonCategorySelectedItemPosition.value
+                        )
+                    }
+            }
+
+            launch {
+                fetchLessonCategoryListFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@UpdateLessonFragment
+                            ) {
+                                removeAuthToken()
                             }
-                            is Result.Error -> {
-                                when(result.statusCode) {
-                                    401 ->  showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        removeAuthToken()
-                                    }
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
-                                    }
-                                }
+
+                            else -> {
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.cannot_get_lesson_category)
+                                )
                             }
                         }
                     }
             }
 
             launch {
-                fetchLessonSiteListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                //TODO UDF 에 위반 코드 개선
-                                setLessonSiteInfo(result.data)
-                                bindLessonSiteAdapter()
+                fetchLessonSiteListSuccess
+                    .collect {
+                        bindAdapter(
+                            lessonSiteAdapter,
+                            binding.spnUpdateLessonSite,
+                            lessonSiteSelectedItemPosition.value
+                        )
+                    }
+            }
+
+            launch {
+                fetchLessonSiteListFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@UpdateLessonFragment
+                            ) {
+                                removeAuthToken()
                             }
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@UpdateLessonFragment) {
-                                        removeAuthToken()
-                                    }
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.cannot_get_lesson_category))
-                                    }
-                                }
+
+                            else -> {
+                                showToast(requireContext(), getString(R.string.cannot_get_lesson_site))
                             }
                         }
                     }
@@ -164,16 +173,12 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         }
     }
 
-    private fun bindLessonCategoryAdapter() = with(binding) {
-        lessonCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnUpdateLessonCategory.adapter = lessonCategoryAdapter
-        spnUpdateLessonCategory.setSelection(updateLessonViewModel.lessonCategorySelectedItemPosition.value)
-    }
-
-    private fun bindLessonSiteAdapter() = with(binding) {
-        lessonSiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spnUpdateLessonSite.adapter = lessonSiteAdapter
-        spnUpdateLessonSite.setSelection(updateLessonViewModel.lessonSiteSelectedItemPosition.value)
+    private fun bindAdapter(arrayAdapter: ArrayAdapter<String>, spinner: Spinner, position: Int) {
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.apply {
+            adapter = arrayAdapter
+            setSelection(position)
+        }
     }
 
     private fun focusInputForm(editText: EditText) {

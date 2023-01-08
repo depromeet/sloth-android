@@ -1,12 +1,10 @@
 package com.depromeet.sloth.ui.register
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonCategoryListUseCase
@@ -16,36 +14,72 @@ import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
+import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.Lesson
 import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 
-//TODO LessonItem 클래스를 LessonRequest 로 변환할 Mapper 필요
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,
-    getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
-    getLessonSiteListUseCase: GetLessonSiteListUseCase,
+    private val getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
+    private val getLessonSiteListUseCase: GetLessonSiteListUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _registerLessonEvent = MutableSharedFlow<Result<LessonRegisterResponse>>()
-    val registerLessonEvent: SharedFlow<Result<LessonRegisterResponse>> =
-        _registerLessonEvent.asSharedFlow()
+    private val _registerLessonSuccess = MutableSharedFlow<Unit>()
+    val registerLessonSuccess: SharedFlow<Unit> = _registerLessonSuccess.asSharedFlow()
 
-    val fetchLessonCategoryListEvent: Flow<Result<List<LessonCategoryResponse>>> =
-        getLessonCategoryListUseCase()
+    private val _registerLessonFail = MutableSharedFlow<Int>()
+    val registerLessonFail: SharedFlow<Int> = _registerLessonFail.asSharedFlow()
 
-    val fetchLessonSiteListEvent: Flow<Result<List<LessonSiteResponse>>> =
-        getLessonSiteListUseCase()
+    private val _fetchLessonCategoryListSuccess =
+        MutableSharedFlow<List<LessonCategoryResponse>>()
+    val fetchLessonCategoryListSuccess: SharedFlow<List<LessonCategoryResponse>> =
+        _fetchLessonCategoryListSuccess.asSharedFlow()
+
+    private val _fetchLessonSiteListSuccess = MutableSharedFlow<List<LessonSiteResponse>>()
+    val fetchLessonSiteListSuccess: SharedFlow<List<LessonSiteResponse>> =
+        _fetchLessonSiteListSuccess.asSharedFlow()
+
+    private val _fetchLessonCategoryListFail =
+        MutableSharedFlow<Int>()
+    val fetchLessonCategoryListFail: SharedFlow<Int> = _fetchLessonCategoryListFail.asSharedFlow()
+
+    private val _fetchLessonSiteListFail = MutableSharedFlow<Int>()
+    val fetchLessonSiteListFail: SharedFlow<Int> = _fetchLessonSiteListFail.asSharedFlow()
+
+    private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
+    val startDate: StateFlow<Date> = _startDate.asStateFlow()
+
+    private val _lessonStartDate =
+        savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
+    val lessonStartDate: StateFlow<String> = _lessonStartDate.asStateFlow()
+
+    init {
+        fetchLessonCategoryList()
+        fetchLessonSiteList()
+        initLessonStartDate()
+    }
 
     private val _lesson = MutableStateFlow(Lesson())
     val lesson: StateFlow<Lesson> = _lesson.asStateFlow()
@@ -91,15 +125,8 @@ class RegisterLessonViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
-    private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
-    val startDate: StateFlow<Date> = _startDate.asStateFlow()
-
     private val _endDate = savedStateHandle.getMutableStateFlow(KEY_END_DATE, Date())
     val endDate: StateFlow<Date> = _endDate.asStateFlow()
-
-    private val _lessonStartDate =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
-    val lessonStartDate: StateFlow<String> = _lessonStartDate.asStateFlow()
 
     private val _lessonEndDate =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
@@ -177,9 +204,6 @@ class RegisterLessonViewModel @Inject constructor(
         _startDate.value = calendar.time
         _lessonStartDate.value = getPickerDateToDash(calendar.time)
     }
-    init {
-        initLessonStartDate()
-    }
 
     fun setLessonStartDate(calendar: Calendar) {
         _startDate.value = calendar.time
@@ -208,7 +232,7 @@ class RegisterLessonViewModel @Inject constructor(
         setLessonDateRangeValidation()
     }
 
-    fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
+    private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
         _lessonCategoryMap.value =
             data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
@@ -216,7 +240,7 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-    fun setLessonSiteList(data: List<LessonSiteResponse>) {
+    private fun setLessonSiteList(data: List<LessonSiteResponse>) {
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
@@ -254,12 +278,49 @@ class RegisterLessonViewModel @Inject constructor(
                 startDate = lessonStartDate.value,
                 totalNumber = lessonTotalNumber.value
             )
-        ).onEach {
-            if (it is Result.Loading) _registerLessonEvent.emit(Result.Loading)
-            else _registerLessonEvent.emit(Result.UnLoading)
-        }.collect {
-            _registerLessonEvent.emit(it)
+        ).onEach { result ->
+            setLoading(result is Result.Loading)
+        }.collect { result ->
+            when (result) {
+                is Result.Loading -> return@collect
+                is Result.Success -> _registerLessonSuccess.emit(Unit)
+                is Result.Error -> result.statusCode?.let { _registerLessonFail.emit(it) }
+            }
         }
+    }
+
+    private fun fetchLessonCategoryList() = viewModelScope.launch {
+        getLessonCategoryListUseCase()
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        setLessonCategoryList(result.data)
+                        _fetchLessonCategoryListSuccess.emit(result.data)
+                    }
+
+                    is Result.Error -> result.statusCode?.let { _fetchLessonCategoryListFail.emit(it) }
+                }
+            }
+    }
+
+    private fun fetchLessonSiteList() = viewModelScope.launch {
+        getLessonSiteListUseCase()
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        setLessonSiteList(result.data)
+                        _fetchLessonSiteListSuccess.emit(result.data)
+                    }
+
+                    is Result.Error -> result.statusCode?.let { _fetchLessonSiteListFail.emit(it) }
+                }
+            }
     }
 
     fun setLessonCategorySelectedItemPosition(position: Int) {
@@ -327,12 +388,17 @@ class RegisterLessonViewModel @Inject constructor(
         removeAuthTokenUseCase()
     }
 
+    override fun retry() {
+
+    }
+
     companion object {
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
         private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
-        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
+        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
+            "lessonCategorySelectedItemPosition"
         private const val KEY_LESSON_SITE_NAME = "lessonSiteName"
         private const val KEY_LESSON_SITE_ID = "lessonSiteId"
         private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
@@ -340,9 +406,10 @@ class RegisterLessonViewModel @Inject constructor(
         private const val KEY_END_DATE = "endDate"
         private const val KEY_LESSON_START_DATE = "lessonStartDate"
         private const val KEY_LESSON_END_DATE = "lessonEndDate"
-        private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
+        private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION =
+            "lessonEndDateSelectedItemPosition"
         private const val KEY_LESSON_PRICE = "lessonPrice"
-        private  const val KEY_LESSON_MESSAGE = "lessonMessage"
+        private const val KEY_LESSON_MESSAGE = "lessonMessage"
 
         const val DAY = 60L * 60L * 24L
         const val ONE_WEEK = 1

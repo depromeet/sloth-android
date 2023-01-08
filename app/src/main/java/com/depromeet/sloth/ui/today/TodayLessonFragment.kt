@@ -9,7 +9,11 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
-import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
+import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
+import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.ui.adapter.HeaderAdapter
 import com.depromeet.sloth.ui.adapter.TodayLessonAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
@@ -78,73 +82,50 @@ class TodayLessonFragment :
             }
 
             launch {
-                fetchTodayLessonListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                binding.todayLessonNetworkError.itemNetworkError.visibility =
-                                    View.GONE
-                                setLessonList(result.data)
-                            }
+                fetchLessonListSuccess
+                    .collect {
+                        closeNetworkError()
+                        setLessonList(it)
+                    }
+            }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@TodayLessonFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
+            launch {
+                fetchLessonListFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@TodayLessonFragment
+                            ) { removeAuthToken() }
 
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.lesson_info_fetch_fail)
-                                        )
-                                        binding.todayLessonNetworkError.itemNetworkError.visibility =
-                                            View.VISIBLE
-                                    }
-                                }
+                            else -> {
+                                showNetworkError()
                             }
                         }
                     }
             }
 
             launch {
-                finishLessonEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.lesson_finish_complete)
-                                )
-                                fetchTodayLessonList()
+                finishLessonSuccess
+                    .collect {
+                        showToast(requireContext(), getString(R.string.lesson_finish_complete))
+                        fetchTodayLessonList()
+                    }
+            }
+
+            launch {
+                finishLessonFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@TodayLessonFragment
+                            ) {
+                                removeAuthToken()
                             }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@TodayLessonFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
-
-                                    else -> {
-                                        Timber.tag("Finish Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(), getString(
-                                                R.string.lesson_finish_fail
-                                            )
-                                        )
-                                    }
-                                }
+                            else -> {
+                                showToast(requireContext(), getString(R.string.lesson_finish_fail))
                             }
                         }
                     }
@@ -157,6 +138,14 @@ class TodayLessonFragment :
                     }
             }
         }
+    }
+
+    private fun showNetworkError() {
+        binding.todayLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
+    }
+
+    private fun closeNetworkError() {
+        binding.todayLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
@@ -233,7 +222,6 @@ class TodayLessonFragment :
                                     TodayLessonAdapter.ClickType.CLICK_PLUS,
                                     delayTime
                                 )
-                                // lessonListViewModel.updateLessonCount()
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_MINUS -> {
@@ -314,7 +302,6 @@ class TodayLessonFragment :
             todayLessonViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
                 when (result) {
                     is Result.Loading -> showProgress()
-                    is Result.UnLoading -> hideProgress()
                     is Result.Success<LessonUpdateCountResponse> -> {
                         delay(delayTime)
                         when (bodyType) {
@@ -353,6 +340,7 @@ class TodayLessonFragment :
                         }
                     }
                 }
+                hideProgress()
             }
         }
     }

@@ -15,7 +15,6 @@ import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -56,7 +55,6 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchSlothAuthInfo(
         authToken: String,
@@ -83,6 +81,5 @@ class LoginRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 }
 

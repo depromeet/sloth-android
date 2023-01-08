@@ -9,16 +9,13 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.member.MemberUpdateResponse
 import com.depromeet.sloth.databinding.FragmentUpdateMemberBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.setEditTextFocus
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseDialogFragment
 import com.depromeet.sloth.util.DebounceEditTextListener
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -55,41 +52,41 @@ class UpdateMemberFragment :
     private fun initObserver() = with(manageViewModel) {
         repeatOnStarted {
             launch {
-                updateMemberInfoEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<MemberUpdateResponse> -> {
+                updateMemberSuccess
+                    .collect {
+                        showToast(requireContext(), getString(R.string.member_update_success))
+                        closeProfileUpdateDialog()
+                    }
+            }
+
+            launch {
+                updateMemberFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@UpdateMemberFragment
+                            ) {
+                                removeAuthToken()
+                            }
+
+                            else -> {
                                 showToast(
                                     requireContext(),
-                                    getString(R.string.member_update_success)
+                                    getString(R.string.member_update_fail)
                                 )
-                                setMemberName(result.data.memberName)
-                                setPreviousMemberName(result.data.memberName)
-                                // btnMemberName 활성 상태 초기화
-                                setUpdateMemberValidation(false)
-                                closeProfileUpdateDialog()
                             }
+                        }
+                    }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@UpdateMemberFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
+            }
 
-                                    else -> {
-                                        Timber.tag("Update Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.member_update_fail)
-                                        )
-                                    }
-                                }
-                            }
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
                         }
                     }
             }
@@ -103,7 +100,8 @@ class UpdateMemberFragment :
                 i1: Int,
                 i2: Int,
                 i3: Int
-            ) {}
+            ) {
+            }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
             override fun afterTextChanged(editable: Editable?) {
@@ -120,9 +118,9 @@ class UpdateMemberFragment :
     }
 
     private fun closeProfileUpdateDialog() {
-        val action =
-            UpdateMemberFragmentDirections.actionUpdateMemberFragmentToManage()
-        findNavController().safeNavigate(action)
+        if (!findNavController().navigateUp()) {
+            requireActivity().finish()
+        }
     }
 
     override fun onResume() {
@@ -133,10 +131,5 @@ class UpdateMemberFragment :
     override fun onPause() {
         binding.etMemberName.removeTextChangedListener(updateMemberTextChangeListener)
         super.onPause()
-    }
-
-    override fun onDestroyView() {
-        binding.etMemberName.setOnEditorActionListener(null)
-        super.onDestroyView()
     }
 }

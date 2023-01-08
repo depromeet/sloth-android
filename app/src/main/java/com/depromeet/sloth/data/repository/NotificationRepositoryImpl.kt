@@ -14,7 +14,6 @@ import com.depromeet.sloth.util.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -47,7 +46,6 @@ class NotificationRepositoryImpl @Inject constructor(
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
-            .onCompletion { emit(Result.UnLoading) }
 
 
     override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
@@ -70,7 +68,6 @@ class NotificationRepositoryImpl @Inject constructor(
             }
         }
             .catch { throwable -> emit(Result.Error(throwable)) }
-            .onCompletion { emit(Result.UnLoading) }
 
 
 // response 형식 바뀌면 해당 메소드 사용
@@ -95,10 +92,8 @@ class NotificationRepositoryImpl @Inject constructor(
 //            }
 //        }
 //            .catch { throwable -> emit(Result.Error(throwable)) }
-//            .onCompletion { emit(Result.UnLoading) }
 
 
-    //TODO 안드로이드 의존성을 가지고 있는 datasource 를 만들어 거기서 devideId 를 주입
     override fun fetchNotificationToken(deviceId: String) = flow {
         emit(Result.Loading)
         val response = notificationService.fetchFCMToken(deviceId) ?: run {
@@ -117,5 +112,4 @@ class NotificationRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 }

@@ -12,17 +12,13 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.login.LoginGoogleResponse
-import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
-import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.KAKAO
-import com.depromeet.sloth.util.Result
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -39,7 +35,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBinding>(R.layout.fragment_login_bottom) {
+class LoginBottomSheetFragment :
+    BaseBottomSheetFragment<FragmentLoginBottomBinding>(R.layout.fragment_login_bottom) {
 
     private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
 
@@ -86,68 +83,58 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
             launch {
-                googleLoginClickEvent
+                googleLoginEvent
                     .collect { loginWithGoogle() }
             }
 
             launch {
-                kakaoLoginClickEvent
+                kakaoLoginEvent
                     .collect { loginWithKakao() }
             }
+
             launch {
-                googleLoginEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<LoginGoogleResponse> -> {
-                                fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
-                            }
-                            is Result.Error -> {
-                                Timber.tag("Google Login Fail").d(result.throwable)
-                            }
+                googleLoginFail
+                    .collect {
+                        showToast(requireContext(), getString(R.string.login_fail))
+                    }
+            }
+
+            launch {
+                loginSuccess
+                    .collect {
+                        if (it.isNewMember) {
+                            showRegisterBottom()
+                        } else {
+                            createAndRegisterNotificationToken()
                         }
                     }
             }
 
             launch {
-                slothLoginEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<LoginSlothResponse> -> {
-                                if (result.data.isNewMember) {
-                                    showRegisterBottom()
-                                } else {
-                                    createAndRegisterNotificationToken()
-                                }
-                            }
-                            is Result.Error -> {
-                                Timber.tag("Login Fail").d(result.throwable)
-                                showToast(requireContext(), getString(R.string.login_fail))
-                            }
-                        }
+                loginFail
+                    .collect {
+                        showToast(requireContext(), getString(R.string.login_fail))
                     }
             }
 
             launch {
-                registerNotificationTokenEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<String> -> {
-                                navigateToTodayLesson()
+                registerNotificationTokenSuccess
+                    .collect {
+                        navigateToTodayLesson()
+                    }
+            }
+
+            launch {
+                registerNotificationTokenFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@LoginBottomSheetFragment
+                            ) {
+                                removeAuthToken()
                             }
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@LoginBottomSheetFragment) {
-                                        removeAuthToken()
-                                    }
-                                    else -> Timber.tag("Register Error").d(result.throwable)
-                                }
-                            }
+                            else -> Timber.d("Register Error")
                         }
                     }
             }

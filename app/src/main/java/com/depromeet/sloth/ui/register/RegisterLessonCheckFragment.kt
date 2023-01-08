@@ -11,10 +11,8 @@ import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class RegisterLessonCheckFragment :
@@ -33,7 +31,7 @@ class RegisterLessonCheckFragment :
     }
 
     private fun initListener() {
-        binding.tbLayout.tbRegisterLesson.setNavigationOnClickListener{
+        binding.tbLayout.tbRegisterLesson.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
@@ -42,29 +40,30 @@ class RegisterLessonCheckFragment :
 
     private fun initObserver() = with(registerLessonViewModel) {
         repeatOnStarted {
-            launch {
-                registerLessonEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                showToast(requireContext(), getString(R.string.lesson_register_complete))
-                                val action =
-                                    RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
-                                findNavController().safeNavigate(action)
-                            }
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@RegisterLessonCheckFragment) {
-                                        removeAuthToken()
-                                    }
 
-                                    else -> {
-                                        Timber.tag("Register Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.lesson_register_fail))
-                                    }
-                                }
+            launch {
+                registerLessonSuccess
+                    .collect {
+                        showToast(requireContext(), getString(R.string.lesson_register_complete))
+                        val action =
+                            RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
+                        findNavController().safeNavigate(action)
+                    }
+            }
+
+            launch {
+                registerLessonFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@RegisterLessonCheckFragment
+                            ) {
+                                removeAuthToken()
+                            }
+
+                            else -> {
+                                showToast(requireContext(), getString(R.string.lesson_register_fail))
                             }
                         }
                     }

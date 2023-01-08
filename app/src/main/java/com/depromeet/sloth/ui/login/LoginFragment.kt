@@ -10,7 +10,6 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,36 +32,31 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         repeatOnStarted {
 
             launch {
-                navigateToLoginBottomSheetEvent
-                    .collect { showLoginBottomSheet() }
+                registerNotificationTokenSuccess
+                    .collect {
+                        navigateToTodayLesson()
+                    }
             }
 
-            // 로그인이 성공하면 토큰을 서버에 전달해주는 방식
-            // 토큰을 전달한 다음 투데이 화면으로 이동
             launch {
-                registerNotificationTokenEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<String> -> {
-                                navigateToTodayLesson()
+                registerNotificationTokenFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@LoginFragment
+                            ) {
+                                removeAuthToken()
                             }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@LoginFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
-
-                                    else -> Timber.tag("Register Error").d(result.throwable)
-                                }
-                            }
+                            else -> Timber.d("Register Error")
                         }
                     }
+            }
+
+            launch {
+                navigateToLoginBottomSheetEvent
+                    .collect { showLoginBottomSheet() }
             }
         }
     }

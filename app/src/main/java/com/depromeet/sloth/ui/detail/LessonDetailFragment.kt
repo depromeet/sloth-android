@@ -5,8 +5,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
@@ -15,10 +13,8 @@ import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.SlothDialog
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LessonDetailFragment :
@@ -46,72 +42,54 @@ class LessonDetailFragment :
 
     private fun initObserver() = with(lessonDetailViewModel) {
         repeatOnStarted {
-            launch {
-                fetchLessonDetailEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<LessonDetailResponse> -> {
-                                binding.lessonDetailNetworkError.itemNetworkError.visibility = View.GONE
-                                setLessonDetailInfo(result.data)
-                            }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> {
-                                        showForbiddenDialog(
-                                            requireContext(),
-                                            this@LessonDetailFragment
-                                        ) {
-                                            removeAuthToken()
-                                        }
-                                    }
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.lesson_detail_info_fail)
-                                        )
-                                        binding.lessonDetailNetworkError.itemNetworkError.visibility = View.VISIBLE
-                                    }
-                                }
+            launch {
+                fetchLessonDetailSuccess
+                    .collect {
+                        closeNetworkError()
+                    }
+            }
+
+            launch {
+                fetchLessonDetailFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@LessonDetailFragment
+                            ) { removeAuthToken() }
+
+                            else -> {
+                                showNetworkError()
                             }
                         }
                     }
             }
 
             launch {
-                deleteLessonEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<LessonDeleteResponse> -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.lesson_delete_complete)
-                                )
-                                navigateToLessonList()
+                deleteLessonSuccess
+                    .collect {
+                        showToast(requireContext(), getString(R.string.lesson_delete_complete))
+                        navigateToLessonList()
+                    }
+            }
+
+            launch {
+                deleteLessonFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@LessonDetailFragment
+                            ) {
+                                removeAuthToken()
                             }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@LessonDetailFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
-
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.lesson_delete_fail)
-                                        )
-                                    }
-                                }
+                            else -> {
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.lesson_delete_fail)
+                                )
                             }
                         }
                     }
@@ -135,12 +113,24 @@ class LessonDetailFragment :
                     }
             }
 
-//            launch {
-//                isLoading.collect {
-//                    if (it) showProgress() else hideProgress()
-//                }
-//            }
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
         }
+    }
+
+    private fun showNetworkError() {
+        binding.lessonDetailNetworkError.itemNetworkError.visibility = View.VISIBLE
+    }
+
+    private fun closeNetworkError() {
+        binding.lessonDetailNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun navigateToLessonList() {

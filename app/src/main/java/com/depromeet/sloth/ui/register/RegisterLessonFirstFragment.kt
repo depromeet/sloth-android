@@ -18,10 +18,8 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 //TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
@@ -69,75 +67,63 @@ class RegisterLessonFirstFragment :
 
     private fun initObserver() = with(registerLessonViewModel) {
         repeatOnStarted {
+
             launch {
-                fetchLessonCategoryListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                setLessonCategoryList(result.data)
-                                bindAdapter(
-                                    lessonCategoryAdapter,
-                                    binding.spnRegisterLessonCategory,
-                                    lessonCategorySelectedItemPosition.value
-                                )
+                fetchLessonCategoryListSuccess
+                    .collect {
+                        bindAdapter(
+                            lessonCategoryAdapter,
+                            binding.spnRegisterLessonCategory,
+                            lessonCategorySelectedItemPosition.value
+                        )
+                    }
+            }
+
+            launch {
+                fetchLessonCategoryListFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@RegisterLessonFirstFragment
+                            ) {
+                                removeAuthToken()
                             }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@RegisterLessonFirstFragment
-                                    ) {
-                                        removeAuthToken()
-                                    }
-
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.cannot_get_lesson_category)
-                                        )
-                                    }
-                                }
+                            else -> {
+                                showToast(
+                                    requireContext(),
+                                    getString(R.string.cannot_get_lesson_category)
+                                )
                             }
                         }
                     }
             }
 
             launch {
-                fetchLessonSiteListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success -> {
-                                registerLessonViewModel.setLessonSiteList(result.data)
-                                bindAdapter(
-                                    lessonSiteAdapter,
-                                    binding.spnRegisterLessonSite,
-                                    registerLessonViewModel.lessonSiteSelectedItemPosition.value
-                                )
+                fetchLessonSiteListSuccess
+                    .collect {
+                        bindAdapter(
+                            lessonSiteAdapter,
+                            binding.spnRegisterLessonSite,
+                            lessonSiteSelectedItemPosition.value
+                        )
+                    }
+            }
+
+            launch {
+                fetchLessonSiteListFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@RegisterLessonFirstFragment
+                            ) {
+                                registerLessonViewModel.removeAuthToken()
                             }
 
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(
-                                        requireContext(),
-                                        this@RegisterLessonFirstFragment
-                                    ) {
-                                        registerLessonViewModel.removeAuthToken()
-                                    }
-
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(
-                                            requireContext(),
-                                            getString(R.string.cannot_get_lesson_site)
-                                        )
-                                    }
-                                }
+                            else -> {
+                                showToast(requireContext(), getString(R.string.cannot_get_lesson_site))
                             }
                         }
                     }
@@ -210,13 +196,16 @@ class RegisterLessonFirstFragment :
                                         spnRegisterLessonCategory.selectedItemPosition
                                     )
                                 }
+
                                 else -> {
                                     registerLessonViewModel.setLessonSiteId(
                                         registerLessonViewModel.lessonSiteMap.value.filterValues
                                         { it == spnRegisterLessonSite.selectedItem }.keys.first()
                                     )
                                     registerLessonViewModel.setLessonSiteName(spinner.selectedItem.toString())
-                                    registerLessonViewModel.setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                                    registerLessonViewModel.setLessonSiteItemPosition(
+                                        spnRegisterLessonSite.selectedItemPosition
+                                    )
                                 }
                             }
                         }

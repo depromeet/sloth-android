@@ -20,11 +20,11 @@ class LessonListViewModel @Inject constructor(
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
 ) : BaseViewModel() {
 
-//    val fetchAllLessonListEvent: Flow<Result<List<LessonAllResponse>>> =
-//        getAllLessonListUseCase()
+    private val _fetchLessonListSuccess = MutableSharedFlow<List<LessonAllResponse>>()
+    val fetchLessonListSuccess: SharedFlow<List<LessonAllResponse>> = _fetchLessonListSuccess.asSharedFlow()
 
-    private val _fetchAllLessonListEvent = MutableSharedFlow<Result<List<LessonAllResponse>>>()
-    val fetchAllLessonListEvent: SharedFlow<Result<List<LessonAllResponse>>> = _fetchAllLessonListEvent.asSharedFlow()
+    private val _fetchLessonFail = MutableSharedFlow<Int>()
+    val fetchLessonFail: SharedFlow<Int> =_fetchLessonFail.asSharedFlow()
 
     private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
     val navigateRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
@@ -38,11 +38,18 @@ class LessonListViewModel @Inject constructor(
 
     fun fetchAllLessonList() = viewModelScope.launch {
         getAllLessonListUseCase()
-            .onEach {
-                if (it is Result.Loading) _fetchAllLessonListEvent.emit(Result.Loading)
-                else _fetchAllLessonListEvent.emit(Result.UnLoading)
-            }.collect {
-                _fetchAllLessonListEvent.emit(it)
+            .onEach { result ->
+                setLoading( result is Result.Loading)
+            }.collect { result ->
+                when(result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _fetchLessonListSuccess.emit(result.data)
+                    }
+                    is Result.Error -> {
+                        result.statusCode?.let { _fetchLessonFail.emit(it) }
+                    }
+                }
             }
     }
 

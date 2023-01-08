@@ -10,14 +10,14 @@ import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
-import com.depromeet.sloth.util.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-//TODO 여기 로직이 이게 맞나?
+
 @AndroidEntryPoint
-class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBottomBinding>(R.layout.fragment_register_bottom) {
+class RegisterBottomSheetFragment :
+    BaseBottomSheetFragment<FragmentRegisterBottomBinding>(R.layout.fragment_register_bottom) {
 
     private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
 
@@ -32,6 +32,30 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
 
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
+
+            launch {
+                registerNotificationTokenSuccess
+                    .collect {
+                        navigateToTodayLesson()
+                    }
+            }
+
+            launch {
+                registerNotificationTokenFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@RegisterBottomSheetFragment
+                            ) {
+                                removeAuthToken()
+                            }
+
+                            else -> Timber.d("Register Error")
+                        }
+                    }
+            }
+
             launch {
                 navigateToPrivatePolicyEvent.collect {
                     showPrivatePolicy()
@@ -50,28 +74,9 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
                 }
             }
 
-            launch {
-                registerNotificationTokenEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<String> -> {
-                                navigateToTodayLesson()
-                            }
-                            is Result.Error -> {
-                                when (result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@RegisterBottomSheetFragment) {
-                                        removeAuthToken()
-                                    }
-                                    else -> Timber.tag("Register Error").d(result.throwable)
-                                }
-                            }
-                        }
-                    }
-            }
         }
     }
+
 
     private fun navigateToTodayLesson() {
         val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomToTodayLesson()

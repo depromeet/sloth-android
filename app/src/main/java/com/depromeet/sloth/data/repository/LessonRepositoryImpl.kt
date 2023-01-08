@@ -21,7 +21,6 @@ import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 /**
@@ -55,7 +54,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchAllLessonList() = flow {
         emit(Result.Loading)
@@ -75,7 +73,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun finishLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -95,7 +92,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override suspend fun updateLessonCount(
         count: Int,
@@ -138,7 +134,6 @@ class LessonRepositoryImpl @Inject constructor(
 //        }
 //    }
 //        .catch { throwable -> emit(Result.Error(throwable)) }
-//        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
@@ -159,7 +154,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun registerLesson(lessonRegisterRequest: LessonRegisterRequest) = flow {
         emit(Result.Loading)
@@ -181,7 +175,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun deleteLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -201,7 +194,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchLessonCategoryList() = flow {
         emit(Result.Loading)
@@ -221,7 +213,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun fetchLessonSiteList() = flow {
         emit(Result.Loading)
@@ -241,7 +232,6 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 
     override fun updateLesson(
         lessonId: String,
@@ -266,5 +256,4 @@ class LessonRepositoryImpl @Inject constructor(
         }
     }
         .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
 }

@@ -15,11 +15,9 @@ import com.depromeet.sloth.ui.adapter.LessonListAdapter
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
-import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,31 +65,39 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
+
             launch {
-                fetchAllLessonListEvent
-                    .collect { result ->
-                        when (result) {
-                            is Result.Loading -> showProgress()
-                            is Result.UnLoading -> hideProgress()
-                            is Result.Success<List<LessonAllResponse>> -> {
-                                binding.lessonListNetworkError.itemNetworkError.visibility = View.GONE
-                                setLessonList(result.data)
-                            }
-                            is Result.Error -> {
-                                when(result.statusCode) {
-                                    401 -> showForbiddenDialog(requireContext(), this@LessonListFragment) {
-                                            removeAuthToken()
-                                    }
-                                    else -> {
-                                        Timber.tag("Fetch Error").d(result.throwable)
-                                        showToast(requireContext(), getString(R.string.lesson_info_fetch_fail))
-                                        binding.lessonListNetworkError.itemNetworkError.visibility = View.VISIBLE
-                                    }
-                                }
-                            }
+                fetchLessonListSuccess.
+                    collect{
+                        closeNetworkError()
+                        setLessonList(it)
+                    }
+            }
+
+            launch {
+                fetchLessonFail
+                    .collect { statusCode ->
+                        when (statusCode) {
+                            401 -> showForbiddenDialog(
+                                requireContext(),
+                                this@LessonListFragment
+                            ) { removeAuthToken() }
+
+                            else -> { showNetworkError() }
                         }
                     }
             }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
 
             launch {
                 navigateRegisterLessonEvent
@@ -109,6 +115,14 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     }
             }
         }
+    }
+
+    private fun showNetworkError() {
+        binding.lessonListNetworkError.itemNetworkError.visibility = View.VISIBLE
+    }
+
+    private fun closeNetworkError() {
+        binding.lessonListNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun navigateToLessonDetail(lessonInfo: LessonAllResponse) {
