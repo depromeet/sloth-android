@@ -24,8 +24,6 @@ const val CALENDAR_TAG = "calendar"
 const val DATE_FORMAT_PATTERN = "yyyy-MM-dd"
 const val DECIMAL_FORMAT_PATTERN = "#,###"
 
-const val LESSON_DETAIL = "lessonDetail"
-
 const val DEFAULT_STRING_VALUE = ""
 
 const val CELLPHONE_INFO_DIVER = "---------------------------------------------\n나나공\nApp Version : %s\nAndroid(SDK) : %d(%s)\n Device Model : %s\n---------------------------------------------\n"
