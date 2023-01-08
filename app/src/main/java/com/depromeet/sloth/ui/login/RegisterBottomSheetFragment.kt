@@ -33,7 +33,9 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
             launch {
-                navigateToPrivatePolicyEvent.collect { showPrivatePolicy() }
+                navigateToPrivatePolicyEvent.collect {
+                    showPrivatePolicy()
+                }
             }
 
             launch {
@@ -43,7 +45,9 @@ class RegisterBottomSheetFragment : BaseBottomSheetFragment<FragmentRegisterBott
             }
 
             launch {
-                registerCancelEvent.collect { closeRegisterBottomSheet() }
+                registerCancelEvent.collect {
+                    closeRegisterBottomSheet()
+                }
             }
 
             launch {

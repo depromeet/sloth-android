@@ -160,7 +160,7 @@ class LoginBottomSheetFragment : BaseBottomSheetFragment<FragmentLoginBottomBind
     }
 
     private fun showRegisterBottom() {
-        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToTodayLesson()
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToRegisterBottom()
         findNavController().safeNavigate(action)
     }
 
