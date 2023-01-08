@@ -183,5 +183,6 @@
     <string name="menu_notification_list">알림 목록</string>
     <string name="menu_register_lesson">강의 등록</string>
     <string name="previous_member_name">이전 유저 닉네임</string>
+    <string name="login_fail">로그인을 실패했어요</string>
 
 </resources>
