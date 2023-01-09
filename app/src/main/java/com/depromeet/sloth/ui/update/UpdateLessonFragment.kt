@@ -12,7 +12,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
-import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -88,27 +87,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
 
             launch {
-                fetchLessonCategoryListFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            UNAUTHORIZED -> showForbiddenDialog(
-                                requireContext(),
-                                this@UpdateLessonFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.cannot_get_lesson_category)
-                                )
-                            }
-                        }
-                    }
-            }
-
-            launch {
                 fetchLessonSiteListSuccess
                     .collect {
                         bindAdapter(
@@ -116,24 +94,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                             binding.spnUpdateLessonSite,
                             lessonSiteSelectedItemPosition.value
                         )
-                    }
-            }
-
-            launch {
-                fetchLessonSiteListFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@UpdateLessonFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(requireContext(), getString(R.string.cannot_get_lesson_site))
-                            }
-                        }
                     }
             }
 

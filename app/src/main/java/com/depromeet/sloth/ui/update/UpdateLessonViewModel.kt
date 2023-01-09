@@ -57,13 +57,6 @@ class UpdateLessonViewModel @Inject constructor(
     val fetchLessonSiteListSuccess: SharedFlow<List<LessonSiteResponse>> =
         _fetchLessonSiteListSuccess.asSharedFlow()
 
-    private val _fetchLessonCategoryListFail =
-        MutableSharedFlow<Int>()
-    val fetchLessonCategoryListFail: SharedFlow<Int> = _fetchLessonCategoryListFail.asSharedFlow()
-
-    private val _fetchLessonSiteListFail = MutableSharedFlow<Int>()
-    val fetchLessonSiteListFail: SharedFlow<Int> = _fetchLessonSiteListFail.asSharedFlow()
-
     init {
         fetchLessonCategoryList()
         fetchLessonSiteList()
@@ -171,11 +164,22 @@ class UpdateLessonViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
+                        internetError(false)
                         setLessonCategoryInfo(result.data)
                         _fetchLessonCategoryListSuccess.emit(result.data)
                     }
 
-                    is Result.Error -> result.statusCode?.let { _fetchLessonCategoryListFail.emit(it) }
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            internetError(true)
+                        }
+                        else if (result.statusCode == UNAUTHORIZED) {
+                            showForbiddenDialogEvent()
+                        }
+                        else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
+                        }
+                    }
                 }
             }
     }
@@ -188,11 +192,22 @@ class UpdateLessonViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
+                        internetError(false)
                         setLessonSiteInfo(result.data)
                         _fetchLessonSiteListSuccess.emit(result.data)
                     }
 
-                    is Result.Error -> result.statusCode?.let { _fetchLessonSiteListFail.emit(it) }
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            internetError(true)
+                        }
+                        else if (result.statusCode == UNAUTHORIZED) {
+                            showForbiddenDialogEvent()
+                        }
+                        else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
+                        }
+                    }
                 }
             }
     }
@@ -264,7 +279,10 @@ class UpdateLessonViewModel @Inject constructor(
         removeAuthTokenUseCase()
     }
 
-    override fun retry() = Unit
+    override fun retry() {
+        fetchLessonCategoryList()
+        fetchLessonSiteList()
+    }
 
     companion object {
         private const val KEY_LESSON_DETAIL = "lessonDetail"

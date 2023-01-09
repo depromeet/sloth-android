@@ -18,13 +18,11 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
-import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 // TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
-// 재시도의 경우 두 함수 모두 호출 필요
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
@@ -81,27 +79,6 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                fetchLessonCategoryListFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            UNAUTHORIZED -> showForbiddenDialog(
-                                requireContext(),
-                                this@RegisterLessonFirstFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.cannot_get_lesson_category)
-                                )
-                            }
-                        }
-                    }
-            }
-
-            launch {
                 fetchLessonSiteListSuccess
                     .collect {
                         bindAdapter(
@@ -109,24 +86,6 @@ class RegisterLessonFirstFragment :
                             binding.spnRegisterLessonSite,
                             lessonSiteSelectedItemPosition.value
                         )
-                    }
-            }
-
-            launch {
-                fetchLessonSiteListFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            UNAUTHORIZED -> showForbiddenDialog(
-                                requireContext(),
-                                this@RegisterLessonFirstFragment
-                            ) {
-                                registerLessonViewModel.removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(requireContext(), getString(R.string.cannot_get_lesson_site))
-                            }
-                        }
                     }
             }
 
