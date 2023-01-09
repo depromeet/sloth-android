@@ -14,7 +14,9 @@ import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.LessonDetail
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,9 +47,6 @@ class UpdateLessonViewModel @Inject constructor(
 
     private val _updateLessonSuccess = MutableSharedFlow<Unit>()
     val updateLessonSuccess: SharedFlow<Unit> = _updateLessonSuccess.asSharedFlow()
-
-    private val _updateLessonFail = MutableSharedFlow<Int>()
-    val updateLessonFail: SharedFlow<Int> = _updateLessonFail.asSharedFlow()
 
     private val _fetchLessonCategoryListSuccess =
         MutableSharedFlow<List<LessonCategoryResponse>>()
@@ -141,12 +140,25 @@ class UpdateLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value,
             )
         ).onEach { result ->
-            setLoading(result is Result.Loading)
+            showLoading(result is Result.Loading)
         }.collect {result ->
             when(result) {
                 is Result.Loading -> return@collect
-                is Result.Success -> _updateLessonSuccess.emit(Unit)
-                is Result.Error -> result.statusCode?.let { _updateLessonFail.emit(it)}
+                is Result.Success -> {
+                    _updateLessonSuccess.emit(Unit)
+                    showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_complete))
+                }
+                is Result.Error -> {
+                    if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
+                    }
+                    else if (result.statusCode == UNAUTHORIZED) {
+                        showForbiddenDialogEvent()
+                    }
+                    else {
+                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail))
+                    }
+                }
             }
         }
     }
@@ -154,7 +166,7 @@ class UpdateLessonViewModel @Inject constructor(
     private fun fetchLessonCategoryList() = viewModelScope.launch {
         getLessonCategoryListUseCase()
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
@@ -171,7 +183,7 @@ class UpdateLessonViewModel @Inject constructor(
     private fun fetchLessonSiteList() = viewModelScope.launch {
         getLessonSiteListUseCase()
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect

@@ -44,54 +44,9 @@ class LessonDetailFragment :
         repeatOnStarted {
 
             launch {
-                fetchLessonDetailSuccess
-                    .collect {
-                        closeNetworkError()
-                    }
-            }
-
-            launch {
-                fetchLessonDetailFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@LessonDetailFragment
-                            ) { removeAuthToken() }
-
-                            else -> {
-                                showNetworkError()
-                            }
-                        }
-                    }
-            }
-
-            launch {
                 deleteLessonSuccess
                     .collect {
-                        showToast(requireContext(), getString(R.string.lesson_delete_complete))
                         navigateToLessonList()
-                    }
-            }
-
-            launch {
-                deleteLessonFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@LessonDetailFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.lesson_delete_fail)
-                                )
-                            }
-                        }
                     }
             }
 
@@ -120,6 +75,33 @@ class LessonDetailFragment :
                             true -> showProgress()
                             false -> hideProgress()
                         }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect { error ->
+                        when (error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@LessonDetailFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }

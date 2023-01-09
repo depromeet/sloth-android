@@ -2,13 +2,17 @@ package com.depromeet.sloth.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
+import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.GetLessonDetailUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.LessonDetail
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,22 +29,14 @@ class LessonDetailViewModel @Inject constructor(
     private val getLessonDetailUseCase: GetLessonDetailUseCase,
     private val deleteLessonUseCase: DeleteLessonUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
     val lessonId: String = checkNotNull(savedStateHandle[KEY_LESSON_ID])
 
-    private val _fetchLessonDetailSuccess = MutableSharedFlow<Unit>()
-    val fetchLessonDetailSuccess: SharedFlow<Unit> = _fetchLessonDetailSuccess.asSharedFlow()
-
-    private val _fetchLessonDetailFail = MutableSharedFlow<Int>()
-    val fetchLessonDetailFail: SharedFlow<Int> = _fetchLessonDetailFail.asSharedFlow()
-
     private val _deleteLessonSuccess = MutableSharedFlow<Unit>()
     val deleteLessonSuccess: SharedFlow<Unit> = _deleteLessonSuccess.asSharedFlow()
-
-    private val _deleteLessonFail = MutableSharedFlow<Int>()
-    val deleteLessonFail: SharedFlow<Int> = _deleteLessonFail.asSharedFlow()
 
     init {
         fetchLessonDetail()
@@ -58,15 +54,25 @@ class LessonDetailViewModel @Inject constructor(
     private fun fetchLessonDetail() = viewModelScope.launch {
         getLessonDetailUseCase(lessonId)
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when(result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _fetchLessonDetailSuccess.emit(Unit)
+                        internetError(false)
                         setLessonDetailInfo(result.data)
                     }
-                    is Result.Error -> result.statusCode?.let { _fetchLessonDetailFail.emit(it) }
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            internetError(true)
+                        }
+                        else if (result.statusCode == UNAUTHORIZED) {
+                            showForbiddenDialogEvent()
+                        }
+                        else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                        }
+                    }
                 }
             }
     }
@@ -74,12 +80,25 @@ class LessonDetailViewModel @Inject constructor(
     fun deleteLesson() = viewModelScope.launch {
         deleteLessonUseCase(lessonId)
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect {result ->
                 when(result) {
                     is Result.Loading -> return@collect
-                    is Result.Success -> _deleteLessonSuccess.emit(Unit)
-                    is Result.Error -> result.statusCode?.let { _deleteLessonFail.emit(it) }
+                    is Result.Success -> {
+                        _deleteLessonSuccess.emit(Unit)
+                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_delete_complete))
+                    }
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_delete_fail_by_internet))
+                        }
+                        else if (result.statusCode == UNAUTHORIZED) {
+                            showForbiddenDialogEvent()
+                        }
+                        else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_delete_fail))
+                        }
+                    }
                 }
             }
     }

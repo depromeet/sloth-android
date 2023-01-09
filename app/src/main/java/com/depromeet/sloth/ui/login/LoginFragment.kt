@@ -8,13 +8,11 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-//TODO 로그인 단계인데 로그아웃 처리를 해주는 부분 확인
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
@@ -39,24 +37,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
 
             launch {
-                registerNotificationTokenFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@LoginFragment
-                            ) {
-                                removeAuthToken()
-                            }
+                navigateToLoginBottomSheetEvent
+                    .collect { showLoginBottomSheet() }
+            }
 
-                            else -> Timber.d("Register Error")
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
                         }
                     }
             }
 
             launch {
-                navigateToLoginBottomSheetEvent
-                    .collect { showLoginBottomSheet() }
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
+                    }
             }
         }
     }

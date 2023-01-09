@@ -143,20 +143,26 @@
     <string name="withdrawal_complete">회원탈퇴 되었어요</string>
     <string name="input_same_nickname">현재 닉네임과 동일한 닉네임이에요</string>
     <string name="logout_fail">로그아웃 하지 못했어요</string>
+    <string name="logout_fail_by_internet_error">로그아웃 하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="member_update_fail">회원 정보를 변경하지 못했어요</string>
+    <string name="member_update_fail_by_internet_error">회원 정보를 변경하지 못했어요\n인터넷 연결을 확인해주세요 </string>
     <string name="member_update_success">닉네임이 변경되었어요</string>
-    <string name="member_info_fetch_fail">회원 정보를 가져오지 못했어요</string>
-    <string name="lesson_info_fetch_fail">강의 정보를 가져오지 못했어요</string>
+    <string name="member_fetch_fail">회원 정보를 가져오지 못했어요</string>
+    <string name="lesson_fetch_fail">강의 정보를 가져오지 못했어요</string>
     <string name="please_login_again">다시 로그인 해주세요</string>
-    <string name="lesson_info_update_fail">강의 정보를 수정하지 못했어요</string>
-    <string name="lesson_finish_complete">해당 강의가 완료처리 되었어요</string>
+    <string name="lesson_update_fail">강의를 수정하지 못했어요</string>
+    <string name="lesson_update_fail_by_internet_error">강의를 수정하지 못했어요\n인터넷 연결을 확인해주세요</string>
+    <string name="lesson_finish_complete">강의를 완강하였어요</string>
     <string name="lesson_finish_fail">강의 완료처리에 실패하였어요</string>
+    <string name="lesson_finish_fail_by_internet_error">강의를 완강하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="lesson_delete_complete">강의가 삭제 되었어요</string>
     <string name="lesson_delete_fail">강의를 삭제하지 못했어요</string>
+    <string name="lesson_delete_fail_by_internet">강의를 삭제하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="lesson_register_complete">강의가 등록되었어요</string>
     <string name="lesson_register_fail">강의 등록을 실패했어요</string>
+    <string name="lesson_register_fail_by_internet_error">강의 등록을 실패했어요\n인터넷 연결을 확인해주세요</string>
     <string name="fcm_token_save_fail">fcm 토큰을 저장하지 못했어요</string>
-    <string name="lesson_info_update_complete">강의 정보가 수정되었어요</string>
+    <string name="lesson_update_complete">강의가 수정되었어요</string>
     <string name="lesson_category_fetch_fail">강의 카테고리를 가져오지 못했어요</string>
     <string name="lesson_site_fetch_fail">강의 사이트를 가져오지 못했어요</string>
     <string name="lesson_number_validation_error">강의 개수가 수강한 강의 개수보다 적어요</string>
@@ -165,6 +171,7 @@
     <string name="check_internet_connection">인터넷 연결을 확인해주세요</string>
     <string name="refresh">새로 고침</string>
     <string name="noti_update_fail">알림 수신 여부를 변경하지 못했어요</string>
+    <string name="noti_update_fail_by_internet_error">알림 수신 여부를 변경하지 못했어요\n인터넷 연결을 확인해주세요 </string>
     <string name="noti_update_complete">알림 수신 여부가 변경되었어요</string>
     <string name="choose_lesson_category">강의 카테고리를 선택해 주세요</string>
     <string name="choose_lesosn_site">강의 사이트를 선택해 주세요</string>
@@ -184,5 +191,7 @@
     <string name="menu_register_lesson">강의 등록</string>
     <string name="previous_member_name">이전 유저 닉네임</string>
     <string name="login_fail">로그인을 실패했어요</string>
+    <string name="login_fail_by_internet_error">로그인을 실패했어요\n인터넷 연결을 확인해주세요</string>
+    <string name="please_check_internet">인터넷 연결을 확인해주세요</string>
 
 </resources>

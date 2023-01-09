@@ -11,10 +11,12 @@ import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -54,7 +56,19 @@ class LoginRepositoryImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun fetchSlothAuthInfo(
         authToken: String,
@@ -80,6 +94,18 @@ class LoginRepositoryImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 }
 

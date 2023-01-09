@@ -18,6 +18,7 @@ import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -83,7 +84,7 @@ class RegisterLessonFirstFragment :
                 fetchLessonCategoryListFail
                     .collect { statusCode ->
                         when (statusCode) {
-                            401 -> showForbiddenDialog(
+                            UNAUTHORIZED -> showForbiddenDialog(
                                 requireContext(),
                                 this@RegisterLessonFirstFragment
                             ) {
@@ -115,7 +116,7 @@ class RegisterLessonFirstFragment :
                 fetchLessonSiteListFail
                     .collect { statusCode ->
                         when (statusCode) {
-                            401 -> showForbiddenDialog(
+                            UNAUTHORIZED -> showForbiddenDialog(
                                 requireContext(),
                                 this@RegisterLessonFirstFragment
                             ) {
@@ -137,7 +138,52 @@ class RegisterLessonFirstFragment :
                         findNavController().safeNavigate(action)
                     }
             }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect { error ->
+                        when (error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@RegisterLessonFirstFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
+                    }
+            }
         }
+    }
+
+    private fun showNetworkError() {
+        binding.registerLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
+    }
+
+    private fun closeNetworkError() {
+        binding.registerLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     override fun initViews() = with(binding) {

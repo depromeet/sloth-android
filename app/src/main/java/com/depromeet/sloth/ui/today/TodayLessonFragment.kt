@@ -21,6 +21,7 @@ import com.depromeet.sloth.ui.custom.DialogState
 import com.depromeet.sloth.ui.custom.LessonItemDecoration
 import com.depromeet.sloth.ui.custom.SlothDialog
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.UNAUTHORIZED
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -84,50 +85,7 @@ class TodayLessonFragment :
             launch {
                 fetchLessonListSuccess
                     .collect {
-                        closeNetworkError()
                         setLessonList(it)
-                    }
-            }
-
-            launch {
-                fetchLessonListFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@TodayLessonFragment
-                            ) { removeAuthToken() }
-
-                            else -> {
-                                showNetworkError()
-                            }
-                        }
-                    }
-            }
-
-            launch {
-                finishLessonSuccess
-                    .collect {
-                        showToast(requireContext(), getString(R.string.lesson_finish_complete))
-                        fetchTodayLessonList()
-                    }
-            }
-
-            launch {
-                finishLessonFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@TodayLessonFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(requireContext(), getString(R.string.lesson_finish_fail))
-                            }
-                        }
                     }
             }
 
@@ -135,6 +93,43 @@ class TodayLessonFragment :
                 navigateToNotificationListEvent
                     .collect {
                         showWaitDialog(requireContext())
+                    }
+            }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect { error ->
+                        when (error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@TodayLessonFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }
@@ -326,14 +321,14 @@ class TodayLessonFragment :
 
                     is Result.Error -> {
                         when (result.statusCode) {
-                            401 -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
+                            UNAUTHORIZED -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
                                 todayLessonViewModel.removeAuthToken()
                             }
 
                             else -> {
                                 showToast(
                                     requireContext(),
-                                    getString(R.string.lesson_info_update_fail)
+                                    getString(R.string.lesson_update_fail)
                                 )
                                 Timber.tag("Update Error").d(result.throwable)
                             }

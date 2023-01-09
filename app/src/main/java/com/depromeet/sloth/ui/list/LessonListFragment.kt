@@ -67,37 +67,11 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         repeatOnStarted {
 
             launch {
-                fetchLessonListSuccess.
-                    collect{
-                        closeNetworkError()
+                fetchLessonListSuccess
+                    .collect{
                         setLessonList(it)
                     }
             }
-
-            launch {
-                fetchLessonFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@LessonListFragment
-                            ) { removeAuthToken() }
-
-                            else -> { showNetworkError() }
-                        }
-                    }
-            }
-
-            launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
-            }
-
 
             launch {
                 navigateRegisterLessonEvent
@@ -112,6 +86,43 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                 navigateToNotificationListEvent
                     .collect {
                         showWaitDialog(requireContext())
+                    }
+            }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect { error ->
+                        when (error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@LessonListFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }

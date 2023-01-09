@@ -1,13 +1,15 @@
 package com.depromeet.sloth.ui.login
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.sloth.data.model.response.login.LoginSlothResponse
+import com.depromeet.sloth.R
+import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.login.GetGoogleAuthInfoUseCase
 import com.depromeet.sloth.domain.use_case.login.GetSlothAuthInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.GOOGLE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,27 +27,20 @@ class LoginViewModel @Inject constructor(
     private val getSlothAuthInfoUseCase: GetSlothAuthInfoUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
-
-    private val _googleLoginFail = MutableSharedFlow<Unit>()
-    val googleLoginFail: SharedFlow<Unit> = _googleLoginFail.asSharedFlow()
-
-    private val _loginSuccess = MutableSharedFlow<LoginSlothResponse>()
-    val loginSuccess: SharedFlow<LoginSlothResponse> = _loginSuccess.asSharedFlow()
-
-    private val _loginFail = MutableSharedFlow<Unit>()
-    val loginFail: SharedFlow<Unit> = _loginFail.asSharedFlow()
 
     private val _registerNotificationTokenSuccess = MutableSharedFlow<Unit>()
     val registerNotificationTokenSuccess: SharedFlow<Unit> = _registerNotificationTokenSuccess.asSharedFlow()
 
-    private val _registerNotificationTokenFail = MutableSharedFlow<Int>()
-    val registerNotificationTokenFail: SharedFlow<Int> = _registerNotificationTokenFail.asSharedFlow()
-
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
         _navigateToLoginBottomSheetEvent.asSharedFlow()
+
+    private val _navigateToRegisterBottomSheetEvent = MutableSharedFlow<Unit>()
+    val navigateToRegisterBottomSheetEvent: SharedFlow<Unit> =
+        _navigateToRegisterBottomSheetEvent.asSharedFlow()
 
     private val _googleLoginEvent = MutableSharedFlow<Unit>()
     val googleLoginEvent: SharedFlow<Unit> = _googleLoginEvent.asSharedFlow()
@@ -90,15 +85,20 @@ class LoginViewModel @Inject constructor(
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
         getGoogleAuthInfoUseCase(authCode = authCode)
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                     }
-                    is Result.Error ->
-                        _googleLoginFail.emit(Unit)
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                        } else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail))
+                        }
+                    }
                 }
             }
     }
@@ -106,15 +106,23 @@ class LoginViewModel @Inject constructor(
     fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
         getSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _loginSuccess.emit(result.data)
+                        if (result.data.isNewMember) {
+                            _navigateToRegisterBottomSheetEvent.emit(Unit)
+                        } else {
+                            createAndRegisterNotificationToken()
+                        }
                     }
                     is Result.Error -> {
-                        _loginFail.emit(Unit)
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                        } else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail))
+                        }
                     }
                 }
             }
@@ -137,12 +145,20 @@ class LoginViewModel @Inject constructor(
     ) = viewModelScope.launch {
         registerNotificationTokenUseCase(fcmToken)
             .onEach { result ->
-                setLoading(result is Result.Loading)
+                showLoading(result is Result.Loading)
             }.collect { result ->
                 when(result) {
                     is Result.Loading -> return@collect
-                    is Result.Success -> _registerNotificationTokenSuccess.emit(Unit)
-                    is Result.Error -> result.statusCode?.let {_registerNotificationTokenFail.emit(it) }
+                    is Result.Success -> {
+                        _registerNotificationTokenSuccess.emit(Unit)
+                    }
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            showToastEvent(stringResourcesProvider.getString(R.string.please_check_internet))
+                        } else {
+                            showToastEvent(stringResourcesProvider.getString(R.string.please_check_internet))
+                        }
+                    }
                 }
             }
     }

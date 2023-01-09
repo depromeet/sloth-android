@@ -8,11 +8,10 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -41,22 +40,6 @@ class RegisterBottomSheetFragment :
             }
 
             launch {
-                registerNotificationTokenFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@RegisterBottomSheetFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> Timber.d("Register Error")
-                        }
-                    }
-            }
-
-            launch {
                 navigateToPrivatePolicyEvent.collect {
                     showPrivatePolicy()
                 }
@@ -74,6 +57,22 @@ class RegisterBottomSheetFragment :
                 }
             }
 
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
+                    }
+            }
         }
     }
 

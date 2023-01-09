@@ -12,6 +12,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.ui.base.BaseFragment
+import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -71,26 +72,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             launch {
                 updateLessonSuccess
                     .collect {
-                        showToast(requireContext(), getString(R.string.lesson_info_update_complete))
                         navigateToLessonDetail()
-                    }
-            }
-
-            launch {
-                updateLessonFail
-                    .collect {statusCode->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@UpdateLessonFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(requireContext(), getString(R.string.lesson_info_update_fail))
-                            }
-                        }
                     }
             }
 
@@ -109,7 +91,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                 fetchLessonCategoryListFail
                     .collect { statusCode ->
                         when (statusCode) {
-                            401 -> showForbiddenDialog(
+                            UNAUTHORIZED -> showForbiddenDialog(
                                 requireContext(),
                                 this@UpdateLessonFragment
                             ) {
@@ -164,7 +146,52 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                         }
                     }
             }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect { error ->
+                        when (error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@UpdateLessonFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
+                    }
+            }
         }
+    }
+
+    private fun showNetworkError() {
+        binding.updateLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
+    }
+
+    private fun closeNetworkError() {
+        binding.updateLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun navigateToLessonDetail() {

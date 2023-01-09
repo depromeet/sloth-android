@@ -15,7 +15,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.ui.base.BaseBottomSheetFragment
 import com.depromeet.sloth.util.KAKAO
@@ -93,27 +92,9 @@ class LoginBottomSheetFragment :
             }
 
             launch {
-                googleLoginFail
+                navigateToRegisterBottomSheetEvent
                     .collect {
-                        showToast(requireContext(), getString(R.string.login_fail))
-                    }
-            }
-
-            launch {
-                loginSuccess
-                    .collect {
-                        if (it.isNewMember) {
-                            showRegisterBottom()
-                        } else {
-                            createAndRegisterNotificationToken()
-                        }
-                    }
-            }
-
-            launch {
-                loginFail
-                    .collect {
-                        showToast(requireContext(), getString(R.string.login_fail))
+                        showRegisterBottomSheet()
                     }
             }
 
@@ -125,17 +106,19 @@ class LoginBottomSheetFragment :
             }
 
             launch {
-                registerNotificationTokenFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@LoginBottomSheetFragment
-                            ) {
-                                removeAuthToken()
-                            }
-                            else -> Timber.d("Register Error")
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
                         }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }
@@ -146,7 +129,7 @@ class LoginBottomSheetFragment :
         findNavController().safeNavigate(action)
     }
 
-    private fun showRegisterBottom() {
+    private fun showRegisterBottomSheet() {
         val action = LoginBottomSheetFragmentDirections.actionLoginBottomToRegisterBottom()
         findNavController().safeNavigate(action)
     }

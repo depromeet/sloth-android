@@ -95,8 +95,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 internetError
-                    .collect {error ->
-                        when(error) {
+                    .collect { error ->
+                        when (error) {
                             true -> showNetworkError()
                             false -> closeNetworkError()
                         }
@@ -106,14 +106,17 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             launch {
                 showForbiddenDialogEvent
                     .collect {
-                        showForbiddenDialog(requireContext(), this@ManageFragment) { removeAuthToken() }
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@ManageFragment
+                        ) { removeAuthToken() }
                     }
             }
 
             launch {
                 showToastEvent
-                    .collect {
-                        showToast(requireContext(), it)
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }

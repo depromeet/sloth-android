@@ -71,15 +71,18 @@ class UpdateMemberFragment :
             launch {
                 showForbiddenDialogEvent
                     .collect {
-                        showForbiddenDialog(requireContext(), this@UpdateMemberFragment) { removeAuthToken() }
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@UpdateMemberFragment
+                        ) { removeAuthToken() }
                     }
             }
 
 
             launch {
                 showToastEvent
-                    .collect {
-                        showToast(requireContext(), it)
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }

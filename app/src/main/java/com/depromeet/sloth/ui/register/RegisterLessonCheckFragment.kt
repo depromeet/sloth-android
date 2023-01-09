@@ -44,7 +44,6 @@ class RegisterLessonCheckFragment :
             launch {
                 registerLessonSuccess
                     .collect {
-                        showToast(requireContext(), getString(R.string.lesson_register_complete))
                         val action =
                             RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
                         findNavController().safeNavigate(action)
@@ -52,27 +51,36 @@ class RegisterLessonCheckFragment :
             }
 
             launch {
-                registerLessonFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@RegisterLessonCheckFragment
-                            ) {
-                                removeAuthToken()
-                            }
+                navigateToRegisterLessonSecondEvent
+                    .collect {
+                        findNavController().navigateUp()
+                    }
+            }
 
-                            else -> {
-                                showToast(requireContext(), getString(R.string.lesson_register_fail))
-                            }
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
                         }
                     }
             }
 
             launch {
-                navigateToRegisterLessonSecondEvent
+                showForbiddenDialogEvent
                     .collect {
-                        findNavController().navigateUp()
+                        showForbiddenDialog(
+                            requireContext(),
+                            this@RegisterLessonCheckFragment
+                        ) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        showToast(requireContext(), message)
                     }
             }
         }
