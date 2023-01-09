@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
+import com.depromeet.sloth.databinding.ItemHomeTodayLessonEmptyBinding
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonNothingBinding
 import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonDoingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonEmptyViewHolder
 import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonFinishedViewHolder
-import com.depromeet.sloth.ui.adapter.viewholder.TodayLessonNothingViewHolder
 
 
 class TodayLessonAdapter(
@@ -23,8 +23,8 @@ class TodayLessonAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         return when(bodyType) {
-            BodyType.NOTHING -> TodayLessonNothingViewHolder(
-                ItemHomeTodayLessonNothingBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            BodyType.EMPTY -> TodayLessonEmptyViewHolder(
+                ItemHomeTodayLessonEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false),
                 onClick,
             )
             BodyType.FINISHED -> TodayLessonFinishedViewHolder(
@@ -43,14 +43,14 @@ class TodayLessonAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (bodyType) {
-            BodyType.NOTHING -> (holder as TodayLessonNothingViewHolder).bind(currentList[position])
+            BodyType.EMPTY -> (holder as TodayLessonEmptyViewHolder).bind(currentList[position])
             BodyType.FINISHED -> (holder as TodayLessonFinishedViewHolder).bind(currentList[position])
             BodyType.NOT_FINISHED -> (holder as TodayLessonDoingViewHolder).bind(currentList[position])
         }
     }
 
     enum class BodyType {
-        NOTHING,
+        EMPTY,
         FINISHED,
         NOT_FINISHED
     }

@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
+import com.depromeet.sloth.databinding.ItemHomeLessonListEmptyBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
-import com.depromeet.sloth.databinding.ItemHomeLessonListNothingBinding
 import com.depromeet.sloth.databinding.ItemHomeLessonListPlanningBinding
 import com.depromeet.sloth.ui.adapter.viewholder.LessonListDoingViewHolder
-import com.depromeet.sloth.ui.adapter.viewholder.LessonListNothingViewHolder
+import com.depromeet.sloth.ui.adapter.viewholder.LessonListEmptyViewHolder
 import com.depromeet.sloth.ui.adapter.viewholder.LessonListPassedViewHolder
 import com.depromeet.sloth.ui.adapter.viewholder.LessonListPlanningViewHolder
 
@@ -24,8 +24,8 @@ class LessonListAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder {
         return when (bodyType) {
-            BodyType.NOTHING -> LessonListNothingViewHolder(
-                ItemHomeLessonListNothingBinding
+            BodyType.Empty -> LessonListEmptyViewHolder(
+                ItemHomeLessonListEmptyBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
             BodyType.DOING -> LessonListDoingViewHolder(
@@ -45,7 +45,7 @@ class LessonListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (bodyType) {
-            BodyType.NOTHING -> (holder as LessonListNothingViewHolder).bind(currentList[position])
+            BodyType.Empty -> (holder as LessonListEmptyViewHolder).bind(currentList[position])
             BodyType.DOING -> (holder as LessonListDoingViewHolder).bind(currentList[position])
             BodyType.PLANNING -> (holder as LessonListPlanningViewHolder).bind(currentList[position])
             BodyType.PASSED -> (holder as LessonListPassedViewHolder).bind(currentList[position])
@@ -53,7 +53,7 @@ class LessonListAdapter(
     }
 
     enum class BodyType {
-        NOTHING,
+        Empty,
         DOING,
         PLANNING,
         PASSED

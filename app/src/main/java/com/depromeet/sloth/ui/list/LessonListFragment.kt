@@ -129,15 +129,15 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         when (lessonInfo.isEmpty()) {
             true -> {
                 binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = false
-                val nothingLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.NOTHING) {
+                val emptyLessonAdapter =
+                    LessonListAdapter(LessonListAdapter.BodyType.Empty) {
                         val action =
                             LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
                         findNavController().safeNavigate(action)
                     }
 
-                nothingLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
-                binding.rvLessonList.adapter = nothingLessonAdapter
+                emptyLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
+                binding.rvLessonList.adapter = emptyLessonAdapter
             }
 
             false -> {

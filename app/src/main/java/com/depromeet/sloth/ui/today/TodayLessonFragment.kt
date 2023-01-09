@@ -128,18 +128,18 @@ class TodayLessonFragment :
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
         when (lessonTodayList.isEmpty()) {
             true -> {
-                val nothingHeader = HeaderAdapter(HeaderAdapter.HeaderType.NOTHING)
-                val nothingLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOTHING) { _, _, _ ->
+                val emptyHeader = HeaderAdapter(HeaderAdapter.HeaderType.EMPTY)
+                val emptyLessonAdapter =
+                    TodayLessonAdapter(TodayLessonAdapter.BodyType.EMPTY) { _, _, _ ->
                         val action =
                             TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
                         findNavController().safeNavigate(action)
                     }
                 val concatAdapter = ConcatAdapter(
-                    nothingHeader,
-                    nothingLessonAdapter
+                    emptyHeader,
+                    emptyLessonAdapter
                 )
-                nothingLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
+                emptyLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
 
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter

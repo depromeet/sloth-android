@@ -2,10 +2,10 @@ package com.depromeet.sloth.ui.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemHomeLessonListNothingBinding
+import com.depromeet.sloth.databinding.ItemHomeLessonListEmptyBinding
 
-class LessonListNothingViewHolder(
-    private val binding: ItemHomeLessonListNothingBinding,
+class LessonListEmptyViewHolder(
+    private val binding: ItemHomeLessonListEmptyBinding,
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
