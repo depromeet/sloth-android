@@ -5,10 +5,10 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.FinishLessonUseCase
-import com.depromeet.sloth.domain.use_case.lesson.GetTodayLessonListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.use_case.login.CheckLoggedInUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -25,10 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val checkLoggedInUseCase: CheckLoggedInUseCase,
-    private val getLessonTodayListUseCase: GetTodayLessonListUseCase,
+    private val getLessonTodayListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val finishLessonUseCase: FinishLessonUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
@@ -120,7 +120,7 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

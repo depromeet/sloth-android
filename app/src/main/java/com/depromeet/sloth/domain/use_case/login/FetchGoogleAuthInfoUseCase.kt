@@ -6,7 +6,7 @@ import com.depromeet.sloth.domain.repository.LoginRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetGoogleAuthInfoUseCase @Inject constructor(
+class FetchGoogleAuthInfoUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
     operator fun invoke(authCode: String): Flow<Result<LoginGoogleResponse>> {

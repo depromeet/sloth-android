@@ -6,7 +6,7 @@ import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetNotificationTokenUseCase @Inject constructor(
+class FetchNotificationTokenUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
     operator fun invoke(deviceId: String): Flow<Result<NotificationFetchResponse>> {

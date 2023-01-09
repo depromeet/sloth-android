@@ -6,7 +6,7 @@ import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLessonSiteListUseCase @Inject constructor(
+class FetchLessonSiteListUseCase @Inject constructor(
     private val lessonRepository: LessonRepository
 ) {
     operator fun invoke(): Flow<Result<List<LessonSiteResponse>>> {

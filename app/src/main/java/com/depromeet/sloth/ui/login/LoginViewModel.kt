@@ -3,9 +3,9 @@ package com.depromeet.sloth.ui.login
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.login.GetGoogleAuthInfoUseCase
-import com.depromeet.sloth.domain.use_case.login.GetSlothAuthInfoUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.login.FetchGoogleAuthInfoUseCase
+import com.depromeet.sloth.domain.use_case.login.FetchSlothAuthInfoUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.GOOGLE
@@ -23,10 +23,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val getGoogleAuthInfoUseCase: GetGoogleAuthInfoUseCase,
-    private val getSlothAuthInfoUseCase: GetSlothAuthInfoUseCase,
+    private val fetchGoogleAuthInfoUseCase: FetchGoogleAuthInfoUseCase,
+    private val fetchSlothAuthInfoUseCase: FetchSlothAuthInfoUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
@@ -83,7 +83,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
-        getGoogleAuthInfoUseCase(authCode = authCode)
+        fetchGoogleAuthInfoUseCase(authCode = authCode)
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -104,7 +104,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
-        getSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
+        fetchSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -164,7 +164,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() = Unit

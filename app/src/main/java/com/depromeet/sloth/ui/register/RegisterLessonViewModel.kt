@@ -7,10 +7,10 @@ import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.GetLessonCategoryListUseCase
-import com.depromeet.sloth.domain.use_case.lesson.GetLessonSiteListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.FetchLessonCategoryListUseCase
+import com.depromeet.sloth.domain.use_case.lesson.FetchLessonSiteListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.RegisterLessonUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
@@ -41,9 +41,9 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,
-    private val getLessonCategoryListUseCase: GetLessonCategoryListUseCase,
-    private val getLessonSiteListUseCase: GetLessonSiteListUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val fetchLessonCategoryListUseCase: FetchLessonCategoryListUseCase,
+    private val fetchLessonSiteListUseCase: FetchLessonSiteListUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
@@ -295,7 +295,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     private fun fetchLessonCategoryList() = viewModelScope.launch {
-        getLessonCategoryListUseCase()
+        fetchLessonCategoryListUseCase()
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -323,7 +323,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     private fun fetchLessonSiteList() = viewModelScope.launch {
-        getLessonSiteListUseCase()
+        fetchLessonSiteListUseCase()
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -412,7 +412,7 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

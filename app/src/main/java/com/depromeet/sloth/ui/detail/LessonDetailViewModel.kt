@@ -6,8 +6,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
-import com.depromeet.sloth.domain.use_case.lesson.GetLessonDetailUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.lesson.FetchLessonDetailUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.LessonDetail
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
@@ -26,9 +26,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
-    private val getLessonDetailUseCase: GetLessonDetailUseCase,
+    private val fetchLessonDetailUseCase: FetchLessonDetailUseCase,
     private val deleteLessonUseCase: DeleteLessonUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
@@ -52,7 +52,7 @@ class LessonDetailViewModel @Inject constructor(
     val navigateToDeleteLessonDialogEvent: SharedFlow<Unit> = _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
     private fun fetchLessonDetail() = viewModelScope.launch {
-        getLessonDetailUseCase(lessonId)
+        fetchLessonDetailUseCase(lessonId)
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -132,7 +132,7 @@ class LessonDetailViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

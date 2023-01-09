@@ -7,9 +7,9 @@ import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.member.GetMemberInfoUseCase
+import com.depromeet.sloth.domain.use_case.member.FetchMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
@@ -35,10 +35,10 @@ import javax.inject.Inject
 //TODO 데이터의 단일화
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    private val getMemberInfoUseCase: GetMemberInfoUseCase,
+    private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,
     private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
@@ -90,7 +90,7 @@ class ManageViewModel @Inject constructor(
     val updateMemberValidation: StateFlow<Boolean> = _updateMemberValidation.asStateFlow()
 
     fun fetchMemberInfo() = viewModelScope.launch {
-        getMemberInfoUseCase()
+        fetchMemberInfoUseCase()
             .onEach { result ->
                 showLoading(result is Result.Loading)
             }.collect { result ->
@@ -247,7 +247,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

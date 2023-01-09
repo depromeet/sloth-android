@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class GetSlothAuthInfoUseCase @Inject constructor(
+class FetchSlothAuthInfoUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
     operator fun invoke(authToken: String, socialType: String): Flow<Result<LoginSlothResponse>> {

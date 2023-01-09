@@ -6,7 +6,7 @@ import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetMemberInfoUseCase @Inject constructor (
+class FetchMemberInfoUseCase @Inject constructor (
     private val memberRepository: MemberRepository
 ) {
     operator fun invoke(): Flow<Result<MemberResponse>> {

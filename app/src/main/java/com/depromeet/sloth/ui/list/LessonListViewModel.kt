@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.GetAllLessonListUseCase
-import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
+import com.depromeet.sloth.domain.use_case.lesson.FetchAllLessonListUseCase
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
-    private val getAllLessonListUseCase: GetAllLessonListUseCase,
-    private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
+    private val fetchAllLessonListUseCase: FetchAllLessonListUseCase,
+    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
@@ -39,7 +39,7 @@ class LessonListViewModel @Inject constructor(
     val navigateToLessonDetailEvent: SharedFlow<LessonAllResponse> = _navigateToLessonDetailEvent.asSharedFlow()
 
     fun fetchAllLessonList() = viewModelScope.launch {
-        getAllLessonListUseCase()
+        fetchAllLessonListUseCase()
             .onEach { result ->
                 showLoading( result is Result.Loading)
             }.collect { result ->
@@ -77,7 +77,7 @@ class LessonListViewModel @Inject constructor(
     }
 
     fun removeAuthToken() = viewModelScope.launch {
-        removeAuthTokenUseCase()
+        deleteAuthTokenUseCase()
     }
 
     override fun retry() {
