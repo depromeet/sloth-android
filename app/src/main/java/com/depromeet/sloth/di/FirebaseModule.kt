@@ -13,6 +13,6 @@ import dagger.hilt.android.components.ViewModelComponent
 class FirebaseModule {
 
     @Provides
-    fun provideAuthentication(): FirebaseMessaging = Firebase.messaging
+    fun provideFirebaseMessaging(): FirebaseMessaging = Firebase.messaging
 }
 
