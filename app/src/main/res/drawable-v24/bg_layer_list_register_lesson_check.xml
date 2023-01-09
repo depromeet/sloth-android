@@ -7,9 +7,8 @@
                 android:left="1dp"
                 android:right="1dp"
                 android:top="0dp" />
-            <corners
-                android:radius="12dp"/>
-            <solid android:color="#32CCCCCC" />
+
+            <solid android:color="#48CCCCCC" />
         </shape>
     </item>
     <!-- Background -->
