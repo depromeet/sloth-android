@@ -123,10 +123,10 @@ class ManageViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _updateMemberSuccess.emit(Unit)
                         showToastEvent(stringResourcesProvider.getString(R.string.member_update_success))
+                        _updateMemberSuccess.emit(Unit)
                         setPreviousMemberName(result.data.memberName)
-                        // btnMemberName 활성 상태 초기화
+                        // btnUpdateMember 활성 상태 초기화
                         setUpdateMemberValidation(false)
                     }
 
@@ -180,6 +180,7 @@ class ManageViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
+                        showToastEvent(stringResourcesProvider.getString(R.string.logout_complete))
                         _logoutSuccess.emit(Unit)
                     }
 

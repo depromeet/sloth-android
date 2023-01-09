@@ -85,8 +85,8 @@ class LessonDetailViewModel @Inject constructor(
                 when(result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _deleteLessonSuccess.emit(Unit)
                         showToastEvent(stringResourcesProvider.getString(R.string.lesson_delete_complete))
+                        _deleteLessonSuccess.emit(Unit)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {

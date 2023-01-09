@@ -145,8 +145,8 @@ class UpdateLessonViewModel @Inject constructor(
             when(result) {
                 is Result.Loading -> return@collect
                 is Result.Success -> {
-                    _updateLessonSuccess.emit(Unit)
                     showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_complete))
+                    _updateLessonSuccess.emit(Unit)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
+//TODO 반복되는 함수 모듈화
 class MemberRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
     private val memberService: MemberService
