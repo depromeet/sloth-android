@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/login"
-        android:name="com.depromeet.sloth.ui.login.LoginFragment"
+        android:name="com.depromeet.sloth.presentation.login.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/sloth_policy_webview"
-        android:name="com.depromeet.sloth.ui.login.SlothPolicyWebViewFragment"
+        android:name="com.depromeet.sloth.presentation.login.SlothPolicyWebViewFragment"
         android:label="SlothPolicyWebViewFragment"
         tools:layout="@layout/fragment_sloth_policy_web_view">
 
@@ -42,7 +42,7 @@
 
     <dialog
         android:id="@+id/login_bottom"
-        android:name="com.depromeet.sloth.ui.login.LoginBottomSheetFragment"
+        android:name="com.depromeet.sloth.presentation.login.LoginBottomSheetFragment"
         android:label="LoginBottomSheetFragment"
         tools:layout="@layout/fragment_login_bottom">
         <action
@@ -61,7 +61,7 @@
 
     <dialog
         android:id="@+id/register_bottom"
-        android:name="com.depromeet.sloth.ui.login.RegisterBottomSheetFragment"
+        android:name="com.depromeet.sloth.presentation.login.RegisterBottomSheetFragment"
         android:label="RegisterBottomSheetFragment"
         tools:layout="@layout/fragment_register_bottom">
         <action
@@ -90,7 +90,7 @@
 
     <fragment
         android:id="@+id/today_lesson"
-        android:name="com.depromeet.sloth.ui.today.TodayLessonFragment"
+        android:name="com.depromeet.sloth.presentation.today.TodayLessonFragment"
         android:label="TodayLessonFragment"
         tools:layout="@layout/fragment_today_lesson">
         <action
@@ -109,7 +109,7 @@
 
     <fragment
         android:id="@+id/lesson_list"
-        android:name="com.depromeet.sloth.ui.list.LessonListFragment"
+        android:name="com.depromeet.sloth.presentation.list.LessonListFragment"
         android:label="LessonListFragment"
         tools:layout="@layout/fragment_lesson_list">
         <action
@@ -130,7 +130,7 @@
 
     <fragment
         android:id="@+id/manage"
-        android:name="com.depromeet.sloth.ui.manage.ManageFragment"
+        android:name="com.depromeet.sloth.presentation.manage.ManageFragment"
         android:label="ManageFragment"
         tools:layout="@layout/fragment_manage">
         <action
@@ -154,7 +154,7 @@
 
     <fragment
         android:id="@+id/lesson_detail"
-        android:name="com.depromeet.sloth.ui.detail.LessonDetailFragment"
+        android:name="com.depromeet.sloth.presentation.detail.LessonDetailFragment"
         android:label="LessonDetailFragment"
         tools:layout="@layout/fragment_lesson_detail">
         <action
@@ -173,7 +173,7 @@
 
     <fragment
         android:id="@+id/update_lesson"
-        android:name="com.depromeet.sloth.ui.update.UpdateLessonFragment"
+        android:name="com.depromeet.sloth.presentation.update.UpdateLessonFragment"
         android:label="UpdateLessonFragment"
         tools:layout="@layout/fragment_update_lesson">
 
@@ -184,7 +184,7 @@
 
     <dialog
         android:id="@+id/update_member"
-        android:name="com.depromeet.sloth.ui.manage.UpdateMemberFragment"
+        android:name="com.depromeet.sloth.presentation.manage.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
         tools:layout="@layout/fragment_update_member" />
 

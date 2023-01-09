@@ -7,14 +7,14 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.login.LoginViewModel" />
+            type="com.depromeet.sloth.presentation.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".ui.login.LoginActivity">
+        tools:context=".presentation.login.LoginActivity">
 
         <TextView
             android:id="@+id/tv_login_title"

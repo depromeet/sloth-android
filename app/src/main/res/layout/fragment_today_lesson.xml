@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.today.TodayLessonViewModel" />
+            type="com.depromeet.sloth.presentation.today.TodayLessonViewModel" />
 
     </data>
 

@@ -81,7 +81,7 @@
                 tools:ignore="HardcodedText"
                 tools:text="프로그래밍 시작하기 \n: 파이썬 입문 (Inflearn Original)" />
 
-            <com.depromeet.sloth.ui.custom.ArcProgressBar
+            <com.depromeet.sloth.presentation.custom.ArcProgressBar
                 android:id="@+id/pb_today_lesson_bar"
                 android:layout_width="295dp"
                 android:layout_height="100dp"

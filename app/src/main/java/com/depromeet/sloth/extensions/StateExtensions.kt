@@ -5,8 +5,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.ui.custom.DialogState
-import com.depromeet.sloth.ui.custom.SlothDialog
+import com.depromeet.sloth.presentation.custom.DialogState
+import com.depromeet.sloth.presentation.custom.SlothDialog
 import kotlinx.coroutines.Job
 
 
