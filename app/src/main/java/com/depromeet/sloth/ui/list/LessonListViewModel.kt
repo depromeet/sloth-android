@@ -76,7 +76,7 @@ class LessonListViewModel @Inject constructor(
         _navigateToLessonDetailEvent.emit(lesson)
     }
 
-    fun removeAuthToken() = viewModelScope.launch {
+    fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 

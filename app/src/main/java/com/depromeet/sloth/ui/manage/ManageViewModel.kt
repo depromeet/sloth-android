@@ -246,7 +246,7 @@ class ManageViewModel @Inject constructor(
         _navigateToWithdrawalDialogEvent.emit(Unit)
     }
 
-    fun removeAuthToken() = viewModelScope.launch {
+    fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 

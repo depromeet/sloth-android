@@ -114,7 +114,7 @@ class RegisterLessonFirstFragment :
                         showForbiddenDialog(
                             requireContext(),
                             this@RegisterLessonFirstFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

@@ -112,7 +112,7 @@ class TodayLessonFragment :
                         showForbiddenDialog(
                             requireContext(),
                             this@TodayLessonFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 
@@ -304,7 +304,7 @@ class TodayLessonFragment :
                     is Result.Error -> {
                         when (result.statusCode) {
                             UNAUTHORIZED -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
-                                todayLessonViewModel.removeAuthToken()
+                                todayLessonViewModel.deleteAuthToken()
                             }
 
                             else -> {

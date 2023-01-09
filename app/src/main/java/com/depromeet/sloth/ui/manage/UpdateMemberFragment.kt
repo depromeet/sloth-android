@@ -74,7 +74,7 @@ class UpdateMemberFragment :
                         showForbiddenDialog(
                             requireContext(),
                             this@UpdateMemberFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

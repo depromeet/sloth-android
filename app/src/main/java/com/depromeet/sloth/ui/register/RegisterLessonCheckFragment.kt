@@ -73,7 +73,7 @@ class RegisterLessonCheckFragment :
                         showForbiddenDialog(
                             requireContext(),
                             this@RegisterLessonCheckFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

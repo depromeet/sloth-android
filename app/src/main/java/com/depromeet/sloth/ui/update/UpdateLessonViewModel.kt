@@ -275,7 +275,7 @@ class UpdateLessonViewModel @Inject constructor(
         }
     }
 
-    fun removeAuthToken() = viewModelScope.launch {
+    fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 

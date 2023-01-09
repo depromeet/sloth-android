@@ -123,7 +123,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                         showForbiddenDialog(
                             requireContext(),
                             this@UpdateLessonFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

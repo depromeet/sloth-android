@@ -84,7 +84,7 @@ class LessonDetailFragment :
                         showForbiddenDialog(
                             requireContext(),
                             this@LessonDetailFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

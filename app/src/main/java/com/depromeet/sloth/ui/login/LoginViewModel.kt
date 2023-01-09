@@ -5,7 +5,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.login.FetchGoogleAuthInfoUseCase
 import com.depromeet.sloth.domain.use_case.login.FetchSlothAuthInfoUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.util.GOOGLE
@@ -26,7 +25,6 @@ class LoginViewModel @Inject constructor(
     private val fetchGoogleAuthInfoUseCase: FetchGoogleAuthInfoUseCase,
     private val fetchSlothAuthInfoUseCase: FetchSlothAuthInfoUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
-    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
@@ -161,10 +159,6 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
-    }
-
-    fun removeAuthToken() = viewModelScope.launch {
-        deleteAuthTokenUseCase()
     }
 
     override fun retry() = Unit

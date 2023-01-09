@@ -105,7 +105,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                         showForbiddenDialog(
                             requireContext(),
                             this@LessonListFragment
-                        ) { removeAuthToken() }
+                        ) { deleteAuthToken() }
                     }
             }
 

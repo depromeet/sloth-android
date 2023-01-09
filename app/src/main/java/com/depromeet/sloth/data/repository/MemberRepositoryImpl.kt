@@ -149,7 +149,7 @@ class MemberRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun removeAuthToken() {
-        preferences.removeAuthToken()
+    override suspend fun deleteAuthToken() {
+        preferences.deleteAuthToken()
     }
 }

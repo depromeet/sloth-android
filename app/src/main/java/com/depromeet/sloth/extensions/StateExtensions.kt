@@ -10,36 +10,36 @@ import com.depromeet.sloth.ui.custom.SlothDialog
 import kotlinx.coroutines.Job
 
 
-fun showForbiddenDialog(context: Context, view: Fragment, removeAuthToken: () -> Job) {
+fun showForbiddenDialog(context: Context, view: Fragment, deleteAuthToken: () -> Job) {
     val dlg = SlothDialog(context, DialogState.FORBIDDEN)
     dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
         override fun onItemClicked() {
-            logout(context, view) { removeAuthToken() }
+            logout(context, view) { deleteAuthToken() }
         }
     }
     dlg.show()
 }
 
-fun logout(context: Context, view: Fragment, removeAuthToken: () -> Job) {
+fun logout(context: Context, view: Fragment, deleteAuthToken: () -> Job) {
     Toast.makeText(context, context.getString(R.string.logout_complete), Toast.LENGTH_SHORT).show()
-    removeAuthToken()
+    deleteAuthToken()
     view.findNavController().navigate(R.id.action_global_logout)
 }
 
-fun showWithdrawalDialog(context: Context, view: Fragment, removeAuthToken: () -> Job) {
+fun showWithdrawalDialog(context: Context, view: Fragment, deleteAuthToken: () -> Job) {
     val dlg = SlothDialog(context, DialogState.FORBIDDEN)
     dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
         override fun onItemClicked() {
-            withdrawal(context, view) { removeAuthToken() }
+            withdrawal(context, view) { deleteAuthToken() }
         }
     }
     dlg.show()
 }
 
 // 회원 탈퇴 api 필요
-fun withdrawal(context: Context, view: Fragment, removeAuthToken: () -> Job) {
+fun withdrawal(context: Context, view: Fragment, deleteAuthToken: () -> Job) {
     Toast.makeText(context, context.getString(R.string.withdrawal_complete), Toast.LENGTH_SHORT).show()
-    removeAuthToken()
+    deleteAuthToken()
     view.findNavController().navigate(R.id.action_global_logout)
 }
 

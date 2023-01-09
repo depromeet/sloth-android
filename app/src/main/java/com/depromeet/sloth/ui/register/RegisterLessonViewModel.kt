@@ -411,7 +411,7 @@ class RegisterLessonViewModel @Inject constructor(
         _registerLessonEndDateEvent.emit(endDate.value)
     }
 
-    fun removeAuthToken() = viewModelScope.launch {
+    fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 

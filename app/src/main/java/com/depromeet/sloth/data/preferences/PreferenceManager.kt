@@ -63,7 +63,7 @@ class PreferenceManager @Inject constructor(
         }
     }
 
-    suspend fun removeAuthToken() {
+    suspend fun deleteAuthToken() {
         context.dataStore.edit { prefs ->
             prefs.remove(ACCESS_TOKEN)
             prefs.remove(REFRESH_TOKEN)

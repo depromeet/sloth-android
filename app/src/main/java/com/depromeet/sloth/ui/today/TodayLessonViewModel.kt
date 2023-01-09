@@ -119,7 +119,7 @@ class TodayLessonViewModel @Inject constructor(
         _navigateToNotificationListEvent.emit(Unit)
     }
 
-    fun removeAuthToken() = viewModelScope.launch {
+    fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 
