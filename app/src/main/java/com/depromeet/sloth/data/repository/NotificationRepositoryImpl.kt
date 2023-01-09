@@ -28,8 +28,7 @@ class NotificationRepositoryImpl @Inject constructor(
         Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    override fun registerNotificationToken(fcmToken: String) =
-        flow {
+    override fun registerNotificationToken(fcmToken: String) = flow {
             emit(Result.Loading)
             val response = notificationService.registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken)) ?: run {
                 emit(Result.Error(Exception("Response is null")))

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-//TODO 반복되는 함수 모듈화 (baseResponse 를 만들어서 모든 경우를 커버하도록)
+
 class MemberRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
     private val memberService: MemberService
@@ -82,9 +82,7 @@ class MemberRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateMemberInfo(
-        memberUpdateRequest: MemberUpdateRequest
-    ) = flow {
+    override fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest) = flow {
         emit(Result.Loading)
         val response =
             memberService.updateMemberInfo(memberUpdateRequest)

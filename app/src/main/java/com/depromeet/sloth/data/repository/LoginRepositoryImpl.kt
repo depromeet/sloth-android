@@ -32,9 +32,7 @@ class LoginRepositoryImpl @Inject constructor(
         return accessToken != DEFAULT_STRING_VALUE && refreshToken != DEFAULT_STRING_VALUE
     }
 
-    override fun fetchGoogleAuthInfo(
-        authCode: String
-    ) = flow {
+    override fun fetchGoogleAuthInfo(authCode: String) = flow {
         emit(Result.Loading)
         val response = googleLoginService.fetchGoogleAuthInfo(
             LoginGoogleRequest(
@@ -70,10 +68,7 @@ class LoginRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun fetchSlothAuthInfo(
-        authToken: String,
-        socialType: String
-    ) = flow {
+    override fun fetchSlothAuthInfo(authToken: String, socialType: String) = flow {
         emit(Result.Loading)
         val response = slothLoginService.fetchSlothAuthInfo(
             authToken,

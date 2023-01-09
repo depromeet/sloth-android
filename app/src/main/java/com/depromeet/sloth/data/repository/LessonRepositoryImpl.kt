@@ -31,7 +31,7 @@ import javax.inject.Inject
  * @desc Lesson 관련 API 저장소
  */
 
-// TODO HTTP 코드 응답 처리 함수로 만들어 모듈화
+// TODO 반복되는 함수 모듈화 (baseResponse 를 만들어서 모든 경우를 커버하도록)
 // TODO State emit helper 함수 적용
 class LessonRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
@@ -353,10 +353,7 @@ class LessonRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateLesson(
-        lessonId: String,
-        lessonUpdateRequest: LessonUpdateRequest
-    ) = flow {
+    override fun updateLesson(lessonId: String, lessonUpdateRequest: LessonUpdateRequest) = flow {
         emit(Result.Loading)
         val response =
             lessonService.updateLesson(lessonId, lessonUpdateRequest)
