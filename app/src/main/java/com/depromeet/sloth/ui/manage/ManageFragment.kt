@@ -47,69 +47,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         repeatOnStarted {
 
             launch {
-                fetchMemberSuccess
+                logoutSuccess
                     .collect {
-                        closeNetworkError()
-                    }
-            }
-
-            launch {
-                fetchMemberFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@ManageFragment
-                            ) { removeAuthToken() }
-
-                            else -> { showNetworkError() }
-                        }
-                    }
-            }
-
-            launch {
-                updateNotificationSuccess
-                    .collect {
-                        showToast(
-                            requireContext(),
-                            getString(R.string.noti_update_complete)
-                        )
-                    }
-            }
-
-            launch {
-                updateNotificationFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@ManageFragment
-                            ) { removeAuthToken() }
-
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.noti_update_fail)
-                                )
-                            }
-                        }
-                    }
-            }
-
-            launch {
-                logout
-                    .collect { logoutState ->
-                        when (logoutState) {
-                            true -> {
-                                logout(requireContext(), this@ManageFragment) {
-                                    removeAuthToken()
-                                }
-                            }
-
-                            false -> {
-                                showToast(requireContext(), getString(R.string.logout_fail))
-                            }
-                        }
+                        logout(requireContext(), this@ManageFragment) { removeAuthToken() }
                     }
             }
 
@@ -150,6 +90,30 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                             true -> showProgress()
                             false -> hideProgress()
                         }
+                    }
+            }
+
+            launch {
+                internetError
+                    .collect {error ->
+                        when(error) {
+                            true -> showNetworkError()
+                            false -> closeNetworkError()
+                        }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(requireContext(), this@ManageFragment) { removeAuthToken() }
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect {
+                        showToast(requireContext(), it)
                     }
             }
         }

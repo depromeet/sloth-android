@@ -9,11 +9,13 @@ import com.depromeet.sloth.data.network.service.NotificationService
 import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import java.io.IOException
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
@@ -67,7 +69,18 @@ class NotificationRepositoryImpl @Inject constructor(
                 else -> emit(Result.Error(Exception(response.message()), response.code()))
             }
         }
-            .catch { throwable -> emit(Result.Error(throwable)) }
+            .catch { throwable ->
+                when(throwable) {
+                    is IOException -> {
+                        // Handle Internet Connection Error
+                        emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                    }
+                    else -> {
+                        // Handle Other Error
+                        emit(Result.Error(throwable))
+                    }
+                }
+            }
 
 
 // response 형식 바뀌면 해당 메소드 사용

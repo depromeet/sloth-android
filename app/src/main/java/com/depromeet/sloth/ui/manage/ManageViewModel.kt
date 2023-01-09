@@ -2,9 +2,11 @@ package com.depromeet.sloth.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.member.MemberResponse
+import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.member.GetMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
 import com.depromeet.sloth.domain.use_case.member.RemoveAuthTokenUseCase
@@ -14,7 +16,9 @@ import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.ui.base.BaseViewModel
 import com.depromeet.sloth.ui.item.Member
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
+import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -35,29 +40,24 @@ class ManageViewModel @Inject constructor(
     private val logOutUseCase: LogOutUseCase,
     private val removeAuthTokenUseCase: RemoveAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
-    savedStateHandle: SavedStateHandle
+    private val stringResourcesProvider: StringResourcesProvider,
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
-
-    private val _fetchMemberSuccess = MutableSharedFlow<Unit>()
-    val fetchMemberSuccess: SharedFlow<Unit> = _fetchMemberSuccess.asSharedFlow()
-
-    private val _fetchMemberFail = MutableSharedFlow<Int>()
-    val fetchMemberFail: SharedFlow<Int> = _fetchMemberFail.asSharedFlow()
 
     private val _updateMemberSuccess = MutableSharedFlow<Unit>()
     val updateMemberSuccess: SharedFlow<Unit> = _updateMemberSuccess.asSharedFlow()
 
-    private val _updateMemberFail = MutableSharedFlow<Int>()
-    val updateMemberFail: SharedFlow<Int> = _updateMemberFail.asSharedFlow()
+    private val _logoutSuccess = MutableSharedFlow<Unit>()
+    val logoutSuccess: SharedFlow<Unit> = _logoutSuccess.asSharedFlow()
 
-    private val _updateNotificationSuccess = MutableSharedFlow<Unit>()
-    val updateNotificationSuccess: SharedFlow<Unit> = _updateNotificationSuccess.asSharedFlow()
+    private val _internetError = MutableStateFlow(false)
+    val internetError: StateFlow<Boolean> = _internetError.asStateFlow()
 
-    private val _updateNotificationFail = MutableSharedFlow<Int>()
-    val updateNotificationFail: SharedFlow<Int> = _updateNotificationFail.asSharedFlow()
+    private val _showForbiddenDialogEvent = MutableSharedFlow<Unit>()
+    val showForbiddenDialogEvent: SharedFlow<Unit> = _showForbiddenDialogEvent.asSharedFlow()
 
-    private val _logout = MutableStateFlow(false)
-    val logout: StateFlow<Boolean> = _logout.asStateFlow()
+    private val _showToastEvent = MutableSharedFlow<String>()
+    val showToastEvent: SharedFlow<String> = _showToastEvent.asSharedFlow()
 
     private val _memberName =
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
@@ -106,33 +106,48 @@ class ManageViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _fetchMemberSuccess.emit(Unit)
+                        _internetError.emit(false)
                         setMemberInfo(result.data)
                     }
                     is Result.Error -> {
-                        result.statusCode?.let { _fetchMemberFail.emit(it) }
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            _internetError.emit(true)
+                        }
+                        else if (result.statusCode == UNAUTHORIZED) {
+                            _showForbiddenDialogEvent.emit(Unit)
+                        }
+                        else {
+                            _showToastEvent.emit(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                        }
                     }
                 }
             }
     }
 
     fun updateMemberInfo() = viewModelScope.launch {
-        updateMemberInfoUseCase(MemberUpdateRequest(member.value.memberName))
+        updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
             .onEach {result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
+                        Timber.d(result.data.memberName)
                         _updateMemberSuccess.emit(Unit)
-                        setMemberName(result.data.memberName)
+                        _showToastEvent.emit(stringResourcesProvider.getString(R.string.member_update_success))
                         setPreviousMemberName(result.data.memberName)
                         // btnMemberName 활성 상태 초기화
                         setUpdateMemberValidation(false)
                     }
 
                     is Result.Error -> {
-                        result.statusCode?.let { _updateMemberFail.emit(it) }
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            _showToastEvent.emit(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            _showForbiddenDialogEvent.emit(Unit)
+                        } else {
+                            _showToastEvent.emit(stringResourcesProvider.getString(R.string.member_update_fail))
+                        }
                     }
                 }
             }
@@ -148,17 +163,48 @@ class ManageViewModel @Inject constructor(
                         when (result) {
                             is Result.Loading -> return@collect
                             is Result.Success -> {
-                                _updateNotificationSuccess.emit(Unit)
+                                _showToastEvent.emit(stringResourcesProvider.getString(R.string.noti_update_complete))
                                 setMemberNotificationReceive(check)
                             }
 
                             is Result.Error -> {
-                                result.statusCode?.let { _updateNotificationFail.emit(it) }
+                                if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                                    _showToastEvent.emit(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
+                                } else if (result.statusCode == UNAUTHORIZED) {
+                                    _showForbiddenDialogEvent.emit(Unit)
+                                } else {
+                                    _showToastEvent.emit(stringResourcesProvider.getString(R.string.noti_update_fail))
+                                }
                             }
                         }
                     }
             }
         }
+    }
+
+    fun logout() = viewModelScope.launch {
+        logOutUseCase()
+            .onEach {result ->
+                setLoading(result is Result.Loading)
+            }.collect {result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        _logoutSuccess.emit(Unit)
+                    }
+
+                    is Result.Error -> {
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            Timber.d(INTERNET_CONNECTION_ERROR)
+                            _showToastEvent.emit(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            _showForbiddenDialogEvent.emit(Unit)
+                        } else {
+                            _showToastEvent.emit(stringResourcesProvider.getString(R.string.logout_fail))
+                        }
+                    }
+                }
+            }
     }
 
     private fun setMemberInfo(memberResponse: MemberResponse) {
@@ -177,7 +223,7 @@ class ManageViewModel @Inject constructor(
         _memberName.value = memberName
     }
 
-    fun setPreviousMemberName(previousMemberName: String) {
+    private fun setPreviousMemberName(previousMemberName: String) {
         _previousMemberName.value = previousMemberName
     }
 
@@ -207,24 +253,6 @@ class ManageViewModel @Inject constructor(
 
     fun navigateToWithdrawalDialog() = viewModelScope.launch {
         _navigateToWithdrawalDialogEvent.emit(Unit)
-    }
-
-    fun logout() = viewModelScope.launch {
-        logOutUseCase()
-            .onEach {result ->
-                setLoading(result is Result.Loading)
-            }.collect {result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        _logout.value = true
-                    }
-
-                    is Result.Error -> {
-                        result.statusCode?.let { _fetchMemberFail.emit(it) }
-                    }
-                }
-            }
     }
 
     fun removeAuthToken() = viewModelScope.launch {

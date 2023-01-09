@@ -54,31 +54,8 @@ class UpdateMemberFragment :
             launch {
                 updateMemberSuccess
                     .collect {
-                        showToast(requireContext(), getString(R.string.member_update_success))
                         closeProfileUpdateDialog()
                     }
-            }
-
-            launch {
-                updateMemberFail
-                    .collect { statusCode ->
-                        when (statusCode) {
-                            401 -> showForbiddenDialog(
-                                requireContext(),
-                                this@UpdateMemberFragment
-                            ) {
-                                removeAuthToken()
-                            }
-
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.member_update_fail)
-                                )
-                            }
-                        }
-                    }
-
             }
 
             launch {
@@ -88,6 +65,21 @@ class UpdateMemberFragment :
                             true -> showProgress()
                             false -> hideProgress()
                         }
+                    }
+            }
+
+            launch {
+                showForbiddenDialogEvent
+                    .collect {
+                        showForbiddenDialog(requireContext(), this@UpdateMemberFragment) { removeAuthToken() }
+                    }
+            }
+
+
+            launch {
+                showToastEvent
+                    .collect {
+                        showToast(requireContext(), it)
                     }
             }
         }
