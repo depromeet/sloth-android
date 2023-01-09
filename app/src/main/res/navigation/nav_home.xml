@@ -179,7 +179,7 @@
 
         <argument
             android:name="lessonDetail"
-            app:argType="com.depromeet.sloth.ui.item.LessonDetail" />
+            app:argType="com.depromeet.sloth.presentation.item.LessonDetail" />
     </fragment>
 
     <dialog
@@ -190,12 +190,12 @@
 
     <!--    <dialog-->
     <!--        android:id="@+id/sloth_dialog"-->
-    <!--        android:name="com.depromeet.sloth.ui.custom.SlothDialogFragment"-->
+    <!--        android:name="com.depromeet.sloth.presentation.custom.SlothDialogFragment"-->
     <!--        android:label="SlothDialogFragment"-->
     <!--        tools:layout="@layout/dialog_sloth">-->
     <!--        <argument-->
     <!--            android:name="dialogState"-->
-    <!--            app:argType="com.depromeet.sloth.ui.custom.DialogState" />-->
+    <!--            app:argType="com.depromeet.sloth.presentation.custom.DialogState" />-->
     <!--    </dialog>-->
 
 </navigation>
