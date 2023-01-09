@@ -331,7 +331,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
-            app:vm="@{vm}" />
+            app:vm="@{vm}"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
