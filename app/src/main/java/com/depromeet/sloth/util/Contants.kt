@@ -14,9 +14,9 @@ const val KEY_CONTENT_TYPE = "Content-Type"
 const val VALUE_CONTENT_TYPE = "application/json"
 const val KEY_AUTHORIZATION = "Authorization"
 
-const val CONNECT_TIME_OUT = 30L
-const val READ_TIME_OUT = 30L
-const val WRITE_TIME_OUT = 30L
+const val CONNECT_TIME_OUT = 15L
+const val READ_TIME_OUT = 15L
+const val WRITE_TIME_OUT = 15L
 
 const val CALENDAR_TIME_ZONE = "Asia/Seoul"
 const val CALENDAR_TAG = "calendar"
