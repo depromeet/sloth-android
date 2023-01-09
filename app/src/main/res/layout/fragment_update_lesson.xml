@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.update.UpdateLessonViewModel" />
@@ -306,13 +308,13 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_update_lesson"
                     style="@style/Widget.Sloth.Button"
+                    onSingleClick="@{()->vm.updateLesson()}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
                     android:enabled="@{vm.updateLessonButtonState}"
-                    onSingleClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -326,9 +328,10 @@
         <include
             android:id="@+id/update_lesson_network_error"
             layout="@layout/item_network_error"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:vm="@{vm}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

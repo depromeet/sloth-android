@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
@@ -169,11 +171,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_register_lesson"
             style="@style/Widget.Sloth.Button"
+            onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:layout_width="0dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:enabled="@{vm.navigateToLessonSecondButtonState}"
-            onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -182,9 +184,10 @@
         <include
             android:id="@+id/register_lesson_network_error"
             layout="@layout/item_network_error"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:vm="@{vm}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

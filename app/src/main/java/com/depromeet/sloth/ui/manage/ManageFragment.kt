@@ -94,16 +94,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                internetError
-                    .collect { error ->
-                        when (error) {
-                            true -> showNetworkError()
-                            false -> closeNetworkError()
-                        }
-                    }
-            }
-
-            launch {
                 showForbiddenDialogEvent
                     .collect {
                         showForbiddenDialog(
@@ -120,14 +110,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                     }
             }
         }
-    }
-
-    private fun showNetworkError() {
-        binding.manageNetworkError.itemNetworkError.visibility = View.VISIBLE
-    }
-
-    private fun closeNetworkError() {
-        binding.manageNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun showProfileUpdateDialog() {

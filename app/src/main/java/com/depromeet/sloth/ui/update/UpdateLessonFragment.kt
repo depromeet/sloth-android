@@ -158,16 +158,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
 
             launch {
-                internetError
-                    .collect { error ->
-                        when (error) {
-                            true -> showNetworkError()
-                            false -> closeNetworkError()
-                        }
-                    }
-            }
-
-            launch {
                 showForbiddenDialogEvent
                     .collect {
                         showForbiddenDialog(
@@ -184,14 +174,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                     }
             }
         }
-    }
-
-    private fun showNetworkError() {
-        binding.updateLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
-    }
-
-    private fun closeNetworkError() {
-        binding.updateLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun navigateToLessonDetail() {

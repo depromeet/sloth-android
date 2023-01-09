@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.manage.ManageViewModel" />
@@ -37,11 +39,11 @@
 
                     <ImageView
                         android:id="@+id/iv_manage_profile_image"
+                        onSingleClick="@{()-> vm.navigateToUpdateProfileDialog()}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="56dp"
                         android:contentDescription="@string/profile_image"
-                        onSingleClick="@{()-> vm.navigateToUpdateProfileDialog()}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -88,11 +90,11 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_manage_contact"
+                        onSingleClick="@{()-> vm.navigateToContact()}"
                         android:layout_width="0dp"
                         android:layout_height="70dp"
                         android:layout_marginTop="12dp"
                         android:background="@color/white"
-                        onSingleClick="@{()-> vm.navigateToContact()}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -122,11 +124,11 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_manage_privacy"
+                        onSingleClick="@{()-> vm.navigateToPrivacyPolicy()}"
                         android:layout_width="0dp"
                         android:layout_height="70dp"
                         android:layout_marginTop="1dp"
                         android:background="@color/white"
-                        onSingleClick="@{()-> vm.navigateToPrivacyPolicy()}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/cl_manage_contact">
@@ -156,11 +158,11 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_manage_logout"
+                        onSingleClick="@{()->vm.navigateToLogoutDialog()}"
                         android:layout_width="0dp"
                         android:layout_height="70dp"
                         android:layout_marginTop="1dp"
                         android:background="@color/white"
-                        onSingleClick="@{()->vm.navigateToLogoutDialog()}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/cl_manage_privacy">
@@ -191,11 +193,11 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_manage_withdrawal"
+                        onSingleClick="@{()->vm.navigateToWithdrawalDialog()}"
                         android:layout_width="0dp"
                         android:layout_height="70dp"
                         android:layout_marginTop="1dp"
                         android:background="@color/white"
-                        onSingleClick="@{()->vm.navigateToWithdrawalDialog()}"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -291,15 +293,15 @@
 
         <include
             android:id="@+id/manage_network_error"
-            app:vm="@{vm}"
             layout="@layout/item_network_error"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{vm}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

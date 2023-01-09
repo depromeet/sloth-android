@@ -23,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-//TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
+// TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
 // 재시도의 경우 두 함수 모두 호출 필요
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
@@ -150,16 +150,6 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                internetError
-                    .collect { error ->
-                        when (error) {
-                            true -> showNetworkError()
-                            false -> closeNetworkError()
-                        }
-                    }
-            }
-
-            launch {
                 showForbiddenDialogEvent
                     .collect {
                         showForbiddenDialog(
@@ -176,14 +166,6 @@ class RegisterLessonFirstFragment :
                     }
             }
         }
-    }
-
-    private fun showNetworkError() {
-        binding.registerLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
-    }
-
-    private fun closeNetworkError() {
-        binding.registerLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     override fun initViews() = with(binding) {

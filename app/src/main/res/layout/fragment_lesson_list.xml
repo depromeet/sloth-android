@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.list.LessonListViewModel" />
@@ -50,15 +52,15 @@
 
         <include
             android:id="@+id/lesson_list_network_error"
-            app:vm="@{vm}"
             layout="@layout/item_network_error"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ab_lesson_list" />
+            app:layout_constraintTop_toBottomOf="@id/ab_lesson_list"
+            app:vm="@{vm}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

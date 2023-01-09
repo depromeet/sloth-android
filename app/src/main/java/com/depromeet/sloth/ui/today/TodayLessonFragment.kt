@@ -107,16 +107,6 @@ class TodayLessonFragment :
             }
 
             launch {
-                internetError
-                    .collect { error ->
-                        when (error) {
-                            true -> showNetworkError()
-                            false -> closeNetworkError()
-                        }
-                    }
-            }
-
-            launch {
                 showForbiddenDialogEvent
                     .collect {
                         showForbiddenDialog(
@@ -133,14 +123,6 @@ class TodayLessonFragment :
                     }
             }
         }
-    }
-
-    private fun showNetworkError() {
-        binding.todayLessonNetworkError.itemNetworkError.visibility = View.VISIBLE
-    }
-
-    private fun closeNetworkError() {
-        binding.todayLessonNetworkError.itemNetworkError.visibility = View.GONE
     }
 
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {

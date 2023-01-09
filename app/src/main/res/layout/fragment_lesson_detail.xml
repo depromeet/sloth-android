@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.depromeet.sloth.ui.detail.LessonDetailViewModel" />
@@ -27,11 +29,11 @@
 
             <TextView
                 android:id="@+id/tv_detail_update_lesson"
+                onSingleClick="@{() -> vm.navigateToUpdateLesson(vm.lessonDetail)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
-                onSingleClick="@{() -> vm.navigateToUpdateLesson(vm.lessonDetail)}"
                 android:text="@string/update"
                 android:textColor="@color/gray_600"
                 android:textSize="16dp" />
@@ -523,11 +525,11 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_lesson_detail_delete_lesson"
                         style="@style/Widget.Sloth.Button.Delete"
+                        onSingleClick="@{() -> vm.navigateToDeleteLessonDialog()}"
                         android:layout_width="match_parent"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="36dp"
                         android:layout_marginBottom="36dp"
-                        onSingleClick="@{() -> vm.navigateToDeleteLessonDialog()}"
                         android:text="@string/remove"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -542,15 +544,15 @@
 
         <include
             android:id="@+id/lesson_detail_network_error"
-            app:vm="@{vm}"
             layout="@layout/item_network_error"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_lesson_detail" />
+            app:layout_constraintTop_toBottomOf="@id/tb_lesson_detail"
+            app:vm="@{vm}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
