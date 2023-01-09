@@ -3,16 +3,16 @@
     <item
         android:id="@+id/today_lesson"
         android:enabled="true"
-        android:icon="@drawable/selector_home_today"
+        android:icon="@drawable/selector_today_lesson"
         android:title="@string/menu_today"/>
     <item
         android:id="@+id/lesson_list"
         android:enabled="true"
-        android:icon="@drawable/selector_home_lesson_list"
+        android:icon="@drawable/selector_lesson_list"
         android:title="@string/menu_class"/>
     <item
         android:id="@+id/manage"
         android:enabled="true"
-        android:icon="@drawable/selector_home_mypage"
+        android:icon="@drawable/selector_manage"
         android:title="@string/menu_mypage"/>
 </menu>

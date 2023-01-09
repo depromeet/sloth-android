@@ -75,7 +75,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:src="@drawable/ic_detail_sloth_steadily_listen" />
+                        tools:src="@drawable/ic_lesson_detail_sloth_steadily_listen" />
 
                     <TextView
                         android:id="@+id/tv_lesson_detail_summary"

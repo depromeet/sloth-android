@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
                     android:maxLength="4"
                     android:paddingHorizontal="18dp"

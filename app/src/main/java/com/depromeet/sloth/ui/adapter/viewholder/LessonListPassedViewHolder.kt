@@ -24,9 +24,9 @@ class LessonListPassedViewHolder(
                 val isComplete =
                     (ceil(progressRate * lessonInfo.totalNumber)).toInt() == lessonInfo.totalNumber
                 if (isComplete) {
-                    ivLessonListStamp.setImageResource(R.drawable.ic_home_lesson_list_success)
+                    ivLessonListStamp.setImageResource(R.drawable.ic_lesson_list_success)
                 } else {
-                    ivLessonListStamp.setImageResource(R.drawable.ic_home_lesson_list_fail)
+                    ivLessonListStamp.setImageResource(R.drawable.ic_lesson_list_fail)
                 }
 
                 clLessonList.setOnClickListener { onClick(lessonInfo) }

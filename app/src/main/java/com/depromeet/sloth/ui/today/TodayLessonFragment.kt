@@ -144,7 +144,7 @@ class TodayLessonFragment :
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
                     tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
-                    ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
+                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
                 }
             }
 
@@ -245,20 +245,20 @@ class TodayLessonFragment :
                         lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_win)
-                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_lose)
+                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose)
                         }
 
                         lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
                             .not()) -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_not_start)
-                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_not_start)
+                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
                         }
 
                         else -> {
                             tvTodayTitleMessage.text =
                                 getString(R.string.home_today_title_lose)
-                            ivTodaySloth.setImageResource(R.drawable.ic_home_today_sloth_win)
+                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
                         }
                     }
                 }

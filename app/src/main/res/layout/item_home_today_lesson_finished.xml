@@ -160,7 +160,7 @@
                     android:id="@+id/iv_today_complete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_home_today_complete"
+                    android:src="@drawable/ic_today_lesson_complete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_today_complete"
                     app:layout_constraintHorizontal_bias="1"

@@ -238,11 +238,11 @@ class RegisterLessonSecondFragment :
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
+                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
+                tvRegisterLessonPriceInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
     }
@@ -259,9 +259,9 @@ class RegisterLessonSecondFragment :
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
     }

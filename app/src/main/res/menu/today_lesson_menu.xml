@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_notification_list"
         android:enabled="true"
-        android:icon="@drawable/ic_home_lesson_alarm"
+        android:icon="@drawable/ic_alarm"
         android:title="@string/menu_notification_list"
         app:showAsAction="ifRoom" />
 

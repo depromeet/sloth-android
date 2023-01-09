@@ -218,9 +218,9 @@ class RegisterLessonFirstFragment :
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
     }
@@ -237,9 +237,9 @@ class RegisterLessonFirstFragment :
                     registerLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
                     result = registerLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
-                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
                     } else {
-                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
@@ -265,11 +265,11 @@ class RegisterLessonFirstFragment :
 
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
+                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
-                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
+                tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
     }
@@ -277,8 +277,8 @@ class RegisterLessonFirstFragment :
     private fun clearFocus(editText: EditText) = with(binding) {
         editText.apply {
             clearFocus()
-            setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+            setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
         }
-        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+        tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
     }
 }

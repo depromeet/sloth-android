@@ -11,7 +11,7 @@
     </style>
 
     <style name="Widget.Sloth.EditText" parent="Widget.AppCompat.EditText">
-        <item name="android:background">@drawable/bg_register_rounded_edit_text_gray</item>
+        <item name="android:background">@drawable/bg_register_lesson_rounded_edit_text_gray</item>
         <item name="android:textSize">16dp</item>
     </style>
 
@@ -43,7 +43,7 @@
     </style>
 
     <style name="Widget.Sloth.Spinner" parent="Widget.AppCompat.Spinner.DropDown">
-        <item name="android:background">@drawable/bg_register_rounded_spinner_gray</item>
+        <item name="android:background">@drawable/bg_register_lesson_rounded_spinner_gray</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16dp</item>
     </style>

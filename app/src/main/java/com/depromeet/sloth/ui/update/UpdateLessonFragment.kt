@@ -170,9 +170,9 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
 
             setOnFocusChangeListener { _, gainFocus ->
                 if (gainFocus) {
-                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                    editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
                 } else {
-                    editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                    editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
                 }
             }
         }
@@ -195,9 +195,9 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                     updateLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
                     result = updateLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_error)
+                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
                     } else {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
@@ -273,10 +273,10 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
     private fun setValidateEditTextFocus(editText: EditText, textView: TextView) {
         editText.setOnFocusChangeListener { _, gainFocus ->
             if (gainFocus) {
-                editText.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
-                textView.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_sloth)
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
+                textView.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
-                textView.setBackgroundResource(R.drawable.bg_register_rounded_edit_text_gray)
+                textView.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
 

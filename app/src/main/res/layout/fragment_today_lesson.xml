@@ -59,7 +59,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/ic_home_today_sloth_not_register" />
+                    tools:src="@drawable/ic_today_lesson_sloth_not_register" />
 
                 <TextView
                     android:id="@+id/tv_today_title_message"

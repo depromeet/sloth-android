@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/bg_register_rounded_edit_text_gray"
+            android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
             android:hint="@{vm.previousMemberName}"
             android:inputType="textPersonName"
             android:paddingHorizontal="18dp"
