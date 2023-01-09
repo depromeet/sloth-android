@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/bnv_home"
+            app:layout_constraintBottom_toTopOf="@id/bnv_main"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -24,16 +24,13 @@
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bnv_home"
-            android:layout_width="0dp"
+            android:id="@+id/bnv_main"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_menu_rounded"
+            app:itemBackground="@android:color/transparent"
             android:paddingVertical="8dp"
-            app:itemBackground="@color/white"
             app:itemTextColor="@drawable/selector_menu_bottom_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_navigation_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

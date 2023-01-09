@@ -10,6 +10,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityMainBinding
 import com.depromeet.sloth.presentation.base.BaseActivity
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -47,17 +49,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         val navController = navHostFragment.findNavController()
 
-        bnvHome.apply {
+        bnvMain.apply {
             setupWithNavController(navController)
             itemIconTintList = null
+
         }
+
+        val radius = resources.getDimension(R.dimen.corner_radius)
+        val bottomNavigationViewBackground = bnvMain.background as MaterialShapeDrawable
+        bottomNavigationViewBackground.shapeAppearanceModel =
+            bottomNavigationViewBackground.shapeAppearanceModel.toBuilder()
+                .setTopRightCorner(CornerFamily.ROUNDED, radius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, radius)
+                .build()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.today_lesson, R.id.lesson_list, R.id.manage -> bnvHome.visibility =
+                R.id.today_lesson, R.id.lesson_list, R.id.manage -> bnvMain.visibility =
                     View.VISIBLE
 
-                else -> bnvHome.visibility = View.GONE
+                else -> bnvMain.visibility = View.GONE
             }
         }
     }
