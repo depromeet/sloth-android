@@ -2,7 +2,7 @@ package com.depromeet.sloth.presentation.today
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -11,15 +11,12 @@ import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.extensions.showToast
-import com.depromeet.sloth.extensions.showWaitDialog
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 import com.depromeet.sloth.presentation.base.BaseFragment
-import com.depromeet.sloth.presentation.custom.DialogState
 import com.depromeet.sloth.presentation.custom.LessonItemDecoration
-import com.depromeet.sloth.presentation.custom.SlothDialog
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
@@ -28,11 +25,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
-    private val todayLessonViewModel: TodayLessonViewModel by viewModels()
+    private val todayLessonViewModel: TodayLessonViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,7 +54,7 @@ class TodayLessonFragment :
             setOnMenuItemSingleClickListener {
                 when (it.itemId) {
                     R.id.menu_notification_list -> {
-                        todayLessonViewModel.navigateToNotificationList()
+                        todayLessonViewModel.navigateToWaitDialog()
                         true
                     }
 
@@ -73,26 +71,22 @@ class TodayLessonFragment :
                     .collect { loginState ->
                         when (loginState) {
                             true -> fetchTodayLessonList()
-                            else -> {
-                                val action =
-                                    TodayLessonFragmentDirections.actionTodayLessonToLogin()
-                                findNavController().safeNavigate(action)
-                            }
+                            else -> navigateToLogin()
                         }
                     }
             }
 
             launch {
-                fetchLessonListSuccess
+                fetchLessonListSuccessEvent
                     .collect {
                         setLessonList(it)
                     }
             }
 
             launch {
-                navigateToNotificationListEvent
+                navigateToWaitDialogEvent
                     .collect {
-                        showWaitDialog(requireContext())
+                        showWaitDialog()
                     }
             }
 
@@ -107,12 +101,9 @@ class TodayLessonFragment :
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@TodayLessonFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@TodayLessonFragment)
                     }
             }
 
@@ -123,6 +114,22 @@ class TodayLessonFragment :
                     }
             }
         }
+    }
+
+    private fun navigateToLogin() {
+        val action =
+            TodayLessonFragmentDirections.actionTodayLessonToLogin()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun showWaitDialog() {
+        val action = TodayLessonFragmentDirections.actionTodayLessonToWaitDialog()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun showFinishLessonDialog(lessonId: String) {
+        val action = TodayLessonFragmentDirections.actionTodayLessonToFinishLessonDialog(lessonId)
+        findNavController().safeNavigate(action)
     }
 
     private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
@@ -212,7 +219,7 @@ class TodayLessonFragment :
                             }
 
                             TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
-                                showCompleteDialog(lessonToday.lessonId.toString())
+                                showFinishLessonDialog(lessonToday.lessonId.toString())
                             }
 
                             else -> {}
@@ -303,10 +310,7 @@ class TodayLessonFragment :
 
                     is Result.Error -> {
                         when (result.statusCode) {
-                            UNAUTHORIZED -> showForbiddenDialog(requireContext(), this@TodayLessonFragment) {
-                                todayLessonViewModel.deleteAuthToken()
-                            }
-
+                            UNAUTHORIZED -> showExpireDialog(this@TodayLessonFragment)
                             else -> {
                                 showToast(
                                     requireContext(),
@@ -346,14 +350,4 @@ class TodayLessonFragment :
 //            else -> Unit
 //        }
 //    }
-
-    private fun showCompleteDialog(lessonId: String) {
-        val completeDialog = SlothDialog(requireContext(), DialogState.COMPLETE)
-        completeDialog.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                todayLessonViewModel.finishLesson(lessonId)
-            }
-        }
-        completeDialog.show()
-    }
 }

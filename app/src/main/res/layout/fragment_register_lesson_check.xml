@@ -96,7 +96,7 @@
                             android:maxLines="2"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
-                            android:text="@{vm.lesson.lessonName}"
+                            android:text="@{vm.lessonName}"
                             android:textColor="@color/gray_600"
                             android:textSize="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +135,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="28dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{@string/unit_lesson_total_number(vm.lesson.totalNumber)}"
+                            android:text="@{@string/unit_lesson_total_number(vm.lessonTotalNumber)}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -160,7 +160,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{vm.lesson.categoryName}"
+                            android:text="@{vm.lessonCategoryName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -185,7 +185,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="16dp"
-                            android:text="@{vm.lesson.siteName}"
+                            android:text="@{vm.lessonSiteName}"
                             android:textColor="@color/gray_600"
                             android:textSize="14dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -206,7 +206,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_price_info"
-                            priceFormat="@{vm.lesson.price}"
+                            priceFormat="@{vm.lessonPrice}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -259,7 +259,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_start_date_info"
-                            checkLessonDate="@{vm.lesson.startDate}"
+                            checkLessonDate="@{vm.lessonStartDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -297,7 +297,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_end_date_info"
-                            checkLessonDate="@{vm.lesson.endDate}"
+                            checkLessonDate="@{vm.lessonEndDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -342,11 +342,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register_lesson_update"
                 style="@style/Widget.Sloth.Button.RegisterUpdate"
+                onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
                 android:layout_width="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="16dp"
-                onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
                 android:text="@string/lesson_update"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btn_register_lesson_accept"
@@ -356,11 +356,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register_lesson_accept"
                 style="@style/Widget.Sloth.Button.Check"
+                onSingleClick="@{()->vm.registerLesson()}"
                 android:layout_width="0dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                onSingleClick="@{()->vm.registerLesson()}"
                 android:text="@string/accept"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -372,9 +372,9 @@
         <include
             android:id="@+id/register_lesson_network_error"
             layout="@layout/item_network_error"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

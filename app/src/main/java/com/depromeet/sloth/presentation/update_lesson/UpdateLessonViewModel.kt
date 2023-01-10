@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.update
+package com.depromeet.sloth.presentation.update_lesson
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,6 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.FetchLessonCategoryListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.FetchLessonSiteListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.presentation.base.BaseViewModel
 import com.depromeet.sloth.presentation.item.LessonDetail
@@ -38,24 +37,23 @@ class UpdateLessonViewModel @Inject constructor(
     private val updateLessonUseCase: UpdateLessonUseCase,
     private val fetchLessonCategoryListUseCase: FetchLessonCategoryListUseCase,
     private val fetchLessonSiteListUseCase: FetchLessonSiteListUseCase,
-    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
     val lessonDetail: LessonDetail = checkNotNull(savedStateHandle[KEY_LESSON_DETAIL])
 
-    private val _updateLessonSuccess = MutableSharedFlow<Unit>()
-    val updateLessonSuccess: SharedFlow<Unit> = _updateLessonSuccess.asSharedFlow()
+    private val _updateLessonSuccessEvent = MutableSharedFlow<Unit>()
+    val updateLessonSuccessEvent: SharedFlow<Unit> = _updateLessonSuccessEvent.asSharedFlow()
 
-    private val _fetchLessonCategoryListSuccess =
+    private val _fetchLessonCategoryListSuccessEvent =
         MutableSharedFlow<List<LessonCategoryResponse>>()
-    val fetchLessonCategoryListSuccess: SharedFlow<List<LessonCategoryResponse>> =
-        _fetchLessonCategoryListSuccess.asSharedFlow()
+    val fetchLessonCategoryListSuccessEvent: SharedFlow<List<LessonCategoryResponse>> =
+        _fetchLessonCategoryListSuccessEvent.asSharedFlow()
 
-    private val _fetchLessonSiteListSuccess = MutableSharedFlow<List<LessonSiteResponse>>()
-    val fetchLessonSiteListSuccess: SharedFlow<List<LessonSiteResponse>> =
-        _fetchLessonSiteListSuccess.asSharedFlow()
+    private val _fetchLessonSiteListSuccessEvent = MutableSharedFlow<List<LessonSiteResponse>>()
+    val fetchLessonSiteListSuccessEvent: SharedFlow<List<LessonSiteResponse>> =
+        _fetchLessonSiteListSuccessEvent.asSharedFlow()
 
     init {
         fetchLessonCategoryList()
@@ -139,14 +137,14 @@ class UpdateLessonViewModel @Inject constructor(
                 is Result.Loading -> return@collect
                 is Result.Success -> {
                     showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_complete))
-                    _updateLessonSuccess.emit(Unit)
+                    _updateLessonSuccessEvent.emit(Unit)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                         showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
                     }
                     else if (result.statusCode == UNAUTHORIZED) {
-                        showForbiddenDialogEvent()
+                        navigateToExpireDialogEvent()
                     }
                     else {
                         showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail))
@@ -166,7 +164,7 @@ class UpdateLessonViewModel @Inject constructor(
                     is Result.Success -> {
                         internetError(false)
                         setLessonCategoryInfo(result.data)
-                        _fetchLessonCategoryListSuccess.emit(result.data)
+                        _fetchLessonCategoryListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
@@ -174,7 +172,7 @@ class UpdateLessonViewModel @Inject constructor(
                             internetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
+                            navigateToExpireDialogEvent()
                         }
                         else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
@@ -194,7 +192,7 @@ class UpdateLessonViewModel @Inject constructor(
                     is Result.Success -> {
                         internetError(false)
                         setLessonSiteInfo(result.data)
-                        _fetchLessonSiteListSuccess.emit(result.data)
+                        _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
@@ -202,7 +200,7 @@ class UpdateLessonViewModel @Inject constructor(
                             internetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
+                            navigateToExpireDialogEvent()
                         }
                         else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
@@ -273,10 +271,6 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
         }
-    }
-
-    fun deleteAuthToken() = viewModelScope.launch {
-        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

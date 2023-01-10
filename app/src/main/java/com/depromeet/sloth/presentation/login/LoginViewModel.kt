@@ -29,8 +29,8 @@ class LoginViewModel @Inject constructor(
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
 
-    private val _registerNotificationTokenSuccess = MutableSharedFlow<Unit>()
-    val registerNotificationTokenSuccess: SharedFlow<Unit> = _registerNotificationTokenSuccess.asSharedFlow()
+    private val _registerNotificationTokenSuccessEvent = MutableSharedFlow<Unit>()
+    val registerNotificationTokenSuccessEvent: SharedFlow<Unit> = _registerNotificationTokenSuccessEvent.asSharedFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
@@ -148,7 +148,7 @@ class LoginViewModel @Inject constructor(
                 when(result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _registerNotificationTokenSuccess.emit(Unit)
+                        _registerNotificationTokenSuccessEvent.emit(Unit)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {

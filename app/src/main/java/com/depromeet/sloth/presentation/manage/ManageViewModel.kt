@@ -1,32 +1,19 @@
 package com.depromeet.sloth.presentation.manage
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
-import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.di.StringResourcesProvider
+import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.use_case.member.FetchMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
-import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
 import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
-import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.presentation.base.BaseViewModel
-import com.depromeet.sloth.presentation.item.Member
-import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -36,41 +23,18 @@ import javax.inject.Inject
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
-    private val _updateMemberSuccess = MutableSharedFlow<Unit>()
-    val updateMemberSuccess: SharedFlow<Unit> = _updateMemberSuccess.asSharedFlow()
+    private val _uiState = MutableStateFlow(MemberUiState())
+    val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
-    private val _logoutSuccess = MutableSharedFlow<Unit>()
-    val logoutSuccess: SharedFlow<Unit> = _logoutSuccess.asSharedFlow()
-
-    private val _memberName =
-        savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
-    val memberName: StateFlow<String> = _memberName.asStateFlow()
-
-    private val _previousMemberName =
-        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
-    val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
-
-    private val _member = MutableStateFlow(Member())
-    val member: StateFlow<Member> = _member.asStateFlow()
-
-//    private val _member = MutableStateFlow(MemberUiState())
-//    val member: StateFlow<MemberUiState> = _member.asStateFlow()
-
-    private val _memberNotificationReceive =
-        savedStateHandle.getMutableStateFlow(KEY_MEMBER_NOTIFICATION_RECEIVE, false)
-    val memberNotificationReceive: StateFlow<Boolean> = _memberNotificationReceive.asStateFlow()
-
-    private val _navigateToUpdateProfileDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToUpdateProfileDialogEvent: SharedFlow<Unit> =
-        _navigateToUpdateProfileDialogEvent.asSharedFlow()
+    private val _navigateToUpdateMemberDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToUpdateMemberDialogEvent: SharedFlow<Unit> =
+        _navigateToUpdateMemberDialogEvent.asSharedFlow()
 
     private val _navigateToContactEvent = MutableSharedFlow<Unit>()
     val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
@@ -86,8 +50,11 @@ class ManageViewModel @Inject constructor(
     val navigateToWithdrawalDialogEvent: SharedFlow<Unit> =
         _navigateToWithdrawalDialogEvent.asSharedFlow()
 
-    private val _updateMemberValidation = MutableStateFlow(false)
-    val updateMemberValidation: StateFlow<Boolean> = _updateMemberValidation.asStateFlow()
+    private val _logoutSuccess = MutableSharedFlow<Unit>()
+    val logoutSuccess: SharedFlow<Unit> = _logoutSuccess.asSharedFlow()
+
+    private val _logoutCancel = MutableSharedFlow<Unit>()
+    val logoutCancel: SharedFlow<Unit> = _logoutCancel.asSharedFlow()
 
     fun fetchMemberInfo() = viewModelScope.launch {
         fetchMemberInfoUseCase()
@@ -98,16 +65,21 @@ class ManageViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         internetError(false)
-                        setMemberInfo(result.data)
+                        _uiState.update { memberUiState ->
+                            memberUiState.copy(
+                                email = result.data.email,
+                                memberName = result.data.memberName,
+                                isEmailProvided = result.data.isEmailProvided,
+                                isPushAlarmUse = result.data.isPushAlarmUse
+                            )
+                        }
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             internetError(true)
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
-                        }
-                        else {
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            navigateToExpireDialogEvent()
+                        } else {
                             showToastEvent(stringResourcesProvider.getString(R.string.member_fetch_fail))
                         }
                     }
@@ -115,36 +87,8 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-    fun updateMemberInfo() = viewModelScope.launch {
-        updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
-            .onEach {result ->
-                showLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        showToastEvent(stringResourcesProvider.getString(R.string.member_update_success))
-                        _updateMemberSuccess.emit(Unit)
-                        setPreviousMemberName(result.data.memberName)
-                        // btnUpdateMember 활성 상태 초기화
-                        setUpdateMemberValidation(false)
-                    }
-
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
-                        } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.member_update_fail))
-                        }
-                    }
-                }
-            }
-    }
-
     fun updateNotificationSwitch(check: Boolean) {
-        if (memberNotificationReceive.value != check) {
+        if (uiState.value.isPushAlarmUse != check) {
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
                     .onEach {
@@ -154,14 +98,18 @@ class ManageViewModel @Inject constructor(
                             is Result.Loading -> return@collect
                             is Result.Success -> {
                                 showToastEvent(stringResourcesProvider.getString(R.string.noti_update_complete))
-                                setMemberNotificationReceive(check)
+                                _uiState.update { memberUiState ->
+                                    memberUiState.copy(
+                                        isPushAlarmUse = check
+                                    )
+                                }
                             }
 
                             is Result.Error -> {
                                 if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                                     showToastEvent(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
                                 } else if (result.statusCode == UNAUTHORIZED) {
-                                    showForbiddenDialogEvent()
+                                    navigateToExpireDialogEvent()
                                 } else {
                                     showToastEvent(stringResourcesProvider.getString(R.string.noti_update_fail))
                                 }
@@ -174,9 +122,9 @@ class ManageViewModel @Inject constructor(
 
     fun logout() = viewModelScope.launch {
         logOutUseCase()
-            .onEach {result ->
+            .onEach { result ->
                 showLoading(result is Result.Loading)
-            }.collect {result ->
+            }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
@@ -189,7 +137,7 @@ class ManageViewModel @Inject constructor(
                             Timber.d(INTERNET_CONNECTION_ERROR)
                             showToastEvent(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
+                            navigateToExpireDialogEvent()
                         } else {
                             showToastEvent(stringResourcesProvider.getString(R.string.logout_fail))
                         }
@@ -198,36 +146,8 @@ class ManageViewModel @Inject constructor(
             }
     }
 
-    private fun setMemberInfo(memberResponse: MemberResponse) {
-        _member.value = Member(
-            email = memberResponse.email,
-            memberName = memberResponse.memberName,
-            isEmailProvided = memberResponse.isEmailProvided,
-            isPushAlarmUse = memberResponse.isPushAlarmUse
-        )
-        setMemberName(memberResponse.memberName)
-        setPreviousMemberName(memberResponse.memberName)
-        setMemberNotificationReceive(memberResponse.isPushAlarmUse)
-    }
-
-    fun setMemberName(memberName: String) {
-        _memberName.value = memberName
-    }
-
-    private fun setPreviousMemberName(previousMemberName: String) {
-        _previousMemberName.value = previousMemberName
-    }
-
-    private fun setMemberNotificationReceive(check: Boolean) {
-        _memberNotificationReceive.value = check
-    }
-
-    fun setUpdateMemberValidation(isEnable: Boolean) {
-        _updateMemberValidation.value = isEnable
-    }
-
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
-        _navigateToUpdateProfileDialogEvent.emit(Unit)
+        _navigateToUpdateMemberDialogEvent.emit(Unit)
     }
 
     fun navigateToPrivacyPolicy() = viewModelScope.launch {
@@ -246,6 +166,10 @@ class ManageViewModel @Inject constructor(
         _navigateToWithdrawalDialogEvent.emit(Unit)
     }
 
+    fun navigateToManage() = viewModelScope.launch {
+        _logoutCancel.emit(Unit)
+    }
+
     fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
@@ -254,17 +178,10 @@ class ManageViewModel @Inject constructor(
         fetchMemberInfo()
     }
 
-//    data class MemberUiState(
-//        val email: String = "",
-//        val memberName: String = "",
-//        val previousMemberName: String = "",
-//        val isEmailProvided: Boolean = false,
-//        val isPushAlarmUse: Boolean = false,
-//    )
-
-    companion object {
-        private const val KEY_MEMBER_NAME = "memberName"
-        private const val KEY_PREVIOUS_MEMBER_NAME = "previousMemberName"
-        private const val KEY_MEMBER_NOTIFICATION_RECEIVE = "notificationReceive"
-    }
+    data class MemberUiState(
+        val email: String = "",
+        val memberName: String = "",
+        val isEmailProvided: Boolean = false,
+        val isPushAlarmUse: Boolean = false,
+    )
 }

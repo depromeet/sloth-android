@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@{vm.memberName}"
+                        android:text="@{vm.uiState.memberName}"
                         android:textColor="@color/gray_600"
                         android:textSize="20dp"
                         android:textStyle="bold"
@@ -65,8 +65,8 @@
 
                     <TextView
                         android:id="@+id/tv_manage_profile_email"
-                        email="@{vm.member.email}"
-                        isEmailProvided="@{vm.member.isEmailProvided}"
+                        email="@{vm.uiState.email}"
+                        isEmailProvided="@{vm.uiState.isEmailProvided}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -274,7 +274,7 @@
                             android:layout_height="28dp"
                             android:layout_marginEnd="18dp"
                             android:background="@null"
-                            android:checked="@{vm.memberNotificationReceive}"
+                            android:checked="@{vm.uiState.pushAlarmUse}"
                             android:onCheckedChanged="@{(_, isChecked) -> vm.updateNotificationSwitch(isChecked)}"
                             android:thumb="@drawable/selector_thumb"
                             app:layout_constraintBottom_toBottomOf="parent"

@@ -79,7 +79,7 @@
     <string name="detail_lesson_summary_lose">목표를 채우지 못했어요!</string>
     <string name="not_started_yet">결투를 기다리고\n있다구!</string>
     <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
-    <string name="delete_lesson_dialog_message_check">포기하기</string>
+    <string name="delete_lesson_dialog_check">포기하기</string>
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="caution">caution</string>
@@ -105,7 +105,7 @@
     <string name="right_arrow">right arrow</string>
     <string name="wait_dialog_message">아직 준비중인 기능이에요</string>
     <string name="dialog_default_message">안내 메세지</string>
-    <string name="forbidden_dialog_message">다시 로그인 해주세요</string>
+    <string name="expired_dialog_message">다시 로그인 해주세요</string>
     <string name="privacy">개인정보 처리방침</string>
     <string name="lesson_close">마감</string>
     <string name="d_day">D-Day</string>
@@ -134,8 +134,8 @@
     <string name="unit_lesson_price">%s원</string>
     <string name="register_lesson">강의 등록하기</string>
     <string name="finish_lesson">완강하기</string>
-    <string name="check_all_lesson_finished">모든 강의를 다 들으셨나요?</string>
-    <string name="finished">완강했어요</string>
+    <string name="finish_lesson_dialog_message">모든 강의를 다 들으셨나요?</string>
+    <string name="finish_lesson_dialog_check">완강했어요</string>
     <string name="cannot_get_lesson_category">강의 카테고리를 가져오지 못했어요</string>
     <string name="cannot_get_lesson_site">강의 사이트를 가져오지 못했어요</string>
     <string name="logout_complete">로그아웃 되었어요</string>
@@ -192,5 +192,6 @@
     <string name="login_fail">로그인을 실패했어요</string>
     <string name="login_fail_by_internet_error">로그인을 실패했어요\n인터넷 연결을 확인해주세요</string>
     <string name="please_check_internet">인터넷 연결을 확인해주세요</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -37,7 +37,7 @@ import timber.log.Timber
 class LoginBottomSheetFragment :
     BaseBottomSheetFragment<FragmentLoginBottomBinding>(R.layout.fragment_login_bottom) {
 
-    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
+    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
@@ -99,7 +99,7 @@ class LoginBottomSheetFragment :
             }
 
             launch {
-                registerNotificationTokenSuccess
+                registerNotificationTokenSuccessEvent
                     .collect {
                         navigateToTodayLesson()
                     }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class RegisterBottomSheetFragment :
     BaseBottomSheetFragment<FragmentRegisterBottomBinding>(R.layout.fragment_register_bottom) {
 
-    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_home)
+    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +33,7 @@ class RegisterBottomSheetFragment :
         repeatOnStarted {
 
             launch {
-                registerNotificationTokenSuccess
+                registerNotificationTokenSuccessEvent
                     .collect {
                         navigateToTodayLesson()
                     }

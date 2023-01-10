@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.update
+package com.depromeet.sloth.presentation.update_lesson
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -58,7 +58,6 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
 
     private fun initListener() = with(binding) {
         tbUpdateLesson.setNavigationOnClickListener {
-            // 뒤로 가기
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
@@ -69,14 +68,14 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
         repeatOnStarted {
 
             launch {
-                updateLessonSuccess
+                updateLessonSuccessEvent
                     .collect {
                         navigateToLessonDetail()
                     }
             }
 
             launch {
-                fetchLessonCategoryListSuccess
+                fetchLessonCategoryListSuccessEvent
                     .collect {
                         bindAdapter(
                             lessonCategoryAdapter,
@@ -87,7 +86,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
 
             launch {
-                fetchLessonSiteListSuccess
+                fetchLessonSiteListSuccessEvent
                     .collect {
                         bindAdapter(
                             lessonSiteAdapter,
@@ -118,12 +117,9 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@UpdateLessonFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@UpdateLessonFragment)
                     }
             }
 

@@ -1,44 +1,49 @@
-package com.depromeet.sloth.presentation.login
+package com.depromeet.sloth.presentation.finish
 
 import android.os.Bundle
 import android.view.View
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.databinding.FragmentLoginBinding
+import com.depromeet.sloth.databinding.FragmentFinishLessonDialogBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
+import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.extensions.showToast
-import com.depromeet.sloth.presentation.base.BaseFragment
+import com.depromeet.sloth.presentation.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
-class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
-    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
+@AndroidEntryPoint
+class FinishLessonDialogFragment :
+    BaseDialogFragment<FragmentFinishLessonDialogBinding>(R.layout.fragment_finish_lesson_dialog) {
+
+    private val finishLessonViewModel: FinishLessonViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind {
-            vm = loginViewModel
+            vm = finishLessonViewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(loginViewModel) {
-        repeatOnStarted {
+    private fun initObserver() = with(finishLessonViewModel) {
 
+        repeatOnStarted {
             launch {
-                registerNotificationTokenSuccessEvent
+                finishLessonSuccessEvent
                     .collect {
                         navigateToTodayLesson()
                     }
             }
 
             launch {
-                navigateToLoginBottomSheetEvent
-                    .collect { showLoginBottomSheet() }
+                finishLessonCancelEvent
+                    .collect {
+                        closeFinishLessonDialog()
+                    }
             }
 
             launch {
@@ -52,6 +57,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             }
 
             launch {
+                navigateToExpireDialog
+                    .collect {
+                        showExpireDialog(this@FinishLessonDialogFragment)
+                    }
+            }
+
+            launch {
                 showToastEvent
                     .collect { message ->
                         showToast(requireContext(), message)
@@ -60,13 +72,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         }
     }
 
-    private fun showLoginBottomSheet() {
-        val action = LoginFragmentDirections.actionLoginToLoginBottom()
+    private fun navigateToTodayLesson() {
+        val action = FinishLessonDialogFragmentDirections.actionFinishLessonDialogToTodayLesson()
         findNavController().safeNavigate(action)
     }
 
-    private fun navigateToTodayLesson() {
-        val action = LoginFragmentDirections.actionLoginToTodayLesson()
-        findNavController().safeNavigate(action)
+    private fun closeFinishLessonDialog() {
+        if (!findNavController().navigateUp()) {
+            requireActivity().finish()
+        }
     }
 }

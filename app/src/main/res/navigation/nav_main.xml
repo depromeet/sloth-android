@@ -2,20 +2,20 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_home"
+    android:id="@+id/nav_main"
     app:startDestination="@id/today_lesson">
 
     <include app:graph="@navigation/nav_register_lesson" />
 
     <action
-        android:id="@+id/action_global_logout"
+        android:id="@+id/action_global_to_login"
         app:destination="@id/login"
         app:popUpTo="@id/today_lesson"
         app:popUpToInclusive="true" />
 
-    <!--    <action-->
-    <!--        android:id="@+id/action_global_to_sloth_dialog"-->
-    <!--        app:destination="@id/sloth_dialog"/>-->
+    <action
+        android:id="@+id/action_global_to_expire_dialog"
+        app:destination="@id/expired_dialog" />
 
     <fragment
         android:id="@+id/login"
@@ -105,6 +105,12 @@
             app:destination="@id/login"
             app:popUpTo="@id/today_lesson"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_today_lesson_to_wait_dialog"
+            app:destination="@id/wait_dialog" />
+        <action
+            android:id="@+id/action_today_lesson_to_finish_lesson_dialog"
+            app:destination="@id/finish_lesson_dialog" />
     </fragment>
 
     <fragment
@@ -126,6 +132,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_lesson_list_to_wait_dialog"
+            app:destination="@id/wait_dialog" />
     </fragment>
 
     <fragment
@@ -150,6 +159,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_manage_to_logout_dialog"
+            app:destination="@id/logout_dialog" />
     </fragment>
 
     <fragment
@@ -169,11 +181,14 @@
             android:name="lessonId"
             app:argType="string"
             app:nullable="false" />
+        <action
+            android:id="@+id/action_lesson_detail_to_deleteLessonDialogFragment"
+            app:destination="@id/delete_lesson_dialog" />
     </fragment>
 
     <fragment
         android:id="@+id/update_lesson"
-        android:name="com.depromeet.sloth.presentation.update.UpdateLessonFragment"
+        android:name="com.depromeet.sloth.presentation.update_lesson.UpdateLessonFragment"
         android:label="UpdateLessonFragment"
         tools:layout="@layout/fragment_update_lesson">
 
@@ -184,18 +199,63 @@
 
     <dialog
         android:id="@+id/update_member"
-        android:name="com.depromeet.sloth.presentation.manage.UpdateMemberFragment"
+        android:name="com.depromeet.sloth.presentation.update_member.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member" />
+        tools:layout="@layout/fragment_update_member" >
+        <argument
+            android:name="memberName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_update_member_to_manage"
+            app:destination="@id/manage"
+            app:popUpTo="@id/manage"
+            app:popUpToInclusive="true" />
+    </dialog>
 
-    <!--    <dialog-->
-    <!--        android:id="@+id/sloth_dialog"-->
-    <!--        android:name="com.depromeet.sloth.presentation.custom.SlothDialogFragment"-->
-    <!--        android:label="SlothDialogFragment"-->
-    <!--        tools:layout="@layout/dialog_sloth">-->
-    <!--        <argument-->
-    <!--            android:name="dialogState"-->
-    <!--            app:argType="com.depromeet.sloth.presentation.custom.DialogState" />-->
-    <!--    </dialog>-->
+    <dialog
+        android:id="@+id/expired_dialog"
+        android:name="com.depromeet.sloth.presentation.manage.ExpiredDialogFragment"
+        android:label="ExpiredDialogFragment"
+        tools:layout="@layout/fragment_expired_dialog"/>
+
+    <dialog
+        android:id="@+id/finish_lesson_dialog"
+        android:name="com.depromeet.sloth.presentation.finish.FinishLessonDialogFragment"
+        android:label="FinishLessonDialogFragment"
+        tools:layout="@layout/fragment_finish_lesson_dialog">
+        <argument
+            android:name="lessonId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_finish_lesson_dialog_to_today_lesson"
+            app:destination="@id/today_lesson"
+            app:popUpTo="@id/today_lesson"
+            app:popUpToInclusive="true" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/logout_dialog"
+        android:name="com.depromeet.sloth.presentation.manage.LogoutDialogFragment"
+        android:label="LogoutDialogFragment"
+        tools:layout="@layout/fragment_logout_dialog"/>
+
+    <dialog
+        android:id="@+id/wait_dialog"
+        android:name="com.depromeet.sloth.presentation.wait.WaitDialogFragment"
+        android:label="WaitDialogFragment"
+        tools:layout="@layout/fragment_wait_dialog"/>
+
+    <dialog
+        android:id="@+id/delete_lesson_dialog"
+        android:name="com.depromeet.sloth.presentation.detail.DeleteLessonDialogFragment"
+        android:label="DeleteLessonDialogFragment"
+        tools:layout="@layout/fragment_delete_lesson_dialog">
+
+        <action
+            android:id="@+id/action_delete_Lesson_dialog_to_lesson_list"
+            app:destination="@id/lesson_list"
+            app:popUpTo="@layout/fragment_lesson_list"
+            app:popUpToInclusive="true"/>
+    </dialog>
 
 </navigation>

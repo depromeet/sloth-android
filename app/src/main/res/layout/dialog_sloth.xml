@@ -9,7 +9,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="312dp"
             android:layout_height="202dp"
-            android:background="@drawable/bg_dialog_rounded"
+            android:background="@drawable/bg_sloth_dialog"
             android:layout_gravity="center">
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -24,7 +24,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/circleImageView"
-                app:srcCompat="@drawable/ic_caution" />
+                app:srcCompat="@drawable/ic_caution_error" />
 
             <TextView
                 android:id="@+id/tv_dialog_message"

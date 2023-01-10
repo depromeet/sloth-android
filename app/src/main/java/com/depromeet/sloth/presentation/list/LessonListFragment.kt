@@ -67,7 +67,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         repeatOnStarted {
 
             launch {
-                fetchLessonListSuccess
+                fetchLessonListSuccessEvent
                     .collect{
                         setLessonList(it)
                     }
@@ -85,7 +85,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 navigateToNotificationListEvent
                     .collect {
-                        showWaitDialog(requireContext())
+                        showWaitDialog()
                     }
             }
 
@@ -100,12 +100,9 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@LessonListFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@LessonListFragment)
                     }
             }
 
@@ -116,6 +113,11 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     }
             }
         }
+    }
+
+    private fun showWaitDialog() {
+        val action = LessonListFragmentDirections.actionLessonListToWaitDialog()
+        findNavController().safeNavigate(action)
     }
 
     private fun navigateToLessonDetail(lessonInfo: LessonAllResponse) {

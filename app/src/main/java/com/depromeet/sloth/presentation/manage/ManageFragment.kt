@@ -4,31 +4,26 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentManageBinding
-import com.depromeet.sloth.extensions.logout
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.extensions.showToast
-import com.depromeet.sloth.extensions.showWithdrawalDialog
 import com.depromeet.sloth.presentation.base.BaseFragment
-import com.depromeet.sloth.presentation.custom.DialogState
-import com.depromeet.sloth.presentation.custom.SlothDialog
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 // TODO 화면 전환 시 푸시알림 수신버튼이 비활성화 -> 활성화되는 애니메이션이 보이는 현상 제거
-// TODO 닉네임 변경시 토스트 메세지가 두번 출력되는 이슈
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val manageViewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_home)
+    private val manageViewModel: ManageViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
@@ -48,39 +43,37 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         repeatOnStarted {
 
             launch {
-                logoutSuccess
+                navigateToUpdateMemberDialogEvent
                     .collect {
-                        logout(requireContext(), this@ManageFragment) { deleteAuthToken() }
+                        showUpdateMemberDialog()
                     }
             }
 
             launch {
-                navigateToUpdateProfileDialogEvent
-                    .collect { showProfileUpdateDialog() }
-            }
-
-            launch {
                 navigateToContactEvent
-                    .collect { sendEmail() }
+                    .collect {
+                        sendEmail()
+                    }
             }
 
             launch {
                 navigateToPrivatePolicyEvent
-                    .collect { showPrivatePolicy() }
+                    .collect {
+                        showPrivatePolicy()
+                    }
             }
 
             launch {
                 navigateToLogoutDialogEvent
-                    .collect { showLogoutDialog() }
+                    .collect {
+                        showLogoutDialog()
+                    }
             }
 
             launch {
                 navigateToWithdrawalDialogEvent
                     .collect {
-                        showWithdrawalDialog(
-                            requireContext(),
-                            this@ManageFragment
-                        ) { deleteAuthToken() }
+                        showWithdrawalDialog()
                     }
             }
 
@@ -95,12 +88,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@ManageFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@ManageFragment)
                     }
             }
 
@@ -113,8 +103,10 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         }
     }
 
-    private fun showProfileUpdateDialog() {
-        val action = ManageFragmentDirections.actionManageToUpdateMemberFragment()
+    private fun showUpdateMemberDialog() {
+        val action = ManageFragmentDirections.actionManageToUpdateMemberFragment(
+            manageViewModel.uiState.value.memberName
+        )
         findNavController().safeNavigate(action)
     }
 
@@ -124,30 +116,29 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     }
 
     private fun showLogoutDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.LOGOUT)
-        dlg.onItemClickListener =
-            object : SlothDialog.OnItemClickedListener {
-                override fun onItemClicked() {
-                    manageViewModel.logout()
-                }
-            }
-        dlg.show()
+        val action = ManageFragmentDirections.actionManageToLogoutDialog()
+        findNavController().safeNavigate(action)
     }
+
+    // 회원 탈퇴 API 필요
+    private fun showWithdrawalDialog() = Unit
 
     private fun sendEmail() {
         startActivity(Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
-                putExtra(Intent.EXTRA_TEXT,
-                    String.format(CELLPHONE_INFO_DIVER,
-                        BuildConfig.VERSION_NAME,
-                        Build.VERSION.SDK_INT,
-                        Build.VERSION.RELEASE,
-                        Build.MODEL
-                    )
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
+            putExtra(
+                Intent.EXTRA_TEXT,
+                String.format(
+                    CELLPHONE_INFO_DIVER,
+                    BuildConfig.VERSION_NAME,
+                    Build.VERSION.SDK_INT,
+                    Build.VERSION.RELEASE,
+                    Build.MODEL
                 )
-                type = MESSAGE_TYPE
-            }
+            )
+            type = MESSAGE_TYPE
+        }
         )
     }
 }

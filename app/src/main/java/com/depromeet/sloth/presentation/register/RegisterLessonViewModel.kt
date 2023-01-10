@@ -10,32 +10,14 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.FetchLessonCategoryListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.FetchLessonSiteListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.RegisterLessonUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
-import com.depromeet.sloth.extensions.changeDateStringToArrayList
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.presentation.base.BaseViewModel
-import com.depromeet.sloth.presentation.item.Lesson
-import com.depromeet.sloth.util.CALENDAR_TIME_ZONE
-import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
-import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.sloth.util.Result
-import com.depromeet.sloth.util.UNAUTHORIZED
+import com.depromeet.sloth.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,22 +25,36 @@ class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,
     private val fetchLessonCategoryListUseCase: FetchLessonCategoryListUseCase,
     private val fetchLessonSiteListUseCase: FetchLessonSiteListUseCase,
-    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
-    private val _registerLessonSuccess = MutableSharedFlow<Unit>()
-    val registerLessonSuccess: SharedFlow<Unit> = _registerLessonSuccess.asSharedFlow()
+    private val _registerLessonSuccessEvent = MutableSharedFlow<Unit>()
+    val registerLessonSuccessEvent: SharedFlow<Unit> = _registerLessonSuccessEvent.asSharedFlow()
 
-    private val _fetchLessonCategoryListSuccess =
+    private val _fetchLessonCategoryListSuccessEvent =
         MutableSharedFlow<List<LessonCategoryResponse>>()
-    val fetchLessonCategoryListSuccess: SharedFlow<List<LessonCategoryResponse>> =
-        _fetchLessonCategoryListSuccess.asSharedFlow()
+    val fetchLessonCategoryListSuccessEvent: SharedFlow<List<LessonCategoryResponse>> =
+        _fetchLessonCategoryListSuccessEvent.asSharedFlow()
 
-    private val _fetchLessonSiteListSuccess = MutableSharedFlow<List<LessonSiteResponse>>()
-    val fetchLessonSiteListSuccess: SharedFlow<List<LessonSiteResponse>> =
-        _fetchLessonSiteListSuccess.asSharedFlow()
+    private val _fetchLessonSiteListSuccessEvent = MutableSharedFlow<List<LessonSiteResponse>>()
+    val fetchLessonSiteListSuccessEvent: SharedFlow<List<LessonSiteResponse>> =
+        _fetchLessonSiteListSuccessEvent.asSharedFlow()
+
+    private val _navigateToRegisterLessonSecondEvent = MutableSharedFlow<Unit>()
+    val navigateToRegisterLessonSecondEvent: SharedFlow<Unit> =
+        _navigateToRegisterLessonSecondEvent.asSharedFlow()
+
+    private val _navigateToRegisterLessonCheckEvent = MutableSharedFlow<Unit>()
+    val navigateToRegisterLessonCheckEvent: SharedFlow<Unit> =
+        _navigateToRegisterLessonCheckEvent.asSharedFlow()
+
+    private val _registerLessonStartDateEvent = MutableSharedFlow<Date>()
+    val registerLessonStartDateEvent: SharedFlow<Date> =
+        _registerLessonStartDateEvent.asSharedFlow()
+
+    private val _registerLessonEndDateEvent = MutableSharedFlow<Date>()
+    val registerLessonEndDateEvent: SharedFlow<Date> = _registerLessonEndDateEvent.asSharedFlow()
 
     private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
     val startDate: StateFlow<Date> = _startDate.asStateFlow()
@@ -72,9 +68,6 @@ class RegisterLessonViewModel @Inject constructor(
         fetchLessonSiteList()
         initLessonStartDate()
     }
-
-    private val _lesson = MutableStateFlow(Lesson())
-    val lesson: StateFlow<Lesson> = _lesson.asStateFlow()
 
     private val _lessonName =
         savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
@@ -146,23 +139,8 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
-    private val _navigateToRegisterLessonSecondEvent = MutableSharedFlow<Unit>()
-    val navigateToRegisterLessonSecondEvent: SharedFlow<Unit> =
-        _navigateToRegisterLessonSecondEvent.asSharedFlow()
-
-    private val _navigateToRegisterLessonCheckEvent = MutableSharedFlow<Unit>()
-    val navigateToRegisterLessonCheckEvent: SharedFlow<Unit> =
-        _navigateToRegisterLessonCheckEvent.asSharedFlow()
-
     private val _lessonDateRangeValidation = MutableStateFlow(true)
     val lessonDateRangeValidation: StateFlow<Boolean> = _lessonDateRangeValidation.asStateFlow()
-
-    private val _registerLessonStartDateEvent = MutableSharedFlow<Date>()
-    val registerLessonStartDateEvent: SharedFlow<Date> =
-        _registerLessonStartDateEvent.asSharedFlow()
-
-    private val _registerLessonEndDateEvent = MutableSharedFlow<Date>()
-    val registerLessonEndDateEvent: SharedFlow<Date> = _registerLessonEndDateEvent.asSharedFlow()
 
     val navigateToLessonSecondButtonState = combine(
         lessonName,
@@ -244,19 +222,6 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonDateRangeValidation.value = startDate.value <= endDate.value
     }
 
-    fun setLessonInfo() {
-        _lesson.value = Lesson(
-            categoryName = lessonCategoryName.value,
-            endDate = changeDateStringToArrayList(lessonEndDate.value),
-            lessonName = lessonName.value,
-            message = lessonMessage.value,
-            price = lessonPrice.value,
-            siteName = lessonSiteName.value,
-            startDate = changeDateStringToArrayList(lessonStartDate.value),
-            totalNumber = lessonTotalNumber.value
-        )
-    }
-
     fun registerLesson() = viewModelScope.launch {
         registerLessonUseCase(
             LessonRegisterRequest(
@@ -277,16 +242,14 @@ class RegisterLessonViewModel @Inject constructor(
                 is Result.Loading -> return@collect
                 is Result.Success -> {
                     showToastEvent(stringResourcesProvider.getString(R.string.lesson_register_complete))
-                    _registerLessonSuccess.emit(Unit)
+                    _registerLessonSuccessEvent.emit(Unit)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                         showToastEvent(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
-                    }
-                    else if (result.statusCode == UNAUTHORIZED) {
-                        showForbiddenDialogEvent()
-                    }
-                    else {
+                    } else if (result.statusCode == UNAUTHORIZED) {
+                        navigateToExpireDialogEvent()
+                    } else {
                         showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail))
                     }
                 }
@@ -303,18 +266,16 @@ class RegisterLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setLessonCategoryList(result.data)
-                        _fetchLessonCategoryListSuccess.emit(result.data)
+                        _fetchLessonCategoryListSuccessEvent.emit(result.data)
                         internetError(false)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             internetError(true)
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
-                        }
-                        else {
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            navigateToExpireDialogEvent()
+                        } else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
@@ -332,17 +293,15 @@ class RegisterLessonViewModel @Inject constructor(
                     is Result.Success -> {
                         internetError(false)
                         setLessonSiteList(result.data)
-                        _fetchLessonSiteListSuccess.emit(result.data)
+                        _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             internetError(true)
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
-                        }
-                        else {
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            navigateToExpireDialogEvent()
+                        } else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
@@ -409,10 +368,6 @@ class RegisterLessonViewModel @Inject constructor(
 
     fun registerLessonEndDate() = viewModelScope.launch {
         _registerLessonEndDateEvent.emit(endDate.value)
-    }
-
-    fun deleteAuthToken() = viewModelScope.launch {
-        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

@@ -8,7 +8,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +42,7 @@ class RegisterLessonCheckFragment :
         repeatOnStarted {
 
             launch {
-                registerLessonSuccess
+                registerLessonSuccessEvent
                     .collect {
                         val action =
                             RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
@@ -68,12 +68,9 @@ class RegisterLessonCheckFragment :
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@RegisterLessonCheckFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@RegisterLessonCheckFragment)
                     }
             }
 

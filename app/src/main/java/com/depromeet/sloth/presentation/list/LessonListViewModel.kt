@@ -5,7 +5,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.use_case.lesson.FetchAllLessonListUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.presentation.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -21,12 +20,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
     private val fetchAllLessonListUseCase: FetchAllLessonListUseCase,
-    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
-    private val _fetchLessonListSuccess = MutableSharedFlow<List<LessonAllResponse>>()
-    val fetchLessonListSuccess: SharedFlow<List<LessonAllResponse>> = _fetchLessonListSuccess.asSharedFlow()
+    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<LessonAllResponse>>()
+    val fetchLessonListSuccessEvent: SharedFlow<List<LessonAllResponse>> = _fetchLessonListSuccessEvent.asSharedFlow()
 
     private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
     val navigateRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
@@ -47,14 +45,14 @@ class LessonListViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         internetError(false)
-                        _fetchLessonListSuccess.emit(result.data)
+                        _fetchLessonListSuccessEvent.emit(result.data)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             internetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
+                            navigateToExpireDialogEvent()
                         }
                         else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
@@ -74,10 +72,6 @@ class LessonListViewModel @Inject constructor(
 
     fun navigateToLessonDetail(lesson: LessonAllResponse) = viewModelScope.launch {
         _navigateToLessonDetailEvent.emit(lesson)
-    }
-
-    fun deleteAuthToken() = viewModelScope.launch {
-        deleteAuthTokenUseCase()
     }
 
     override fun retry() {

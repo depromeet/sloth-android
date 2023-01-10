@@ -4,11 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.FinishLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.use_case.login.CheckLoggedInUseCase
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.presentation.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -27,8 +25,6 @@ class TodayLessonViewModel @Inject constructor(
     private val checkLoggedInUseCase: CheckLoggedInUseCase,
     private val getLessonTodayListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
-    private val finishLessonUseCase: FinishLessonUseCase,
-    private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
@@ -39,17 +35,15 @@ class TodayLessonViewModel @Inject constructor(
         checkLoggedIn()
     }
 
-    private val _fetchLessonListSuccess = MutableSharedFlow<List<LessonTodayResponse>>()
-    val fetchLessonListSuccess: SharedFlow<List<LessonTodayResponse>> =
-        _fetchLessonListSuccess.asSharedFlow()
+    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<LessonTodayResponse>>()
+    val fetchLessonListSuccessEvent: SharedFlow<List<LessonTodayResponse>> =
+        _fetchLessonListSuccessEvent.asSharedFlow()
 
     private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
-    val navigateRegisterLessonEvent: SharedFlow<Unit> =
-        _navigateToRegisterLessonEvent.asSharedFlow()
+    val navigateRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
 
-    private val _navigateToNotificationListEvent = MutableSharedFlow<Unit>()
-    val navigateToNotificationListEvent: SharedFlow<Unit> =
-        _navigateToNotificationListEvent.asSharedFlow()
+    private val _navigateToWaitDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToWaitDialogEvent: SharedFlow<Unit> = _navigateToWaitDialogEvent.asSharedFlow()
 
     private fun checkLoggedIn() = viewModelScope.launch {
         _autoLoginEvent.emit(checkLoggedInUseCase())
@@ -64,13 +58,13 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         internetError(false)
-                        _fetchLessonListSuccess.emit(result.data)
+                        _fetchLessonListSuccessEvent.emit(result.data)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             internetError(true)
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
+                            navigateToExpireDialogEvent()
                         } else {
                             showToastEvent(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                         }
@@ -85,42 +79,12 @@ class TodayLessonViewModel @Inject constructor(
             updateLessonCountUseCase(count = count, lessonId = lessonId)
         }
 
-    fun finishLesson(lessonId: String) = viewModelScope.launch {
-        finishLessonUseCase(lessonId)
-            .onEach { result ->
-                showLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_complete))
-                        fetchTodayLessonList()
-                    }
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            showForbiddenDialogEvent()
-                        }
-                        else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail))
-                        }
-                    }
-                }
-            }
-    }
-
     fun navigateToRegisterLesson() = viewModelScope.launch {
         _navigateToRegisterLessonEvent.emit(Unit)
     }
 
-    fun navigateToNotificationList() = viewModelScope.launch {
-        _navigateToNotificationListEvent.emit(Unit)
-    }
-
-    fun deleteAuthToken() = viewModelScope.launch {
-        deleteAuthTokenUseCase()
+    fun navigateToWaitDialog() = viewModelScope.launch {
+        _navigateToWaitDialogEvent.emit(Unit)
     }
 
     override fun retry() {

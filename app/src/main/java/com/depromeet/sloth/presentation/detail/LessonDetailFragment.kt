@@ -2,17 +2,15 @@ package com.depromeet.sloth.presentation.detail
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showForbiddenDialog
+import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseFragment
-import com.depromeet.sloth.presentation.custom.DialogState
-import com.depromeet.sloth.presentation.custom.SlothDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -20,7 +18,12 @@ import kotlinx.coroutines.launch
 class LessonDetailFragment :
     BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
 
-    private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
+    private val lessonDetailViewModel: LessonDetailViewModel by hiltNavGraphViewModels(R.id.nav_main)
+
+    override fun onStart() {
+        super.onStart()
+        lessonDetailViewModel.fetchLessonDetail()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,13 +45,6 @@ class LessonDetailFragment :
 
     private fun initObserver() = with(lessonDetailViewModel) {
         repeatOnStarted {
-
-            launch {
-                deleteLessonSuccess
-                    .collect {
-                        navigateToLessonList()
-                    }
-            }
 
             launch {
                 navigateToUpdateLessonEvent
@@ -79,12 +75,9 @@ class LessonDetailFragment :
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@LessonDetailFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@LessonDetailFragment)
                     }
             }
 
@@ -97,19 +90,8 @@ class LessonDetailFragment :
         }
     }
 
-    private fun navigateToLessonList() {
-        if (!findNavController().navigateUp()) {
-            requireActivity().finish()
-        }
-    }
-
     private fun showLessonDeleteDialog() {
-        val dlg = SlothDialog(requireContext(), DialogState.DELETE_LESSON)
-        dlg.onItemClickListener = object : SlothDialog.OnItemClickedListener {
-            override fun onItemClicked() {
-                lessonDetailViewModel.deleteLesson()
-            }
-        }
-        dlg.show()
+        val action = LessonDetailFragmentDirections.actionLessonDetailToDeleteLessonDialogFragment()
+        findNavController().safeNavigate(action)
     }
 }

@@ -39,7 +39,6 @@ class SlothPolicyWebViewFragment :
 
     private fun initListener() {
         binding.tbSlothPolicy.setNavigationOnClickListener {
-            // 뒤로 가기
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }

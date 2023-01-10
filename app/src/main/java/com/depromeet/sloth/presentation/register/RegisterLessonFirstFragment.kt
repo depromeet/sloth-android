@@ -22,7 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-// TODO 진입시 categoryList, siteList 두 api 중 하나라도 request 요청 실패할 경우 인터넷 연결 실패 화면 visible
 @AndroidEntryPoint
 class RegisterLessonFirstFragment :
     BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
@@ -68,7 +67,7 @@ class RegisterLessonFirstFragment :
         repeatOnStarted {
 
             launch {
-                fetchLessonCategoryListSuccess
+                fetchLessonCategoryListSuccessEvent
                     .collect {
                         bindAdapter(
                             lessonCategoryAdapter,
@@ -79,7 +78,7 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                fetchLessonSiteListSuccess
+                fetchLessonSiteListSuccessEvent
                     .collect {
                         bindAdapter(
                             lessonSiteAdapter,
@@ -109,12 +108,9 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                showForbiddenDialogEvent
+                navigateToExpireDialog
                     .collect {
-                        showForbiddenDialog(
-                            requireContext(),
-                            this@RegisterLessonFirstFragment
-                        ) { deleteAuthToken() }
+                        showExpireDialog(this@RegisterLessonFirstFragment)
                     }
             }
 
