@@ -1,8 +1,6 @@
 package com.depromeet.sloth.presentation
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -23,24 +21,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     override fun init() {
-        // initViews()
         initNavigation()
-    }
-
-    private fun initViews() {
-        // Crashlytics 비정상 종료 테스트
-        val crashButton = Button(this)
-        crashButton.text = getString(R.string.test_crash)
-        crashButton.setOnClickListener {
-            throw RuntimeException("Test Crash") // Force a crash
-        }
-
-        addContentView(
-            crashButton, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        )
     }
 
     private fun initNavigation() = with(binding) {
@@ -55,6 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         }
 
+        // BottomNavigationView radius 설정
         val radius = resources.getDimension(R.dimen.corner_radius)
         val bottomNavigationViewBackground = bnvMain.background as MaterialShapeDrawable
         bottomNavigationViewBackground.shapeAppearanceModel =
