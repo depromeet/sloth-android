@@ -98,6 +98,22 @@
         <item name="android:layout_height">42dp</item>
     </style>
 
+    <style name="Widget.Sloth.Button.DialogCancel" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/gray_200</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_width">124dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/gray_500</item>
+    </style>
+
+    <style name="Widget.Sloth.Button.DialogCheck" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/error</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_width">124dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="circleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
@@ -107,7 +123,7 @@
         <item name="bottomSheetStyle">@style/SlothBottomSheet</item>
     </style>
 
-    <style name = "SlothBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+    <style name="SlothBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
         <item name="shapeAppearanceOverlay">@style/SlothShapeAppearanceBottomSheetDialog</item>
 
     </style>

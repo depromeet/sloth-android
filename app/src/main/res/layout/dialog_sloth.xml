@@ -41,26 +41,22 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_dialog_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.Sloth.Button.DialogCancel"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_rounded_btn_cancel"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="6dp"
                 android:text="@string/cancel"
-                android:textColor="@color/gray_500"
-                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_dialog_check"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_dialog_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.Sloth.Button.DialogCheck"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_rounded_btn_delete"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="6dp"
                 android:text="@string/check"
-                android:textColor="@color/white"
-                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btn_dialog_cancel" />

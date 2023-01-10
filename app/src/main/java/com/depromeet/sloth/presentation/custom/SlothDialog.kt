@@ -2,12 +2,10 @@ package com.depromeet.sloth.presentation.custom
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.Window
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.DialogSlothBinding
@@ -39,14 +37,17 @@ class SlothDialog(context: Context, private val state: DialogState) {
             DialogState.FORBIDDEN -> {
                 with(binding) {
                     ivDialogState.setImageResource(R.mipmap.ic_sloth_logo)
+
                     tvDialogMessage.setText(R.string.forbidden_dialog_message)
+
                     btnDialogCancel.visibility = View.GONE
-                    btnDialogCheck.background = AppCompatResources.getDrawable(
-                        context, R.drawable.bg_rounded_sloth
-                    )
-                    btnDialogCheck.setOnClickListener {
-                        onItemClickListener.onItemClicked()
-                        dismiss()
+
+                    btnDialogCheck.apply {
+                        setBackgroundColor(context.getColor(R.color.sloth))
+                        setOnClickListener {
+                            onItemClickListener.onItemClicked()
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -76,11 +77,13 @@ class SlothDialog(context: Context, private val state: DialogState) {
             DialogState.DELETE_LESSON -> {
                 with(binding) {
                     tvDialogMessage.setText(R.string.delete_lesson_dialog_message)
-                    btnDialogCheck.setText(R.string.delete_lesson_dialog_message_check)
 
-                    btnDialogCheck.setOnClickListener {
-                        onItemClickListener.onItemClicked()
-                        dismiss()
+                    btnDialogCheck.apply {
+                        setText(R.string.delete_lesson_dialog_message_check)
+                        setOnClickListener {
+                            onItemClickListener.onItemClicked()
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -89,24 +92,26 @@ class SlothDialog(context: Context, private val state: DialogState) {
                 with(binding) {
                     ivDialogState.setImageResource(R.mipmap.ic_sloth_logo)
                     tvDialogMessage.setText(R.string.wait_dialog_message)
-                    btnDialogCancel.visibility = View.GONE
-                    btnDialogCheck.background = AppCompatResources.getDrawable(
-                        context, R.drawable.bg_rounded_sloth
-                    )
 
-                    btnDialogCheck.setOnClickListener {
-                        dismiss()
+                    btnDialogCancel.visibility = View.GONE
+
+                    btnDialogCheck.apply {
+                        setBackgroundColor(context.getColor(R.color.sloth))
+                        setOnClickListener {
+                            dismiss()
+                        }
                     }
                 }
             }
 
             DialogState.COMPLETE -> {
                 with(binding) {
-                    tvDialogMessage.setText(R.string.check_all_lesson_finished)
                     ivDialogState.setColorFilter(ContextCompat.getColor(context, R.color.sloth))
+
+                    tvDialogMessage.setText(R.string.check_all_lesson_finished)
+
                     btnDialogCheck.apply {
-                        backgroundTintList =
-                            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.sloth))
+                        setBackgroundColor(context.getColor(R.color.sloth))
                         text = context.getString(R.string.finished)
                         setOnClickListener {
                             onItemClickListener.onItemClicked()
