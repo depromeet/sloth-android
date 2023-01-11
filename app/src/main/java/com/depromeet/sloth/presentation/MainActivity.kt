@@ -1,6 +1,10 @@
 package com.depromeet.sloth.presentation
 
+import android.animation.ObjectAnimator
+import android.os.Build
 import android.view.View
+import android.view.animation.AnticipateInterpolator
+import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -21,7 +25,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     override fun init() {
+        setSplashScreen()
         initNavigation()
+    }
+
+    private fun setSplashScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { splashScreenView ->
+                ObjectAnimator.ofFloat(splashScreenView, View.ALPHA, 1f, 0f).run {
+                    interpolator = AnticipateInterpolator()
+                    duration = 200L
+                    doOnEnd { splashScreenView.remove() }
+                    start()
+                }
+            }
+        }
     }
 
     private fun initNavigation() = with(binding) {

@@ -13,8 +13,9 @@ abstract class BaseActivity<B: ViewDataBinding>(
     protected lateinit var binding: B
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        preload()
         super.onCreate(savedInstanceState)
+
+        preload()
 
         binding =  DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this@BaseActivity
