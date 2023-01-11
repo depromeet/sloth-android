@@ -19,7 +19,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-//TODO 데이터의 단일화
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,

@@ -144,9 +144,6 @@
         tools:layout="@layout/fragment_manage">
         <action
             android:id="@+id/action_manage_to_sloth_policy_webview"
-            app:destination="@id/sloth_policy_webview" />
-        <action
-            android:id="@+id/action_manage_to_sloth_policy_webview2"
             app:destination="@id/sloth_policy_webview"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
