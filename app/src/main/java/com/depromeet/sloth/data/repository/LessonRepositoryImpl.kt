@@ -3,16 +3,7 @@ package com.depromeet.sloth.data.repository
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
+import com.depromeet.sloth.data.model.response.lesson.*
 import com.depromeet.sloth.data.network.service.LessonService
 import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LessonRepository
@@ -152,8 +143,18 @@ class LessonRepositoryImpl @Inject constructor(
                     else -> Result.Error(Exception(message()), this.code())
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
-        } catch (e: Exception) {
-            return Result.Error(Exception(e.message))
+        } catch (exception: Exception) {
+            return when(exception) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    Result.Error(Exception(INTERNET_CONNECTION_ERROR))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    Result.Error(exception)
+                }
+            }
         }
     }
 

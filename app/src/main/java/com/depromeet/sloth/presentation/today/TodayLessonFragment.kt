@@ -17,13 +17,13 @@ import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 import com.depromeet.sloth.presentation.base.BaseFragment
 import com.depromeet.sloth.presentation.custom.LessonItemDecoration
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -274,7 +274,7 @@ class TodayLessonFragment :
     }
 
     //TODO Flow 로 변경
-    //TODO 뷰에서 명령을 내리면 안됨
+    //TODO 다른 api 호출 로직과 같은 방식으로 변경
     private fun updateLessonCount(
         lesson: LessonTodayResponse,
         count: Int,
@@ -309,45 +309,21 @@ class TodayLessonFragment :
                     }
 
                     is Result.Error -> {
-                        when (result.statusCode) {
-                            UNAUTHORIZED -> showExpireDialog(this@TodayLessonFragment)
-                            else -> {
-                                showToast(
-                                    requireContext(),
-                                    getString(R.string.lesson_update_fail)
-                                )
-                                Timber.tag("Update Error").d(result.throwable)
-                            }
+                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                            showToast(
+                                requireContext(),
+                                getString(R.string.lesson_update_fail_by_internet_error)
+                            )
+                        } else if (result.statusCode == UNAUTHORIZED) {
+                            showExpireDialog(this@TodayLessonFragment)
+                        } else {
+                            showToast(requireContext(), getString(R.string.lesson_update_fail))
                         }
                     }
                 }
-                hideProgress()
             }
+            hideProgress()
         }
     }
 
-//    private suspend fun updateLessonTodayList(
-//        lesson: LessonTodayResponse,
-//        bodyType: TodayLessonAdapter.BodyType,
-//        clickType: TodayLessonAdapter.ClickType,
-//        delayTime: Long,
-//        result: Result.Success<LessonUpdateCountResponse>,
-//    ) {
-//        delay(delayTime)
-//        when (bodyType) {
-//            TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-//                if (result.data.presentNumber == lesson.untilTodayNumber
-//                //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
-//                ) lessonListViewModel.fetchTodayLessonList()
-//            }
-//            TodayLessonAdapter.BodyType.FINISHED -> {
-//                if (result.data.presentNumber < lesson.untilTodayNumber ||
-//                    result.data.presentNumber == lesson.totalNumber ||
-//                    result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
-//                )
-//                lessonListViewModel.fetchTodayLessonList()
-//            }
-//            else -> Unit
-//        }
-//    }
 }
