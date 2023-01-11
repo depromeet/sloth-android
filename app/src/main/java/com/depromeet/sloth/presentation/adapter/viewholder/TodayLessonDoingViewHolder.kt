@@ -1,13 +1,16 @@
 package com.depromeet.sloth.presentation.adapter.viewholder
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 
 class TodayLessonDoingViewHolder(
+    private val context: Context,
     private val binding: ItemHomeTodayLessonDoingBinding,
     private val currentList: List<LessonTodayResponse>,
     private val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
@@ -57,7 +60,7 @@ class TodayLessonDoingViewHolder(
 //                in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
 //                else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
 //            }
-            tvTodayLessonRemain.setTextColor(Color.parseColor("#53E183"))
+            tvTodayLessonRemain.setTextColor(context.resources.getColor(R.color.primary_400, null))
         }
     }
 

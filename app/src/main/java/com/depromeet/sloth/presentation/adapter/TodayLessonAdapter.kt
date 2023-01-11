@@ -18,23 +18,35 @@ class TodayLessonAdapter(
     private val bodyType: BodyType,
     val onClick: (ClickType, LessonTodayResponse, Long) -> Unit
 ) : ListAdapter<LessonTodayResponse, RecyclerView.ViewHolder>(diffCallback) {
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): RecyclerView.ViewHolder {
-        return when(bodyType) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (bodyType) {
             BodyType.EMPTY -> TodayLessonEmptyViewHolder(
-                ItemHomeTodayLessonEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                ItemHomeTodayLessonEmptyBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
                 onClick,
             )
+
             BodyType.FINISHED -> TodayLessonFinishedViewHolder(
-                ItemHomeTodayLessonFinishedBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                ItemHomeTodayLessonFinishedBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
                 currentList,
                 onClick,
-
             )
+
             BodyType.NOT_FINISHED -> TodayLessonDoingViewHolder(
-                ItemHomeTodayLessonDoingBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                parent.context,
+                ItemHomeTodayLessonDoingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
                 currentList,
                 onClick,
             )
