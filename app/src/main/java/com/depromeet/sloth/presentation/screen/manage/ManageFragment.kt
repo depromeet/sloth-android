@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.manage
+package com.depromeet.sloth.presentation.screen.manage
 
 import android.content.Intent
 import android.os.Build
@@ -12,7 +12,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.presentation.base.BaseFragment
+import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,7 +103,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     }
 
     private fun showUpdateMemberDialog() {
-        val action = ManageFragmentDirections.actionManageToUpdateMemberFragment(
+        val action = ManageFragmentDirections.actionManageToUpdateMemberDialog(
             manageViewModel.uiState.value.memberName
         )
         findNavController().safeNavigate(action)

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.detail
+package com.depromeet.sloth.presentation.screen.lessondetail
 
 import android.os.Bundle
 import android.view.View
@@ -9,7 +9,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.presentation.base.BaseFragment
+import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -90,7 +90,7 @@ class LessonDetailFragment :
     }
 
     private fun showLessonDeleteDialog() {
-        val action = LessonDetailFragmentDirections.actionLessonDetailToDeleteLessonDialogFragment()
+        val action = LessonDetailFragmentDirections.actionLessonDetailToDeleteLessonDialog()
         findNavController().safeNavigate(action)
     }
 }

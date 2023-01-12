@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.update_member
+package com.depromeet.sloth.presentation.screen.manage
 
 import android.os.Bundle
 import android.text.Editable
@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentUpdateMemberBinding
 import com.depromeet.sloth.extensions.*
-import com.depromeet.sloth.presentation.base.BaseDialogFragment
+import com.depromeet.sloth.presentation.screen.base.BaseDialogFragment
 import com.depromeet.sloth.util.DebounceEditTextListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -108,7 +108,7 @@ class UpdateMemberFragment :
     }
 
     private fun navigateToManage() {
-        val action = UpdateMemberFragmentDirections.actionUpdateMemberToManage()
+        val action = UpdateMemberFragmentDirections.actionUpdateMemberDialogToManage()
         findNavController().safeNavigate(action)
     }
 

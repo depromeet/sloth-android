@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.login
+package com.depromeet.sloth.presentation.screen.login
 
 import android.os.Bundle
 import android.view.View
@@ -9,7 +9,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.presentation.base.BaseFragment
+import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -63,7 +63,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun showLoginBottomSheet() {
-        val action = LoginFragmentDirections.actionLoginToLoginBottom()
+        val action = LoginFragmentDirections.actionLoginToLoginBottomDialog()
         findNavController().safeNavigate(action)
     }
 

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation
+package com.depromeet.sloth.presentation.screen
 
 import android.animation.ObjectAnimator
 import android.os.Build
@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ActivityMainBinding
-import com.depromeet.sloth.presentation.base.BaseActivity
+import com.depromeet.sloth.presentation.screen.base.BaseActivity
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +66,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.today_lesson, R.id.lesson_list, R.id.manage, R.id.finish_lesson_dialog,
-                    R.id.wait_dialog, R.id.logout_dialog, R.id.update_member ->
+                    R.id.wait_dialog, R.id.logout_dialog, R.id.update_member_dialog ->
                     bnvMain.visibility = View.VISIBLE
 
                 else -> bnvMain.visibility = View.GONE
