@@ -282,7 +282,6 @@ class UpdateLessonFragment :
         }
 
         clearEditTextFocus(requireActivity(), editText)
-        // binding.clUpdateLesson.clearFocus()
     }
 
     @SuppressLint("ClickableViewAccessibility")
