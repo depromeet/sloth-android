@@ -2,6 +2,7 @@ package com.depromeet.sloth.util
 
 import android.graphics.Color
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -61,8 +62,8 @@ fun setLessonSummaryText(view: TextView, currentProgressRate: Float, goalProgres
         }
     }
 
-@BindingAdapter("totalNumber")
-fun setLessonTotalNumberFormat(view: TextView, totalNumber: Int) = with(view) {
+@BindingAdapter("lessonTotalNumberHint")
+fun setLessonTotalNumberFormat(view: EditText, totalNumber: Int) = with(view) {
     hint = view.context.getString(R.string.unit_lesson_total_number, totalNumber)
 }
 
@@ -78,10 +79,10 @@ fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = w
     }
 }
 
-@BindingAdapter("text")
-fun toString(view: TextView, number: Int) = with(view) {
-    text = number.toString()
-}
+//@BindingAdapter("text")
+//fun toString(view: TextView, number: Int) = with(view) {
+//    text = number.toString()
+//}
 
 @BindingAdapter("priceFormat")
 fun setPriceFormat(view: TextView, price: Int) = with(view) {
@@ -89,8 +90,8 @@ fun setPriceFormat(view: TextView, price: Int) = with(view) {
     text = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
 
-@BindingAdapter("priceFormatHint")
-fun setPriceFormatHint(view: TextView, price: Int) = with(view) {
+@BindingAdapter("lessonPriceHint")
+fun setLessonPriceHint(view: EditText, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
     hint = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }

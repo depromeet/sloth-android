@@ -3,6 +3,7 @@ package com.depromeet.sloth.presentation.screen.updatelesson
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
@@ -12,6 +13,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentUpdateLessonBinding
 import com.depromeet.sloth.extensions.*
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
+import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -51,7 +53,7 @@ class UpdateLessonFragment :
 
     override fun initViews() = with(binding) {
         focusInputForm(etUpdateLessonName)
-        validateCountInputForm(etUpdateLessonCount)
+        validateCountInputForm(etUpdateLessonTotalNumber)
         focusSpinnerForm(spnUpdateLessonCategory)
         focusSpinnerForm(spnUpdateLessonSite)
         validatePriceInputForm(etUpdateLessonPrice)
@@ -155,35 +157,29 @@ class UpdateLessonFragment :
     }
 
     private fun focusInputForm(editText: EditText) {
-        editText.apply {
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    text: CharSequence?,
-                    i1: Int,
-                    i2: Int,
-                    i3: Int
-                ) {
-                }
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
+            }
 
-                override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                    updateLessonViewModel.setLessonName(text.toString())
-                }
+            override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
+                updateLessonViewModel.setLessonName(text.toString())
+            }
 
-                override fun afterTextChanged(editable: Editable?) {}
-            })
+            override fun afterTextChanged(editable: Editable?) {}
+        })
 
-            setOnFocusChangeListener { _, gainFocus ->
-                if (gainFocus) {
-                    editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
-                } else {
-                    editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
-                }
+        editText.setOnFocusChangeListener { _, gainFocus ->
+            if (gainFocus) {
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
+            } else {
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
     }
 
+
     private fun validateCountInputForm(editText: EditText) = with(binding) {
-        var result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+        var result = DEFAULT_STRING_VALUE
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -195,27 +191,27 @@ class UpdateLessonFragment :
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
                     updateLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
                     result = updateLessonViewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
+                        tvUpdateLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
                     } else {
-                        tvUpdateLessonCountInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
+                        tvUpdateLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
                     }
                     editText.setText(result)
                     editText.setSelection(result.length)
 
-                    tvUpdateLessonCountInfo.apply {
+                    tvUpdateLessonTotalNumberInfo.apply {
                         text = getString(R.string.input_lesson_count, result)
                         visibility = View.VISIBLE
                     }
                 }
 
-                if (android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = DEFAULT_STRING_VALUE
                     editText.setText(result)
-                    tvUpdateLessonCountInfo.apply {
+                    tvUpdateLessonTotalNumberInfo.apply {
                         text = result
                         visibility = View.INVISIBLE
                     }
@@ -224,11 +220,11 @@ class UpdateLessonFragment :
 
             override fun afterTextChanged(editable: Editable?) {}
         })
-        setValidateEditTextFocus(editText, tvUpdateLessonCountInfo)
+        setValidateEditTextFocus(editText, tvUpdateLessonTotalNumberInfo)
     }
 
     private fun validatePriceInputForm(editText: EditText) = with(binding) {
-        var result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+        var result = DEFAULT_STRING_VALUE
         val decimalFormat = DecimalFormat(com.depromeet.sloth.util.DECIMAL_FORMAT_PATTERN)
 
         editText.addTextChangedListener(object : TextWatcher {
@@ -241,7 +237,7 @@ class UpdateLessonFragment :
             }
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                if (!android.text.TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
+                if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
                     updateLessonViewModel.setLessonPrice(
                         charSequence.toString().replace(",", "").toInt()
                     )
@@ -259,8 +255,8 @@ class UpdateLessonFragment :
                     }
                 }
 
-                if (android.text.TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    result = com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+                if (TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
+                    result = DEFAULT_STRING_VALUE
                     editText.setText(result)
                     tvUpdateLessonPriceInfo.apply {
                         text = result
@@ -280,12 +276,13 @@ class UpdateLessonFragment :
                 editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
                 textView.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_sloth)
             } else {
+                editText.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
                 textView.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_gray)
             }
         }
 
-        clearEditTextFocus(editText)
-        binding.clUpdateLesson.clearFocus()
+        clearEditTextFocus(requireActivity(), editText)
+        // binding.clUpdateLesson.clearFocus()
     }
 
     @SuppressLint("ClickableViewAccessibility")
