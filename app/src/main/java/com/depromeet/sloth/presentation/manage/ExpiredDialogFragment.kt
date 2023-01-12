@@ -31,12 +31,10 @@ class ExpiredDialogFragment :
     private fun initObserver() = with(manageViewModel) {
         repeatOnStarted {
             launch {
-                launch {
-                    logoutSuccess
-                        .collect {
-                            logout(requireContext(), this@ExpiredDialogFragment) { deleteAuthToken() }
-                        }
-                }
+                logoutSuccessEvent
+                    .collect {
+                        logout(requireContext(), this@ExpiredDialogFragment) { deleteAuthToken() }
+                    }
             }
         }
     }
