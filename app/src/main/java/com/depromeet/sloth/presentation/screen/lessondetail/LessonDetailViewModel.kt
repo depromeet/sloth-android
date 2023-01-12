@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +43,6 @@ class LessonDetailViewModel @Inject constructor(
         _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
     fun fetchLessonDetail() = viewModelScope.launch {
-        Timber.d(lessonId)
         fetchLessonDetailUseCase(lessonId)
             .onEach { result ->
                 setLoading(result is Result.Loading)

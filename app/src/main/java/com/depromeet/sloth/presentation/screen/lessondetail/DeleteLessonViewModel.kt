@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +41,6 @@ class DeleteLessonViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        Timber.d("emit")
                         showToast(stringResourcesProvider.getString(R.string.lesson_delete_complete))
                         _deleteLessonSuccessEvent.emit(Unit)
                     }
