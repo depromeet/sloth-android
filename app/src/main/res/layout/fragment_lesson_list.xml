@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.list.LessonListViewModel" />
+            type="com.depromeet.sloth.presentation.screen.lessonlist.LessonListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

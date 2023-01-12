@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.finish.FinishLessonViewModel" />
+            type="com.depromeet.sloth.presentation.screen.todaylesson.FinishLessonViewModel" />
 
     </data>
 

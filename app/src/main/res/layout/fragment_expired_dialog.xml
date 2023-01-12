@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.manage.ManageViewModel" />
+            type="com.depromeet.sloth.presentation.screen.manage.ManageViewModel" />
     </data>
 
 

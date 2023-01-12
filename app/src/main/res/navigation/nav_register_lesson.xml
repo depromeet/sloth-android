@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/register_lesson_first"
-        android:name="com.depromeet.sloth.presentation.register.RegisterLessonFirstFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonFirstFragment"
         tools:layout="@layout/fragment_register_lesson_first"
         android:label="RegisterLessonFirstFragment">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/register_lesson_second"
-        android:name="com.depromeet.sloth.presentation.register.RegisterLessonSecondFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonSecondFragment"
         tools:layout="@layout/fragment_register_lesson_second"
         android:label="RegisterLessonSecondFragment">
         <action
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/register_lesson_check"
-        android:name="com.depromeet.sloth.presentation.register.RegisterLessonCheckFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonCheckFragment"
         tools:layout="@layout/fragment_register_lesson_check"
         android:label="RegisterLessonCheckFragment" />
     <action
