@@ -62,6 +62,13 @@ class RegisterLessonFirstFragment :
         initObserver()
     }
 
+    override fun initViews() = with(binding) {
+        focusInputForm(etRegisterLessonName)
+        validateInputForm(etRegisterLessonTotalNumber)
+        focusSpinnerForm(spnRegisterLessonCategory)
+        focusSpinnerForm(spnRegisterLessonSite)
+    }
+
     private fun initListener() {
         binding.tbLayout.tbRegisterLesson.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
@@ -128,13 +135,6 @@ class RegisterLessonFirstFragment :
                     }
             }
         }
-    }
-
-    override fun initViews() = with(binding) {
-        focusInputForm(etRegisterLessonName)
-        validateInputForm(etRegisterLessonTotalNumber)
-        focusSpinnerForm(spnRegisterLessonCategory)
-        focusSpinnerForm(spnRegisterLessonSite)
     }
 
     private fun bindAdapter(arrayAdapter: ArrayAdapter<String>, spinner: Spinner, position: Int) {

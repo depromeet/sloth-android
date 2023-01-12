@@ -104,7 +104,7 @@ class UpdateMemberDialogFragment :
                 }
             }
         })
-        setEditTextFocus(editText)
+        setEditTextFocus(requireActivity(), editText)
     }
 
     private fun navigateToManage() {
