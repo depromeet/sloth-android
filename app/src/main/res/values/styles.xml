@@ -136,5 +136,9 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
+    <style name="SlothDialog" parent="@style/Theme.MaterialComponents.Dialog">
+        <item name="android:background">@drawable/bg_sloth_dialog</item>
+    </style>
+
 
 </resources>

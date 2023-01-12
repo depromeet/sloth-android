@@ -34,8 +34,11 @@ abstract class BaseDialogFragment<B : ViewDataBinding>(
             .run {
                 AppCompatDialog(requireContext())
                     .apply {
+                        // system back 버튼 눌렀을 때 no cancle
                         setCancelable(false)
+                        // Dialog 자체 배경 부분 투명 처리
                         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        // Dialog 호출 시 배경 화면이 검정색으로 바뀌는 것을 막기
                         window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                         setContentView(this@run.root)
                     }
@@ -57,6 +60,8 @@ abstract class BaseDialogFragment<B : ViewDataBinding>(
         binding.lifecycleOwner = viewLifecycleOwner
         setSizeDialog()
     }
+
+    override fun getTheme(): Int = R.style.SlothDialog
 
     private fun setSizeDialog() {
         context?.let {

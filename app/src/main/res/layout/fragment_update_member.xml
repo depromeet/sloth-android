@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginHorizontal="32dp"
-        android:background="@drawable/bg_sloth_dialog">
+        android:layout_marginHorizontal="32dp">
 
         <ImageView
             android:id="@+id/iv_member_profile_image"

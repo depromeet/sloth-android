@@ -13,8 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="312dp"
         android:layout_height="202dp"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_sloth_dialog">
+        android:layout_gravity="center">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_dialog_state"
