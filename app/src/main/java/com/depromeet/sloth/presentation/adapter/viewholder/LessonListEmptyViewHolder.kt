@@ -9,10 +9,10 @@ class LessonListEmptyViewHolder(
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lessonInfo: LessonAllResponse) {
+    fun bind(lesson: LessonAllResponse) {
         itemView.apply {
             binding.apply {
-                btnLessonListRegister.setOnClickListener { onClick(lessonInfo) }
+                btnLessonListRegister.setOnClickListener { onClick(lesson) }
             }
         }
     }

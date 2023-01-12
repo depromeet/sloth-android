@@ -16,28 +16,28 @@ class LessonListDoingViewHolder(
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lessonInfo: LessonAllResponse) {
+    fun bind(lesson: LessonAllResponse) {
         itemView.apply {
             binding.apply {
-                val progressRate = (lessonInfo.currentProgressRate / 100.0f)
+                val progressRate = (lesson.currentProgressRate / 100.0f)
                 tvLessonListCurrentNumber.text =
-                    (ceil(progressRate * lessonInfo.totalNumber)).toInt().toString()
-                tvLessonListTotalNumber.text = lessonInfo.totalNumber.toString()
-                tvLessonListPercent.text = (100 - lessonInfo.currentProgressRate).toString()
+                    (ceil(progressRate * lesson.totalNumber)).toInt().toString()
+                tvLessonListTotalNumber.text = lesson.totalNumber.toString()
+                tvLessonListPercent.text = (100 - lesson.currentProgressRate).toString()
                 tvLessonListGoal.text = (progressRate * 100).toInt().toString()
                 tvLessonListRemain.text =
-                    if (lessonInfo.remainDay == 0) "D-Day" else "D-${lessonInfo.remainDay}"
-                tvLessonListCategory.text = lessonInfo.categoryName
-                tvLessonListSite.text = lessonInfo.siteName
-                tvLessonListName.text = lessonInfo.lessonName
-                tvLessonListPrice.text = changeDecimalFormat(lessonInfo.price)
+                    if (lesson.remainDay == 0) "D-Day" else "D-${lesson.remainDay}"
+                tvLessonListCategory.text = lesson.categoryName
+                tvLessonListSite.text = lesson.siteName
+                tvLessonListName.text = lesson.lessonName
+                tvLessonListPrice.text = changeDecimalFormat(lesson.price)
 
                 val set = ConstraintSet()
                 set.clone(clLessonList)
                 set.setHorizontalBias(vwLessonListCurrentLine.id, progressRate)
                 set.setHorizontalBias(
                     vwLessonListGoalLine.id,
-                    lessonInfo.goalProgressRate / 100.0f
+                    lesson.goalProgressRate / 100.0f
                 )
                 set.applyTo(clLessonList)
                 vwLessonListGoalLine.bringToFront()
@@ -61,7 +61,9 @@ class LessonListDoingViewHolder(
                     interpolator = DecelerateInterpolator()
                 }.start()
 
-                clLessonList.setOnClickListener { onClick(lessonInfo) }
+                clLessonList.setOnClickListener {
+                    onClick(lesson)
+                }
             }
         }
     }

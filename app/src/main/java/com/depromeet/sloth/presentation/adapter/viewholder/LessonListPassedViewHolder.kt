@@ -12,24 +12,24 @@ class LessonListPassedViewHolder(
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lessonInfo: LessonAllResponse) {
+    fun bind(lesson: LessonAllResponse) {
         itemView.apply {
             binding.apply {
-                tvLessonListCategory.text = lessonInfo.categoryName
-                tvLessonListSite.text = lessonInfo.siteName
-                tvLessonListName.text = lessonInfo.lessonName
-                tvLessonListPrice.text = changeDecimalFormat(lessonInfo.price)
-                tvLessonListTotalCount.text = lessonInfo.totalNumber.toString()
-                val progressRate = (lessonInfo.currentProgressRate / 100.0f)
+                tvLessonListCategory.text = lesson.categoryName
+                tvLessonListSite.text = lesson.siteName
+                tvLessonListName.text = lesson.lessonName
+                tvLessonListPrice.text = changeDecimalFormat(lesson.price)
+                tvLessonListTotalCount.text = lesson.totalNumber.toString()
+                val progressRate = (lesson.currentProgressRate / 100.0f)
                 val isComplete =
-                    (ceil(progressRate * lessonInfo.totalNumber)).toInt() == lessonInfo.totalNumber
+                    (ceil(progressRate * lesson.totalNumber)).toInt() == lesson.totalNumber
                 if (isComplete) {
                     ivLessonListStamp.setImageResource(R.drawable.ic_lesson_list_success)
                 } else {
                     ivLessonListStamp.setImageResource(R.drawable.ic_lesson_list_fail)
                 }
 
-                clLessonList.setOnClickListener { onClick(lessonInfo) }
+                clLessonList.setOnClickListener { onClick(lesson) }
             }
         }
     }

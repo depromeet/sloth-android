@@ -10,16 +10,16 @@ class LessonListPlanningViewHolder(
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lessonInfo: LessonAllResponse) {
+    fun bind(lesson: LessonAllResponse) {
         itemView.apply {
             binding.apply {
-                tvLessonListCategory.text = lessonInfo.categoryName
-                tvLessonListSite.text = lessonInfo.siteName
-                tvLessonListName.text = lessonInfo.lessonName
-                tvLessonListPrice.text = changeDecimalFormat(lessonInfo.price)
-                tvLessonListPlanningDate.text = lessonInfo.startDate.replace("-", ".")
+                tvLessonListCategory.text = lesson.categoryName
+                tvLessonListSite.text = lesson.siteName
+                tvLessonListName.text = lesson.lessonName
+                tvLessonListPrice.text = changeDecimalFormat(lesson.price)
+                tvLessonListPlanningDate.text = lesson.startDate.replace("-", ".")
 
-                clLessonList.setOnClickListener { onClick(lessonInfo) }
+                clLessonList.setOnClickListener { onClick(lesson) }
             }
         }
     }

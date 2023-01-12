@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+//TODO 어댑터에 생성자에 있는 Enum class 제거
 @AndroidEntryPoint
 class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
@@ -121,15 +122,15 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         findNavController().safeNavigate(action)
     }
 
-    private fun navigateToLessonDetail(lessonInfo: LessonAllResponse) {
+    private fun navigateToLessonDetail(lesson: LessonAllResponse) {
         val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
-            lessonInfo.lessonId.toString()
+            lesson.lessonId.toString()
         )
         findNavController().safeNavigate(action)
     }
 
-    private fun setLessonList(lessonInfo: List<LessonAllResponse>) {
-        when (lessonInfo.isEmpty()) {
+    private fun setLessonList(lessonList: List<LessonAllResponse>) {
+        when (lessonList.isEmpty()) {
             true -> {
                 binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = false
                 val emptyLessonAdapter =
@@ -149,7 +150,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                 val lessonPlanningList = mutableListOf<LessonAllResponse>()
                 val lessonPassedList = mutableListOf<LessonAllResponse>()
 
-                lessonInfo.forEach { lesson ->
+                lessonList.forEach { lesson ->
                     when (getLessonType(lesson)) {
                         LessonListAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
                         LessonListAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
@@ -208,13 +209,11 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getLessonType(
-        lessonInfo: LessonAllResponse,
-    ): LessonListAdapter.BodyType {
+    private fun getLessonType(lesson: LessonAllResponse, ): LessonListAdapter.BodyType {
         val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
-        val startDate = dateFormat.parse(lessonInfo.startDate)
+        val startDate = dateFormat.parse(lesson.startDate)
         val todayDate = Calendar.getInstance()
-        val isPassed = lessonInfo.isFinished || lessonInfo.lessonStatus == PAST
+        val isPassed = lesson.isFinished || lesson.lessonStatus == PAST
         val isPlanning = (todayDate.time.time - startDate!!.time) < 0L
 
         return when {
