@@ -49,11 +49,11 @@ class ManageViewModel @Inject constructor(
     val navigateToWithdrawalDialogEvent: SharedFlow<Unit> =
         _navigateToWithdrawalDialogEvent.asSharedFlow()
 
-    private val _logoutSuccess = MutableSharedFlow<Unit>()
-    val logoutSuccess: SharedFlow<Unit> = _logoutSuccess.asSharedFlow()
+    private val _logoutSuccessEvent = MutableSharedFlow<Unit>()
+    val logoutSuccessEvent: SharedFlow<Unit> = _logoutSuccessEvent.asSharedFlow()
 
-    private val _logoutCancel = MutableSharedFlow<Unit>()
-    val logoutCancel: SharedFlow<Unit> = _logoutCancel.asSharedFlow()
+    private val _logoutCancelEvent = MutableSharedFlow<Unit>()
+    val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
 
     fun fetchMemberInfo() = viewModelScope.launch {
         fetchMemberInfoUseCase()
@@ -128,7 +128,7 @@ class ManageViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         showToastEvent(stringResourcesProvider.getString(R.string.logout_complete))
-                        _logoutSuccess.emit(Unit)
+                        _logoutSuccessEvent.emit(Unit)
                     }
 
                     is Result.Error -> {
@@ -166,7 +166,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun navigateToManage() = viewModelScope.launch {
-        _logoutCancel.emit(Unit)
+        _logoutCancelEvent.emit(Unit)
     }
 
     fun deleteAuthToken() = viewModelScope.launch {

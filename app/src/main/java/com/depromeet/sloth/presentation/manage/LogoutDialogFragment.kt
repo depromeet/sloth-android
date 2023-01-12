@@ -31,14 +31,14 @@ class LogoutDialogFragment :
     private fun initObserver() = with(manageViewModel) {
         repeatOnStarted {
             launch {
-                logoutSuccess
+                logoutSuccessEvent
                     .collect {
                         logout(requireContext(), this@LogoutDialogFragment) { deleteAuthToken() }
                     }
             }
 
             launch {
-                logoutCancel.collect { closeLogoutDialog() }
+                logoutCancelEvent.collect { closeLogoutDialog() }
             }
         }
     }
