@@ -54,6 +54,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingHorizontal="32dp"
                         android:text="@{vm.uiState.memberName}"
                         android:textColor="@color/gray_600"
                         android:textSize="20dp"
@@ -302,7 +305,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{vm}"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
