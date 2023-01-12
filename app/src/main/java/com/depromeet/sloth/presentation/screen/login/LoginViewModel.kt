@@ -30,7 +30,8 @@ class LoginViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val _registerNotificationTokenSuccessEvent = MutableSharedFlow<Unit>()
-    val registerNotificationTokenSuccessEvent: SharedFlow<Unit> = _registerNotificationTokenSuccessEvent.asSharedFlow()
+    val registerNotificationTokenSuccessEvent: SharedFlow<Unit> =
+        _registerNotificationTokenSuccessEvent.asSharedFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
@@ -90,6 +91,7 @@ class LoginViewModel @Inject constructor(
                     is Result.Success -> {
                         fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                     }
+
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
@@ -115,6 +117,7 @@ class LoginViewModel @Inject constructor(
                             createAndRegisterNotificationToken()
                         }
                     }
+
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
@@ -145,11 +148,12 @@ class LoginViewModel @Inject constructor(
             .onEach { result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
-                when(result) {
+                when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         _registerNotificationTokenSuccessEvent.emit(Unit)
                     }
+
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.please_check_internet))

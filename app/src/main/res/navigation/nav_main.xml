@@ -222,7 +222,7 @@
 
     <dialog
         android:id="@+id/update_member_dialog"
-        android:name="com.depromeet.sloth.presentation.screen.manage.UpdateMemberFragment"
+        android:name="com.depromeet.sloth.presentation.screen.manage.UpdateMemberDialogFragment"
         android:label="UpdateMemberFragment"
         tools:layout="@layout/fragment_update_member_dialog">
 
