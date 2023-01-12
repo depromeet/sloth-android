@@ -79,11 +79,6 @@ fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = w
     }
 }
 
-//@BindingAdapter("text")
-//fun toString(view: TextView, number: Int) = with(view) {
-//    text = number.toString()
-//}
-
 @BindingAdapter("priceFormat")
 fun setPriceFormat(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")

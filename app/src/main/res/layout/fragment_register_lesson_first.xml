@@ -113,7 +113,6 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
-                    android:maxLength="4"
                     android:paddingHorizontal="18dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
