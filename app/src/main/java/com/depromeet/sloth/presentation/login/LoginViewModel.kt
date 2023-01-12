@@ -83,7 +83,7 @@ class LoginViewModel @Inject constructor(
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
         fetchGoogleAuthInfoUseCase(authCode = authCode)
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
@@ -92,9 +92,9 @@ class LoginViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                            showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail))
+                            showToast(stringResourcesProvider.getString(R.string.login_fail))
                         }
                     }
                 }
@@ -104,7 +104,7 @@ class LoginViewModel @Inject constructor(
     fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
         fetchSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
@@ -117,9 +117,9 @@ class LoginViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                            showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.login_fail))
+                            showToast(stringResourcesProvider.getString(R.string.login_fail))
                         }
                     }
                 }
@@ -143,7 +143,7 @@ class LoginViewModel @Inject constructor(
     ) = viewModelScope.launch {
         registerNotificationTokenUseCase(fcmToken)
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when(result) {
                     is Result.Loading -> return@collect
@@ -152,9 +152,9 @@ class LoginViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.please_check_internet))
+                            showToast(stringResourcesProvider.getString(R.string.please_check_internet))
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.please_check_internet))
+                            showToast(stringResourcesProvider.getString(R.string.please_check_internet))
                         }
                     }
                 }

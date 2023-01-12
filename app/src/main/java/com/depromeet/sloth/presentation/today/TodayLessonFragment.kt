@@ -2,6 +2,7 @@ package com.depromeet.sloth.presentation.today
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
@@ -12,7 +13,6 @@ import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showExpireDialog
-import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 import com.depromeet.sloth.presentation.base.BaseFragment
@@ -101,7 +101,7 @@ class TodayLessonFragment :
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@TodayLessonFragment)
                     }
@@ -110,7 +110,7 @@ class TodayLessonFragment :
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }
@@ -310,14 +310,19 @@ class TodayLessonFragment :
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(
+                            Toast.makeText(
                                 requireContext(),
-                                getString(R.string.lesson_update_fail_by_internet_error)
-                            )
+                                getString(R.string.lesson_update_fail_by_internet_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else if (result.statusCode == UNAUTHORIZED) {
                             showExpireDialog(this@TodayLessonFragment)
                         } else {
-                            showToast(requireContext(), getString(R.string.lesson_update_fail))
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.lesson_update_fail),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }

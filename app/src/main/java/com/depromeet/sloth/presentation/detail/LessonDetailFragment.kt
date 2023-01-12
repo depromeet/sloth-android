@@ -2,6 +2,7 @@ package com.depromeet.sloth.presentation.detail
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
@@ -9,7 +10,6 @@ import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showExpireDialog
-import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -75,7 +75,7 @@ class LessonDetailFragment :
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@LessonDetailFragment)
                     }
@@ -84,7 +84,7 @@ class LessonDetailFragment :
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

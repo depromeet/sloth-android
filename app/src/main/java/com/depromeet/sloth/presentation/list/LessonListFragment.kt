@@ -3,6 +3,7 @@ package com.depromeet.sloth.presentation.list
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
@@ -100,7 +101,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@LessonListFragment)
                     }
@@ -109,7 +110,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

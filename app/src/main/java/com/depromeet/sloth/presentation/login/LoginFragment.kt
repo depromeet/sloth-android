@@ -2,13 +2,13 @@ package com.depromeet.sloth.presentation.login
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -54,7 +54,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.BuildConfig
@@ -12,7 +13,6 @@ import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.extensions.showExpireDialog
-import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseFragment
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
@@ -88,7 +88,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@ManageFragment)
                     }
@@ -97,7 +97,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

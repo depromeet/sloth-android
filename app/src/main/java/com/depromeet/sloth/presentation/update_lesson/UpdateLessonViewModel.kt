@@ -131,23 +131,23 @@ class UpdateLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value,
             )
         ).onEach { result ->
-            showLoading(result is Result.Loading)
+            setLoading(result is Result.Loading)
         }.collect {result ->
             when(result) {
                 is Result.Loading -> return@collect
                 is Result.Success -> {
-                    showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_complete))
+                    showToast(stringResourcesProvider.getString(R.string.lesson_update_complete))
                     _updateLessonSuccessEvent.emit(Unit)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
+                        showToast(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
                     }
                     else if (result.statusCode == UNAUTHORIZED) {
-                        navigateToExpireDialogEvent()
+                        navigateToExpireDialog()
                     }
                     else {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_update_fail))
+                        showToast(stringResourcesProvider.getString(R.string.lesson_update_fail))
                     }
                 }
             }
@@ -157,25 +157,25 @@ class UpdateLessonViewModel @Inject constructor(
     private fun fetchLessonCategoryList() = viewModelScope.launch {
         fetchLessonCategoryListUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        internetError(false)
+                        setInternetError(false)
                         setLessonCategoryInfo(result.data)
                         _fetchLessonCategoryListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         }
                         else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
                 }
@@ -185,25 +185,25 @@ class UpdateLessonViewModel @Inject constructor(
     private fun fetchLessonSiteList() = viewModelScope.launch {
         fetchLessonSiteListUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        internetError(false)
+                        setInternetError(false)
                         setLessonSiteInfo(result.data)
                         _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         }
                         else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
                 }

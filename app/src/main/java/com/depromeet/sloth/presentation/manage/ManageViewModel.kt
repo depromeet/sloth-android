@@ -58,12 +58,12 @@ class ManageViewModel @Inject constructor(
     fun fetchMemberInfo() = viewModelScope.launch {
         fetchMemberInfoUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        internetError(false)
+                        setInternetError(false)
                         _uiState.update { memberUiState ->
                             memberUiState.copy(
                                 email = result.data.email,
@@ -75,11 +75,11 @@ class ManageViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
                         }
                     }
                 }
@@ -91,12 +91,12 @@ class ManageViewModel @Inject constructor(
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
                     .onEach {
-                        showLoading(it is Result.Loading)
+                        setLoading(it is Result.Loading)
                     }.collect { result ->
                         when (result) {
                             is Result.Loading -> return@collect
                             is Result.Success -> {
-                                showToastEvent(stringResourcesProvider.getString(R.string.noti_update_complete))
+                                showToast(stringResourcesProvider.getString(R.string.noti_update_complete))
                                 _uiState.update { memberUiState ->
                                     memberUiState.copy(
                                         isPushAlarmUse = check
@@ -106,11 +106,11 @@ class ManageViewModel @Inject constructor(
 
                             is Result.Error -> {
                                 if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                    showToastEvent(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
+                                    showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
                                 } else if (result.statusCode == UNAUTHORIZED) {
-                                    navigateToExpireDialogEvent()
+                                    navigateToExpireDialog()
                                 } else {
-                                    showToastEvent(stringResourcesProvider.getString(R.string.noti_update_fail))
+                                    showToast(stringResourcesProvider.getString(R.string.noti_update_fail))
                                 }
                             }
                         }
@@ -122,23 +122,23 @@ class ManageViewModel @Inject constructor(
     fun logout() = viewModelScope.launch {
         logOutUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        showToastEvent(stringResourcesProvider.getString(R.string.logout_complete))
+                        showToast(stringResourcesProvider.getString(R.string.logout_complete))
                         _logoutSuccessEvent.emit(Unit)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             Timber.d(INTERNET_CONNECTION_ERROR)
-                            showToastEvent(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                            showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.logout_fail))
+                            showToast(stringResourcesProvider.getString(R.string.logout_fail))
                         }
                     }
                 }

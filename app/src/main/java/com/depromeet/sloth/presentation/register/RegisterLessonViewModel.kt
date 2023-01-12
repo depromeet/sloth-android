@@ -236,21 +236,21 @@ class RegisterLessonViewModel @Inject constructor(
                 totalNumber = lessonTotalNumber.value
             )
         ).onEach { result ->
-            showLoading(result is Result.Loading)
+            setLoading(result is Result.Loading)
         }.collect { result ->
             when (result) {
                 is Result.Loading -> return@collect
                 is Result.Success -> {
-                    showToastEvent(stringResourcesProvider.getString(R.string.lesson_register_complete))
+                    showToast(stringResourcesProvider.getString(R.string.lesson_register_complete))
                     _registerLessonSuccessEvent.emit(Unit)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
+                        showToast(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
                     } else if (result.statusCode == UNAUTHORIZED) {
-                        navigateToExpireDialogEvent()
+                        navigateToExpireDialog()
                     } else {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail))
+                        showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
                     }
                 }
             }
@@ -260,23 +260,23 @@ class RegisterLessonViewModel @Inject constructor(
     private fun fetchLessonCategoryList() = viewModelScope.launch {
         fetchLessonCategoryListUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setLessonCategoryList(result.data)
                         _fetchLessonCategoryListSuccessEvent.emit(result.data)
-                        internetError(false)
+                        setInternetError(false)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
                 }
@@ -286,23 +286,23 @@ class RegisterLessonViewModel @Inject constructor(
     private fun fetchLessonSiteList() = viewModelScope.launch {
         fetchLessonSiteListUseCase()
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        internetError(false)
+                        setInternetError(false)
                         setLessonSiteList(result.data)
                         _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
                 }

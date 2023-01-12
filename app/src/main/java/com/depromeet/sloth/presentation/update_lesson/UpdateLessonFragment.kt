@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 @AndroidEntryPoint
-class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {
+class UpdateLessonFragment :
+    BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {
 
     private val updateLessonViewModel: UpdateLessonViewModel by viewModels()
 
@@ -100,7 +101,14 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                 lessonTotalNumberValidation
                     .collect { isEnable ->
                         when (isEnable) {
-                            false -> showToast(requireContext(), getString(R.string.lesson_number_validation_error))
+                            false -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.lesson_number_validation_error),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
                             else -> Unit
                         }
                     }
@@ -117,7 +125,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@UpdateLessonFragment)
                     }
@@ -126,7 +134,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }
@@ -292,14 +300,15 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
 
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    when(selectedItemPosition) {
+                    when (selectedItemPosition) {
                         0 -> {
-                            when(spinner) {
+                            when (spinner) {
                                 spnUpdateLessonCategory -> {
                                     updateLessonViewModel.setLessonCategorySelectedItemPosition(
                                         spnUpdateLessonCategory.selectedItemPosition
                                     )
                                 }
+
                                 else -> {
                                     updateLessonViewModel.setLessonSiteSelectedItemPosition(
                                         spnUpdateLessonSite.selectedItemPosition
@@ -307,8 +316,9 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                                 }
                             }
                         }
+
                         else -> {
-                            when(spinner) {
+                            when (spinner) {
                                 spnUpdateLessonCategory -> {
                                     updateLessonViewModel.setLessonCategoryId(
                                         updateLessonViewModel.lessonCategoryMap.value.filterValues
@@ -318,6 +328,7 @@ class UpdateLessonFragment: BaseFragment<FragmentUpdateLessonBinding>(R.layout.f
                                         spnUpdateLessonCategory.selectedItemPosition
                                     )
                                 }
+
                                 else -> {
                                     updateLessonViewModel.setLessonSiteId(
                                         updateLessonViewModel.lessonSiteMap.value.filterValues

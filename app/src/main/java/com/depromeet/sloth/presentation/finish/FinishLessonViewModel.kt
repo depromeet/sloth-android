@@ -35,22 +35,22 @@ class FinishLessonViewModel @Inject constructor(
     fun finishLesson(lessonId: String) = viewModelScope.launch {
         finishLessonUseCase(lessonId)
             .onEach { result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_complete))
+                        showToast(stringResourcesProvider.getString(R.string.lesson_finish_complete))
                         _finishLessonSuccessEvent.emit(Unit)
                     }
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_finish_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
                         }
                     }
                 }

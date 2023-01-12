@@ -46,12 +46,12 @@ class UpdateMemberViewModel @Inject constructor(
     fun updateMemberInfo() = viewModelScope.launch {
         updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
             .onEach {result ->
-                showLoading(result is Result.Loading)
+                setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        showToastEvent(stringResourcesProvider.getString(R.string.member_update_success))
+                        showToast(stringResourcesProvider.getString(R.string.member_update_success))
                         _updateMemberSuccess.emit(Unit)
                         setPreviousMemberName(result.data.memberName)
                         // btnUpdateMember 활성 상태 초기화
@@ -60,11 +60,11 @@ class UpdateMemberViewModel @Inject constructor(
 
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToastEvent(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
+                            showToast(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         } else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.member_update_fail))
+                            showToast(stringResourcesProvider.getString(R.string.member_update_fail))
                         }
                     }
                 }

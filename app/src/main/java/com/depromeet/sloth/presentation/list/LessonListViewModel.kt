@@ -39,23 +39,23 @@ class LessonListViewModel @Inject constructor(
     fun fetchAllLessonList() = viewModelScope.launch {
         fetchAllLessonListUseCase()
             .onEach { result ->
-                showLoading( result is Result.Loading)
+                setLoading( result is Result.Loading)
             }.collect { result ->
                 when(result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        internetError(false)
+                        setInternetError(false)
                         _fetchLessonListSuccessEvent.emit(result.data)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            internetError(true)
+                            setInternetError(true)
                         }
                         else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialogEvent()
+                            navigateToExpireDialog()
                         }
                         else {
-                            showToastEvent(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                            showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -15,7 +16,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBottomBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showToast
 import com.depromeet.sloth.presentation.base.BaseBottomSheetFragment
 import com.depromeet.sloth.util.KAKAO
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -119,7 +119,7 @@ class LoginBottomSheetFragment :
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

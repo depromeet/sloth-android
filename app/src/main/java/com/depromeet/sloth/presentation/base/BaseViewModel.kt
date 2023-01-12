@@ -16,8 +16,8 @@ abstract class BaseViewModel: ViewModel() {
     private val _internetError = MutableStateFlow(false)
     val internetError: StateFlow<Boolean> = _internetError.asStateFlow()
 
-    private val _navigateToExpireDialog = MutableSharedFlow<Unit>()
-    val navigateToExpireDialog: SharedFlow<Unit> = _navigateToExpireDialog.asSharedFlow()
+    private val _navigateToExpireDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToExpireDialogEvent: SharedFlow<Unit> = _navigateToExpireDialogEvent.asSharedFlow()
 
     private val _showToastEvent = MutableSharedFlow<String>()
     val showToastEvent: SharedFlow<String> = _showToastEvent.asSharedFlow()
@@ -25,19 +25,19 @@ abstract class BaseViewModel: ViewModel() {
 
     abstract fun retry()
 
-    suspend fun showLoading(isLoading: Boolean) {
+    suspend fun setLoading(isLoading: Boolean) {
         _isLoading.emit(isLoading)
     }
 
-    suspend fun internetError(error: Boolean) {
+    suspend fun setInternetError(error: Boolean) {
         _internetError.emit(error)
     }
 
-    suspend fun navigateToExpireDialogEvent() {
-        _navigateToExpireDialog.emit(Unit)
+    suspend fun navigateToExpireDialog() {
+        _navigateToExpireDialogEvent.emit(Unit)
     }
 
-    suspend fun showToastEvent(message: String) {
+    suspend fun showToast(message: String) {
         _showToastEvent.emit(message)
     }
 }

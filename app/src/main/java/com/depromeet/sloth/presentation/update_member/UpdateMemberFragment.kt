@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -67,7 +68,7 @@ class UpdateMemberFragment :
             }
 
             launch {
-                navigateToExpireDialog
+                navigateToExpireDialogEvent
                     .collect {
                         showExpireDialog(this@UpdateMemberFragment)
                     }
@@ -77,7 +78,7 @@ class UpdateMemberFragment :
             launch {
                 showToastEvent
                     .collect { message ->
-                        showToast(requireContext(), message)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
@@ -92,9 +93,14 @@ class RegisterLessonSecondFragment :
                         when (isEnable) {
                             false -> {
                                 if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
-                                    showToast(requireContext(), getString(R.string.lesson_start_date_is_later_than_lesson_finish_date))
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.lesson_date_range_validation_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
+
                             else -> Unit
                         }
                     }
@@ -184,6 +190,7 @@ class RegisterLessonSecondFragment :
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
                         registerLessonViewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
                     }
+
                     CUSTOM_SETTING -> registerLessonViewModel.registerLessonEndDate()
                 }
                 binding.clRegisterLessonSecond.clearFocus()
