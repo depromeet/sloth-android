@@ -64,8 +64,6 @@ class RegisterLessonViewModel @Inject constructor(
     val lessonStartDate: StateFlow<String> = _lessonStartDate.asStateFlow()
 
     init {
-        fetchLessonCategoryList()
-        fetchLessonSiteList()
         initLessonStartDate()
     }
 
@@ -257,7 +255,7 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-    private fun fetchLessonCategoryList() = viewModelScope.launch {
+    fun fetchLessonCategoryList() = viewModelScope.launch {
         fetchLessonCategoryListUseCase()
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -283,7 +281,7 @@ class RegisterLessonViewModel @Inject constructor(
             }
     }
 
-    private fun fetchLessonSiteList() = viewModelScope.launch {
+    fun fetchLessonSiteList() = viewModelScope.launch {
         fetchLessonSiteListUseCase()
             .onEach { result ->
                 setLoading(result is Result.Loading)

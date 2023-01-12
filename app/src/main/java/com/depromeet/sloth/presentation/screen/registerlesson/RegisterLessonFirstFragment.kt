@@ -45,6 +45,12 @@ class RegisterLessonFirstFragment :
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        registerLessonViewModel.fetchLessonCategoryList()
+        registerLessonViewModel.fetchLessonSiteList()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
