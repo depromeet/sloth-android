@@ -10,19 +10,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.databinding.FragmentUpdateMemberBinding
-import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.databinding.FragmentUpdateMemberDialogBinding
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
+import com.depromeet.sloth.extensions.setEditTextFocus
 import com.depromeet.sloth.presentation.screen.base.BaseDialogFragment
 import com.depromeet.sloth.util.DebounceEditTextListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
-//공유하는 프래그먼트들에서 모두  hiltViewModels 로 선언해주면 그 상태를 공유할 수 있다
 @AndroidEntryPoint
-class UpdateMemberFragment :
-    BaseDialogFragment<FragmentUpdateMemberBinding>(R.layout.fragment_update_member) {
+class UpdateMemberDialogFragment :
+    BaseDialogFragment<FragmentUpdateMemberDialogBinding>(R.layout.fragment_update_member_dialog) {
 
     private val updateMemberViewModel: UpdateMemberViewModel by viewModels()
 
@@ -36,6 +36,7 @@ class UpdateMemberFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         bind {
             vm = updateMemberViewModel
         }
@@ -96,8 +97,7 @@ class UpdateMemberFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
             override fun afterTextChanged(editable: Editable?) {
-                Timber.d(memberName.value)
-                if (memberName.value.isEmpty() || memberName.value == previousMemberName.value) {
+                if (memberName.value.isEmpty() || memberName.value == previousMemberName) {
                     setUpdateMemberValidation(false)
                 } else {
                     setUpdateMemberValidation(true)
@@ -108,7 +108,7 @@ class UpdateMemberFragment :
     }
 
     private fun navigateToManage() {
-        val action = UpdateMemberFragmentDirections.actionUpdateMemberDialogToManage()
+        val action = UpdateMemberDialogFragmentDirections.actionUpdateMemberDialogToManage()
         findNavController().safeNavigate(action)
     }
 

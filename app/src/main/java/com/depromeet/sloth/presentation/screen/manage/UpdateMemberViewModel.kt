@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.member.UpdateMemberInfoUseCase
+import com.depromeet.sloth.domain.use_case.member.UpdateMemberUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
@@ -13,16 +13,24 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateMemberViewModel @Inject constructor(
-    private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
+    private val updateMemberUseCase: UpdateMemberUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ): BaseViewModel() {
+
+    val previousMemberName: String = checkNotNull(savedStateHandle[KEY_PREVIOUS_MEMBER_NAME])
 
     private val _updateMemberSuccess = MutableSharedFlow<Unit>()
     val updateMemberSuccess: SharedFlow<Unit> = _updateMemberSuccess.asSharedFlow()
@@ -31,20 +39,11 @@ class UpdateMemberViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
-    //TODO 이거 굳이 savedStateHandle 일 필요가..
-    private val _previousMemberName =
-        savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
-    val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
-
-    init {
-        setPreviousMemberName(memberName.value)
-    }
-
     private val _updateMemberValidation = MutableStateFlow(false)
     val updateMemberValidation: StateFlow<Boolean> = _updateMemberValidation.asStateFlow()
 
     fun updateMemberInfo() = viewModelScope.launch {
-        updateMemberInfoUseCase(MemberUpdateRequest(memberName.value))
+        updateMemberUseCase(MemberUpdateRequest(memberName.value))
             .onEach {result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
@@ -53,7 +52,6 @@ class UpdateMemberViewModel @Inject constructor(
                     is Result.Success -> {
                         showToast(stringResourcesProvider.getString(R.string.member_update_success))
                         _updateMemberSuccess.emit(Unit)
-                        setPreviousMemberName(result.data.memberName)
                         // btnUpdateMember 활성 상태 초기화
                         setUpdateMemberValidation(false)
                     }
@@ -75,10 +73,6 @@ class UpdateMemberViewModel @Inject constructor(
         _memberName.value = memberName
     }
 
-    private fun setPreviousMemberName(previousMemberName: String) {
-        _previousMemberName.value = previousMemberName
-    }
-
     fun setUpdateMemberValidation(isEnable: Boolean) {
         _updateMemberValidation.value = isEnable
     }
@@ -86,7 +80,7 @@ class UpdateMemberViewModel @Inject constructor(
     override fun retry() = Unit
 
     companion object {
+        private const val KEY_PREVIOUS_MEMBER_NAME = "previous_member_name"
         private const val KEY_MEMBER_NAME = "member_name"
-        private const val KEY_PREVIOUS_MEMBER_NAME = "previousMemberName"
     }
 }
