@@ -38,7 +38,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
             launch {
                 navigateToLoginBottomSheetEvent
-                    .collect { showLoginBottomSheet() }
+                    .collect {
+                        showLoginBottomSheet()
+                    }
             }
 
             launch {

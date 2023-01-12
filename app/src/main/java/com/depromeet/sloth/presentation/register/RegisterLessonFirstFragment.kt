@@ -111,7 +111,7 @@ class RegisterLessonFirstFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@RegisterLessonFirstFragment)
+                        showExpireDialog()
                     }
             }
 

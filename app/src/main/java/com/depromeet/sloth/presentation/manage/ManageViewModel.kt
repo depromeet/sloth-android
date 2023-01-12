@@ -128,6 +128,7 @@ class ManageViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         showToast(stringResourcesProvider.getString(R.string.logout_complete))
+                        deleteAuthToken()
                         _logoutSuccessEvent.emit(Unit)
                     }
 

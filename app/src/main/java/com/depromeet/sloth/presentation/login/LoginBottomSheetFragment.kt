@@ -84,12 +84,16 @@ class LoginBottomSheetFragment :
 
             launch {
                 googleLoginEvent
-                    .collect { loginWithGoogle() }
+                    .collect {
+                        loginWithGoogle()
+                    }
             }
 
             launch {
                 kakaoLoginEvent
-                    .collect { loginWithKakao() }
+                    .collect {
+                        loginWithKakao()
+                    }
             }
 
             launch {

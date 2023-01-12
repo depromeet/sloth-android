@@ -70,7 +70,7 @@ class UpdateMemberFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@UpdateMemberFragment)
+                        showExpireDialog()
                     }
             }
 

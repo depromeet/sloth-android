@@ -2,11 +2,11 @@ package com.depromeet.sloth.presentation.manage
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLogoutDialogBinding
-import com.depromeet.sloth.extensions.logout
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.presentation.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,12 +33,22 @@ class LogoutDialogFragment :
             launch {
                 logoutSuccessEvent
                     .collect {
-                        logout(requireContext(), this@LogoutDialogFragment) { deleteAuthToken() }
+                        navigateToLogin()
                     }
             }
 
             launch {
-                logoutCancelEvent.collect { closeLogoutDialog() }
+                logoutCancelEvent
+                    .collect {
+                        closeLogoutDialog()
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }
@@ -47,5 +57,9 @@ class LogoutDialogFragment :
         if (!findNavController().navigateUp()) {
             requireActivity().finish()
         }
+    }
+
+    private fun navigateToLogin() {
+        findNavController().navigate(R.id.action_global_to_login)
     }
 }

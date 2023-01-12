@@ -9,7 +9,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonCheckBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -70,7 +69,7 @@ class RegisterLessonCheckFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@RegisterLessonCheckFragment)
+                        showExpireDialog()
                     }
             }
 

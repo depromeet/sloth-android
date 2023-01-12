@@ -9,7 +9,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentFinishLessonDialogBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.presentation.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -59,7 +58,7 @@ class FinishLessonDialogFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@FinishLessonDialogFragment)
+                        showExpireDialog()
                     }
             }
 

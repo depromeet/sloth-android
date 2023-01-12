@@ -13,6 +13,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.DialogLoadingBinding
 
 abstract class BaseFragment<B : ViewDataBinding>(
@@ -73,6 +75,10 @@ abstract class BaseFragment<B : ViewDataBinding>(
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
         }
+    }
+
+    fun showExpireDialog() {
+        findNavController().navigate(R.id.action_global_to_expire_dialog)
     }
 
     override fun onDestroyView() {

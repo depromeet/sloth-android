@@ -12,7 +12,6 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.presentation.base.BaseFragment
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
@@ -90,7 +89,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@ManageFragment)
+                        showExpireDialog()
                     }
             }
 

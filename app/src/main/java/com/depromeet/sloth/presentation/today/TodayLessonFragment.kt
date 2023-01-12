@@ -12,7 +12,6 @@ import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.extensions.showExpireDialog
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 import com.depromeet.sloth.presentation.base.BaseFragment
@@ -103,7 +102,7 @@ class TodayLessonFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@TodayLessonFragment)
+                        showExpireDialog()
                     }
             }
 
@@ -316,7 +315,7 @@ class TodayLessonFragment :
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else if (result.statusCode == UNAUTHORIZED) {
-                            showExpireDialog(this@TodayLessonFragment)
+                            showExpireDialog()
                         } else {
                             Toast.makeText(
                                 requireContext(),

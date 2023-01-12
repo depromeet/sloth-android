@@ -127,7 +127,7 @@ class UpdateLessonFragment :
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@UpdateLessonFragment)
+                        showExpireDialog()
                     }
             }
 

@@ -103,7 +103,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 navigateToExpireDialogEvent
                     .collect {
-                        showExpireDialog(this@LessonListFragment)
+                        showExpireDialog()
                     }
             }
 
