@@ -4,15 +4,21 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.DeleteLessonUseCase
 import com.depromeet.sloth.domain.use_case.lesson.FetchLessonDetailUseCase
-import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.presentation.model.LessonDetail
+import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,7 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LessonDetailViewModel @Inject constructor(
     private val fetchLessonDetailUseCase: FetchLessonDetailUseCase,
-    private val deleteLessonUseCase: DeleteLessonUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
@@ -30,21 +35,16 @@ class LessonDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LessonDetailUiState())
     val uiState: StateFlow<LessonDetailUiState> = _uiState.asStateFlow()
 
-    private val _deleteLessonSuccessEvent = MutableSharedFlow<Unit>()
-    val deleteLessonSuccessEvent: SharedFlow<Unit> = _deleteLessonSuccessEvent.asSharedFlow()
-
-    private val _deleteLessonCancelEvent = MutableSharedFlow<Unit>()
-    val deleteLessonCancelEvent: SharedFlow<Unit> = _deleteLessonCancelEvent.asSharedFlow()
-
     private val _navigateToUpdateLessonEvent = MutableSharedFlow<LessonDetail>()
     val navigateToUpdateLessonEvent: SharedFlow<LessonDetail> =
         _navigateToUpdateLessonEvent.asSharedFlow()
 
-    private val _navigateToDeleteLessonDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToDeleteLessonDialogEvent: SharedFlow<Unit> =
+    private val _navigateToDeleteLessonDialogEvent = MutableSharedFlow<String>()
+    val navigateToDeleteLessonDialogEvent: SharedFlow<String> =
         _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
     fun fetchLessonDetail() = viewModelScope.launch {
+        Timber.d(lessonId)
         fetchLessonDetailUseCase(lessonId)
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -87,33 +87,6 @@ class LessonDetailViewModel @Inject constructor(
             }
     }
 
-    fun deleteLesson() = viewModelScope.launch {
-        deleteLessonUseCase(lessonId)
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }
-            .collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        Timber.d("emit")
-                        showToast(stringResourcesProvider.getString(R.string.lesson_delete_complete))
-                        _deleteLessonSuccessEvent.emit(Unit)
-                    }
-
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail_by_internet))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail))
-                        }
-                    }
-                }
-            }
-    }
-
     fun navigateToUpdateLesson() = viewModelScope.launch {
         _navigateToUpdateLessonEvent.emit(
             LessonDetail(
@@ -137,11 +110,7 @@ class LessonDetailViewModel @Inject constructor(
     }
 
     fun navigateToDeleteLessonDialog() = viewModelScope.launch {
-        _navigateToDeleteLessonDialogEvent.emit(Unit)
-    }
-
-    fun navigateToLessonDetail() = viewModelScope.launch {
-        _deleteLessonCancelEvent.emit(Unit)
+        _navigateToDeleteLessonDialogEvent.emit(lessonId)
     }
 
     override fun retry() {

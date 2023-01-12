@@ -224,10 +224,10 @@
         android:id="@+id/update_member_dialog"
         android:name="com.depromeet.sloth.presentation.screen.manage.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member">
+        tools:layout="@layout/fragment_update_member_dialog">
 
         <argument
-            android:name="member_name"
+            android:name="previous_member_name"
             app:argType="string" />
 
         <action
@@ -287,6 +287,9 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@layout/fragment_lesson_list"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="lesson_id"
+            app:argType="string" />
     </dialog>
 
 </navigation>

@@ -3,7 +3,7 @@ package com.depromeet.sloth.presentation.screen.lessondetail
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLessonDetailBinding
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class LessonDetailFragment :
     BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
 
-    private val lessonDetailViewModel: LessonDetailViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
@@ -59,7 +59,7 @@ class LessonDetailFragment :
             launch {
                 navigateToDeleteLessonDialogEvent
                     .collect {
-                        showLessonDeleteDialog()
+                        showLessonDeleteDialog(lessonDetailViewModel.lessonId)
                     }
             }
 
@@ -89,8 +89,10 @@ class LessonDetailFragment :
         }
     }
 
-    private fun showLessonDeleteDialog() {
-        val action = LessonDetailFragmentDirections.actionLessonDetailToDeleteLessonDialog()
+    private fun showLessonDeleteDialog(lessonId: String) {
+        val action = LessonDetailFragmentDirections.actionLessonDetailToDeleteLessonDialog(
+            lessonId
+        )
         findNavController().safeNavigate(action)
     }
 }

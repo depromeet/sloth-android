@@ -2,7 +2,8 @@ package com.depromeet.sloth.presentation.screen.lessondetail
 
 import android.os.Bundle
 import android.view.View
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentDeleteLessonDialogBinding
@@ -17,18 +18,18 @@ import kotlinx.coroutines.launch
 class DeleteLessonDialogFragment :
     BaseDialogFragment<FragmentDeleteLessonDialogBinding>(R.layout.fragment_delete_lesson_dialog) {
 
-    private val lessonDetailViewModel: LessonDetailViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val deleteLessonViewModel: DeleteLessonViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = lessonDetailViewModel
+            vm = deleteLessonViewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(lessonDetailViewModel) {
+    private fun initObserver() = with(deleteLessonViewModel) {
 
         repeatOnStarted {
             launch {
@@ -42,6 +43,30 @@ class DeleteLessonDialogFragment :
                 deleteLessonCancelEvent
                     .collect {
                         closeDeleteLessonDialog()
+                    }
+            }
+
+            launch {
+                isLoading
+                    .collect { isLoading ->
+                        when (isLoading) {
+                            true -> showProgress()
+                            false -> hideProgress()
+                        }
+                    }
+            }
+
+            launch {
+                navigateToExpireDialogEvent
+                    .collect {
+                        showExpireDialog()
+                    }
+            }
+
+            launch {
+                showToastEvent
+                    .collect { message ->
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }

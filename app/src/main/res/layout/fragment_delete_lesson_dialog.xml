@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.screen.lessondetail.LessonDetailViewModel" />
+            type="com.depromeet.sloth.presentation.screen.lessondetail.DeleteLessonViewModel" />
     </data>
 
 
@@ -46,7 +46,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dialog_cancel"
             style="@style/Widget.Sloth.Button.DialogCancel"
-            onSingleClick="@{() -> vm.navigateToLessonDetail()}"
+            onSingleClick="@{() -> vm.deleteLessonCancel()}"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="24dp"
