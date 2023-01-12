@@ -31,6 +31,7 @@ class UpdateMemberViewModel @Inject constructor(
         savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
+    //TODO 이거 굳이 savedStateHandle 일 필요가..
     private val _previousMemberName =
         savedStateHandle.getMutableStateFlow(KEY_PREVIOUS_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val previousMemberName: StateFlow<String> = _previousMemberName.asStateFlow()
@@ -85,7 +86,7 @@ class UpdateMemberViewModel @Inject constructor(
     override fun retry() = Unit
 
     companion object {
-        private const val KEY_MEMBER_NAME = "memberName"
+        private const val KEY_MEMBER_NAME = "member_name"
         private const val KEY_PREVIOUS_MEMBER_NAME = "previousMemberName"
     }
 }

@@ -78,18 +78,18 @@ class RegisterBottomSheetFragment :
 
 
     private fun navigateToTodayLesson() {
-        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomToTodayLesson()
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToTodayLesson()
         findNavController().safeNavigate(action)
     }
 
     private fun closeRegisterBottomSheet() {
-        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomToLogin()
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToLogin()
         findNavController().safeNavigate(action)
     }
 
     private fun showPrivatePolicy() {
         val action =
-            RegisterBottomSheetFragmentDirections.actionRegisterBottomToSlothPolicyWebview()
+            RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToSlothPolicyWebview()
         findNavController().safeNavigate(action)
     }
 }

@@ -81,6 +81,7 @@ class LoginBottomSheetFragment :
 
     private fun initObserver() = with(loginViewModel) {
         repeatOnStarted {
+
             launch {
                 googleLoginEvent
                     .collect { loginWithGoogle() }
@@ -125,12 +126,12 @@ class LoginBottomSheetFragment :
     }
 
     private fun navigateToTodayLesson() {
-        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToTodayLesson()
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomDialogToTodayLesson()
         findNavController().safeNavigate(action)
     }
 
     private fun showRegisterBottomSheet() {
-        val action = LoginBottomSheetFragmentDirections.actionLoginBottomToRegisterBottom()
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomDialogToRegisterBottomDialog()
         findNavController().safeNavigate(action)
     }
 

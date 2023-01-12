@@ -279,8 +279,7 @@ class UpdateLessonViewModel @Inject constructor(
     }
 
     companion object {
-        private const val KEY_LESSON_DETAIL = "lessonDetail"
-
+        private const val KEY_LESSON_DETAIL = "lesson_detail"
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"

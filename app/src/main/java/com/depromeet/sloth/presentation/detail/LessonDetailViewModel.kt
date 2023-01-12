@@ -167,6 +167,6 @@ class LessonDetailViewModel @Inject constructor(
     )
 
     companion object {
-        private const val KEY_LESSON_ID = "lessonId"
+        private const val KEY_LESSON_ID = "lesson_id"
     }
 }

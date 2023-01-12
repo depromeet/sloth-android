@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_login_bottom"
-            app:destination="@id/login_bottom" />
+            app:destination="@id/login_bottom_dialog" />
         <action
             android:id="@+id/action_login_to_today_lesson"
             app:destination="@id/today_lesson"
@@ -41,15 +41,15 @@
     </fragment>
 
     <dialog
-        android:id="@+id/login_bottom"
+        android:id="@+id/login_bottom_dialog"
         android:name="com.depromeet.sloth.presentation.login.LoginBottomSheetFragment"
         android:label="LoginBottomSheetFragment"
         tools:layout="@layout/fragment_login_bottom">
         <action
-            android:id="@+id/action_login_bottom_to_register_bottom"
-            app:destination="@id/register_bottom" />
+            android:id="@+id/action_login_bottom_dialog_to_register_bottom_dialog"
+            app:destination="@id/register_bottom_dialog" />
         <action
-            android:id="@+id/action_login_bottom_to_today_lesson"
+            android:id="@+id/action_login_bottom_dialog_to_today_lesson"
             app:destination="@id/today_lesson"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -60,24 +60,24 @@
     </dialog>
 
     <dialog
-        android:id="@+id/register_bottom"
+        android:id="@+id/register_bottom_dialog"
         android:name="com.depromeet.sloth.presentation.login.RegisterBottomSheetFragment"
         android:label="RegisterBottomSheetFragment"
         tools:layout="@layout/fragment_register_bottom">
         <action
-            android:id="@+id/action_register_bottom_to_sloth_policy_webview"
+            android:id="@+id/action_register_bottom_dialog_to_sloth_policy_webview"
             app:destination="@id/sloth_policy_webview"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_register_bottom_to_login"
+            android:id="@+id/action_register_bottom_dialog_to_login"
             app:destination="@id/login"
-            app:popUpTo="@id/login_bottom"
+            app:popUpTo="@id/login_bottom_dialog"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_register_bottom_to_today_lesson"
+            android:id="@+id/action_register_bottom_dialog_to_today_lesson"
             app:destination="@id/today_lesson"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -175,7 +175,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <argument
-            android:name="lessonId"
+            android:name="lesson_id"
             app:argType="string"
             app:nullable="false" />
         <action
@@ -190,7 +190,7 @@
         tools:layout="@layout/fragment_update_lesson">
 
         <argument
-            android:name="lessonDetail"
+            android:name="lesson_detail"
             app:argType="com.depromeet.sloth.presentation.item.LessonDetail" />
     </fragment>
 
@@ -198,9 +198,9 @@
         android:id="@+id/update_member"
         android:name="com.depromeet.sloth.presentation.update_member.UpdateMemberFragment"
         android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member" >
+        tools:layout="@layout/fragment_update_member">
         <argument
-            android:name="memberName"
+            android:name="member_name"
             app:argType="string" />
         <action
             android:id="@+id/action_update_member_to_manage"
@@ -213,7 +213,7 @@
         android:id="@+id/expired_dialog"
         android:name="com.depromeet.sloth.presentation.manage.ExpiredDialogFragment"
         android:label="ExpiredDialogFragment"
-        tools:layout="@layout/fragment_expired_dialog"/>
+        tools:layout="@layout/fragment_expired_dialog" />
 
     <dialog
         android:id="@+id/finish_lesson_dialog"
@@ -221,7 +221,7 @@
         android:label="FinishLessonDialogFragment"
         tools:layout="@layout/fragment_finish_lesson_dialog">
         <argument
-            android:name="lessonId"
+            android:name="lesson_id"
             app:argType="string" />
         <action
             android:id="@+id/action_finish_lesson_dialog_to_today_lesson"
@@ -234,13 +234,13 @@
         android:id="@+id/logout_dialog"
         android:name="com.depromeet.sloth.presentation.manage.LogoutDialogFragment"
         android:label="LogoutDialogFragment"
-        tools:layout="@layout/fragment_logout_dialog"/>
+        tools:layout="@layout/fragment_logout_dialog" />
 
     <dialog
         android:id="@+id/wait_dialog"
         android:name="com.depromeet.sloth.presentation.wait.WaitDialogFragment"
         android:label="WaitDialogFragment"
-        tools:layout="@layout/fragment_wait_dialog"/>
+        tools:layout="@layout/fragment_wait_dialog" />
 
     <dialog
         android:id="@+id/delete_lesson_dialog"
@@ -252,7 +252,7 @@
             android:id="@+id/action_delete_Lesson_dialog_to_lesson_list"
             app:destination="@id/lesson_list"
             app:popUpTo="@layout/fragment_lesson_list"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </dialog>
 
 </navigation>
