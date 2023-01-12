@@ -3,7 +3,7 @@ package com.depromeet.sloth.presentation.screen.todaylesson
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
-    private val todayLessonViewModel: TodayLessonViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val todayLessonViewModel: TodayLessonViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
