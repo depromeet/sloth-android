@@ -3,25 +3,17 @@ package com.depromeet.sloth.data.repository
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateCountRequest
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonDetailResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateResponse
+import com.depromeet.sloth.data.model.response.lesson.*
 import com.depromeet.sloth.data.network.service.LessonService
 import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -30,7 +22,7 @@ import javax.inject.Inject
  * @desc Lesson 관련 API 저장소
  */
 
-// TODO HTTP 코드 응답 처리 함수로 만들어 모듈화
+// TODO 반복되는 함수 모듈화 (baseResponse 를 만들어서 모든 경우를 커버하도록)
 // TODO State emit helper 함수 적용
 class LessonRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
@@ -51,11 +43,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun fetchAllLessonList() = flow {
         emit(Result.Loading)
@@ -71,11 +75,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun finishLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -91,11 +107,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonFinishResponse.EMPTY))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override suspend fun updateLessonCount(
         count: Int,
@@ -111,11 +139,22 @@ class LessonRepositoryImpl @Inject constructor(
                         }
                         Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
                     }
+
                     else -> Result.Error(Exception(message()), this.code())
                 }
             } ?: return Result.Error(Exception("Retrofit Exception"))
-        } catch (e: Exception) {
-            return Result.Error(Exception(e.message))
+        } catch (exception: Exception) {
+            return when(exception) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    Result.Error(Exception(INTERNET_CONNECTION_ERROR))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    Result.Error(exception)
+                }
+            }
         }
     }
 
@@ -134,11 +173,23 @@ class LessonRepositoryImpl @Inject constructor(
 //                }
 //                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
 //            }
+//
 //            else -> emit(Result.Error(Exception(response.message()), response.code()))
 //        }
 //    }
-//        .catch { throwable -> emit(Result.Error(throwable)) }
-//        .onCompletion { emit(Result.UnLoading) }
+//        .catch { throwable ->
+//            when (throwable) {
+//                is IOException -> {
+//                    // Handle Internet Connection Error
+//                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+//                }
+//
+//                else -> {
+//                    // Handle Other Error
+//                    emit(Result.Error(throwable))
+//                }
+//            }
+//        }
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
@@ -155,11 +206,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonDetailResponse.EMPTY))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun registerLesson(lessonRegisterRequest: LessonRegisterRequest) = flow {
         emit(Result.Loading)
@@ -177,11 +240,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonRegisterResponse.EMPTY))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun deleteLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -197,11 +272,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonDeleteResponse.EMPTY))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun fetchLessonCategoryList() = flow {
         emit(Result.Loading)
@@ -217,11 +304,23 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonCategoryResponse.EMPTY)))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
     override fun fetchLessonSiteList() = flow {
         emit(Result.Loading)
@@ -237,16 +336,25 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: listOf(LessonSiteResponse.EMPTY)))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
 
-    override fun updateLesson(
-        lessonId: String,
-        lessonUpdateRequest: LessonUpdateRequest
-    ) = flow {
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
+
+    override fun updateLesson(lessonId: String, lessonUpdateRequest: LessonUpdateRequest) = flow {
         emit(Result.Loading)
         val response =
             lessonService.updateLesson(lessonId, lessonUpdateRequest)
@@ -262,9 +370,21 @@ class LessonRepositoryImpl @Inject constructor(
                 }
                 emit(Result.Success(response.body() ?: LessonUpdateResponse.EMPTY))
             }
+
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 }

@@ -1,6 +1,8 @@
-package com.depromeet.sloth.data.preferences
-
-
+//package com.depromeet.sloth.data.preferences
+//
+//import android.content.SharedPreferences
+//
+//
 //class PreferenceImpl(
 //    private val sharedPref: SharedPreferences,
 //    private val dataStore: DataStore<Preference>
@@ -29,7 +31,7 @@ package com.depromeet.sloth.data.preferences
 //            ?: DEFAULT_STRING_VALUE
 //    }
 //
-//    override fun removeAuthToken() {
+//    fun deleteAuthToken() {
 //        sharedPref.edit()
 //            .remove(Preferences.KEY_ACCESS_TOKEN)
 //            .remove(Preferences.KEY_REFRESH_TOKEN)
@@ -77,7 +79,7 @@ package com.depromeet.sloth.data.preferences
 //        }
 //    }
 //
-//    suspend fun removeAuthToken() {
+//    suspend fun deleteAuthToken() {
 //        dataStore.edit { prefs ->
 //            prefs.remove(ACCESS_TOKEN)
 //            prefs.remove(REFRESH_TOKEN)

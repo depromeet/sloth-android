@@ -41,14 +41,6 @@ fun changeDateFormatToDot(date: ArrayList<String>): String {
     return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
 }
 
-fun changeListToDot(date: ArrayList<String>): String {
-    val yearOfDate = date[0]
-    val monthOfDate = date[1]
-    val dayOfDate = date[2]
-
-    return "${yearOfDate}.${monthOfDate}.${dayOfDate}"
-}
-
 fun changeDateFormat(date: String): String {
     val dateArr = date.split("-")
     val yearOfDate = dateArr[0]
@@ -58,9 +50,14 @@ fun changeDateFormat(date: String): String {
     return "${yearOfDate}.${monthOfDate}.$dayOfDate"
 }
 
-fun changeDateStringToArrayList(date: String): ArrayList<String> {
+fun changeStringToDot(date: String): String {
     val dateList = date.split("-")
-    return ArrayList(dateList)
+
+    val yearOfDate = dateList[0]
+    val monthOfDate = dateList[1]
+    val dayOfDate = dateList[2]
+
+    return "${yearOfDate}.${monthOfDate}.${dayOfDate}"
 }
 
 fun addLeadingZero(data: String): String {

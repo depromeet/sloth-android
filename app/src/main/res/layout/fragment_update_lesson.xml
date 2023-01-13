@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.update.UpdateLessonViewModel" />
+            type="com.depromeet.sloth.presentation.screen.updatelesson.UpdateLessonViewModel" />
 
     </data>
 
@@ -21,7 +23,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_update_lesson"
-            style="?attr/toolbarWithArrowButtonStyle"
+            style="@style/Widget.Sloth.Toolbar.WithArrow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="0dp"
@@ -81,7 +83,7 @@
                     tools:hint="@string/lesson_name" />
 
                 <TextView
-                    android:id="@+id/tv_update_lesson_count"
+                    android:id="@+id/tv_update_lesson_total_number"
                     style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,11 +94,11 @@
                     app:layout_constraintTop_toBottomOf="@id/et_update_lesson_name" />
 
                 <EditText
-                    android:id="@+id/et_update_lesson_count"
+                    android:id="@+id/et_update_lesson_total_number"
                     style="@style/Widget.Sloth.EditText.Gray"
-                    totalNumber="@{vm.lessonTotalNumber}"
+                    lessonTotalNumberHint="@{vm.lessonTotalNumber}"
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
                     android:imeOptions="actionDone"
@@ -105,26 +107,23 @@
                     android:paddingHorizontal="18dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_count"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_total_number"
                     tools:hint="@string/lesson_count" />
 
                 <TextView
-                    android:id="@+id/tv_update_lesson_count_info"
-                    text="@{vm.lessonTotalNumber}"
+                    android:id="@+id/tv_update_lesson_total_number_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
-                    android:maxLength="4"
                     android:paddingHorizontal="18dp"
-                    android:textColor="@color/gray_500"
-                    android:textSize="16dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_total_number" />
 
                 <TextView
                     android:id="@+id/tv_update_lesson_category"
@@ -135,7 +134,7 @@
                     android:layout_marginTop="32dp"
                     android:text="@string/lesson_category"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_update_lesson_count" />
+                    app:layout_constraintTop_toBottomOf="@id/et_update_lesson_total_number" />
 
                 <Spinner
                     android:id="@+id/spn_update_lesson_category"
@@ -143,7 +142,7 @@
                     android:layout_height="50dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
                     android:spinnerMode="dropdown"
                     android:textColor="@color/gray_500"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +166,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
                     android:spinnerMode="dropdown"
                     android:textColor="@color/gray_500"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +191,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_update_rounded_spinner_disabled"
+                    android:background="@drawable/bg_update_lesson_rounded_spinner_disabled"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
                     android:textColor="@color/gray_500"
@@ -220,7 +219,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_update_rounded_spinner_disabled"
+                    android:background="@drawable/bg_update_lesson_rounded_spinner_disabled"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -241,7 +240,7 @@
                 <EditText
                     android:id="@+id/et_update_lesson_price"
                     style="@style/Widget.Sloth.EditText.Gray"
-                    priceFormatHint="@{vm.lessonPrice}"
+                    lessonPriceHint="@{vm.lessonPrice}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
@@ -263,7 +262,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
                     android:padding="16dp"
                     android:paddingHorizontal="12dp"
@@ -291,7 +290,7 @@
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_update_rounded_edit_text_disabled"
+                    android:background="@drawable/bg_update_lesson_rounded_edit_text_disabled"
                     android:ellipsize="end"
                     android:maxLength="30"
                     android:maxLines="1"
@@ -306,13 +305,13 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_update_lesson"
                     style="@style/Widget.Sloth.Button"
+                    onSingleClick="@{()->vm.updateLesson()}"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="16dp"
                     android:enabled="@{vm.updateLessonButtonState}"
-                    android:onClick="@{()->vm.updateLesson()}"
                     android:text="@string/finish"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -322,6 +321,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
+
+        <include
+            android:id="@+id/update_lesson_network_error"
+            layout="@layout/item_network_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:vm="@{vm}"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

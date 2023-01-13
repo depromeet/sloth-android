@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_remain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,41 +30,41 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:background="@drawable/bg_today_lesson_item_rounded_category_gray"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
                 android:text="개발"
-                android:textColor="@color/black"
+                android:textColor="@color/gray_600"
                 android:textSize="12dp"
                 app:layout_constraintStart_toEndOf="@id/tv_today_lesson_remain"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:background="@drawable/bg_today_lesson_item_rounded_category_gray"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
                 android:text="인프런"
-                android:textColor="@color/black"
+                android:textColor="@color/gray_600"
                 android:textSize="12dp"
                 app:layout_constraintStart_toEndOf="@id/tv_today_lesson_category"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:paddingEnd="20dp"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:textColor="@color/black"
+                android:textColor="@color/gray_600"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/tv_today_lesson_remain"
@@ -81,7 +81,7 @@
                 tools:ignore="HardcodedText"
                 tools:text="프로그래밍 시작하기 \n: 파이썬 입문 (Inflearn Original)" />
 
-            <com.depromeet.sloth.ui.custom.ArcProgressBar
+            <com.depromeet.sloth.presentation.screen.custom.ArcProgressBar
                 android:id="@+id/pb_today_lesson_bar"
                 android:layout_width="295dp"
                 android:layout_height="100dp"
@@ -94,11 +94,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_name"
-                app:progressColor="@color/sloth"
+                app:progressColor="@color/primary_500"
                 app:progressStyle="arc"
                 app:radius="150dp" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_current_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 app:layout_constraintEnd_toStartOf="@id/tv_divider"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_divider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_today_lesson_total_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="38dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/bg_home_today_item_button_minus"
+                android:background="@drawable/bg_today_lesson_item_button_minus"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_divider" />
@@ -165,7 +165,7 @@
                 android:layout_marginStart="38dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/bg_home_today_item_button_plus"
+                android:background="@drawable/bg_today_lesson_item_button_plus"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_divider" />
 

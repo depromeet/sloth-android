@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/register_lesson_first"
-        android:name="com.depromeet.sloth.ui.register.RegisterLessonFirstFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonFirstFragment"
         tools:layout="@layout/fragment_register_lesson_first"
         android:label="RegisterLessonFirstFragment">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/register_lesson_second"
-        android:name="com.depromeet.sloth.ui.register.RegisterLessonSecondFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonSecondFragment"
         tools:layout="@layout/fragment_register_lesson_second"
         android:label="RegisterLessonSecondFragment">
         <action
@@ -35,12 +35,17 @@
 
     <fragment
         android:id="@+id/register_lesson_check"
-        android:name="com.depromeet.sloth.ui.register.RegisterLessonCheckFragment"
+        android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonCheckFragment"
         tools:layout="@layout/fragment_register_lesson_check"
         android:label="RegisterLessonCheckFragment" />
     <action
         android:id="@+id/action_register_lesson_check_to_lesson_list"
         app:destination="@id/lesson_list"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/lesson_list"
         app:popUpToInclusive="true" />
 
 </navigation>

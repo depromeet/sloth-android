@@ -11,11 +11,12 @@ import com.depromeet.sloth.data.preferences.PreferenceManager
 import com.depromeet.sloth.domain.repository.LoginRepository
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.GRANT_TYPE
+import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
+import java.io.IOException
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -31,9 +32,7 @@ class LoginRepositoryImpl @Inject constructor(
         return accessToken != DEFAULT_STRING_VALUE && refreshToken != DEFAULT_STRING_VALUE
     }
 
-    override fun fetchGoogleAuthInfo(
-        authCode: String
-    ) = flow {
+    override fun fetchGoogleAuthInfo(authCode: String) = flow {
         emit(Result.Loading)
         val response = googleLoginService.fetchGoogleAuthInfo(
             LoginGoogleRequest(
@@ -55,13 +54,21 @@ class LoginRepositoryImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
 
-    override fun fetchSlothAuthInfo(
-        authToken: String,
-        socialType: String
-    ) = flow {
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
+
+    override fun fetchSlothAuthInfo(authToken: String, socialType: String) = flow {
         emit(Result.Loading)
         val response = slothLoginService.fetchSlothAuthInfo(
             authToken,
@@ -82,7 +89,18 @@ class LoginRepositoryImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
-        .onCompletion { emit(Result.UnLoading) }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 }
 

@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.today.TodayLessonViewModel" />
+            type="com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonViewModel" />
 
     </data>
 
@@ -15,35 +16,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tb_lesson_today"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_today_lesson"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F5F5F5"
-            android:elevation="0dp"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/tb_today_lesson"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/gray_100"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/today_lesson_menu" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_today_alarm"
-                    android:layout_width="23dp"
-                    android:layout_height="26dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/ic_home_lesson_list_alarm"
-                    android:onClick="@{()-> vm.navigateToNotificationList()}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
@@ -53,49 +43,35 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_lesson_today">
+            app:layout_constraintTop_toBottomOf="@id/ab_today_lesson">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/gl_start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_begin="16dp" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/gl_end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_end="16dp" />
-
-                <androidx.appcompat.widget.AppCompatImageView
+                <ImageView
                     android:id="@+id/iv_today_sloth"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="24dp"
-                    android:layout_marginEnd="8dp"
-                    tools:src="@drawable/ic_home_today_sloth_not_register"
-                    app:layout_constraintEnd_toStartOf="@id/gl_end"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_today_title_message"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_today_lesson_sloth_not_register" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_today_title_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="24dp"
                     android:textColor="@color/black"
                     android:textSize="24dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/iv_today_sloth"
                     app:layout_constraintEnd_toStartOf="@id/iv_today_sloth"
-                    app:layout_constraintStart_toEndOf="@id/gl_start"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/iv_today_sloth"
                     app:layout_constraintVertical_bias="0.50"
                     tools:text="@string/home_today_title_lose" />
@@ -104,16 +80,31 @@
                     android:id="@+id/rv_today_lesson"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
                     android:clipToPadding="false"
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toStartOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_today_sloth" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_today_sloth"
+                    tools:listitem="@layout/item_home_today_lesson_doing" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/today_lesson_network_error"
+            app:vm="@{vm}"
+            layout="@layout/item_network_error"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ab_today_lesson"
+            tools:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

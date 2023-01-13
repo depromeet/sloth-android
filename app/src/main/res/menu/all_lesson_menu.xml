@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_register_lesson"
+        android:enabled="true"
+        android:icon="@drawable/ic_register_lesson"
+        android:title="@string/menu_register_lesson"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_notification_list"
+        android:enabled="true"
+        android:icon="@drawable/ic_alarm"
+        android:title="@string/menu_notification_list"
+        app:showAsAction="ifRoom" />
+
+</menu>

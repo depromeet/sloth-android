@@ -1,9 +1,7 @@
 package com.depromeet.sloth.data.model.response.member
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-@Keep
 data class MemberResponse(
     @SerializedName("email")
     val email: String = "",

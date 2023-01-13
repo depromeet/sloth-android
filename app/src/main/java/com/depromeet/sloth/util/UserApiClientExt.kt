@@ -1,4 +1,4 @@
-package com.depromeet.sloth.ui.login
+package com.depromeet.sloth.presentation.login
 
 import android.content.Context
 import com.kakao.sdk.auth.model.OAuthToken

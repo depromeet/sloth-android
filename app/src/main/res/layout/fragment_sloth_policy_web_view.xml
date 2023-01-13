@@ -2,13 +2,18 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+   <data>
+      <import type="com.depromeet.sloth.BuildConfig"/>
+
+   </data>
+
    <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
       <com.google.android.material.appbar.MaterialToolbar
           android:id="@+id/tb_sloth_policy"
-          style="?attr/toolbarWithArrowButtonStyle"
+          style="@style/Widget.Sloth.Toolbar.WithArrow"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +25,7 @@
              android:layout_width="280dp"
              android:layout_height="32dp"
              android:background="@drawable/bg_sloth_policy_address_bar"
-             android:imeOptions="actionDone"
+             android:text="@{BuildConfig.POLICY_WEB_VIEW_URL}"
              android:inputType="textUri"
              android:paddingHorizontal="16dp"
              android:selectAllOnFocus="true"

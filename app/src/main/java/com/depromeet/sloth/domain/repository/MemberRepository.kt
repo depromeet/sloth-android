@@ -18,5 +18,5 @@ interface MemberRepository {
 
     fun logout(): Flow<Result<String>>
 
-    suspend fun removeAuthToken()
+    suspend fun deleteAuthToken()
 }

@@ -1,14 +1,14 @@
 package com.depromeet.sloth.util
 
+import android.graphics.Color
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.extensions.changeDateFormat
-import com.depromeet.sloth.extensions.changeDateFormatToDot
-import com.depromeet.sloth.extensions.changeListToDot
+import com.depromeet.sloth.extensions.*
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 
@@ -28,14 +28,14 @@ fun bindOnSingleClick(view: View, onClickListener: View.OnClickListener) {
 fun setLessonSummaryImage(view: ImageView, currentProgressRate: Float, goalProgressRate: Float) {
     // 시작 하지 않음
     if (goalProgressRate == 0F) {
-        GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_not_started_yet).into(view)
+        GlideApp.with(view.context).load(R.drawable.ic_lesson_detail_sloth_not_started_yet).into(view)
     }
     // 시작함
     else {
         if (currentProgressRate >= goalProgressRate) {
-            GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_steadily_listen).into(view)
+            GlideApp.with(view.context).load(R.drawable.ic_lesson_detail_sloth_steadily_listen).into(view)
         } else {
-            GlideApp.with(view.context).load(R.drawable.ic_detail_sloth_fail_goal).into(view)
+            GlideApp.with(view.context).load(R.drawable.ic_lesson_detail_sloth_fail_goal).into(view)
         }
     }
 }
@@ -62,8 +62,8 @@ fun setLessonSummaryText(view: TextView, currentProgressRate: Float, goalProgres
         }
     }
 
-@BindingAdapter("totalNumber")
-fun setLessonTotalNumberFormat(view: TextView, totalNumber: Int) = with(view) {
+@BindingAdapter("lessonTotalNumberHint")
+fun setLessonTotalNumberFormat(view: EditText, totalNumber: Int) = with(view) {
     hint = view.context.getString(R.string.unit_lesson_total_number, totalNumber)
 }
 
@@ -79,19 +79,14 @@ fun setWastePriceFormat(view: TextView, goalProgressRate: Float, price: Int) = w
     }
 }
 
-@BindingAdapter("text")
-fun toString(view: TextView, number: Int) = with(view) {
-    text = number.toString()
-}
-
 @BindingAdapter("priceFormat")
 fun setPriceFormat(view: TextView, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
     text = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
 
-@BindingAdapter("priceFormatHint")
-fun setPriceFormatHint(view: TextView, price: Int) = with(view) {
+@BindingAdapter("lessonPriceHint")
+fun setLessonPriceHint(view: EditText, price: Int) = with(view) {
     val decimalFormat = DecimalFormat("#,###")
     hint = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
@@ -118,6 +113,9 @@ fun setRemainDayFormat(view: TextView, goalProgressRate: Float, d_day: Int) = wi
                 visibility = View.VISIBLE
                 text = view.context.getString(R.string.d_day)
             } else {
+                if (d_day < 10) {
+                    view.setTextColor(Color.RED)
+                }
                 visibility = View.VISIBLE
                 text = view.context.getString(R.string.d_day_minus_format, d_day)
             }
@@ -171,10 +169,10 @@ fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
 }
 
 @BindingAdapter("checkLessonDate")
-fun checkLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
+fun checkLessonDate(view: TextView, date: String?) = with(view) {
     if (date.isNullOrEmpty()) return
     else {
-        text = changeListToDot(date)
+        text = changeStringToDot(date)
     }
 }
 
@@ -187,5 +185,15 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
                 changeDateFormatToDot(endDate!!)
             )
         } else return
+    }
+
+@BindingAdapter("email", "isEmailProvided")
+fun setMemberEmail(view: TextView, email: String, isEmailProvided: Boolean) =
+    with(view) {
+        text = if(isEmailProvided) {
+            email
+        } else {
+            DEFAULT_STRING_VALUE
+        }
     }
 

@@ -11,7 +11,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.depromeet.sloth.R
-import com.depromeet.sloth.ui.home.HomeActivity
+import com.depromeet.sloth.presentation.screen.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
@@ -41,7 +41,7 @@ class FirebaseService : FirebaseMessagingService() {
             createNotificationChannel(notificationManager)
         }
 
-        val intent = Intent(this, HomeActivity::class.java).apply {
+        val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         val pendingIntentFlag =

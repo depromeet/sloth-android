@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
+            type="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,28 +23,6 @@
             layout="@layout/toolbar_register_lesson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <!--        <com.google.android.material.appbar.MaterialToolbar-->
-        <!--            android:id="@+id/tb_register_lesson"-->
-        <!--            style="?attr/toolbarWithArrowButtonStyle"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:elevation="0dp"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent">-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/tv_register_lesson"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_gravity="center"-->
-        <!--                android:text="@string/register_new_lesson"-->
-        <!--                android:textColor="@color/black"-->
-        <!--                android:textSize="16dp"-->
-        <!--                android:textStyle="bold" />-->
-
-        <!--        </com.google.android.material.appbar.MaterialToolbar>-->
 
         <TextView
             android:id="@+id/tv_register_guide"
@@ -130,9 +111,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
-                    android:maxLength="4"
                     android:paddingHorizontal="18dp"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -191,14 +171,24 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_register_lesson"
             style="@style/Widget.Sloth.Button"
+            onSingleClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:layout_width="0dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:enabled="@{vm.navigateToLessonSecondButtonState}"
-            android:onClick="@{()-> vm.navigateToRegisterLessonSecond()}"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <include
+            android:id="@+id/register_lesson_network_error"
+            layout="@layout/item_network_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:vm="@{vm}"
+            tools:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

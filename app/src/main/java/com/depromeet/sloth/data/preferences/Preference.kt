@@ -3,9 +3,9 @@ package com.depromeet.sloth.data.preferences
 
 //interface Preference {
 //
-////    fun updateAccessToken(accessToken: String)
-////
-////    fun saveAuthToken(accessToken: String, refreshToken: String)
+//    fun updateAccessToken(accessToken: String)
+//
+//    fun saveAuthToken(accessToken: String, refreshToken: String)
 //
 //    suspend fun updateAccessToken(accessToken: String)
 //
@@ -15,5 +15,5 @@ package com.depromeet.sloth.data.preferences
 //
 //    fun getRefreshToken(): Flow<String>
 //
-//    suspend fun removeAuthToken()
+//    suspend fun deleteAuthToken()
 //}

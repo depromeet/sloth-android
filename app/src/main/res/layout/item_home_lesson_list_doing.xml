@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_remain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,13 +32,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:background="@drawable/bg_today_lesson_item_rounded_category_gray"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
@@ -49,13 +49,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_home_today_item_rounded_category_gray"
+                android:background="@drawable/bg_today_lesson_item_rounded_category_gray"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 tools:ignore="HardcodedText"
                 tools:text="프로그래밍 시작하기 : \n파이썬 입문 (Inflearn Original)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_price_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,14 +90,14 @@
                 android:gravity="top"
                 android:lineSpacingExtra="2sp"
                 android:text="내가 투자한 금액 "
-                android:textColor="#565656"
+                android:textColor="@color/gray_500"
                 android:textSize="12dp"
                 android:translationY="-1.2sp"
                 app:layout_constraintStart_toStartOf="@id/tv_lesson_list_remain"
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,12 +113,12 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/vw_lesson_list_goal_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_home_class_item_goal"
+                android:background="@drawable/bg_lesson_list_item_goal"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="목표"
                 android:textColor="@color/white"
@@ -142,7 +142,7 @@
                 android:id="@+id/vw_lesson_list_goal_line"
                 android:layout_width="1dp"
                 android:layout_height="22dp"
-                android:background="@drawable/bg_home_class_item_goal_line"
+                android:background="@drawable/bg_lesson_list_item_goal_line"
                 app:layout_constraintBottom_toBottomOf="@id/pb_lesson_list_bar"
                 app:layout_constraintEnd_toEndOf="@id/pb_lesson_list_bar"
                 app:layout_constraintStart_toStartOf="@id/pb_lesson_list_bar"
@@ -158,7 +158,7 @@
                 app:layout_constraintEnd_toEndOf="@id/vw_lesson_list_current_line"
                 app:layout_constraintTop_toTopOf="@id/pb_lesson_list_bar">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_lesson_list_goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_lesson_list_goal_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -193,26 +193,26 @@
                 android:layout_marginTop="44dp"
                 android:layout_marginEnd="20dp"
                 android:max="10000"
-                android:progressDrawable="@drawable/bg_home_class_lesson"
+                android:progressDrawable="@drawable/bg_lesson_list_progress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_price_start" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_class_lesson_percent_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
                 android:text="완강까지"
-                android:textColor="#565656"
+                android:textColor="@color/gray_500"
                 android:textSize="14dp"
                 app:layout_constraintStart_toStartOf="@id/pb_lesson_list_bar"
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -237,20 +237,20 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_percent_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
                 android:text="남았어요"
-                android:textColor="#565656"
+                android:textColor="@color/gray_500"
                 android:textSize="14dp"
                 app:layout_constraintStart_toEndOf="@id/tv_lesson_list_percent_text"
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_current_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_number_slash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
                 app:layout_constraintTop_toBottomOf="@id/pb_lesson_list_bar"
                 tools:ignore="HardcodedText" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_lesson_list_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

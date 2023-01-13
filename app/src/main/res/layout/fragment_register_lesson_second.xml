@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.ui.register.RegisterLessonViewModel" />
+            type="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonViewModel" />
 
     </data>
 
@@ -84,8 +84,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_spinner_gray"
-                    android:onClick="@{()->vm.registerLessonStartDate()}"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
+                    onSingleClick="@{()->vm.registerLessonStartDate()}"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_spinner_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
                     android:entries="@array/lesson_end_date_array"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,8 +124,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_spinner_gray"
-                    android:onClick="@{()->vm.registerLessonEndDate()}"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
+                    onSingleClick="@{()->vm.registerLessonEndDate()}"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="16dp"
                     android:visibility="@{vm.lessonEndDateSelectedItemPosition == 0 ? View.GONE : View.VISIBLE}"
@@ -172,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_register_rounded_edit_text_gray"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="18dp"
                     android:visibility="invisible"
@@ -219,11 +219,18 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             android:enabled="@{vm.navigateToLessonCheckButtonState}"
-            android:onClick="@{()-> vm.navigateToRegisterLessonCheck()}"
+            onSingleClick="@{()-> vm.navigateToRegisterLessonCheck()}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <include
+            android:id="@+id/register_lesson_network_error"
+            layout="@layout/item_network_error"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
