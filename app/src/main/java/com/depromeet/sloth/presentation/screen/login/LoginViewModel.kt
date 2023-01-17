@@ -3,9 +3,9 @@ package com.depromeet.sloth.presentation.screen.login
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.login.FetchGoogleAuthInfoUseCase
-import com.depromeet.sloth.domain.use_case.login.FetchSlothAuthInfoUseCase
-import com.depromeet.sloth.domain.use_case.notification.RegisterNotificationTokenUseCase
+import com.depromeet.sloth.domain.usecase.login.FetchGoogleAuthInfoUseCase
+import com.depromeet.sloth.domain.usecase.login.FetchSlothAuthInfoUseCase
+import com.depromeet.sloth.domain.usecase.notification.RegisterNotificationTokenUseCase
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.GOOGLE
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR

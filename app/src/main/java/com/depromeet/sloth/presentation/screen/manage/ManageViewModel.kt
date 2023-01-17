@@ -4,10 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.member.DeleteAuthTokenUseCase
-import com.depromeet.sloth.domain.use_case.member.FetchMemberInfoUseCase
-import com.depromeet.sloth.domain.use_case.member.LogOutUseCase
-import com.depromeet.sloth.domain.use_case.notification.UpdateNotificationStatusUseCase
+import com.depromeet.sloth.domain.usecase.member.DeleteAuthTokenUseCase
+import com.depromeet.sloth.domain.usecase.member.FetchMemberInfoUseCase
+import com.depromeet.sloth.domain.usecase.member.LogOutUseCase
+import com.depromeet.sloth.domain.usecase.notification.UpdateNotificationStatusUseCase
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result

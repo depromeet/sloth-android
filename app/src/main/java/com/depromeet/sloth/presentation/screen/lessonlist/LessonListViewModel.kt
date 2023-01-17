@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.FetchAllLessonListUseCase
+import com.depromeet.sloth.domain.usecase.lesson.FetchAllLessonListUseCase
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result

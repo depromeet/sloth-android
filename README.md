@@ -1,9 +1,11 @@
 # 나나공 (나보다 나무늘보가 공부 열심히 한다)
 ![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
 
-디프만 10기 4조 나나공 Android Project
+디프만 10기 4조 신동빈센조 나나공 Android Repository
 
 - 구글 플레이스토어: https://play.google.com/store/apps/details?id=com.depromeet.sloth
+- Disquiet: https://disquiet.io/product/나나공
+- Behance: https://www.behance.net/gallery/133424149/_?locale=ko_KR
 
 # OverView
 > 모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
@@ -33,18 +35,22 @@
 - Android Architecture Components(AAC)
   - ViewModel
   - DataBinding
-- Naivgation Conponent
+  - Naivgation Conponent
+  - Hilt
 - Coroutine
 - Flow
-- Hilt
 - Retrofit2
 - Okhttp3
 - Gson
 - KAKAO_SDK
 - Glide
-- FIREBASE_BOM
+- Firebase Analytics
+- Firebase Cloud Messaging
+- Firebase Crashlytics 
 - Lottie
 - Timber 
+- [ProgressView](https://github.com/skydoves/ProgressView)
+- StartUp
 
 **Foldering**
 ```
@@ -52,18 +58,28 @@
 ├── data
 │   ├── model
 │   ├── network
+│   ├── preferences
 │   └── repository
 ├── di
+├── domain
+│   ├── repository
+│   └── usecase
 ├── extensions
+├── initialize
+├── presentation
+│   ├── adapter
+│   ├── model
+│   └── screen
 ├── service
-├── ui
 └── util
 
 ```
 
 # ToDo
-- 푸시 알림 각 소셜 로그인별 고유 식별 처리 
 - 네트워크 상태 처리 개선  
+- 알림 목록 화면 구성
+- 강의 수강 통계 화면 구성
+- 온보딩 튜토리얼 구성 
 
 # WireFrame
 - 로그인 

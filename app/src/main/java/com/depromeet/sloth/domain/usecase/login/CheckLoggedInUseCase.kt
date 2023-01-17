@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.login
+package com.depromeet.sloth.domain.usecase.login
 
 import com.depromeet.sloth.domain.repository.LoginRepository
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.lesson
+package com.depromeet.sloth.domain.usecase.lesson
 
 import com.depromeet.sloth.domain.repository.LessonRepository
 import com.depromeet.sloth.util.Result

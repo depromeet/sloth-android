@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.FetchTodayLessonListUseCase
-import com.depromeet.sloth.domain.use_case.lesson.UpdateLessonCountUseCase
-import com.depromeet.sloth.domain.use_case.login.CheckLoggedInUseCase
+import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
+import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
+import com.depromeet.sloth.domain.usecase.login.CheckLoggedInUseCase
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
