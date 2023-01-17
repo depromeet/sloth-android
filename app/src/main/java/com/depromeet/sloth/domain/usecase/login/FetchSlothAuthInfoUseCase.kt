@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.login
+package com.depromeet.sloth.domain.usecase.login
 
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.data.model.response.login.LoginSlothResponse

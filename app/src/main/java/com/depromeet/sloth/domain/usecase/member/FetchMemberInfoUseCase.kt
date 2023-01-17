@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.member
+package com.depromeet.sloth.domain.usecase.member
 
 import com.depromeet.sloth.data.model.response.member.MemberResponse
 import com.depromeet.sloth.domain.repository.MemberRepository

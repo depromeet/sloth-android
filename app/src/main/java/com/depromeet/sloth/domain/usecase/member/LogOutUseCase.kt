@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.member
+package com.depromeet.sloth.domain.usecase.member
 
 import com.depromeet.sloth.domain.repository.MemberRepository
 import com.depromeet.sloth.util.Result

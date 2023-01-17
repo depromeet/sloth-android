@@ -1,4 +1,4 @@
-package com.depromeet.sloth.domain.use_case.notification
+package com.depromeet.sloth.domain.usecase.notification
 
 import com.depromeet.sloth.domain.repository.NotificationRepository
 import com.depromeet.sloth.util.Result

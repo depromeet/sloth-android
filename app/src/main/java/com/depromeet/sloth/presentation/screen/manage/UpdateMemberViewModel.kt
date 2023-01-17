@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.member.MemberUpdateRequest
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.member.UpdateMemberUseCase
+import com.depromeet.sloth.domain.usecase.member.UpdateMemberUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.DEFAULT_STRING_VALUE

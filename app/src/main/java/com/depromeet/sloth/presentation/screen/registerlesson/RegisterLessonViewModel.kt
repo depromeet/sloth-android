@@ -7,9 +7,9 @@ import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonCategoryResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.use_case.lesson.FetchLessonCategoryListUseCase
-import com.depromeet.sloth.domain.use_case.lesson.FetchLessonSiteListUseCase
-import com.depromeet.sloth.domain.use_case.lesson.RegisterLessonUseCase
+import com.depromeet.sloth.domain.usecase.lesson.FetchLessonCategoryListUseCase
+import com.depromeet.sloth.domain.usecase.lesson.FetchLessonSiteListUseCase
+import com.depromeet.sloth.domain.usecase.lesson.RegisterLessonUseCase
 import com.depromeet.sloth.extensions.getMutableStateFlow
 import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
