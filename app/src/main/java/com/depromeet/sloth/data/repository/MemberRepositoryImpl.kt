@@ -11,6 +11,7 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
@@ -20,35 +21,6 @@ class MemberRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
     private val memberService: MemberService
 ) : MemberRepository {
-
-//    suspend fun handleResponse(response: Response<BaseResponse>, preferences: PreferenceManager) {
-//        when(response.code()) {
-//            200 -> {
-//                // 토큰 갱신
-//                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-//                if (newAccessToken.isNotEmpty()) {
-//                    preferences.updateAccessToken(newAccessToken)
-//                }
-//                emit(Result.Success(response.body() ?: response.EMPTY))
-//            }
-//            else -> {
-//                emit(Result.Error(Exception(response.message()), response.code()))
-//            }
-//        }
-//    }
-//
-//    suspend fun handleError(throwable: Throwable) {
-//        when(throwable) {
-//            is IOException -> {
-//                // Handle Internet connection error
-//                emit(Result.Error(Exception("Internet connect Error")))
-//            }
-//            else -> {
-//                // Handle other error
-//                emit(Result.Error(throwable))
-//            }
-//        }
-//    }
 
     override fun fetchMemberInfo() = flow {
         emit(Result.Loading)
@@ -149,7 +121,44 @@ class MemberRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun getOnBoardingState(): Boolean {
+        return preferences.getOnBoardingState().first()
+    }
+
+    override suspend fun updateOnBoardingState() {
+        preferences.updateOnBoardingState()
+    }
+
     override suspend fun deleteAuthToken() {
         preferences.deleteAuthToken()
     }
+
+    //    suspend fun handleResponse(response: Response<BaseResponse>, preferences: PreferenceManager) {
+//        when(response.code()) {
+//            200 -> {
+//                // 토큰 갱신
+//                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+//                if (newAccessToken.isNotEmpty()) {
+//                    preferences.updateAccessToken(newAccessToken)
+//                }
+//                emit(Result.Success(response.body() ?: response.EMPTY))
+//            }
+//            else -> {
+//                emit(Result.Error(Exception(response.message()), response.code()))
+//            }
+//        }
+//    }
+//
+//    suspend fun handleError(throwable: Throwable) {
+//        when(throwable) {
+//            is IOException -> {
+//                // Handle Internet connection error
+//                emit(Result.Error(Exception("Internet connect Error")))
+//            }
+//            else -> {
+//                // Handle other error
+//                emit(Result.Error(throwable))
+//            }
+//        }
+//    }
 }
