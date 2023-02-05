@@ -51,4 +51,7 @@ interface LessonService {
 
     @GET("api/site/list")
     suspend fun fetchLessonSiteList(): Response<List<LessonSiteResponse>>?
+
+    @GET("api/lesson/stats")
+    suspend fun fetchLessonStatisticsInformation(): Response<LessonStatisticsResponse>?
 }

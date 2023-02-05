@@ -11,6 +11,7 @@ import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -369,6 +370,40 @@ class LessonRepositoryImpl @Inject constructor(
                     preferences.updateAccessToken(newAccessToken)
                 }
                 emit(Result.Success(response.body() ?: LessonUpdateResponse.EMPTY))
+            }
+
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
+
+    override fun fetchLessonStatisticsInformation() = flow {
+        emit(Result.Loading)
+        val response =
+            lessonService.fetchLessonStatisticsInformation()
+                ?: run {
+                    emit(Result.Error(Exception("Response is null")))
+                    return@flow
+                }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
+                }
+                emit(Result.Success(response.body() ?: LessonStatisticsResponse.EMPTY))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
