@@ -18,7 +18,7 @@ interface MemberRepository {
 
     fun logout(): Flow<Result<String>>
 
-    suspend fun getOnBoardingState(): Boolean
+    suspend fun fetchOnBoardingStatus(): Boolean
 
     suspend fun updateOnBoardingState()
 

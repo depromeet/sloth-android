@@ -64,7 +64,7 @@ class PreferenceManager @Inject constructor(
         }
     }
 
-    fun getOnBoardingState() = context.dataStore.data
+    fun getOnBoardingStatus() = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 exception.printStackTrace()
@@ -78,7 +78,7 @@ class PreferenceManager @Inject constructor(
             prefs[ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
-    suspend fun updateOnBoardingState() {
+    suspend fun updateOnBoardingStatus() {
         context.dataStore.edit {prefs ->
             prefs[ONBOARDING_COMPLETE] = true
         }

@@ -7,6 +7,6 @@ class FetchOnBoardingStatusUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
     suspend operator fun invoke() : Boolean {
-        return memberRepository.getOnBoardingState()
+        return memberRepository.fetchOnBoardingStatus()
     }
 }
