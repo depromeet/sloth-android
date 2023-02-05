@@ -20,7 +20,7 @@ interface MemberRepository {
 
     suspend fun fetchOnBoardingStatus(): Boolean
 
-    suspend fun updateOnBoardingState()
+    suspend fun updateOnBoardingStatus()
 
     suspend fun deleteAuthToken()
 }

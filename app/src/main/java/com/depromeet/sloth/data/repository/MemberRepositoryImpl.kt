@@ -125,7 +125,7 @@ class MemberRepositoryImpl @Inject constructor(
         return preferences.getOnBoardingStatus().first()
     }
 
-    override suspend fun updateOnBoardingState() {
+    override suspend fun updateOnBoardingStatus() {
         preferences.updateOnBoardingStatus()
     }
 
