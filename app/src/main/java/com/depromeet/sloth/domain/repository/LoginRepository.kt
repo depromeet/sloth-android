@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
 
-    suspend fun checkLoggedIn(): Boolean
+    suspend fun fetchLoginStatus(): Boolean
 
     fun fetchSlothAuthInfo(
         authToken: String,

@@ -7,6 +7,6 @@ class FetchLoginStatusUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {
     suspend operator fun invoke(): Boolean {
-        return loginRepository.checkLoggedIn()
+        return loginRepository.fetchLoginStatus()
     }
 }
