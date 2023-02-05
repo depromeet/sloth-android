@@ -74,7 +74,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/iv_today_sloth"
                     app:layout_constraintVertical_bias="0.50"
-                    tools:text="@string/home_today_title_lose" />
+                    tools:text="@string/today_lesson_title_lose" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_today_lesson"
@@ -87,7 +87,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/iv_today_sloth"
-                    tools:listitem="@layout/item_home_today_lesson_doing" />
+                    tools:listitem="@layout/item_today_lesson_doing" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

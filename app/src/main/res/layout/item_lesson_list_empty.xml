@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="@string/home_list_title_not_register"
+            android:text="@string/lesson_list_title_not_register"
             android:textColor="@color/black"
             android:textSize="20dp"
             android:textStyle="bold"

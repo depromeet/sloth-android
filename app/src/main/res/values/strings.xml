@@ -85,11 +85,13 @@
     <string name="caution">caution</string>
     <string name="lesson_goal_date_info">2021. 12. 24</string>
     <string name="lesson_present_number_info">24개 중 10개</string>
-    <string name="home_today_title_lose"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
-    <string name="home_today_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
-    <string name="home_today_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
-    <string name="home_today_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
-    <string name="home_list_title_not_register"><font color="#000000">등록되어 있는 강의가 없네요?</font></string>
+    <string name="today_lesson_title_lose"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
+    <string name="today_lesson_title_lose_onboarding"><font color="#000000">"어서와\n나랑 대결은\n처음이지?"</font></string>
+    <string name="today_lesson_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
+    <string name="today_lesson_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
+    <string name="today_lesson_title_win_onboarding"><font color="#000000">"크윽..\n처음치고 굉장히\n잘하는데"</font></string>
+    <string name="today_lesson_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
+    <string name="lesson_list_title_not_register"><font color="#000000">등록되어 있는 강의가 없네요?</font></string>
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
