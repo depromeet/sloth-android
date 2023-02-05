@@ -1,9 +1,11 @@
 package com.depromeet.sloth.presentation.screen.manage
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.di.StringResourcesProvider
+import com.depromeet.sloth.domain.usecase.lesson.FetchLessonStatisticsInformationUseCase
 import com.depromeet.sloth.domain.usecase.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchMemberInfoUseCase
 import com.depromeet.sloth.domain.usecase.member.LogOutUseCase
@@ -31,6 +33,7 @@ class ManageViewModel @Inject constructor(
     private val logOutUseCase: LogOutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
+    private val fetchLessonStatisticsInformationUseCase: FetchLessonStatisticsInformationUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
@@ -61,35 +64,73 @@ class ManageViewModel @Inject constructor(
     private val _logoutCancelEvent = MutableSharedFlow<Unit>()
     val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
 
-    fun fetchMemberInfo() = viewModelScope.launch {
-        fetchMemberInfoUseCase()
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setInternetError(false)
-                        _uiState.update { memberUiState ->
-                            memberUiState.copy(
-                                email = result.data.email,
-                                memberName = result.data.memberName,
-                                isEmailProvided = result.data.isEmailProvided,
-                                isPushAlarmUse = result.data.isPushAlarmUse
-                            )
+    fun fetchMemberInfo() {
+        viewModelScope.launch {
+            fetchMemberInfoUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setInternetError(false)
+                            _uiState.update { memberUiState ->
+                                memberUiState.copy(
+                                    email = result.data.email,
+                                    memberName = result.data.memberName,
+                                    isEmailProvided = result.data.isEmailProvided,
+                                    isPushAlarmUse = result.data.isPushAlarmUse
+                                )
+                            }
                         }
-                    }
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                        is Result.Error -> {
+                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                                setInternetError(true)
+                            } else if (result.statusCode == UNAUTHORIZED) {
+                                navigateToExpireDialog()
+                            } else {
+                                showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                            }
                         }
                     }
                 }
-            }
+        }
+
+        viewModelScope.launch {
+            fetchLessonStatisticsInformationUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setInternetError(false)
+                            _uiState.update { memberUiState ->
+                                memberUiState.copy(
+                                    currentProgressRate =
+                                        if(result.data.expiredLessonsPrice == 0) 0
+                                        else result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100,
+                                    expiredLessonsCnt = result.data.expiredLessonsCnt,
+                                    expiredLessonsPrice = result.data.expiredLessonsPrice,
+                                    finishedLessonsCnt = result.data.finishedLessonsCnt,
+                                    finishedLessonsPrice = result.data.finishedLessonsPrice,
+                                    notFinishedLessonsCnt = result.data.notFinishedLessonsCnt,
+                                    notFinishedLessonsPrice = result.data.notFinishedLessonsPrice
+                                )
+                            }
+                        }
+                        is Result.Error -> {
+                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                                setInternetError(true)
+                            } else if (result.statusCode == UNAUTHORIZED) {
+                                navigateToExpireDialog()
+                            } else {
+                                showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     fun updateNotificationSwitch(check: Boolean) {
@@ -188,5 +229,12 @@ class ManageViewModel @Inject constructor(
         val memberName: String = "",
         val isEmailProvided: Boolean = false,
         val isPushAlarmUse: Boolean = false,
+        val currentProgressRate: Int = 0,
+        val expiredLessonsCnt: Int = 0,
+        val expiredLessonsPrice: Int = 0,
+        val finishedLessonsCnt: Int = 0,
+        val finishedLessonsPrice: Int = 0,
+        val notFinishedLessonsCnt: Int = 0,
+        val notFinishedLessonsPrice: Int = 0
     )
 }
