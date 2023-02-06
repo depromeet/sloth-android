@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonEmptyBinding
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
+import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.TodayLessonDoingViewHolder
 import com.depromeet.sloth.presentation.adapter.viewholder.TodayLessonEmptyViewHolder
 import com.depromeet.sloth.presentation.adapter.viewholder.TodayLessonFinishedViewHolder
@@ -22,7 +20,7 @@ class TodayLessonAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (bodyType) {
             BodyType.EMPTY -> TodayLessonEmptyViewHolder(
-                ItemHomeTodayLessonEmptyBinding.inflate(
+                ItemTodayLessonEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -31,7 +29,7 @@ class TodayLessonAdapter(
             )
 
             BodyType.FINISHED -> TodayLessonFinishedViewHolder(
-                ItemHomeTodayLessonFinishedBinding.inflate(
+                ItemTodayLessonFinishedBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -42,7 +40,7 @@ class TodayLessonAdapter(
 
             BodyType.NOT_FINISHED -> TodayLessonDoingViewHolder(
                 parent.context,
-                ItemHomeTodayLessonDoingBinding.inflate(
+                ItemTodayLessonDoingBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

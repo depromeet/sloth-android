@@ -195,5 +195,6 @@
     <string name="login_fail_by_internet_error">로그인을 실패했어요\n인터넷 연결을 확인해주세요</string>
     <string name="please_check_internet">인터넷 연결을 확인해주세요</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tutorial">튜토리얼</string>
 
 </resources>

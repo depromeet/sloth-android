@@ -7,12 +7,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.addListener
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
+import com.depromeet.sloth.databinding.ItemLessonListDoingBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
 class LessonListDoingViewHolder(
-    private val binding: ItemHomeLessonListDoingBinding,
+    private val binding: ItemLessonListDoingBinding,
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 

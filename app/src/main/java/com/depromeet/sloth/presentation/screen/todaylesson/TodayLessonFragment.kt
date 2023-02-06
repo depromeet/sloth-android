@@ -25,11 +25,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+//TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재호출하는 것이 아닌, list 를 update 하는 방식으로 변경
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
     private val todayLessonViewModel: TodayLessonViewModel by viewModels()
+    // private lateinit var todayLessonAdapter: TodayLessonAdapter
+    // private lateinit var onBoardingAdapter: OnBoardingAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,10 +72,54 @@ class TodayLessonFragment :
                 autoLoginEvent
                     .collect { loginState ->
                         when (loginState) {
-                            true -> fetchTodayLessonList()
-                            else -> navigateToLogin()
+                            //TODO UDF 위반
+                            true -> checkOnBoardingComplete()
+                            false -> navigateToLogin()
                         }
                     }
+            }
+
+            launch {
+                checkOnBoardingCompleteEvent
+                    .collect { isOnBoardingComplete ->
+                        when (isOnBoardingComplete) {
+                            true -> {
+                                //TODO UDF 위반
+                                fetchTodayLessonList()
+                            }
+                            false -> {
+                                //TODO UDF 위반
+                                showOnBoardingClickPlus()
+                            }
+                        }
+                    }
+            }
+
+            launch {
+                showOnBoardingClickPlusEvent
+                    .collect {
+                        fetchOnBoardingList()
+                        val action =
+                            TodayLessonFragmentDirections.actionTodayLessonToOnBoardingClickPlusDialog()
+                        findNavController().safeNavigate(action)
+                    }
+            }
+
+            launch {
+                onBoardingList.collect { list ->
+                    if (list[0].presentNumber == 3) {
+                        fetchOnBoardingList()
+                    }
+                }
+            }
+
+            launch {
+                showOnBoardingRegisterLessonEvent.collect {
+                    // UDF 위반
+                    fetchTodayLessonList()
+                    val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingRegisterLessonDialog()
+                    findNavController().safeNavigate(action)
+                }
             }
 
             launch {
@@ -115,6 +162,76 @@ class TodayLessonFragment :
         }
     }
 
+    private fun fetchOnBoardingList() {
+        val notFinishedHeader =
+            HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
+
+        val notFinishedLessonAdapter =
+            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, _, _ ->
+                when (clickType) {
+                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {
+                        todayLessonViewModel.updateOnBoardingItemCount()
+                    }
+                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {}
+                    else -> Unit
+                }
+            }
+
+        val finishedHeader =
+            HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
+
+        val finishedLessonAdapter =
+            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, _, _ ->
+                when (clickType) {
+                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {}
+                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {}
+                    TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
+                        todayLessonViewModel.showOnBoardingLessonRegister()
+                    }
+                    else -> {}
+                }
+            }
+
+        val concatAdapter = ConcatAdapter(
+            notFinishedHeader,
+            notFinishedLessonAdapter,
+            finishedHeader,
+            finishedLessonAdapter
+        )
+
+        val isOnBoardingComplete = todayLessonViewModel.onBoardingList.value[0].presentNumber == 3
+
+        if (isOnBoardingComplete) {
+            concatAdapter.removeAdapter(notFinishedHeader)
+            concatAdapter.removeAdapter(notFinishedLessonAdapter)
+
+            finishedLessonAdapter.submitList(todayLessonViewModel.onBoardingList.value)
+        } else {
+            concatAdapter.removeAdapter(finishedHeader)
+            concatAdapter.removeAdapter(finishedLessonAdapter)
+
+            notFinishedLessonAdapter.submitList(todayLessonViewModel.onBoardingList.value)
+        }
+
+        binding.apply {
+            rvTodayLesson.adapter = concatAdapter
+
+            when {
+                isOnBoardingComplete -> {
+                    tvTodayTitleMessage.text =
+                        getString(R.string.today_lesson_title_win_onboarding)
+                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose_onboarding)
+                }
+
+                else -> {
+                    tvTodayTitleMessage.text =
+                        getString(R.string.today_lesson_title_lose_onboarding)
+                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
+                }
+            }
+        }
+    }
+
     private fun navigateToLogin() {
         val action =
             TodayLessonFragmentDirections.actionTodayLessonToLogin()
@@ -149,7 +266,7 @@ class TodayLessonFragment :
 
                 binding.apply {
                     rvTodayLesson.adapter = concatAdapter
-                    tvTodayTitleMessage.text = getString(R.string.home_today_title_not_register)
+                    tvTodayTitleMessage.text = getString(R.string.today_lesson_title_not_register)
                     ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
                 }
             }
@@ -250,20 +367,20 @@ class TodayLessonFragment :
                     when {
                         lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> {
                             tvTodayTitleMessage.text =
-                                getString(R.string.home_today_title_win)
+                                getString(R.string.today_lesson_title_win)
                             ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose)
                         }
 
                         lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
                             .not()) -> {
                             tvTodayTitleMessage.text =
-                                getString(R.string.home_today_title_not_start)
+                                getString(R.string.today_lesson_title_not_start)
                             ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
                         }
 
                         else -> {
                             tvTodayTitleMessage.text =
-                                getString(R.string.home_today_title_lose)
+                                getString(R.string.today_lesson_title_lose)
                             ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
                         }
                     }

@@ -2,19 +2,19 @@ package com.depromeet.sloth.presentation.adapter.viewholder
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.graphics.Color
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonDoingBinding
+import com.depromeet.sloth.databinding.ItemTodayLessonDoingBinding
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 
 class TodayLessonDoingViewHolder(
     private val context: Context,
-    private val binding: ItemHomeTodayLessonDoingBinding,
+    private val binding: ItemTodayLessonDoingBinding,
     private val currentList: List<LessonTodayResponse>,
     private val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     private var nowProgress = 0
 
@@ -25,7 +25,14 @@ class TodayLessonDoingViewHolder(
 
                 btnTodayLessonPlus.setOnClickListener {
                     viewTodayLessonLottie.playAnimation()
-                    updateLessonCountOnServer(true, lessonToday)
+                    // onBoarding 인 경우 api 호출 되면 안됨
+                    val isOnBoarding =
+                        tvTodayLessonCategory.text == context.getString(R.string.tutorial)
+                    if (isOnBoarding) {
+                        onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
+                    } else {
+                        updateLessonCountOnServer(true, lessonToday)
+                    }
                     updateProgress(true, lessonToday.untilTodayNumber)
                     updateText(true, lessonToday.untilTodayNumber)
                 }
@@ -40,9 +47,14 @@ class TodayLessonDoingViewHolder(
     }
 
     private fun init(lessonToday: LessonTodayResponse) = with(binding) {
-        tvTodayLessonRemain.text = if (lessonToday.remainDay == 0) "D-Day" else "D-${lessonToday.remainDay}"
+        tvTodayLessonRemain.text =
+            if (lessonToday.remainDay == 0) "D-Day" else "D-${lessonToday.remainDay}"
         tvTodayLessonCategory.text = lessonToday.categoryName
-        tvTodayLessonSite.text = lessonToday.siteName
+        if (lessonToday.siteName.isNotEmpty()) {
+            tvTodayLessonSite.text = lessonToday.siteName
+        } else {
+            tvTodayLessonSite.visibility = View.GONE
+        }
         tvTodayLessonName.text = lessonToday.lessonName
         tvTodayLessonCurrentNum.text = lessonToday.presentNumber.toString()
         tvTodayLessonTotalNum.text = lessonToday.untilTodayNumber.toString()
@@ -52,16 +64,7 @@ class TodayLessonDoingViewHolder(
             it.max = lessonToday.untilTodayNumber * 1000
             it.progress = lessonToday.presentNumber * 1000
         }
-
-        if (lessonToday.untilTodayFinished) {
-            tvTodayLessonRemain.setTextColor(Color.WHITE)
-        } else {
-//            when (lessonToday.remainDay) {
-//                in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
-//                else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
-//            }
-            tvTodayLessonRemain.setTextColor(context.resources.getColor(R.color.primary_400, null))
-        }
+        tvTodayLessonRemain.setTextColor(context.resources.getColor(R.color.primary_400, null))
     }
 
     private fun updateProgress(isUp: Boolean, totalNum: Int) = with(binding) {
@@ -90,7 +93,9 @@ class TodayLessonDoingViewHolder(
         lessonToday: LessonTodayResponse
     ) = with(binding) {
         //if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lessonToday.untilTodayNumber) && isUp)) return
-        if (((nowProgress <= 0) && isUp.not()) || ((lessonToday.presentNumber == lessonToday.totalNumber) && isUp)) return
+        val isOutOfRange =
+            ((nowProgress <= 0) && isUp.not()) || ((lessonToday.presentNumber == lessonToday.totalNumber) && isUp)
+        if (isOutOfRange) return
 
         if (isUp) {
             currentList[bindingAdapterPosition].presentNumber++

@@ -27,11 +27,13 @@ import java.util.*
 class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
     private val lessonListViewModel: LessonListViewModel by viewModels()
+    // private lateinit var lessonListAdapter: LessonListAdapter
 
     override fun onStart() {
         super.onStart()
         lessonListViewModel.fetchAllLessonList()
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -69,8 +71,30 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         repeatOnStarted {
 
             launch {
+                checkOnBoardingCompleteEvent
+                    .collect { isCompleteOnBoarding ->
+                        when (isCompleteOnBoarding) {
+                            true -> Unit
+                            // TODO UDF 위반
+                            false -> showOnBoardingCheckDetail()
+                        }
+                    }
+            }
+
+            launch {
+                showOnBoardingCheckDetailEvent
+                    .collect {
+                        val action =
+                            LessonListFragmentDirections.actionLessonListToOnBoardingCheckDetailDialog()
+                        findNavController().safeNavigate(action)
+                    }
+            }
+
+            // TODO list 자체를 구독하는 형식으로 변경
+            // clickEvent 를 통해 뷰모델 내의 navigation event 함수를 전달 하는 형식으로
+            launch {
                 fetchLessonListSuccessEvent
-                    .collect{
+                    .collect {
                         setLessonList(it)
                     }
             }
@@ -123,6 +147,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     }
 
     private fun navigateToLessonDetail(lesson: LessonAllResponse) {
+        //TODO UDF 위반, 단일 책임 원칙 위반
+        lessonListViewModel.updateOnBoardingStatus()
         val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
             lesson.lessonId.toString()
         )
@@ -158,9 +184,12 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     }
                 }
 
-                val doingHeader = HeaderAdapter(HeaderAdapter.HeaderType.DOING, lessonDoingList.size)
-                val planningHeader = HeaderAdapter(HeaderAdapter.HeaderType.PLANNING, lessonPlanningList.size)
-                val passedHeader = HeaderAdapter(HeaderAdapter.HeaderType.PASSED, lessonPassedList.size)
+                val doingHeader =
+                    HeaderAdapter(HeaderAdapter.HeaderType.DOING, lessonDoingList.size)
+                val planningHeader =
+                    HeaderAdapter(HeaderAdapter.HeaderType.PLANNING, lessonPlanningList.size)
+                val passedHeader =
+                    HeaderAdapter(HeaderAdapter.HeaderType.PASSED, lessonPassedList.size)
                 val doingLessonAdapter =
                     LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
                         navigateToLessonDetail(lesson)
@@ -209,7 +238,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getLessonType(lesson: LessonAllResponse, ): LessonListAdapter.BodyType {
+    private fun getLessonType(lesson: LessonAllResponse): LessonListAdapter.BodyType {
         val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
         val startDate = dateFormat.parse(lesson.startDate)
         val todayDate = Calendar.getInstance()

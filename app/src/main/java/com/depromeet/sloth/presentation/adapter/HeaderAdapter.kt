@@ -3,20 +3,20 @@ package com.depromeet.sloth.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.databinding.ItemHomeHeaderBinding
-import com.depromeet.sloth.presentation.adapter.viewholder.HeaderViewHolder
+import com.depromeet.sloth.databinding.ItemLessonHeaderBinding
+import com.depromeet.sloth.presentation.adapter.viewholder.LessonHeaderViewHolder
 
 class HeaderAdapter(
     private val headerType: HeaderType,
     private val count: Int? = null,
-) : RecyclerView.Adapter<HeaderViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
+) : RecyclerView.Adapter<LessonHeaderViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LessonHeaderViewHolder {
         val binding =
-            ItemHomeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HeaderViewHolder(binding)
+            ItemLessonHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return LessonHeaderViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LessonHeaderViewHolder, position: Int) {
         holder.bind(holder.itemView.context, headerType, count)
     }
 

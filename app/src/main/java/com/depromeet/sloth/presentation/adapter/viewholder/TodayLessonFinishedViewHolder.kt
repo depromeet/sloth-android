@@ -5,11 +5,11 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.databinding.ItemHomeTodayLessonFinishedBinding
+import com.depromeet.sloth.databinding.ItemTodayLessonFinishedBinding
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 
 class TodayLessonFinishedViewHolder(
-    private val binding: ItemHomeTodayLessonFinishedBinding,
+    private val binding: ItemTodayLessonFinishedBinding,
     private val currentList: List<LessonTodayResponse>,
     val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
 ): RecyclerView.ViewHolder(binding.root) {
@@ -51,20 +51,16 @@ class TodayLessonFinishedViewHolder(
     private fun init(lessonToday: LessonTodayResponse) = with(binding) {
         tvTodayLessonRemain.text = if (lessonToday.remainDay == 0) "D-Day" else "D-${lessonToday.remainDay}"
         tvTodayLessonCategory.text = lessonToday.categoryName
-        tvTodayLessonSite.text = lessonToday.siteName
+        if (lessonToday.siteName.isNotEmpty()) {
+            tvTodayLessonSite.text = lessonToday.siteName
+        } else {
+            tvTodayLessonSite.visibility = View.GONE
+        }
         tvTodayLessonName.text = lessonToday.lessonName
         tvTodayLessonCurrentNum.text = lessonToday.presentNumber.toString()
         tvTodayLessonTotalNum.text = lessonToday.untilTodayNumber.toString()
         nowProgress = lessonToday.presentNumber
-
-        if (lessonToday.untilTodayFinished) {
-            tvTodayLessonRemain.setTextColor(Color.WHITE)
-        } else {
-            when (lessonToday.remainDay) {
-                in 0 until 10 -> tvTodayLessonRemain.setTextColor(Color.RED)
-                else -> tvTodayLessonRemain.setTextColor(Color.BLACK)
-            }
-        }
+        tvTodayLessonRemain.setTextColor(Color.WHITE)
     }
 
     private fun updateProgress(isUp: Boolean, totalNum: Int) {

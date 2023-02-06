@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemHomeLessonListDoingBinding
-import com.depromeet.sloth.databinding.ItemHomeLessonListEmptyBinding
-import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
-import com.depromeet.sloth.databinding.ItemHomeLessonListPlanningBinding
+import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.LessonListDoingViewHolder
 import com.depromeet.sloth.presentation.adapter.viewholder.LessonListEmptyViewHolder
 import com.depromeet.sloth.presentation.adapter.viewholder.LessonListPassedViewHolder
@@ -25,19 +22,19 @@ class LessonListAdapter(
     ): RecyclerView.ViewHolder {
         return when (bodyType) {
             BodyType.Empty -> LessonListEmptyViewHolder(
-                ItemHomeLessonListEmptyBinding
+                ItemLessonListEmptyBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
             BodyType.DOING -> LessonListDoingViewHolder(
-                ItemHomeLessonListDoingBinding
+                ItemLessonListDoingBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
             BodyType.PLANNING -> LessonListPlanningViewHolder(
-                ItemHomeLessonListPlanningBinding
+                ItemLessonListPlanningBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
             BodyType.PASSED -> LessonListPassedViewHolder(
-                ItemHomeLessonListFinishedBinding
+                ItemLessonListFinishedBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false), onClick
             )
         }

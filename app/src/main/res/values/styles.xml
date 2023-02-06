@@ -136,5 +136,9 @@
         <item name="android:background">@drawable/bg_sloth_dialog</item>
     </style>
 
+    <style name="OnBoardingDialog" parent="@style/Theme.MaterialComponents.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 
 </resources>

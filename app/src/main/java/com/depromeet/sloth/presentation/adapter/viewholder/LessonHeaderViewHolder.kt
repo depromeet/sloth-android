@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
-import com.depromeet.sloth.databinding.ItemHomeHeaderBinding
+import com.depromeet.sloth.databinding.ItemLessonHeaderBinding
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 
-class HeaderViewHolder(private val binding: ItemHomeHeaderBinding) :
+class LessonHeaderViewHolder(private val binding: ItemLessonHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(context: Context, headerType: HeaderAdapter.HeaderType, count: Int?) = with(binding) {

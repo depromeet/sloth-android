@@ -46,8 +46,7 @@
         android:id="@+id/sloth_policy_webview"
         android:name="com.depromeet.sloth.presentation.screen.login.SlothPolicyWebViewFragment"
         android:label="SlothPolicyWebViewFragment"
-        tools:layout="@layout/fragment_sloth_policy_web_view">
-    </fragment>
+        tools:layout="@layout/fragment_sloth_policy_web_view"/>
 
     <dialog
         android:id="@+id/login_bottom_dialog"
@@ -133,6 +132,14 @@
         <action
             android:id="@+id/action_today_lesson_to_finish_lesson_dialog"
             app:destination="@id/finish_lesson_dialog" />
+
+        <action
+            android:id="@+id/action_today_lesson_to_on_boarding_click_plus_dialog"
+            app:destination="@id/on_boarding_click_plus_dialog" />
+
+        <action
+            android:id="@+id/action_today_lesson_to_on_boarding_register_lesson_dialog"
+            app:destination="@id/on_boarding_register_lesson_dialog" />
     </fragment>
 
     <fragment
@@ -160,6 +167,9 @@
         <action
             android:id="@+id/action_lesson_list_to_wait_dialog"
             app:destination="@id/wait_dialog" />
+        <action
+            android:id="@+id/action_lesson_list_to_on_boarding_check_detail_dialog"
+            app:destination="@id/on_boarding_check_detail_dialog" />
     </fragment>
 
     <fragment
@@ -291,5 +301,23 @@
             android:name="lesson_id"
             app:argType="string" />
     </dialog>
+
+    <dialog
+        android:id="@+id/on_boarding_check_detail_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingCheckDetailDialogFragment"
+        android:label="OnBoardingCheckDetailDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_check_detail_dialog" />
+    <dialog
+
+        android:id="@+id/on_boarding_register_lesson_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingRegisterLessonDialogFragment"
+        android:label="OnBoardingRegisterLessonDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_register_lesson_dialog" />
+
+    <dialog
+        android:id="@+id/on_boarding_click_plus_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingClickPlusDialogFragment"
+        android:label="OnBoardingClickPlusDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_click_plus_dialog" />
 
 </navigation>

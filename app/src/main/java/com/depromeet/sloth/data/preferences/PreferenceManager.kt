@@ -79,7 +79,7 @@ class PreferenceManager @Inject constructor(
         }
 
     suspend fun updateOnBoardingStatus() {
-        context.dataStore.edit {prefs ->
+        context.dataStore.edit { prefs ->
             prefs[ONBOARDING_COMPLETE] = true
         }
     }

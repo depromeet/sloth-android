@@ -3,12 +3,12 @@ package com.depromeet.sloth.presentation.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemHomeLessonListFinishedBinding
+import com.depromeet.sloth.databinding.ItemLessonListFinishedBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
 class LessonListPassedViewHolder(
-    private val binding: ItemHomeLessonListFinishedBinding,
+    private val binding: ItemLessonListFinishedBinding,
     val onClick: (LessonAllResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
