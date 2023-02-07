@@ -15,6 +15,8 @@ class OnBoardingCheckDetailDialogFragment :
         initListener()
     }
 
+    override fun getTheme(): Int = R.style.OnBoardingCheckDetailDialog
+
     private fun initListener() {
         binding.root.setOnClickListener {
             if (!findNavController().navigateUp()) {

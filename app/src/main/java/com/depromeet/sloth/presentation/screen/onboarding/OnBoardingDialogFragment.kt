@@ -35,12 +35,12 @@ abstract class OnBoardingDialogFragment<B : ViewDataBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
-        setSizeDialog()
+        setDialogSize()
     }
 
     override fun getTheme(): Int = R.style.OnBoardingDialog
 
-    private fun setSizeDialog() {
+    open fun setDialogSize() {
         context?.let {
             dialog?.let { dialog ->
                 dialog.window?.let { window ->

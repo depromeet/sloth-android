@@ -138,7 +138,12 @@
 
     <style name="OnBoardingDialog" parent="@style/Theme.MaterialComponents.Dialog">
         <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.72</item>
     </style>
 
+    <style name="OnBoardingCheckDetailDialog" parent="OnBoardingDialog">
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
 </resources>
