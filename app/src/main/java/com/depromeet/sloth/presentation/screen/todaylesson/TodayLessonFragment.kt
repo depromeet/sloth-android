@@ -115,8 +115,7 @@ class TodayLessonFragment :
 
             launch {
                 showOnBoardingRegisterLessonEvent.collect {
-                    // UDF 위반
-                    fetchTodayLessonList()
+                    setLessonList(emptyList())
                     val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingRegisterLessonDialog()
                     findNavController().safeNavigate(action)
                 }
