@@ -32,6 +32,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
     override fun onStart() {
         super.onStart()
         lessonListViewModel.fetchAllLessonList()
+        lessonListViewModel.checkOnBoardingComplete()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

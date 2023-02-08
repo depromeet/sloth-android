@@ -47,10 +47,6 @@ class LessonListViewModel @Inject constructor(
     private val _navigateToLessonDetailEvent = MutableSharedFlow<LessonAllResponse>()
     val navigateToLessonDetailEvent: SharedFlow<LessonAllResponse> = _navigateToLessonDetailEvent.asSharedFlow()
 
-    init {
-        checkOnBoardingComplete()
-    }
-
     // TODO stock market app 참고 해서 함수 개선
     fun fetchAllLessonList() = viewModelScope.launch {
         fetchAllLessonListUseCase()
@@ -82,7 +78,7 @@ class LessonListViewModel @Inject constructor(
         _showOnBoardingCheckDetailEvent.emit(Unit)
     }
 
-    private fun checkOnBoardingComplete() = viewModelScope.launch {
+    fun checkOnBoardingComplete() = viewModelScope.launch {
         _checkOnBoardingCompleteEvent.emit(fetchOnBoardingStatusUseCase())
     }
 
