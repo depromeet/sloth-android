@@ -148,11 +148,15 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun navigateToLessonDetail(lesson: LessonAllResponse) {
         //TODO UDF 위반, 단일 책임 원칙 위반
-        lessonListViewModel.updateOnBoardingStatus()
+        completeOnBoarding()
         val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
             lesson.lessonId.toString()
         )
         findNavController().safeNavigate(action)
+    }
+
+    private fun completeOnBoarding() {
+        lessonListViewModel.updateOnBoardingStatus()
     }
 
     private fun setLessonList(lessonList: List<LessonAllResponse>) {
@@ -242,7 +246,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
         val startDate = dateFormat.parse(lesson.startDate)
         val todayDate = Calendar.getInstance()
-        val isPassed = lesson.isFinished || lesson.lessonStatus == PAST
+        val isPassed = lesson.isFinished || lesson.lessonStatus == getString(R.string.past)
         val isPlanning = (todayDate.time.time - startDate!!.time) < 0L
 
         return when {
@@ -250,9 +254,5 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             isPlanning -> LessonListAdapter.BodyType.PLANNING
             else -> LessonListAdapter.BodyType.DOING
         }
-    }
-
-    companion object {
-        private const val PAST = "PAST"
     }
 }
