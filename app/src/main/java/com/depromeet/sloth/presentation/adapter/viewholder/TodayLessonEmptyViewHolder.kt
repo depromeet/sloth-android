@@ -14,7 +14,7 @@ class TodayLessonEmptyViewHolder(
         itemView.apply {
             binding.apply {
                 clTodayLesson.setOnClickListener {
-                    onClick(TodayLessonAdapter.ClickType.CLICK_NORMAL, lessonToday, DELAY_TIME)
+                    onClick(TodayLessonAdapter.ClickType.CLICK_REGISTER, lessonToday, DELAY_TIME)
                 }
             }
         }

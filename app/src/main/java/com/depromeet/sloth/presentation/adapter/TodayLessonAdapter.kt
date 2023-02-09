@@ -68,7 +68,7 @@ class TodayLessonAdapter(
     enum class ClickType(val value: Int) {
         CLICK_PLUS(1),
         CLICK_MINUS(-1),
-        CLICK_NORMAL(0),
+        CLICK_REGISTER(0),
         CLICK_COMPLETE(2)
     }
 
