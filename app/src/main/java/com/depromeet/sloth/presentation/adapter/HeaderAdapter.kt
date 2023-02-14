@@ -27,10 +27,10 @@ class HeaderAdapter(
     enum class HeaderType(val title: String) {
         EMPTY("아래 버튼을 눌러 강의를 등록해주세요"),
         FINISHED("오늘까지 완료한 강의"),
-        NOT_FINISHED("오늘까지 들어야하는 강의"),
-        DOING("진행중인 강의"),
-        PLANNING("예정된 강의"),
-        PASSED("지난 강의")
+        DOING("오늘까지 들어야하는 강의"),
+        CURRENT("진행중인 강의"),
+        PLAN("예정된 강의"),
+        PAST("지난 강의")
     }
 
     companion object {

@@ -170,6 +170,10 @@
         <action
             android:id="@+id/action_lesson_list_to_on_boarding_check_detail_dialog"
             app:destination="@id/on_boarding_check_detail_dialog" />
+        <action
+            android:id="@+id/action_lesson_list_to_today_lesson"
+            app:destination="@id/today_lesson"
+            app:popUpTo="@id/lesson_list"/>
     </fragment>
 
     <fragment
@@ -193,6 +197,11 @@
         <action
             android:id="@+id/action_manage_to_logout_dialog"
             app:destination="@id/logout_dialog" />
+
+        <action
+            android:id="@+id/action_manage_to_today_lesson"
+            app:destination="@id/today_lesson"
+            app:popUpTo="@id/manage"/>
     </fragment>
 
     <fragment

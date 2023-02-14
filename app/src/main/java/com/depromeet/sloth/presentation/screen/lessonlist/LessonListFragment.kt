@@ -1,6 +1,5 @@
 package com.depromeet.sloth.presentation.screen.lessonlist
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,31 +7,76 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
-import com.depromeet.sloth.extensions.*
+import com.depromeet.sloth.extensions.repeatOnStarted
+import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.LessonListAdapter
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
-import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
-//TODO 어댑터에 생성자에 있는 Enum class 제거
+
+//TODO Empty일때 핸들링
 @AndroidEntryPoint
 class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
     private val lessonListViewModel: LessonListViewModel by viewModels()
-    // private lateinit var lessonListAdapter: LessonListAdapter
+
+    private lateinit var concatAdapter: ConcatAdapter
+
+    private val emptyLessonAdapter by lazy {
+        LessonListAdapter {
+            lessonListViewModel.navigateToRegisterLesson()
+        }
+    }
+
+    private val currentHeader by lazy {
+        HeaderAdapter(
+            HeaderAdapter.HeaderType.CURRENT,
+            lessonListViewModel.currentLessonList.value.size
+        )
+    }
+
+    private val currentLessonAdapter by lazy {
+        LessonListAdapter { lesson ->
+            lessonListViewModel.navigateToLessonDetail(lesson)
+        }
+    }
+
+    private val planHeader by lazy {
+        HeaderAdapter(
+            HeaderAdapter.HeaderType.PLAN,
+            lessonListViewModel.planLessonList.value.size
+        )
+    }
+
+    private val planLessonAdapter by lazy {
+        LessonListAdapter { lesson ->
+            lessonListViewModel.navigateToLessonDetail(lesson)
+        }
+    }
+
+    private val pastHeader by lazy {
+        HeaderAdapter(
+            HeaderAdapter.HeaderType.PAST,
+            lessonListViewModel.pastLessonList.value.size
+        )
+    }
+
+    private val pastLessonAdapter by lazy {
+        LessonListAdapter { lesson ->
+            lessonListViewModel.navigateToLessonDetail(lesson)
+        }
+    }
 
     override fun onStart() {
         super.onStart()
-        lessonListViewModel.fetchAllLessonList()
-        lessonListViewModel.checkOnBoardingComplete()
+        lessonListViewModel.fetchLessonList()
+        // TODO fetchLessonList 내부로 이동
+        // lessonListViewModel.checkOnBoardingComplete()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,13 +85,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         bind {
             vm = lessonListViewModel
         }
-        initViews()
         initListener()
         initObserver()
-    }
-
-    override fun initViews() = with(binding) {
-        rvLessonList.addItemDecoration(LessonItemDecoration(requireActivity(), 16))
     }
 
     private fun initListener() = with(binding) {
@@ -70,34 +109,68 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
+            // TODO 투데이 화면에서 온보딩 안끝났으면 아예 강의 목록 화면으로 넘어오지 못하게 해야함
+            // check 해서 다시 돌아가게 빠꾸 먹일까 그게 쉬울 것 같은데
+            // 근데 그러면 checkDetail OnBoarding 화면을 띄울 수 없음
+            // onBoarding 이 Complete 되었을 때 띄운다면 매번 강의 목록 화면에 진입 할때마다 checkDetail 온보딩이 수행됨
+//            launch {
+//                checkOnBoardingCompleteEvent
+//                    .collect { isOnBoardingComplete ->
+//                        if (!isOnBoardingComplete) {
+//                            val action = ManageFragmentDirections.actionManageToTodayLesson()
+//                            findNavController().safeNavigate(action)
+//                        }
+//                    }
 
-            launch {
-                checkOnBoardingCompleteEvent
-                    .collect { isCompleteOnBoarding ->
-                        when (isCompleteOnBoarding) {
-                            true -> Unit
-                            // TODO UDF 위반
-                            false -> showOnBoardingCheckDetail()
-                        }
-                    }
-            }
+//                    .collect { isCompleteOnBoarding ->
+//                        when (isCompleteOnBoarding) {
+//                            true -> Unit
+//                            false -> {
+//                                showOnBoardingCheckDetail()
+//                            }
+//                        }
+//                    }
+//            }
+//
+//            launch {
+//                showOnBoardingCheckDetailEvent
+//                    .collect {
+//                        val action =
+//                            LessonListFragmentDirections.actionLessonListToOnBoardingCheckDetailDialog()
+//                        findNavController().safeNavigate(action)
+//                    }
+//            }
 
-            launch {
-                showOnBoardingCheckDetailEvent
-                    .collect {
-                        val action =
-                            LessonListFragmentDirections.actionLessonListToOnBoardingCheckDetailDialog()
-                        findNavController().safeNavigate(action)
-                    }
-            }
-
-            // TODO list 자체를 구독하는 형식으로 변경
-            // clickEvent 를 통해 뷰모델 내의 navigation event 함수를 전달 하는 형식으로
             launch {
                 fetchLessonListSuccessEvent
                     .collect {
-                        setLessonList(it)
+                        initViews()
+                        initAdapter()
                     }
+            }
+
+            launch {
+                emptyLessonList.collect {
+                    emptyLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                currentLessonList.collect {
+                    currentLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                planLessonList.collect {
+                    planLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                pastLessonList.collect {
+                    pastLessonAdapter.submitList(it)
+                }
             }
 
             launch {
@@ -105,6 +178,15 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     .collect {
                         val action =
                             LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                        findNavController().safeNavigate(action)
+                    }
+            }
+
+            launch {
+                navigateToLessonDetailEvent
+                    .collect { lesson ->
+                        val action =
+                            LessonListFragmentDirections.actionLessonListToLessonDetail(lesson.lessonId.toString())
                         findNavController().safeNavigate(action)
                     }
             }
@@ -142,118 +224,45 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         }
     }
 
+    override fun initViews() {
+        val isEmpty = lessonListViewModel.emptyLessonList.value.isNotEmpty()
+        binding.apply {
+            tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = !isEmpty
+
+            if (rvLessonList.itemDecorationCount == 0) {
+                rvLessonList.addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            }
+        }
+    }
+
+    private fun initAdapter() = with(lessonListViewModel) {
+        if (emptyLessonList.value.isNotEmpty()) {
+            binding.rvLessonList.adapter = emptyLessonAdapter
+        } else {
+            concatAdapter = ConcatAdapter(
+                currentHeader,
+                currentLessonAdapter,
+                planHeader,
+                planLessonAdapter,
+                pastHeader,
+                pastLessonAdapter
+            )
+            if (currentLessonList.value.isEmpty()) {
+                concatAdapter.removeAdapter(currentHeader)
+                concatAdapter.removeAdapter(currentLessonAdapter)
+            } else if (planLessonList.value.isEmpty()) {
+                concatAdapter.removeAdapter(planHeader)
+                concatAdapter.removeAdapter(planLessonAdapter)
+            } else if (pastLessonList.value.isEmpty()) {
+                concatAdapter.removeAdapter(pastHeader)
+                concatAdapter.removeAdapter(pastLessonAdapter)
+            }
+            binding.rvLessonList.adapter = concatAdapter
+        }
+    }
+
     private fun showWaitDialog() {
         val action = LessonListFragmentDirections.actionLessonListToWaitDialog()
         findNavController().safeNavigate(action)
-    }
-
-    private fun navigateToLessonDetail(lesson: LessonAllResponse) {
-        //TODO UDF 위반, 단일 책임 원칙 위반
-        completeOnBoarding()
-        val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
-            lesson.lessonId.toString()
-        )
-        findNavController().safeNavigate(action)
-    }
-
-    private fun completeOnBoarding() {
-        lessonListViewModel.updateOnBoardingStatus()
-    }
-
-    private fun setLessonList(lessonList: List<LessonAllResponse>) {
-        when (lessonList.isEmpty()) {
-            true -> {
-                binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = false
-                val emptyLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.Empty) {
-                        val action =
-                            LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
-                        findNavController().safeNavigate(action)
-                    }
-
-                emptyLessonAdapter.submitList(listOf(LessonAllResponse.EMPTY))
-                binding.rvLessonList.adapter = emptyLessonAdapter
-            }
-
-            false -> {
-                binding.tbLessonList.menu.findItem(R.id.menu_register_lesson).isVisible = true
-                val lessonDoingList = mutableListOf<LessonAllResponse>()
-                val lessonPlanningList = mutableListOf<LessonAllResponse>()
-                val lessonPassedList = mutableListOf<LessonAllResponse>()
-
-                lessonList.forEach { lesson ->
-                    when (getLessonType(lesson)) {
-                        LessonListAdapter.BodyType.PASSED -> lessonPassedList.add(lesson)
-                        LessonListAdapter.BodyType.PLANNING -> lessonPlanningList.add(lesson)
-                        else -> lessonDoingList.add(lesson)
-                    }
-                }
-
-                val doingHeader =
-                    HeaderAdapter(HeaderAdapter.HeaderType.DOING, lessonDoingList.size)
-                val planningHeader =
-                    HeaderAdapter(HeaderAdapter.HeaderType.PLANNING, lessonPlanningList.size)
-                val passedHeader =
-                    HeaderAdapter(HeaderAdapter.HeaderType.PASSED, lessonPassedList.size)
-                val doingLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.DOING) { lesson ->
-                        navigateToLessonDetail(lesson)
-                    }
-                val planningLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.PLANNING) { lesson ->
-                        navigateToLessonDetail(lesson)
-                    }
-                val passedLessonAdapter =
-                    LessonListAdapter(LessonListAdapter.BodyType.PASSED) { lesson ->
-                        navigateToLessonDetail(lesson)
-                    }
-                val concatAdapter = ConcatAdapter(
-                    doingHeader,
-                    doingLessonAdapter,
-                    planningHeader,
-                    planningLessonAdapter,
-                    passedHeader,
-                    passedLessonAdapter
-                )
-
-                if (lessonDoingList.isEmpty()) {
-                    concatAdapter.removeAdapter(doingHeader)
-                    concatAdapter.removeAdapter(doingLessonAdapter)
-                } else {
-                    doingLessonAdapter.submitList(lessonDoingList)
-                }
-
-                if (lessonPlanningList.isEmpty()) {
-                    concatAdapter.removeAdapter(planningHeader)
-                    concatAdapter.removeAdapter(planningLessonAdapter)
-                } else {
-                    planningLessonAdapter.submitList(lessonPlanningList)
-                }
-
-                if (lessonPassedList.isEmpty()) {
-                    concatAdapter.removeAdapter(passedHeader)
-                    concatAdapter.removeAdapter(passedLessonAdapter)
-                } else {
-                    passedLessonAdapter.submitList(lessonPassedList)
-                }
-
-                binding.rvLessonList.adapter = concatAdapter
-            }
-        }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun getLessonType(lesson: LessonAllResponse): LessonListAdapter.BodyType {
-        val dateFormat = SimpleDateFormat(DATE_FORMAT_PATTERN)
-        val startDate = dateFormat.parse(lesson.startDate)
-        val todayDate = Calendar.getInstance()
-        val isPassed = lesson.isFinished || lesson.lessonStatus == getString(R.string.past)
-        val isPlanning = (todayDate.time.time - startDate!!.time) < 0L
-
-        return when {
-            isPassed -> LessonListAdapter.BodyType.PASSED
-            isPlanning -> LessonListAdapter.BodyType.PLANNING
-            else -> LessonListAdapter.BodyType.DOING
-        }
     }
 }

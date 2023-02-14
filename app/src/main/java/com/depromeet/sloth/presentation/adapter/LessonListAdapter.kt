@@ -5,70 +5,88 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
+import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.*
-import com.depromeet.sloth.presentation.adapter.viewholder.LessonListDoingViewHolder
-import com.depromeet.sloth.presentation.adapter.viewholder.LessonListEmptyViewHolder
-import com.depromeet.sloth.presentation.adapter.viewholder.LessonListPassedViewHolder
-import com.depromeet.sloth.presentation.adapter.viewholder.LessonListPlanningViewHolder
+import com.depromeet.sloth.presentation.adapter.viewholder.CurrentLessonListViewHolder
+import com.depromeet.sloth.presentation.adapter.viewholder.EmptyLessonListViewHolder
+import com.depromeet.sloth.presentation.adapter.viewholder.PastLessonListViewHolder
+import com.depromeet.sloth.presentation.adapter.viewholder.PlanLessonListViewHolder
 
 class LessonListAdapter(
-    private val bodyType: BodyType,
-    val onClick: (LessonAllResponse) -> Unit
-) : ListAdapter<LessonAllResponse, RecyclerView.ViewHolder>(LessonListDiffCallback) {
+    val onClick: (LessonListResponse) -> Unit
+) : ListAdapter<LessonListResponse, RecyclerView.ViewHolder>(object :
+    DiffUtil.ItemCallback<LessonListResponse>() {
+    override fun areItemsTheSame(oldItem: LessonListResponse, newItem: LessonListResponse) =
+        oldItem.lessonId == newItem.lessonId
+
+    override fun areContentsTheSame(oldItem: LessonListResponse, newItem: LessonListResponse) =
+        oldItem == newItem
+}) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): RecyclerView.ViewHolder {
-        return when (bodyType) {
-            BodyType.Empty -> LessonListEmptyViewHolder(
-                ItemLessonListEmptyBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false), onClick
-            )
-            BodyType.DOING -> LessonListDoingViewHolder(
-                ItemLessonListDoingBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false), onClick
-            )
-            BodyType.PLANNING -> LessonListPlanningViewHolder(
-                ItemLessonListPlanningBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false), onClick
-            )
-            BodyType.PASSED -> LessonListPassedViewHolder(
-                ItemLessonListFinishedBinding
-                    .inflate(LayoutInflater.from(parent.context), parent, false), onClick
+        return when (viewType) {
+            CURRENT -> {
+                CurrentLessonListViewHolder(
+                    ItemLessonListCurrentBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                    onClick
+                )
+            }
+            PLANNING ->
+                PlanLessonListViewHolder(
+                    ItemLessonListPlanBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                    onClick
+                )
+            else -> PastLessonListViewHolder(
+                ItemLessonListPastBinding
+                    .inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                onClick
             )
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (bodyType) {
-            BodyType.Empty -> (holder as LessonListEmptyViewHolder).bind(currentList[position])
-            BodyType.DOING -> (holder as LessonListDoingViewHolder).bind(currentList[position])
-            BodyType.PLANNING -> (holder as LessonListPlanningViewHolder).bind(currentList[position])
-            BodyType.PASSED -> (holder as LessonListPassedViewHolder).bind(currentList[position])
+        when (getItemViewType(position)) {
+            EMPTY -> (holder as EmptyLessonListViewHolder).bind(currentList[position])
+            CURRENT -> (holder as CurrentLessonListViewHolder).bind(currentList[position])
+            PLANNING -> (holder as PlanLessonListViewHolder).bind(currentList[position])
+            PAST -> (holder as PastLessonListViewHolder).bind(currentList[position])
         }
     }
 
-    enum class BodyType {
-        Empty,
-        DOING,
-        PLANNING,
-        PASSED
-    }
-}
+    override fun getItemViewType(position: Int): Int {
+        // TODO isEmpty 판별 하는 방법
+        val isEmpty = currentList.isEmpty()
+        val isCurrentLesson =
+            !currentList[position].isFinished && currentList[position].lessonStatus == "CURRENT"
+        val isPlanLesson = currentList[position].lessonStatus == "PLAN"
+        val isPast = currentList[position].isFinished || currentList[position].lessonStatus == "PAST"
 
-object LessonListDiffCallback : DiffUtil.ItemCallback<LessonAllResponse>() {
-    override fun areItemsTheSame(
-        oldItem: LessonAllResponse,
-        newItem: LessonAllResponse,
-    ): Boolean {
-        return oldItem.lessonId == newItem.lessonId
+        return when {
+            isEmpty -> EMPTY
+            isCurrentLesson -> CURRENT
+            isPlanLesson -> PLANNING
+            isPast -> PAST
+            else -> EMPTY
+        }
     }
-
-    override fun areContentsTheSame(
-        oldItem: LessonAllResponse,
-        newItem: LessonAllResponse,
-    ): Boolean {
-        return oldItem == newItem
+    companion object {
+        private const val EMPTY = 1
+        private const val CURRENT = 2
+        private const val PLANNING = 3
+        private const val PAST = 4
     }
 }

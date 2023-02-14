@@ -154,7 +154,7 @@
     <string name="lesson_update_fail">강의를 수정하지 못했어요</string>
     <string name="lesson_update_fail_by_internet_error">강의를 수정하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="lesson_finish_complete">강의를 완강하였어요</string>
-    <string name="lesson_finish_fail">강의 완료처리에 실패하였어요</string>
+    <string name="lesson_finish_fail">강의를 완강하지 못했어요</string>
     <string name="lesson_finish_fail_by_internet_error">강의를 완강하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="lesson_delete_complete">강의가 삭제 되었어요</string>
     <string name="lesson_delete_fail">강의를 삭제하지 못했어요</string>
@@ -197,5 +197,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tutorial">튜토리얼</string>
     <string name="past">PAST</string>
+    <string name="lesson_update_count_fail">강의를 갱신하지 못했어요</string>
+    <string name="lesson_update_count_fail_by_internet_error">강의를 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
 
 </resources>

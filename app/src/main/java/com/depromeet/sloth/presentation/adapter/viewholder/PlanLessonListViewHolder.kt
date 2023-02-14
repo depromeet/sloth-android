@@ -1,16 +1,16 @@
 package com.depromeet.sloth.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemLessonListPlanningBinding
+import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
+import com.depromeet.sloth.databinding.ItemLessonListPlanBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 
-class LessonListPlanningViewHolder(
-    private val binding: ItemLessonListPlanningBinding,
-    val onClick: (LessonAllResponse) -> Unit
+class PlanLessonListViewHolder(
+    private val binding: ItemLessonListPlanBinding,
+    val onClick: (LessonListResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lesson: LessonAllResponse) {
+    fun bind(lesson: LessonListResponse) {
         itemView.apply {
             binding.apply {
                 tvLessonListCategory.text = lesson.categoryName

@@ -6,17 +6,17 @@ import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.addListener
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.data.model.response.lesson.LessonAllResponse
-import com.depromeet.sloth.databinding.ItemLessonListDoingBinding
+import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
+import com.depromeet.sloth.databinding.ItemLessonListCurrentBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
-class LessonListDoingViewHolder(
-    private val binding: ItemLessonListDoingBinding,
-    val onClick: (LessonAllResponse) -> Unit
+class CurrentLessonListViewHolder(
+    private val binding: ItemLessonListCurrentBinding,
+    val onClick: (LessonListResponse) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lesson: LessonAllResponse) {
+    fun bind(lesson: LessonListResponse) {
         itemView.apply {
             binding.apply {
                 val progressRate = (lesson.currentProgressRate / 100.0f)
