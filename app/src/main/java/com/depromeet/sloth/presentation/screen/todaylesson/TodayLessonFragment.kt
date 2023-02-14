@@ -7,47 +7,125 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
 import com.depromeet.sloth.databinding.FragmentTodayLessonBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
+import com.depromeet.sloth.presentation.adapter.OnBoardingAdapter
 import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
-import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.sloth.util.Result
-import com.depromeet.sloth.util.UNAUTHORIZED
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-//TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재호출하는 것이 아닌, list 를 update 하는 방식으로 변경
+// TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재호출하는 것이 아닌, list 를 update 하는 방식으로 변경
+// TODO updateLessonCount API, finishLesson Api 를 호출하는 로직과 리스트 갱신을 분리
+// TODO Header 도 viewType 으로 선언 (headerAdapter 의 headerType 제거)
+// TODO concatAdapter.submitList ...
+// TODO Empty일때 핸들링
+// 근데 지금 짠대로 만약에 run 하면 뷰들이 뒤죽박죽 섞여있을 것 같다. 정렬이 수반되어야할 것 같은데.. 그게 가능한건가 (채팅과의 차이점)
+// 각 뷰타입들이 모여있어야 하는데
+// API 호출을 통한 결과로 리스트를 처음부터 다시 세팅해주지 말고, 기존의 리스트를 갱신하는 식으로 변경
+// 온보딩이 후에 강의 목록화면에서 투데이 화면으로 메뉴 버튼을 눌러도 이동이 안되는 이슈
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
     private val todayLessonViewModel: TodayLessonViewModel by viewModels()
-    // private lateinit var todayLessonAdapter: TodayLessonAdapter
-    // private lateinit var onBoardingAdapter: OnBoardingAdapter
+
+    private lateinit var concatAdapter: ConcatAdapter
+
+    private val emptyHeader by lazy { HeaderAdapter(HeaderAdapter.HeaderType.EMPTY) }
+
+    private val emptyLessonAdapter by lazy {
+        TodayLessonAdapter {
+            todayLessonViewModel.navigateToRegisterLesson()
+        }
+    }
+
+    private val doingHeader by lazy { HeaderAdapter(HeaderAdapter.HeaderType.DOING) }
+
+    // TODO 뷰모델 내의 함수를 어댑터의 생성자로 전달
+    private val doingLessonAdapter by lazy { TodayLessonAdapter {} }
+
+    private val finishedHeader by lazy { HeaderAdapter(HeaderAdapter.HeaderType.FINISHED) }
+
+    private val finishedLessonAdapter by lazy { TodayLessonAdapter {} }
+
+    private val doingOnBoardingAdapter by lazy { OnBoardingAdapter{} }
+
+    private val finishedOnBoardingAdapter by lazy { OnBoardingAdapter{}}
+
+    override fun onStart() {
+        super.onStart()
+        todayLessonViewModel.fetchTodayLessonList()
+        // TODO fetchTodayLesson 함수 내로 이동
+        // todayLessonViewModel.checkOnBoardingComplete()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind {
             vm = todayLessonViewModel
         }
-        initViews()
         initListener()
         initObserver()
     }
 
     override fun initViews() {
-        binding.rvTodayLesson.apply {
-            if (itemDecorationCount == 0)
-                addItemDecoration(LessonItemDecoration(requireContext(), 16))
+        todayLessonViewModel.apply {
+            val isOnBoardingComplete = onBoardingComplete.value
+            if (isOnBoardingComplete) {
+                val isEmpty = lessonEmptyList.value.isNotEmpty()
+                val isNotStart =
+                    lessonDoingList.value.isNotEmpty() && lessonFinishedList.value.isEmpty()
+                lessonDoingList.value.any { it.presentNumber > 0 }.not()
+                val isFinished =
+                    lessonDoingList.value.isEmpty() && lessonFinishedList.value.isNotEmpty()
+
+                binding.apply {
+                    if (isEmpty) {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_not_register)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
+                    } else if (isNotStart) {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_not_start)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
+                    } else if (isFinished) {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_win)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose)
+                    } else {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_lose)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
+                    }
+                }
+            } else {
+                val isDoing =
+                    onBoardingDoingList.value.isNotEmpty() && onBoardingFinishedList.value.isEmpty()
+                val isFinished =
+                    onBoardingDoingList.value.isEmpty() && onBoardingFinishedList.value.isNotEmpty()
+                binding.apply {
+                    if (isDoing) {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_lose_onboarding)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
+                    } else if (isFinished) {
+                        tvTodayTitleMessage.text =
+                            getString(R.string.today_lesson_title_win_onboarding)
+                        ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose_onboarding)
+                    }
+                }
+            }
+            binding.rvTodayLesson.apply {
+                // header 와 첫번째 아이템 사이의 간격 조정
+                if (itemDecorationCount == 0)
+                    addItemDecoration(LessonItemDecoration(requireContext(), 16))
+            }
         }
     }
 
@@ -59,7 +137,6 @@ class TodayLessonFragment :
                         todayLessonViewModel.navigateToWaitDialog()
                         true
                     }
-
                     else -> false
                 }
             }
@@ -69,70 +146,84 @@ class TodayLessonFragment :
     private fun initObserver() = with(todayLessonViewModel) {
         repeatOnStarted {
             launch {
-                autoLoginEvent
-                    .collect { loginState ->
-                        when (loginState) {
-                            //TODO UDF 위반
-                            true -> checkOnBoardingComplete()
-                            false -> navigateToLogin()
-                        }
-                    }
-            }
-
-            launch {
-                checkOnBoardingCompleteEvent
-                    .collect { isOnBoardingComplete ->
-                        when (isOnBoardingComplete) {
-                            true -> {
-                                //TODO UDF 위반
-                                fetchTodayLessonList()
-                            }
-                            false -> {
-                                //TODO UDF 위반
-                                showOnBoardingClickPlus()
-                            }
-                        }
-                    }
-            }
-
-            launch {
-                showOnBoardingClickPlusEvent
-                    .collect {
-                        fetchOnBoardingList()
-                        val action =
-                            TodayLessonFragmentDirections.actionTodayLessonToOnBoardingClickPlusDialog()
-                        findNavController().safeNavigate(action)
-                    }
-            }
-
-            launch {
-                onBoardingList.collect { list ->
-                    if (list[0].presentNumber == 3) {
-                        fetchOnBoardingList()
+                autoLoginEvent.collect { loginState ->
+                    when (loginState) {
+                        true -> Unit
+                        false -> navigateToLogin()
                     }
                 }
             }
 
-            launch {
-                showOnBoardingRegisterLessonEvent.collect {
-                    setLessonList(emptyList())
-                    val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingRegisterLessonDialog()
-                    findNavController().safeNavigate(action)
-                }
-            }
+//            launch {
+//                checkOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
+//                    when (isOnBoardingComplete) {
+//                        //TODO UDF 위반
+//                        true -> fetchTodayLessonList()
+//                        false -> showOnBoardingClickPlus()
+//                    }
+//                }
+//            }
+
+//            launch {
+//                showOnBoardingClickPlusEvent.collect {
+//                    setOnBoardingList()
+//                    val action =
+//                        TodayLessonFragmentDirections.actionTodayLessonToOnBoardingClickPlusDialog()
+//                    findNavController().safeNavigate(action)
+//                }
+//            }
+
+//            launch {
+//                onBoardingDoingList.collect {
+//                    doingOnBoardingAdapter.submitList(it)
+//                }
+//            }
+//
+//            launch {
+//                onBoardingFinishedList.collect {
+//                    finishedOnBoardingAdapter.submitList(it)
+//                }
+//            }
+
+//            launch {
+//                showOnBoardingRegisterLessonEvent.collect {
+//                    // setLessonList(emptyList())
+//                    val action =
+//                        TodayLessonFragmentDirections.actionTodayLessonToOnBoardingRegisterLessonDialog()
+//                    findNavController().safeNavigate(action)
+//                }
+//            }
 
             launch {
                 fetchLessonListSuccessEvent
                     .collect {
-                        setLessonList(it)
+                        initViews()
+                        initAdapter()
                     }
             }
 
             launch {
-                navigateToWaitDialogEvent
-                    .collect {
-                        showWaitDialog()
-                    }
+                lessonEmptyList.collect {
+                    emptyLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                lessonDoingList.collect {
+                    finishedLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                lessonFinishedList.collect {
+                    doingLessonAdapter.submitList(it)
+                }
+            }
+
+            launch {
+                navigateToWaitDialogEvent.collect {
+                    showWaitDialog()
+                }
             }
 
             launch {
@@ -142,6 +233,14 @@ class TodayLessonFragment :
                             true -> showProgress()
                             false -> hideProgress()
                         }
+                    }
+            }
+
+            launch {
+                navigateRegisterLessonEvent
+                    .collect {
+                        val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
+                        findNavController().safeNavigate(action)
                     }
             }
 
@@ -161,73 +260,48 @@ class TodayLessonFragment :
         }
     }
 
-    private fun fetchOnBoardingList() {
-        val notFinishedHeader =
-            HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
-
-        val notFinishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, _, _ ->
-                when (clickType) {
-                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-                        todayLessonViewModel.updateOnBoardingItemCount()
-                    }
-                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {}
-                    else -> Unit
-                }
-            }
-
-        val finishedHeader =
-            HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-
-        val finishedLessonAdapter =
-            TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, _, _ ->
-                when (clickType) {
-                    TodayLessonAdapter.ClickType.CLICK_PLUS -> {}
-                    TodayLessonAdapter.ClickType.CLICK_MINUS -> {}
-                    TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
-                        todayLessonViewModel.showOnBoardingLessonRegister()
-                    }
-                    else -> {}
-                }
-            }
-
-        val concatAdapter = ConcatAdapter(
-            notFinishedHeader,
-            notFinishedLessonAdapter,
-            finishedHeader,
-            finishedLessonAdapter
-        )
-
-        val isOnBoardingComplete = todayLessonViewModel.onBoardingList.value[0].presentNumber == 3
+    private fun initAdapter() = with(todayLessonViewModel) {
+        val isOnBoardingComplete = onBoardingComplete.value
 
         if (isOnBoardingComplete) {
-            concatAdapter.removeAdapter(notFinishedHeader)
-            concatAdapter.removeAdapter(notFinishedLessonAdapter)
-
-            finishedLessonAdapter.submitList(todayLessonViewModel.onBoardingList.value)
-        } else {
-            concatAdapter.removeAdapter(finishedHeader)
-            concatAdapter.removeAdapter(finishedLessonAdapter)
-
-            notFinishedLessonAdapter.submitList(todayLessonViewModel.onBoardingList.value)
-        }
-
-        binding.apply {
-            rvTodayLesson.adapter = concatAdapter
-
-            when {
-                isOnBoardingComplete -> {
-                    tvTodayTitleMessage.text =
-                        getString(R.string.today_lesson_title_win_onboarding)
-                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose_onboarding)
+            val isEmpty = lessonEmptyList.value.isNotEmpty()
+            if (isEmpty) {
+                concatAdapter = ConcatAdapter(
+                    emptyHeader,
+                    emptyLessonAdapter
+                )
+                binding.rvTodayLesson.adapter = concatAdapter
+            } else {
+                concatAdapter = ConcatAdapter(
+                    doingHeader,
+                    doingLessonAdapter,
+                    finishedHeader,
+                    finishedLessonAdapter
+                )
+                if (lessonDoingList.value.isEmpty()) {
+                    concatAdapter.removeAdapter(doingHeader)
+                    concatAdapter.removeAdapter(doingLessonAdapter)
+                } else if (lessonFinishedList.value.isEmpty()) {
+                    concatAdapter.removeAdapter(finishedHeader)
+                    concatAdapter.removeAdapter(finishedLessonAdapter)
                 }
-
-                else -> {
-                    tvTodayTitleMessage.text =
-                        getString(R.string.today_lesson_title_lose_onboarding)
-                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
-                }
+                binding.rvTodayLesson.adapter = concatAdapter
             }
+        } else {
+            concatAdapter = ConcatAdapter(
+                doingHeader,
+                doingOnBoardingAdapter,
+                finishedHeader,
+                finishedOnBoardingAdapter
+            )
+            if (onBoardingDoingList.value.isEmpty()) {
+                concatAdapter.removeAdapter(doingHeader)
+                concatAdapter.removeAdapter(doingOnBoardingAdapter)
+            } else if (onBoardingFinishedList.value.isEmpty()) {
+                concatAdapter.removeAdapter(finishedHeader)
+                concatAdapter.removeAdapter(finishedOnBoardingAdapter)
+            }
+            binding.rvTodayLesson.adapter = concatAdapter
         }
     }
 
@@ -243,207 +317,8 @@ class TodayLessonFragment :
     }
 
     private fun showFinishLessonDialog(lessonId: String) {
-        val action = TodayLessonFragmentDirections.actionTodayLessonToFinishLessonDialog(lessonId)
+        val action =
+            TodayLessonFragmentDirections.actionTodayLessonToFinishLessonDialog(lessonId)
         findNavController().safeNavigate(action)
     }
-
-    private fun setLessonList(lessonTodayList: List<LessonTodayResponse>) {
-        when (lessonTodayList.isEmpty()) {
-            true -> {
-                val emptyHeader = HeaderAdapter(HeaderAdapter.HeaderType.EMPTY)
-                val emptyLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.EMPTY) { _, _, _ ->
-                        val action =
-                            TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
-                        findNavController().safeNavigate(action)
-                    }
-                val concatAdapter = ConcatAdapter(
-                    emptyHeader,
-                    emptyLessonAdapter
-                )
-                emptyLessonAdapter.submitList(listOf(LessonTodayResponse.EMPTY))
-
-                binding.apply {
-                    rvTodayLesson.adapter = concatAdapter
-                    tvTodayTitleMessage.text = getString(R.string.today_lesson_title_not_register)
-                    ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
-                }
-            }
-
-            false -> {
-                val lessonFinishedList = mutableListOf<LessonTodayResponse>()
-                val lessonNotFinishedList = mutableListOf<LessonTodayResponse>()
-                lessonTodayList.forEach { lesson ->
-                    if (lesson.untilTodayFinished) lessonFinishedList.add(lesson)
-                    else lessonNotFinishedList.add(lesson)
-                }
-
-                val notFinishedHeader =
-                    HeaderAdapter(HeaderAdapter.HeaderType.NOT_FINISHED)
-
-                val notFinishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.NOT_FINISHED) { clickType, lessonToday, delayTime ->
-                        when (clickType) {
-                            TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-                                updateLessonCount(
-                                    lessonToday,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
-                                    delayTime
-                                )
-                            }
-
-                            TodayLessonAdapter.ClickType.CLICK_MINUS -> {
-                                updateLessonCount(
-                                    lessonToday,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.NOT_FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
-                                    delayTime
-                                )
-                            }
-
-                            else -> Unit
-                        }
-                    }
-                val finishedHeader =
-                    HeaderAdapter(HeaderAdapter.HeaderType.FINISHED)
-
-                val finishedLessonAdapter =
-                    TodayLessonAdapter(TodayLessonAdapter.BodyType.FINISHED) { clickType, lessonToday, delayTime ->
-                        when (clickType) {
-                            TodayLessonAdapter.ClickType.CLICK_PLUS -> {
-                                updateLessonCount(
-                                    lessonToday,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_PLUS,
-                                    delayTime
-                                )
-                            }
-
-                            TodayLessonAdapter.ClickType.CLICK_MINUS -> {
-                                updateLessonCount(
-                                    lessonToday,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS.value,
-                                    TodayLessonAdapter.BodyType.FINISHED,
-                                    TodayLessonAdapter.ClickType.CLICK_MINUS,
-                                    delayTime
-                                )
-                            }
-
-                            TodayLessonAdapter.ClickType.CLICK_COMPLETE -> {
-                                showFinishLessonDialog(lessonToday.lessonId.toString())
-                            }
-
-                            else -> {}
-                        }
-                    }
-                val concatAdapter = ConcatAdapter(
-                    notFinishedHeader,
-                    notFinishedLessonAdapter,
-                    finishedHeader,
-                    finishedLessonAdapter
-                )
-
-                if (lessonFinishedList.isEmpty()) {
-                    concatAdapter.removeAdapter(finishedHeader)
-                    concatAdapter.removeAdapter(finishedLessonAdapter)
-                } else {
-                    finishedLessonAdapter.submitList(lessonFinishedList)
-                }
-
-                if (lessonNotFinishedList.isEmpty()) {
-                    concatAdapter.removeAdapter(notFinishedHeader)
-                    concatAdapter.removeAdapter(notFinishedLessonAdapter)
-                } else {
-                    notFinishedLessonAdapter.submitList(lessonNotFinishedList)
-                }
-
-                binding.apply {
-                    rvTodayLesson.adapter = concatAdapter
-                    when {
-                        lessonFinishedList.isNotEmpty() && lessonNotFinishedList.isEmpty() -> {
-                            tvTodayTitleMessage.text =
-                                getString(R.string.today_lesson_title_win)
-                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_lose)
-                        }
-
-                        lessonFinishedList.isEmpty() && (lessonNotFinishedList.any { it.presentNumber > 0 }
-                            .not()) -> {
-                            tvTodayTitleMessage.text =
-                                getString(R.string.today_lesson_title_not_start)
-                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_not_start)
-                        }
-
-                        else -> {
-                            tvTodayTitleMessage.text =
-                                getString(R.string.today_lesson_title_lose)
-                            ivTodaySloth.setImageResource(R.drawable.ic_today_lesson_sloth_win)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    //TODO Flow 로 변경
-    //TODO 다른 api 호출 로직과 같은 방식으로 변경
-    private fun updateLessonCount(
-        lesson: LessonTodayResponse,
-        count: Int,
-        bodyType: TodayLessonAdapter.BodyType,
-        clickType: TodayLessonAdapter.ClickType,
-        delayTime: Long
-    ) {
-        mainScope {
-            todayLessonViewModel.updateLessonCount(count, lesson.lessonId).let { result ->
-                when (result) {
-                    is Result.Loading -> showProgress()
-                    is Result.Success<LessonUpdateCountResponse> -> {
-                        delay(delayTime)
-                        when (bodyType) {
-                            TodayLessonAdapter.BodyType.NOT_FINISHED -> {
-                                if (result.data.presentNumber == lesson.untilTodayNumber
-                                //it.data.presentNumber == 0 || (clickType == TodayLessonAdapter.ClickType.CLICK_PLUS && it.data.presentNumber == 1)
-                                )
-                                    todayLessonViewModel.fetchTodayLessonList()
-                            }
-
-                            TodayLessonAdapter.BodyType.FINISHED -> {
-                                if (result.data.presentNumber < lesson.untilTodayNumber ||
-                                    result.data.presentNumber == lesson.totalNumber ||
-                                    result.data.presentNumber + 1 == lesson.totalNumber && (clickType == TodayLessonAdapter.ClickType.CLICK_MINUS)
-                                )
-                                    todayLessonViewModel.fetchTodayLessonList()
-                            }
-
-                            else -> Unit
-                        }
-                    }
-
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.lesson_update_fail_by_internet_error),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            showExpireDialog()
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.lesson_update_fail),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-            }
-            hideProgress()
-        }
-    }
-
 }

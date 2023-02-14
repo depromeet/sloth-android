@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
 import com.depromeet.sloth.databinding.ItemTodayLessonDoingBinding
-import com.depromeet.sloth.presentation.adapter.TodayLessonAdapter
 
-class TodayLessonDoingViewHolder(
+class TodayDoingLessonViewHolder(
     private val context: Context,
     private val binding: ItemTodayLessonDoingBinding,
-    private val currentList: List<LessonTodayResponse>,
-    private val onClick: (TodayLessonAdapter.ClickType, LessonTodayResponse, Long) -> Unit,
+    // private val currentList: List<LessonTodayResponse>,
+    val onClick: (LessonTodayResponse) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var nowProgress = 0
@@ -29,7 +28,7 @@ class TodayLessonDoingViewHolder(
                     val isOnBoarding =
                         tvTodayLessonCategory.text == context.getString(R.string.tutorial)
                     if (isOnBoarding) {
-                        onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
+                        //onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
                     } else {
                         updateLessonCountOnServer(true, lessonToday)
                     }
@@ -68,7 +67,8 @@ class TodayLessonDoingViewHolder(
     }
 
     private fun updateProgress(isUp: Boolean, totalNum: Int) = with(binding) {
-        if (((nowProgress == 0) && isUp.not()) || ((nowProgress >= totalNum) && isUp)) return
+        val isOutOfRange = ((nowProgress == 0) && isUp.not()) || ((nowProgress >= totalNum) && isUp)
+        if (isOutOfRange) return
 
         when (isUp) {
             true -> nowProgress++
@@ -88,27 +88,28 @@ class TodayLessonDoingViewHolder(
         }
     }
 
+    //TODO 수정 필요
     private fun updateLessonCountOnServer(
         isUp: Boolean,
         lessonToday: LessonTodayResponse
-    ) = with(binding) {
+    ) {
         //if (((nowProgress <= 0) && isUp.not()) || ((nowProgress >= lessonToday.untilTodayNumber) && isUp)) return
         val isOutOfRange =
             ((nowProgress <= 0) && isUp.not()) || ((lessonToday.presentNumber == lessonToday.totalNumber) && isUp)
         if (isOutOfRange) return
 
         if (isUp) {
-            currentList[bindingAdapterPosition].presentNumber++
-            onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
+            //currentList[bindingAdapterPosition].presentNumber++
+            // onClick(TodayLessonAdapter.ClickType.CLICK_PLUS, lessonToday, DELAY_TIME)
         } else {
-            currentList[bindingAdapterPosition].presentNumber--
-            onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday, DELAY_TIME)
+            //currentList[bindingAdapterPosition].presentNumber--
+            // onClick(TodayLessonAdapter.ClickType.CLICK_MINUS, lessonToday, DELAY_TIME)
         }
     }
 
     private fun updateText(isUp: Boolean, totalNum: Int) = with(binding) {
-        if (((nowProgress < 0) && isUp.not()) || ((nowProgress > totalNum) && isUp)) return
-
+        val isOutOfRange = ((nowProgress < 0) && isUp.not()) || ((nowProgress > totalNum) && isUp)
+        if (isOutOfRange) return
         tvTodayLessonCurrentNum.text = nowProgress.toString()
     }
 
