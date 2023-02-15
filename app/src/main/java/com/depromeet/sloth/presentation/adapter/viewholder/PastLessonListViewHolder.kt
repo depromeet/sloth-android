@@ -8,8 +8,7 @@ import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
 class PastLessonListViewHolder(
-    private val binding: ItemLessonListPastBinding,
-    val onClick: (LessonListResponse) -> Unit
+    val binding: ItemLessonListPastBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(lesson: LessonListResponse) {
@@ -29,8 +28,6 @@ class PastLessonListViewHolder(
                 } else {
                     ivLessonListStamp.setImageResource(R.drawable.ic_lesson_list_fail)
                 }
-
-                clLessonList.setOnClickListener { onClick(lesson) }
             }
         }
     }

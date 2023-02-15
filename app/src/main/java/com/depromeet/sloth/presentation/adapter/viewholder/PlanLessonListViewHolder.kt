@@ -6,8 +6,7 @@ import com.depromeet.sloth.databinding.ItemLessonListPlanBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 
 class PlanLessonListViewHolder(
-    private val binding: ItemLessonListPlanBinding,
-    val onClick: (LessonListResponse) -> Unit
+    val binding: ItemLessonListPlanBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(lesson: LessonListResponse) {
@@ -18,8 +17,6 @@ class PlanLessonListViewHolder(
                 tvLessonListName.text = lesson.lessonName
                 tvLessonListPrice.text = changeDecimalFormat(lesson.price)
                 tvLessonListPlanningDate.text = lesson.startDate.replace("-", ".")
-
-                clLessonList.setOnClickListener { onClick(lesson) }
             }
         }
     }

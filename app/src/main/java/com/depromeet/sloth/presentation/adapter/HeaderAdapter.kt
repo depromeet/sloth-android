@@ -17,7 +17,7 @@ class HeaderAdapter(
     }
 
     override fun onBindViewHolder(holder: LessonHeaderViewHolder, position: Int) {
-        holder.bind(holder.itemView.context, headerType, count)
+        holder.bind(headerType, count)
     }
 
     override fun getItemCount(): Int {

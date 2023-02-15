@@ -12,8 +12,7 @@ import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
 class CurrentLessonListViewHolder(
-    private val binding: ItemLessonListCurrentBinding,
-    val onClick: (LessonListResponse) -> Unit
+    val binding: ItemLessonListCurrentBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(lesson: LessonListResponse) {
@@ -60,10 +59,6 @@ class CurrentLessonListViewHolder(
                     duration = 500
                     interpolator = DecelerateInterpolator()
                 }.start()
-
-                clLessonList.setOnClickListener {
-                    onClick(lesson)
-                }
             }
         }
     }
