@@ -127,6 +127,15 @@
             app:popUpToInclusive="true" />
 
         <action
+            android:id="@+id/action_today_lesson_to_notification_list"
+            app:destination="@id/notification_list"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/today_lesson" />
+
+        <action
             android:id="@+id/action_today_lesson_to_wait_dialog"
             app:destination="@id/wait_dialog" />
 
@@ -156,6 +165,15 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_lesson_list_to_notification_list"
+            app:destination="@id/notification_list"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/today_lesson" />
 
         <action
             android:id="@+id/action_lesson_list_to_wait_dialog"
@@ -218,6 +236,14 @@
         <argument
             android:name="lesson_detail"
             app:argType="com.depromeet.sloth.presentation.model.LessonDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/notification_list"
+        android:name="com.depromeet.sloth.presentation.screen.notification.NotificationListFragment"
+        android:label="NotificationListFragment"
+        tools:layout="@layout/fragment_notification_list">
+
     </fragment>
 
     <dialog
@@ -290,6 +316,7 @@
         <argument
             android:name="lesson_id"
             app:argType="string" />
+
     </dialog>
 
 </navigation>

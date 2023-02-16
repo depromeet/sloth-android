@@ -15,6 +15,7 @@ import com.depromeet.sloth.presentation.adapter.HeaderAdapter
 import com.depromeet.sloth.presentation.adapter.LessonListAdapter
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
+import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonFragmentDirections
 import com.depromeet.sloth.util.DATE_FORMAT_PATTERN
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +57,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                         true
                     }
                     R.id.menu_notification_list -> {
-                        lessonListViewModel.navigateToNotificationList()
+                        lessonListViewModel.onNotificationClicked()
                         true
                     }
                     else -> false
@@ -87,7 +88,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 navigateToNotificationListEvent
                     .collect {
-                        showWaitDialog()
+                        navigateToNotificationList()
+//                        showWaitDialog()
                     }
             }
 
@@ -119,6 +121,12 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun showWaitDialog() {
         val action = LessonListFragmentDirections.actionLessonListToWaitDialog()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun navigateToNotificationList() {
+        val action =
+            LessonListFragmentDirections.actionLessonListToNotificationList()
         findNavController().safeNavigate(action)
     }
 

@@ -53,7 +53,8 @@ class TodayLessonFragment :
             setOnMenuItemSingleClickListener {
                 when (it.itemId) {
                     R.id.menu_notification_list -> {
-                        todayLessonViewModel.navigateToWaitDialog()
+                        //todayLessonViewModel.navigateToWaitDialog()
+                        todayLessonViewModel.onNotificationClicked()
                         true
                     }
 
@@ -82,12 +83,12 @@ class TodayLessonFragment :
                     }
             }
 
-            launch {
-                navigateToWaitDialogEvent
-                    .collect {
-                        showWaitDialog()
-                    }
-            }
+//            launch {
+//                navigateToWaitDialogEvent
+//                    .collect {
+//                        showWaitDialog()
+//                    }
+//            }
 
             launch {
                 isLoading
@@ -112,12 +113,25 @@ class TodayLessonFragment :
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
+
+            launch {
+                navigateToNotificationListEvent
+                    .collect {
+                        navigateToNotificationList()
+                    }
+            }
         }
     }
 
     private fun navigateToLogin() {
         val action =
             TodayLessonFragmentDirections.actionTodayLessonToLogin()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun navigateToNotificationList() {
+        val action =
+            TodayLessonFragmentDirections.actionTodayLessonToNotificationList()
         findNavController().safeNavigate(action)
     }
 

@@ -31,6 +31,10 @@ class TodayLessonViewModel @Inject constructor(
     private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
     val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
 
+    private val _navigateToNotificationListEvent = MutableSharedFlow<Unit>()
+    val navigateToNotificationListEvent: SharedFlow<Unit> =
+        _navigateToNotificationListEvent.asSharedFlow()
+
     init {
         checkLoggedIn()
     }
@@ -85,6 +89,10 @@ class TodayLessonViewModel @Inject constructor(
 
     fun navigateToWaitDialog() = viewModelScope.launch {
         _navigateToWaitDialogEvent.emit(Unit)
+    }
+
+    fun onNotificationClicked() = viewModelScope.launch {
+        _navigateToNotificationListEvent.emit(Unit)
     }
 
     override fun retry() {
