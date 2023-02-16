@@ -13,6 +13,7 @@ import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
+import com.depromeet.sloth.presentation.screen.login.LoginBottomSheetFragmentDirections
 import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
 import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +36,15 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         bind {
             vm = manageViewModel
         }
+
+        init()
         initObserver()
+    }
+
+    private fun init() {
+        binding.tvSetting.setOnClickListener {
+            navigateToSetting()
+        }
     }
 
     private fun initObserver() = with(manageViewModel) {
@@ -45,27 +54,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
                 navigateToUpdateMemberDialogEvent
                     .collect {
                         showUpdateMemberDialog()
-                    }
-            }
-
-            launch {
-                navigateToContactEvent
-                    .collect {
-                        sendEmail()
-                    }
-            }
-
-            launch {
-                navigateToPrivatePolicyEvent
-                    .collect {
-                        showPrivatePolicy()
-                    }
-            }
-
-            launch {
-                navigateToLogoutDialogEvent
-                    .collect {
-                        showLogoutDialog()
                     }
             }
 
@@ -102,6 +90,11 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         }
     }
 
+    private fun navigateToSetting() {
+        val action = ManageFragmentDirections.actionManageToSetting()
+        findNavController().safeNavigate(action)
+    }
+
     private fun showUpdateMemberDialog() {
         val action = ManageFragmentDirections.actionManageToUpdateMemberDialog(
             manageViewModel.uiState.value.memberName
@@ -109,35 +102,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         findNavController().safeNavigate(action)
     }
 
-    private fun showPrivatePolicy() {
-        val action = ManageFragmentDirections.actionManageToSlothPolicyWebview()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun showLogoutDialog() {
-        val action = ManageFragmentDirections.actionManageToLogoutDialog()
-        findNavController().safeNavigate(action)
-    }
-
     // 회원 탈퇴 API 필요
     private fun showWithdrawalDialog() = Unit
 
-    private fun sendEmail() {
-        startActivity(Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.sloth_official_mail)))
-            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_email_subject))
-            putExtra(
-                Intent.EXTRA_TEXT,
-                String.format(
-                    CELLPHONE_INFO_DIVER,
-                    BuildConfig.VERSION_NAME,
-                    Build.VERSION.SDK_INT,
-                    Build.VERSION.RELEASE,
-                    Build.MODEL
-                )
-            )
-            type = MESSAGE_TYPE
-        }
-        )
-    }
 }

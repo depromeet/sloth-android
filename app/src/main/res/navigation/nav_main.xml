@@ -43,6 +43,26 @@
     </fragment>
 
     <fragment
+        android:id="@+id/setting"
+        android:name="com.depromeet.sloth.presentation.screen.manage.SettingFragment"
+        android:label="settingFragment"
+        tools:layout="@layout/fragment_setting">
+
+        <action
+            android:id="@+id/action_manage_to_sloth_policy_webview"
+            app:destination="@id/sloth_policy_webview"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/slide_right_exit" />
+
+        <action
+            android:id="@+id/action_manage_to_logout_dialog"
+            app:destination="@id/logout_dialog" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/sloth_policy_webview"
         android:name="com.depromeet.sloth.presentation.screen.login.SlothPolicyWebViewFragment"
         android:label="SlothPolicyWebViewFragment"
@@ -169,8 +189,8 @@
         tools:layout="@layout/fragment_manage">
 
         <action
-            android:id="@+id/action_manage_to_sloth_policy_webview"
-            app:destination="@id/sloth_policy_webview"
+            android:id="@+id/action_manage_to_setting"
+            app:destination="@id/setting"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -180,9 +200,6 @@
             android:id="@+id/action_manage_to_update_member_dialog"
             app:destination="@id/update_member_dialog" />
 
-        <action
-            android:id="@+id/action_manage_to_logout_dialog"
-            app:destination="@id/logout_dialog" />
     </fragment>
 
     <fragment

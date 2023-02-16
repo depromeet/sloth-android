@@ -84,12 +84,15 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
+                        android:id="@+id/tv_setting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:background="@drawable/bg_manage_setting_rounded_gray"
+                        android:gravity="center"
                         android:text="설정"
                         android:textColor="@color/gray_600"
-                        android:textSize="16dp"
+                        android:textSize="14dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -246,20 +249,20 @@
                             app:progressView_radius="12dp"
                             tools:progressView_labelText="40%" />
 
-<!--                        <ProgressBar-->
-<!--                            android:id="@+id/pb_investment_money_bar"-->
-<!--                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
-<!--                            android:layout_width="0dp"-->
-<!--                            android:layout_height="16dp"-->
-<!--                            android:layout_marginStart="20dp"-->
-<!--                            android:layout_marginTop="28dp"-->
-<!--                            android:layout_marginEnd="20dp"-->
-<!--                            android:max="10000"-->
-<!--                            android:progressDrawable="@drawable/bg_lesson_list_progress"-->
-<!--                            app:layout_constraintEnd_toEndOf="parent"-->
-<!--                            app:layout_constraintHorizontal_bias="0.0"-->
-<!--                            app:layout_constraintStart_toStartOf="parent"-->
-<!--                            app:layout_constraintTop_toBottomOf="@id/tv_investment_information" />-->
+                        <!--                        <ProgressBar-->
+                        <!--                            android:id="@+id/pb_investment_money_bar"-->
+                        <!--                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+                        <!--                            android:layout_width="0dp"-->
+                        <!--                            android:layout_height="16dp"-->
+                        <!--                            android:layout_marginStart="20dp"-->
+                        <!--                            android:layout_marginTop="28dp"-->
+                        <!--                            android:layout_marginEnd="20dp"-->
+                        <!--                            android:max="10000"-->
+                        <!--                            android:progressDrawable="@drawable/bg_lesson_list_progress"-->
+                        <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--                            app:layout_constraintHorizontal_bias="0.0"-->
+                        <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                        <!--                            app:layout_constraintTop_toBottomOf="@id/tv_investment_information" />-->
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -370,10 +373,10 @@
 
                                 <TextView
                                     android:id="@+id/tv_expired_lesson_count"
-                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.expiredLessonsCnt)}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.expiredLessonsCnt)}"
                                     android:textColor="@color/primary_500"
                                     android:textSize="20dp"
                                     android:textStyle="bold"
@@ -402,10 +405,10 @@
 
                                 <TextView
                                     android:id="@+id/tv_finished_lesson_count"
-                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.finishedLessonsCnt)}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.finishedLessonsCnt)}"
                                     android:textColor="@color/gray_600"
                                     android:textSize="20dp"
                                     android:textStyle="bold"
@@ -434,10 +437,10 @@
 
                                 <TextView
                                     android:id="@+id/tv_not_finished_lesson_count"
-                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.notFinishedLessonsCnt)}"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.notFinishedLessonsCnt)}"
                                     android:textColor="@color/gray_600"
                                     android:textSize="20dp"
                                     android:textStyle="bold"
@@ -446,214 +449,6 @@
                             </LinearLayout>
 
                         </LinearLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_manage_menu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cl_lesson_info">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_contact"
-                        onSingleClick="@{()-> vm.navigateToContact()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="12dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/contact"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_privacy"
-                        onSingleClick="@{()-> vm.navigateToPrivacyPolicy()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_contact">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/privacy"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_logout"
-                        onSingleClick="@{()->vm.navigateToLogoutDialog()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_privacy">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/logout"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_withdrawal"
-                        onSingleClick="@{()->vm.navigateToWithdrawalDialog()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/withdraw"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_push_notification"
-                        android:layout_width="0dp"
-                        android:layout_height="96dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/iv_manage_push_noti_sloth"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="18dp"
-                            android:contentDescription="@string/profile_image"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_manage_push_noti_sloth" />
-
-                        <TextView
-                            android:id="@+id/tv_manage_push_noti"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/push_noti"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
-                            app:layout_constraintTop_toTopOf="@id/iv_manage_push_noti_sloth" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/please_push_noti_on"
-                            android:textSize="12dp"
-                            app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
-                            app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/sc_manage_notification_status"
-                            android:layout_width="56dp"
-                            android:layout_height="28dp"
-                            android:layout_marginEnd="18dp"
-                            android:background="@null"
-                            android:checked="@{vm.uiState.pushAlarmUse}"
-                            android:onCheckedChanged="@{(_, isChecked) -> vm.updateNotificationSwitch(isChecked)}"
-                            android:thumb="@drawable/selector_thumb"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:switchMinWidth="52dp"
-                            app:track="@drawable/selector_switch" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
