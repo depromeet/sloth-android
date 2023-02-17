@@ -107,8 +107,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 //            }
 
             launch {
-                lessonList.collect { lessonList ->
-                    lessonListAdapter.submitList(lessonList)
+                lessonList.collect {
+                    lessonListAdapter.submitList(it)
                 }
             }
 

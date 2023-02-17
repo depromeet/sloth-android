@@ -6,8 +6,8 @@ import com.depromeet.sloth.data.model.response.lesson.LessonSiteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonDeleteResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.data.model.response.lesson.LessonFinishResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonTodayResponse
-import com.depromeet.sloth.data.model.response.lesson.LessonUpdateCountResponse
+import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
+import com.depromeet.sloth.data.model.response.lesson.UpdateLessonCountResponse
 import com.depromeet.sloth.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.sloth.data.model.response.lesson.LessonRegisterResponse
 import com.depromeet.sloth.data.model.request.lesson.LessonUpdateRequest
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LessonRepository {
 
-    fun fetchTodayLessonList(): Flow<Result<List<LessonTodayResponse>>>
+    fun fetchTodayLessonList(): Flow<Result<List<TodayLessonResponse>>>
 
     fun fetchLessonList(): Flow<Result<List<LessonListResponse>>>
 
@@ -26,7 +26,7 @@ interface LessonRepository {
 
     // suspend fun updateLessonCount(count: Int, lessonId: Int): Result<LessonUpdateCountResponse>
 
-    fun updateLessonCount(count: Int, lessonId: Int): Flow<Result<LessonUpdateCountResponse>>
+    fun updateLessonCount(count: Int, lessonId: Int): Flow<Result<UpdateLessonCountResponse>>
 
     fun fetchLessonDetail(lessonId: String): Flow<Result<LessonDetailResponse>>
 

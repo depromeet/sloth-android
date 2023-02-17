@@ -63,8 +63,7 @@ class PreferenceManager @Inject constructor(
             prefs.remove(REFRESH_TOKEN)
         }
     }
-
-    fun getOnBoardingStatus() = context.dataStore.data
+    fun getTodayLessonOnBoardingStatus() = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 exception.printStackTrace()
@@ -75,20 +74,42 @@ class PreferenceManager @Inject constructor(
         }
 
         .map { prefs ->
-            prefs[ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
+            prefs[TODAY_LESSON_ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
-    suspend fun updateOnBoardingStatus() {
+    suspend fun updateTodayLessonOnBoardingStatus() {
         context.dataStore.edit { prefs ->
-            prefs[ONBOARDING_COMPLETE] = true
+            prefs[TODAY_LESSON_ONBOARDING_COMPLETE] = true
         }
     }
+
+    fun getLessonListOnBoardingStatus() = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                exception.printStackTrace()
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+
+        .map { prefs ->
+            prefs[LESSON_LIST_ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
+        }
+
+    suspend fun updateLessonListOnBoardingStatus() {
+        context.dataStore.edit { prefs ->
+            prefs[LESSON_LIST_ONBOARDING_COMPLETE] = true
+        }
+    }
+
 
     companion object {
         // key 로 string 을 사용 하는 spf 와 다르게 type-safe 를 위해 preferencesKey 를 사용
         // 저장할 type 이 string 이기 때문에 stringPreferencesKey
         val ACCESS_TOKEN = stringPreferencesKey(KEY_ACCESS_TOKEN)
         val REFRESH_TOKEN = stringPreferencesKey(KEY_REFRESH_TOKEN)
-        val ONBOARDING_COMPLETE = booleanPreferencesKey(KEY_ONBOARDING_COMPLETE)
+        val TODAY_LESSON_ONBOARDING_COMPLETE = booleanPreferencesKey(KEY_TODAY_LESSON_ONBOARDING_COMPLETE)
+        val LESSON_LIST_ONBOARDING_COMPLETE = booleanPreferencesKey(KEY_LESSON_LIST_ONBOARDING_COMPLETE)
     }
 }

@@ -24,6 +24,7 @@
                 android:layout_marginTop="16dp"
                 android:text="D-9"
                 android:textSize="18dp"
+                android:textColor="@color/primary_400"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/tv_today_lesson_category"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +100,7 @@
                 app:radius="150dp" />
 
             <TextView
-                android:id="@+id/tv_today_lesson_current_num"
+                android:id="@+id/tv_today_lesson_current_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -125,7 +126,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tv_today_lesson_total_num"
+                android:id="@+id/tv_today_lesson_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

@@ -4,7 +4,8 @@ const val KEY_PREFERENCES = "preferences_datastore"
 
 const val KEY_ACCESS_TOKEN = "accessToken"
 const val KEY_REFRESH_TOKEN = "refreshToken"
-const val KEY_ONBOARDING_COMPLETE = "onboardingComplete"
+const val KEY_TODAY_LESSON_ONBOARDING_COMPLETE = "todayLessonOnBoardingComplete"
+const val KEY_LESSON_LIST_ONBOARDING_COMPLETE = "lessonListOnBoardingComplete"
 
 const val GOOGLE = "GOOGLE"
 const val KAKAO = "KAKAO"

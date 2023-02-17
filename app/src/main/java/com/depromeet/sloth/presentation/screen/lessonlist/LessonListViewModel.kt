@@ -5,9 +5,11 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.lesson.FetchLessonListUseCase
-import com.depromeet.sloth.domain.usecase.member.FetchOnBoardingStatusUseCase
-import com.depromeet.sloth.domain.usecase.member.UpdateOnBoardingStatusUseCase
+import com.depromeet.sloth.domain.usecase.member.FetchLessonListOnBoardingStatusUseCase
+import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
+import com.depromeet.sloth.domain.usecase.member.UpdateLessonListOnBoardingStatusUseCase
 import com.depromeet.sloth.presentation.adapter.HeaderAdapter
+import com.depromeet.sloth.presentation.screen.LessonUiModel
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -17,21 +19,27 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// TODO 변수 명에 ~list 지양 by Clean Code
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
     private val fetchLessonListUseCase: FetchLessonListUseCase,
-    private val fetchOnBoardingStatusUseCase: FetchOnBoardingStatusUseCase,
-    private val updateOnBoardingStatusUseCase: UpdateOnBoardingStatusUseCase,
+    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
+    private val fetchLessonListOnBoardingStatusUseCase: FetchLessonListOnBoardingStatusUseCase,
+    private val updateLessonListOnBoardingStatusUseCase: UpdateLessonListOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
-    private val _checkOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
-    val checkOnBoardingCompleteEvent: SharedFlow<Boolean> =
-        _checkOnBoardingCompleteEvent.asSharedFlow()
+    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
+    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
+        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
-    private val _showOnBoardingCheckDetailEvent = MutableSharedFlow<Unit>()
-    val showOnBoardingCheckDetailEvent: SharedFlow<Unit> =
-        _showOnBoardingCheckDetailEvent.asSharedFlow()
+    private val _checkLessonListOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
+    val checkLessonListOnBoardingCompleteEvent: SharedFlow<Boolean> =
+        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
+
+    private val _navigateToOnBoardingCheckDetailEvent = MutableSharedFlow<Unit>()
+    val navigateToOnBoardingCheckDetailEvent: SharedFlow<Unit> =
+        _navigateToOnBoardingCheckDetailEvent.asSharedFlow()
 
     private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
     val navigateRegisterLessonEvent: SharedFlow<Unit> =
@@ -95,9 +103,8 @@ class LessonListViewModel @Inject constructor(
                 }.values.map { lessonList ->
                     lessonList.map { lesson ->
                         when {
-                            (lesson.isFinished || lesson.lessonStatus == "PAST") -> LessonUiModel.PastLesson(
-                                lesson
-                            )
+                            (lesson.isFinished || lesson.lessonStatus == "PAST") ->
+                                LessonUiModel.PastLesson(lesson)
                             (lesson.lessonStatus == "PLAN") -> LessonUiModel.PlanLesson(lesson)
                             else -> LessonUiModel.CurrentLesson(lesson)
                         }
@@ -125,16 +132,16 @@ class LessonListViewModel @Inject constructor(
         }
     }
 
-    fun showOnBoardingCheckDetail() = viewModelScope.launch {
-        _showOnBoardingCheckDetailEvent.emit(Unit)
+    fun navigateToOnBoardingCheckDetail() = viewModelScope.launch {
+        _navigateToOnBoardingCheckDetailEvent.emit(Unit)
     }
 
-    fun checkOnBoardingComplete() = viewModelScope.launch {
-        _checkOnBoardingCompleteEvent.emit(fetchOnBoardingStatusUseCase())
+    fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
+        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
-    fun completeOnBoarding() = viewModelScope.launch {
-        updateOnBoardingStatusUseCase()
+    fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
+        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
     fun navigateToRegisterLesson() = viewModelScope.launch {

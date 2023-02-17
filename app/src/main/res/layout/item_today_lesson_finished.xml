@@ -86,12 +86,12 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/bg_today_lesson_item_button_finish_minus"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_today_lesson_current_num"
-                app:layout_constraintEnd_toStartOf="@id/tv_today_lesson_current_num"
-                app:layout_constraintTop_toTopOf="@+id/tv_today_lesson_current_num" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_today_lesson_current_number"
+                app:layout_constraintEnd_toStartOf="@id/tv_today_lesson_current_number"
+                app:layout_constraintTop_toTopOf="@+id/tv_today_lesson_current_number" />
 
             <TextView
-                android:id="@+id/tv_today_lesson_current_num"
+                android:id="@+id/tv_today_lesson_current_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -116,7 +116,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tv_today_lesson_total_num"
+                android:id="@+id/tv_today_lesson_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4"
@@ -133,9 +133,9 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="24dp"
                 android:background="@drawable/bg_today_lesson_item_button_finish_plus"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_today_lesson_total_num"
-                app:layout_constraintStart_toEndOf="@id/tv_today_lesson_total_num"
-                app:layout_constraintTop_toTopOf="@+id/tv_today_lesson_total_num" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_today_lesson_total_number"
+                app:layout_constraintStart_toEndOf="@id/tv_today_lesson_total_number"
+                app:layout_constraintTop_toTopOf="@+id/tv_today_lesson_total_number" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

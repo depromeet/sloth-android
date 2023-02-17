@@ -41,7 +41,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
+                emit(Result.Success(response.body() ?: listOf(TodayLessonResponse.EMPTY)))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -125,39 +125,6 @@ class LessonRepositoryImpl @Inject constructor(
             }
         }
 
-//    override suspend fun updateLessonCount(
-//        count: Int,
-//        lessonId: Int,
-//    ): Result<LessonUpdateCountResponse> {
-//        try {
-//            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
-//                return when (this.code()) {
-//                    200 -> {
-//                        val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-//                        if (newAccessToken.isNotEmpty()) {
-//                            preferences.updateAccessToken(newAccessToken)
-//                        }
-//                        Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
-//                    }
-//
-//                    else -> Result.Error(Exception(message()), this.code())
-//                }
-//            } ?: return Result.Error(Exception("Retrofit Exception"))
-//        } catch (exception: Exception) {
-//            return when(exception) {
-//                is IOException -> {
-//                    // Handle Internet Connection Error
-//                    Result.Error(Exception(INTERNET_CONNECTION_ERROR))
-//                }
-//
-//                else -> {
-//                    // Handle Other Error
-//                    Result.Error(exception)
-//                }
-//            }
-//        }
-//    }
-
     override fun updateLessonCount(count: Int, lessonId: Int) = flow {
         emit(Result.Loading)
         val response =
@@ -171,7 +138,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
+                emit(Result.Success(response.body() ?: UpdateLessonCountResponse.EMPTY))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))

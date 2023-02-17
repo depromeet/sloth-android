@@ -9,7 +9,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.*
-import com.depromeet.sloth.presentation.screen.lessonlist.LessonUiModel
+import com.depromeet.sloth.presentation.screen.LessonUiModel
 import com.depromeet.sloth.util.setOnSingleClickListener
 
 class LessonListAdapter(
@@ -18,9 +18,9 @@ class LessonListAdapter(
     object : DiffUtil.ItemCallback<LessonUiModel>() {
         override fun areItemsTheSame(oldItem: LessonUiModel, newItem: LessonUiModel): Boolean {
             return (oldItem is LessonUiModel.EmptyLesson && newItem is LessonUiModel.EmptyLesson) ||
-                    (oldItem is LessonUiModel.CurrentLesson && newItem is LessonUiModel.CurrentLesson && oldItem.lessonListResponse.lessonId == newItem.lessonListResponse.lessonId) ||
-                    (oldItem is LessonUiModel.PastLesson && newItem is LessonUiModel.PastLesson && oldItem.lessonListResponse.lessonId == newItem.lessonListResponse.lessonId) ||
-                    (oldItem is LessonUiModel.PlanLesson && newItem is LessonUiModel.PlanLesson && oldItem.lessonListResponse.lessonId == newItem.lessonListResponse.lessonId)
+                    (oldItem is LessonUiModel.CurrentLesson && newItem is LessonUiModel.CurrentLesson && oldItem.lessonList.lessonId == newItem.lessonList.lessonId) ||
+                    (oldItem is LessonUiModel.PastLesson && newItem is LessonUiModel.PastLesson && oldItem.lessonList.lessonId == newItem.lessonList.lessonId) ||
+                    (oldItem is LessonUiModel.PlanLesson && newItem is LessonUiModel.PlanLesson && oldItem.lessonList.lessonId == newItem.lessonList.lessonId)
         }
 
         override fun areContentsTheSame(oldItem: LessonUiModel, newItem: LessonUiModel) =
@@ -81,16 +81,16 @@ class LessonListAdapter(
                 }
             }
             is LessonUiModel.PlanLesson -> (holder as PlanLessonListViewHolder).apply {
-                bind(uiModel.lessonListResponse)
-                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonListResponse) }
+                bind(uiModel.lessonList)
+                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonList) }
             }
             is LessonUiModel.CurrentLesson -> (holder as CurrentLessonListViewHolder).apply {
-                bind(uiModel.lessonListResponse)
-                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonListResponse) }
+                bind(uiModel.lessonList)
+                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonList) }
             }
             is LessonUiModel.PastLesson -> (holder as PastLessonListViewHolder).apply {
-                bind(uiModel.lessonListResponse)
-                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonListResponse) }
+                bind(uiModel.lessonList)
+                binding.clLessonList.setOnSingleClickListener { onClick(uiModel.lessonList) }
             }
         }
     }

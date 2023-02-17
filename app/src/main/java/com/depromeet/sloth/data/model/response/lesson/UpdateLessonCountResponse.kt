@@ -3,7 +3,7 @@ package com.depromeet.sloth.data.model.response.lesson
 import com.google.gson.annotations.SerializedName
 
 
-data class LessonUpdateCountResponse (
+data class UpdateLessonCountResponse (
     @SerializedName("isFinished")
     val isFinished: Boolean,
     @SerializedName("lessonId")
@@ -14,6 +14,6 @@ data class LessonUpdateCountResponse (
     val weeklyFinished: Boolean
 ) {
     companion object {
-        val EMPTY = LessonUpdateCountResponse(false, -1, -1, false)
+        val EMPTY = UpdateLessonCountResponse(false, -1, -1, false)
     }
 }

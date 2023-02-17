@@ -18,9 +18,13 @@ interface MemberRepository {
 
     fun logout(): Flow<Result<String>>
 
-    suspend fun fetchOnBoardingStatus(): Boolean
+    suspend fun fetchTodayLessonOnBoardingStatus(): Boolean
 
-    suspend fun updateOnBoardingStatus()
+    suspend fun updateTodayLessonOnBoardingStatus()
+
+    suspend fun fetchLessonListOnBoardingStatus(): Boolean
+
+    suspend fun updateLessonListOnBoardingStatus()
 
     suspend fun deleteAuthToken()
 }

@@ -3,7 +3,7 @@ package com.depromeet.sloth.data.model.response.lesson
 import com.google.gson.annotations.SerializedName
 
 
-data class LessonTodayResponse (
+data class TodayLessonResponse (
     @SerializedName("categoryName")
     val categoryName: String,
     @SerializedName("lessonId")
@@ -24,6 +24,6 @@ data class LessonTodayResponse (
     val totalNumber: Int
 ) {
     companion object {
-        val EMPTY = LessonTodayResponse("", 0, "", 0, 0, "", false, 0, 0)
+        val EMPTY = TodayLessonResponse("", 0, "", 0, 0, "", false, 0, 0)
     }
 }
