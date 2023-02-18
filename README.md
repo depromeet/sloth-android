@@ -7,7 +7,7 @@
 - Disquiet: https://disquiet.io/product/나나공
 - Behance: https://www.behance.net/gallery/133424149/_?locale=ko_KR
 
-# OverView
+# Overview
 > 모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
 
 - 개발 기간 : 2021.09.11 ~ing
