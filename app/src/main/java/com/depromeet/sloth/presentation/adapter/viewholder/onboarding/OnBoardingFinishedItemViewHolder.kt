@@ -1,14 +1,12 @@
-package com.depromeet.sloth.presentation.adapter.viewholder
+package com.depromeet.sloth.presentation.adapter.viewholder.onboarding
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
-import com.depromeet.sloth.databinding.ItemTodayLessonFinishedBinding
+import com.depromeet.sloth.databinding.ItemOnBoardingFinishedBinding
 
-class TodayFinishedLessonViewHolder(
-    val binding: ItemTodayLessonFinishedBinding,
-): RecyclerView.ViewHolder(binding.root) {
+class OnBoardingFinishedItemViewHolder(val binding: ItemOnBoardingFinishedBinding): RecyclerView.ViewHolder(binding.root) {
     fun bind(todayLesson: TodayLessonResponse) {
         itemView.apply {
             binding.apply {

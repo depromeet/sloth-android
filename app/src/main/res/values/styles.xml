@@ -26,6 +26,17 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Widget.Sloth.TextView.Header" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Sloth.TextView.Title" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gray_600</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
     <style name="Widget.Sloth.TextView" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">16dp</item>
     </style>

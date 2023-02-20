@@ -1,4 +1,4 @@
-package com.depromeet.sloth.presentation.adapter.viewholder
+package com.depromeet.sloth.presentation.adapter.viewholder.lessonlist
 
 import android.animation.ObjectAnimator
 import android.view.View
@@ -11,10 +11,7 @@ import com.depromeet.sloth.databinding.ItemLessonListCurrentBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
-class CurrentLessonListViewHolder(
-    val binding: ItemLessonListCurrentBinding,
-) : RecyclerView.ViewHolder(binding.root) {
-
+class CurrentLessonViewHolder(val binding: ItemLessonListCurrentBinding, ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(lesson: LessonListResponse) {
         itemView.apply {
             binding.apply {

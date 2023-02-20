@@ -1,5 +1,3 @@
-package com.depromeet.sloth.presentation.adapter
-
 import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,36 +7,43 @@ import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
 import com.depromeet.sloth.databinding.*
-import com.depromeet.sloth.presentation.adapter.viewholder.*
-import com.depromeet.sloth.presentation.screen.LessonUiModel
-import com.depromeet.sloth.presentation.screen.todaylesson.LessonItemClickListener
+import com.depromeet.sloth.presentation.adapter.viewholder.todaylesson.*
+import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonItemClickListener
+import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonUiModel
 import com.depromeet.sloth.util.setOnSingleClickListener
 
-
 class TodayLessonAdapter(
-    private val clickListener: LessonItemClickListener
-) : ListAdapter<LessonUiModel, RecyclerView.ViewHolder>(
-    object : DiffUtil.ItemCallback<LessonUiModel>() {
-        override fun areItemsTheSame(oldItem: LessonUiModel, newItem: LessonUiModel): Boolean {
-            return (oldItem is LessonUiModel.EmptyLesson && newItem is LessonUiModel.EmptyLesson) ||
-                    (oldItem is LessonUiModel.DoingLesson && newItem is LessonUiModel.DoingLesson && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId) ||
-                    (oldItem is LessonUiModel.FinishedLesson && newItem is LessonUiModel.FinishedLesson && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId)
+    private val clickListener: TodayLessonItemClickListener
+) : ListAdapter<TodayLessonUiModel, RecyclerView.ViewHolder>(
+    object : DiffUtil.ItemCallback<TodayLessonUiModel>() {
+        override fun areItemsTheSame(oldItem: TodayLessonUiModel, newItem: TodayLessonUiModel): Boolean {
+            return (oldItem is TodayLessonUiModel.TodayLessonEmptyItem && newItem is TodayLessonUiModel.TodayLessonEmptyItem) ||
+                    (oldItem is TodayLessonUiModel.TodayLessonDoingItem && newItem is TodayLessonUiModel.TodayLessonDoingItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId) ||
+                    (oldItem is TodayLessonUiModel.TodayLessonFinishedItem && newItem is TodayLessonUiModel.TodayLessonFinishedItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId)
         }
 
-        override fun areContentsTheSame(oldItem: LessonUiModel, newItem: LessonUiModel) =
-            oldItem == newItem
+        override fun areContentsTheSame(oldItem: TodayLessonUiModel, newItem: TodayLessonUiModel): Boolean {
+            return oldItem == newItem
+        }
     }
 ) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.item_lesson_header -> LessonHeaderViewHolder(
-                ItemLessonHeaderBinding.inflate(
+            R.layout.item_today_lesson_header -> TodayLessonHeaderViewHolder(
+                ItemTodayLessonHeaderBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
+            R.layout.item_today_lesson_title -> TodayLessonTitleViewHolder(
+                ItemTodayLessonTitleBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
             R.layout.item_today_lesson_empty -> TodayEmptyLessonViewHolder(
                 ItemTodayLessonEmptyBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -66,18 +71,19 @@ class TodayLessonAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val uiModel = getItem(position)) {
-            is LessonUiModel.LessonHeader ->
-                (holder as LessonHeaderViewHolder).bind(uiModel.headerType, null)
-
-            is LessonUiModel.EmptyLesson -> (holder as TodayEmptyLessonViewHolder).apply {
+            is TodayLessonUiModel.TodayLessonHeaderItem -> (holder as TodayLessonHeaderViewHolder).apply {
+                bind(uiModel.itemType)
+            }
+            is TodayLessonUiModel.TodayLessonTitleItem -> (holder as TodayLessonTitleViewHolder).apply {
+                bind(uiModel.itemType)
+            }
+            is TodayLessonUiModel.TodayLessonEmptyItem -> (holder as TodayEmptyLessonViewHolder).apply {
                 binding.clTodayLesson.setOnSingleClickListener { clickListener.onClick() }
             }
-            is LessonUiModel.DoingLesson -> (holder as TodayDoingLessonViewHolder).apply {
+            is TodayLessonUiModel.TodayLessonDoingItem -> (holder as TodayDoingLessonViewHolder).apply {
                 bind(uiModel.todayLesson)
-
                 binding.btnTodayLessonPlus.setOnSingleClickListener {
-                    val isOutOfRange =
-                        uiModel.todayLesson.presentNumber >= uiModel.todayLesson.totalNumber
+                    val isOutOfRange = uiModel.todayLesson.presentNumber >= uiModel.todayLesson.totalNumber
                     if (isOutOfRange) return@setOnSingleClickListener
 
                     clickListener.onPlusClick(uiModel.todayLesson)
@@ -94,7 +100,7 @@ class TodayLessonAdapter(
                     updateDoingLessonProgress(holder, uiModel.todayLesson)
                 }
             }
-            is LessonUiModel.FinishedLesson -> (holder as TodayFinishedLessonViewHolder).apply {
+            is TodayLessonUiModel.TodayLessonFinishedItem -> (holder as TodayFinishedLessonViewHolder).apply {
                 bind(uiModel.todayLesson)
                 binding.btnTodayLessonPlus.setOnSingleClickListener {
                     val isOutOfRange =
@@ -122,10 +128,11 @@ class TodayLessonAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is LessonUiModel.LessonHeader -> R.layout.item_lesson_header
-            is LessonUiModel.EmptyLesson -> R.layout.item_today_lesson_empty
-            is LessonUiModel.DoingLesson -> R.layout.item_today_lesson_doing
-            is LessonUiModel.FinishedLesson -> R.layout.item_today_lesson_finished
+            is TodayLessonUiModel.TodayLessonHeaderItem -> R.layout.item_today_lesson_header
+            is TodayLessonUiModel.TodayLessonTitleItem -> R.layout.item_today_lesson_title
+            is TodayLessonUiModel.TodayLessonEmptyItem -> R.layout.item_today_lesson_empty
+            is TodayLessonUiModel.TodayLessonDoingItem -> R.layout.item_today_lesson_doing
+            is TodayLessonUiModel.TodayLessonFinishedItem -> R.layout.item_today_lesson_finished
             else -> throw IllegalStateException("Unknown viewType")
         }
     }
@@ -147,10 +154,7 @@ class TodayLessonAdapter(
         }
     }
 
-    private fun updateFinishedLessonProgress(
-        holder: TodayFinishedLessonViewHolder,
-        todayLesson: TodayLessonResponse,
-    ) {
+    private fun updateFinishedLessonProgress(holder: TodayFinishedLessonViewHolder, todayLesson: TodayLessonResponse, ) {
         holder.binding.apply {
             tvTodayLessonCurrentNumber.text = todayLesson.presentNumber.toString()
         }
@@ -160,4 +164,3 @@ class TodayLessonAdapter(
         const val DELAY_TIME = 350L
     }
 }
-

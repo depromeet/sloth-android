@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
@@ -23,13 +22,13 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private val lessonListViewModel: LessonListViewModel by viewModels()
 
+    private val lessonListItemClickListener = LessonListItemClickListener(
+        onRegisterClick = { lessonListViewModel.navigateToRegisterLesson() },
+        onLessonClick = { lesson -> lessonListViewModel.navigateToLessonDetail(lesson.lessonId.toString())}
+    )
+
     private val lessonListAdapter by lazy {
-        LessonListAdapter { lesson ->
-            when (lesson) {
-                LessonListResponse.EMPTY -> lessonListViewModel.navigateToRegisterLesson()
-                else -> lessonListViewModel.navigateToLessonDetail(lesson.lessonId.toString())
-            }
-        }
+        LessonListAdapter(lessonListItemClickListener)
     }
 
     override fun onStart() {
@@ -113,50 +112,39 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             launch {
-                navigateRegisterLessonEvent
-                    .collect {
-                        val action =
-                            LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                navigateRegisterLessonEvent.collect {
+                        val action = LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
                         findNavController().safeNavigate(action)
                     }
             }
 
             launch {
-                navigateToLessonDetailEvent
-                    .collect { lessonId ->
-                        val action =
-                            LessonListFragmentDirections.actionLessonListToLessonDetail(lessonId)
+                navigateToLessonDetailEvent.collect { lessonId ->
+                        val action = LessonListFragmentDirections.actionLessonListToLessonDetail(lessonId)
                         findNavController().safeNavigate(action)
                     }
             }
 
             launch {
-                navigateToNotificationListEvent
-                    .collect {
+                navigateToNotificationListEvent.collect {
                         showWaitDialog()
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }

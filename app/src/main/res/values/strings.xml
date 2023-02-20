@@ -85,13 +85,7 @@
     <string name="caution">caution</string>
     <string name="lesson_goal_date_info">2021. 12. 24</string>
     <string name="lesson_present_number_info">24개 중 10개</string>
-    <string name="today_lesson_title_lose"><font color="#000000">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</font></string>
-    <string name="today_lesson_title_lose_onboarding"><font color="#000000">"어서와\n나랑 대결은\n처음이지?"</font></string>
-    <string name="today_lesson_title_not_start"><font color="#000000">시작이 반인데...\n너 설마 아직도\n시작 안했어?</font></string>
-    <string name="today_lesson_title_win"><font color="#000000">젠장..\n오늘은\n나의 완패다..</font></string>
-    <string name="today_lesson_title_win_onboarding"><font color="#000000">"크윽..\n처음치고 굉장히\n잘하는데"</font></string>
-    <string name="today_lesson_title_not_register"><font color="#000000">등록되어 있는\n강의가 없네요!</font></string>
-    <string name="lesson_list_title_not_register"><font color="#000000">등록되어 있는 강의가 없네요?</font></string>
+
     <string name="close">close</string>
     <string name="sloth_policy">\'나나공\' 서비스 개인정보처리방침</string>
     <string name="start_sloth">나나공 시작하기</string>
@@ -118,9 +112,10 @@
     <string name="alert_days_info">월, 수, 목</string>
     <string name="cannot_update">*수정불가</string>
     <string name="one_hundred_percent">100%</string>
+
     <string name="input_lesson_count">%1$s개</string>
     <string name="input_lesson_price">%1$s원</string>
-    <string name="doing_lesson_count"> &#160;%1$s개</string>
+    <string name="lesson_count_unit"> &#160;%1$s개</string>
 
     <string name="current_lesson_progress">&#160;%d개 중 %d개</string>
 
@@ -176,12 +171,7 @@
     <string name="noti_update_complete">알림 수신 여부가 변경되었어요</string>
     <string name="choose_lesson_category">강의 카테고리를 선택해 주세요</string>
     <string name="choose_lesosn_site">강의 사이트를 선택해 주세요</string>
-    <string name="click_button_to_register_lesson">아래 버튼을 눌러 강의를 등록해주세요</string>
-    <string name="finished_lesson_until_today">오늘까지 완료한 강의</string>
-    <string name="not_finished_lesson_until_today">오늘까지 들어야하는 강의</string>
-    <string name="doing_lesson">진행중인 강의</string>
-    <string name="plan_lesson">예정된 강의</string>
-    <string name="past_lesson">지난 강의</string>
+
     <string name="error_message">문제가 발생했어요</string>
     <string name="lesson_detail_info_fail">강의 상세 정보를 가져오지 못했어요</string>
     <string name="test_crash">Test Crash</string>
@@ -199,5 +189,24 @@
     <string name="past">PAST</string>
     <string name="lesson_update_count_fail">강의를 갱신하지 못했어요</string>
     <string name="lesson_update_count_fail_by_internet_error">강의를 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
+
+<!--    LessonList-->
+    <string name="lesson_list_title_not_register">등록되어 있는 강의가 없네요?</string>
+    <string name="lesson_list_title_current_lesson">진행중인 강의</string>
+    <string name="lesson_list_title_plan_lesson">예정된 강의</string>
+    <string name="lesson_list_title_past_lesson">지난 강의</string>
+
+<!--    TodayLesson-->
+    <string name="today_lesson_title_empty_lesson">아래 버튼을 눌러 강의를 등록해주세요</string>
+    <string name="today_lesson_title_finished_lesson">오늘까지 완료한 강의</string>
+    <string name="today_lesson_title_doing_lesson">오늘까지 들어야하는 강의</string>
+
+    <string name="today_lesson_header_doing">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</string>
+    <string name="today_lesson_header_not_start">시작이 반인데…\n너 설마 아직도\n시작 안했어?</string>
+    <string name="today_lesson_header_finished">젠장..\n오늘은\n나의 완패다..</string>
+    <string name="today_lesson_header_empty">등록되어 있는\n강의가 없네요!</string>
+
+    <string name="today_lesson_header_on_boarding_start">"어서와\n나랑 대결은\n처음이지?"</string>
+    <string name="today_lesson_header_on_boarding_finished">"크윽..\n처음치고 굉장히\n잘하는데"</string>
 
 </resources>

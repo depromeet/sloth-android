@@ -74,12 +74,12 @@ class PreferenceManager @Inject constructor(
         }
 
         .map { prefs ->
-            prefs[TODAY_LESSON_ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
+            prefs[TODAY_LESSON_ON_BOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
     suspend fun updateTodayLessonOnBoardingStatus() {
         context.dataStore.edit { prefs ->
-            prefs[TODAY_LESSON_ONBOARDING_COMPLETE] = true
+            prefs[TODAY_LESSON_ON_BOARDING_COMPLETE] = true
         }
     }
 
@@ -94,12 +94,12 @@ class PreferenceManager @Inject constructor(
         }
 
         .map { prefs ->
-            prefs[LESSON_LIST_ONBOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
+            prefs[LESSON_LIST_ON_BOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
     suspend fun updateLessonListOnBoardingStatus() {
         context.dataStore.edit { prefs ->
-            prefs[LESSON_LIST_ONBOARDING_COMPLETE] = true
+            prefs[LESSON_LIST_ON_BOARDING_COMPLETE] = true
         }
     }
 
@@ -109,7 +109,7 @@ class PreferenceManager @Inject constructor(
         // 저장할 type 이 string 이기 때문에 stringPreferencesKey
         val ACCESS_TOKEN = stringPreferencesKey(KEY_ACCESS_TOKEN)
         val REFRESH_TOKEN = stringPreferencesKey(KEY_REFRESH_TOKEN)
-        val TODAY_LESSON_ONBOARDING_COMPLETE = booleanPreferencesKey(KEY_TODAY_LESSON_ONBOARDING_COMPLETE)
-        val LESSON_LIST_ONBOARDING_COMPLETE = booleanPreferencesKey(KEY_LESSON_LIST_ONBOARDING_COMPLETE)
+        val TODAY_LESSON_ON_BOARDING_COMPLETE = booleanPreferencesKey(KEY_TODAY_LESSON_ON_BOARDING_COMPLETE)
+        val LESSON_LIST_ON_BOARDING_COMPLETE = booleanPreferencesKey(KEY_LESSON_LIST_ON_BOARDING_COMPLETE)
     }
 }

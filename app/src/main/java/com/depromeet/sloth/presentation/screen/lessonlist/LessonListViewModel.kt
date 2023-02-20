@@ -8,13 +8,13 @@ import com.depromeet.sloth.domain.usecase.lesson.FetchLessonListUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchLessonListOnBoardingStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.UpdateLessonListOnBoardingStatusUseCase
-import com.depromeet.sloth.presentation.adapter.HeaderAdapter
-import com.depromeet.sloth.presentation.screen.LessonUiModel
+import com.depromeet.sloth.extensions.cancelIfActive
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +28,8 @@ class LessonListViewModel @Inject constructor(
     private val updateLessonListOnBoardingStatusUseCase: UpdateLessonListOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
+
+    private var lessonListJob: Job? = null
 
     private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
     val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
@@ -53,16 +55,15 @@ class LessonListViewModel @Inject constructor(
     val navigateToLessonDetailEvent: SharedFlow<String> =
         _navigateToLessonDetailEvent.asSharedFlow()
 
-    private val _lessonList = MutableStateFlow<List<LessonUiModel>>(emptyList())
-    val lessonList: StateFlow<List<LessonUiModel>> = _lessonList.asStateFlow()
+    private val _lessonList = MutableStateFlow<List<LessonListUiModel>>(emptyList())
+    val lessonList: StateFlow<List<LessonListUiModel>> = _lessonList.asStateFlow()
 
     //TODO fetchLessonInfo 내에서 onBoarding 이 종료 되었는지 먼저 검사 하고
     // 종료가 되지 않았다면 빠꾸
     // 종료 되었다면 UseCase 를 호출하는 식으로 구현해야 UDF 를 위반하지 않는다
     // TODO stock market app 참고 해서 예외처리 코드 개선
     fun fetchLessonList() = viewModelScope.launch {
-//        val isOnBoardingComplete = fetchOnBoardingStatusUseCase()
-//        if (isOnBoardingComplete) {
+        lessonListJob.cancelIfActive()
         fetchLessonListUseCase()
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -84,29 +85,22 @@ class LessonListViewModel @Inject constructor(
                     }
                 }
             }
-//        } else {
-//            _checkOnBoardingCompleteEvent.emit(false)
-//        }
     }
 
     private fun setLessonList(result: List<LessonListResponse>) {
         _lessonList.update {
             if (result.isEmpty()) {
-                listOf(
-                    LessonUiModel.LessonHeader(HeaderAdapter.HeaderType.EMPTY, null),
-                    LessonUiModel.EmptyLesson
-                )
+                listOf(LessonListUiModel.LessonListEmptyItem)
             } else {
-                // groupBy 가 LessonUiMode 같은 group 이라고 판단 하지 못한다.
                 result.groupBy {
                     it.lessonStatus
                 }.values.map { lessonList ->
                     lessonList.map { lesson ->
                         when {
                             (lesson.isFinished || lesson.lessonStatus == "PAST") ->
-                                LessonUiModel.PastLesson(lesson)
-                            (lesson.lessonStatus == "PLAN") -> LessonUiModel.PlanLesson(lesson)
-                            else -> LessonUiModel.CurrentLesson(lesson)
+                                LessonListUiModel.LessonListPastItem(lesson)
+                            (lesson.lessonStatus == "PLAN") -> LessonListUiModel.LessonListPlanItem(lesson)
+                            else -> LessonListUiModel.LessonListCurrentItem(lesson)
                         }
                     }
                 }.map { lessonUiModelList ->
@@ -114,15 +108,12 @@ class LessonListViewModel @Inject constructor(
                         add(
                             0,
                             when (lessonUiModelList.first()) {
-                                is LessonUiModel.CurrentLesson -> LessonUiModel.LessonHeader(
-                                    HeaderAdapter.HeaderType.CURRENT, this.size
-                                )
-                                is LessonUiModel.PlanLesson -> LessonUiModel.LessonHeader(
-                                    HeaderAdapter.HeaderType.PLAN, this.size
-                                )
-                                is LessonUiModel.PastLesson -> LessonUiModel.LessonHeader(
-                                    HeaderAdapter.HeaderType.PAST, this.size
-                                )
+                                is LessonListUiModel.LessonListCurrentItem ->
+                                    LessonListUiModel.LessonListTitleItem(LessonListType.CURRENT, this.size)
+                                is LessonListUiModel.LessonListPlanItem ->
+                                    LessonListUiModel.LessonListTitleItem(LessonListType.PLAN, this.size)
+                                is LessonListUiModel.LessonListPastItem ->
+                                    LessonListUiModel.LessonListTitleItem(LessonListType.PAST, this.size)
                                 else -> return@apply
                             }
                         )

@@ -1,14 +1,11 @@
-package com.depromeet.sloth.presentation.adapter.viewholder
+package com.depromeet.sloth.presentation.adapter.viewholder.lessonlist
 
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.ItemLessonListPlanBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 
-class PlanLessonListViewHolder(
-    val binding: ItemLessonListPlanBinding,
-) : RecyclerView.ViewHolder(binding.root) {
-
+class PlanLessonViewHolder(val binding: ItemLessonListPlanBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(lesson: LessonListResponse) {
         itemView.apply {
             binding.apply {
