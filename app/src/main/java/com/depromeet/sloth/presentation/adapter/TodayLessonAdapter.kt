@@ -20,6 +20,7 @@ class TodayLessonAdapter(
             return (oldItem is TodayLessonUiModel.TodayLessonEmptyItem && newItem is TodayLessonUiModel.TodayLessonEmptyItem) ||
                     (oldItem is TodayLessonUiModel.TodayLessonDoingItem && newItem is TodayLessonUiModel.TodayLessonDoingItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId) ||
                     (oldItem is TodayLessonUiModel.TodayLessonFinishedItem && newItem is TodayLessonUiModel.TodayLessonFinishedItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId)
+
         }
 
         override fun areContentsTheSame(oldItem: TodayLessonUiModel, newItem: TodayLessonUiModel): Boolean {

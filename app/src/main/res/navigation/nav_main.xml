@@ -134,12 +134,8 @@
             app:destination="@id/finish_lesson_dialog" />
 
         <action
-            android:id="@+id/action_today_lesson_to_on_boarding_click_plus_dialog"
-            app:destination="@id/on_boarding_click_plus_dialog" />
-
-        <action
-            android:id="@+id/action_today_lesson_to_on_boarding_register_lesson_dialog"
-            app:destination="@id/on_boarding_register_lesson_dialog" />
+            android:id="@+id/action_today_lesson_to_on_Boarding_today_lesson"
+            app:destination="@id/on_boarding_today_lesson" />
     </fragment>
 
     <fragment
@@ -328,5 +324,23 @@
         android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingClickPlusDialogFragment"
         android:label="OnBoardingClickPlusDialogFragment"
         tools:layout="@layout/fragment_on_boarding_click_plus_dialog" />
+
+    <fragment
+        android:id="@+id/on_boarding_today_lesson"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingTodayLessonFragment"
+        android:label="OnBoardingTodayLessonFragment"
+        tools:layout="@layout/fragment_on_boarding_today_lesson">
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_on_boarding_click_plus_dialog"
+            app:destination="@id/on_boarding_click_plus_dialog" />
+
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_on_boarding_register_lesson_dialog"
+            app:destination="@id/on_boarding_register_lesson_dialog" />
+
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_nav_register_lesson"
+            app:destination="@id/nav_register_lesson" />
+    </fragment>
 
 </navigation>

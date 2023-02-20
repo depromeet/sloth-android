@@ -1,6 +1,5 @@
 package com.depromeet.sloth.presentation.screen.todaylesson
 
-import OnBoardingAdapter
 import TodayLessonAdapter
 import android.os.Bundle
 import android.view.View
@@ -35,20 +34,8 @@ class TodayLessonFragment :
         onFinishClick = { lesson -> todayLessonViewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
     )
 
-    private val onBoardingItemClickListener = OnBoardingItemClickListener(
-        // onPlusClick = { lesson -> todayLessonViewModel.updateOnBoardingItemCount(1, lesson.lessonId.toString()) },
-        onPlusClick = {},
-        // onMinusClick = { lesson -> todayLessonViewModel.updateOnBoardingItemCount(-1, lesson.lessonId.toString()) },
-        onMinusClick = {},
-        onFinishClick = { todayLessonViewModel.navigateToOnBoardingLessonRegisterDialog() }
-    )
-
     private val todayLessonAdapter by lazy {
         TodayLessonAdapter(todayLessonItemClickListener)
-    }
-
-    private val onBoardingAdapter by lazy {
-        OnBoardingAdapter(onBoardingItemClickListener)
     }
 
     override fun onStart() {
@@ -67,6 +54,8 @@ class TodayLessonFragment :
     }
 
     override fun initViews() {
+        // login 확인 -> onboardingStatus -> navigateToOnBoardingTodayLesson
+        // bottom navigation 은?
         binding.rvTodayLesson.apply {
             if (itemDecorationCount == 0) {
                 addItemDecoration(LessonItemDecoration(requireContext(), 16))
@@ -96,30 +85,25 @@ class TodayLessonFragment :
                     if (!isLoggedIn) {
                         val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
                         findNavController().safeNavigate(action)
+                    } else {
+                        // UDF 위반
+                        todayLessonViewModel.checkTodayLessonOnBoardingComplete()
                     }
                 }
             }
             launch {
                 checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                    if (!isOnBoardingComplete) showOnBoardingClickPlusDialog()
-                }
-            }
-
-            launch {
-                navigateToOnBoardingRegisterLessonDialogEvent.collect {
-                    showOnBoardingRegisterLessonDialog()
+                    if (!isOnBoardingComplete) {
+                        // showOnBoardingClickPlusDialog()
+                        val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
+                        findNavController().safeNavigate(action)
+                    }
                 }
             }
 
             launch {
                 todayLessonList.collect {
                     todayLessonAdapter.submitList(it)
-                }
-            }
-
-            launch {
-                onBoardingList.collect {
-                    onBoardingAdapter.submitList(it)
                 }
             }
 
@@ -137,9 +121,9 @@ class TodayLessonFragment :
 
             launch {
                 navigateRegisterLessonEvent.collect {
-                        val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
-                        findNavController().safeNavigate(action)
-                    }
+                    val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
+                    findNavController().safeNavigate(action)
+                }
             }
 
             launch {
@@ -150,25 +134,16 @@ class TodayLessonFragment :
 
             launch {
                 navigateToExpireDialogEvent.collect {
-                        showExpireDialog()
-                    }
+                    showExpireDialog()
+                }
             }
 
             launch {
                 showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
-    }
-    private fun showOnBoardingClickPlusDialog() {
-        val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingClickPlusDialog()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun showOnBoardingRegisterLessonDialog() {
-        val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingRegisterLessonDialog()
-        findNavController().safeNavigate(action)
     }
 
     private fun showWaitDialog() {

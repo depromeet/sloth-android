@@ -8,7 +8,6 @@ import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.usecase.login.FetchLoginStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
-import com.depromeet.sloth.domain.usecase.member.UpdateTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.extensions.cancelIfActive
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
@@ -26,8 +25,7 @@ import javax.inject.Inject
 class TodayLessonViewModel @Inject constructor(
     private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
     private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
-    private val updateTodayLessonOnBoardingStatusUseCase: UpdateTodayLessonOnBoardingStatusUseCase,
-    private val fetchLessonTodayListUseCase: FetchTodayLessonListUseCase,
+    private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
@@ -42,17 +40,13 @@ class TodayLessonViewModel @Inject constructor(
     val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
-    private val _todayLessonOnBoardingComplete = MutableStateFlow<Boolean>(false)
+    private val _todayLessonOnBoardingComplete = MutableStateFlow(false)
     val todayLessonOnBoardingComplete: StateFlow<Boolean> = _todayLessonOnBoardingComplete.asStateFlow()
 
     private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonUiModel>())
     val todayLessonList: StateFlow<List<TodayLessonUiModel>> = _todayLessonList.asStateFlow()
 
-    private val _onBoardingList = MutableStateFlow(emptyList<OnBoardingUiModel>())
-    val onBoardingList: StateFlow<List<OnBoardingUiModel>> = _onBoardingList.asStateFlow()
-
     init {
-        //TODO OnBoarding check 도..
         checkLoginStatus()
     }
 
@@ -78,77 +72,6 @@ class TodayLessonViewModel @Inject constructor(
     fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
         _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
-
-    fun updateTodayLessonOnBoardingStatus() {
-        _todayLessonOnBoardingComplete.value = true
-    }
-
-    fun setOnBoardingItem() {
-        _onBoardingList.update { list ->
-            list.toMutableList().apply {
-                add(
-                    OnBoardingUiModel.OnBoardingDoingItem(
-                        TodayLessonResponse(
-                            "튜토리얼",
-                            0,
-                            "나공이와 대결하기\n: 게이지를 빨리 채워 완료해봐요!",
-                            0,
-                            1,
-                            "",
-                            false,
-                            3,
-                            3
-                        )
-                    )
-                )
-            }
-        }
-    }
-
-    // TODO update function 을 이용 해야 할듯
-    // 사실 race condition 일어날 조건은 아니긴 함
-//    fun updateOnBoardingItemCount(count: Int, lessonId: String) {
-//        if (count == 1) {
-//            increaseOnBoardingItemCount()
-//        } else {
-//            decreaseOnBoardingItemCount()
-//        }
-//        refreshOnBoardingItem()
-//    }
-
-//    private fun increaseOnBoardingItemCount() {
-//        _onBoardingList.value = onBoardingList.value.mapIndexed { index, item ->
-//            if (index == 0) {
-//                val isOutOfRange = item.presentNumber == item.totalNumber
-//                if (isOutOfRange) return
-//                item.copy(presentNumber = item.presentNumber.plus(1))
-//            } else item
-//        }
-//    }
-
-//    private fun decreaseOnBoardingItemCount() {
-//        _onBoardingList.value = onBoardingList.value.mapIndexed { index, item ->
-//            if (index == 0) {
-//                val isOutOfRange = item.presentNumber == 0
-//                if (isOutOfRange) return
-//                item.copy(presentNumber = item.presentNumber.minus(1))
-//            } else item
-//        }
-//    }
-
-//    private fun refreshOnBoardingItem() {
-//        var isNotFinished = true
-//        _onBoardingList.value = onBoardingList.value.mapIndexed { index, item ->
-//            if (index == 0) {
-//                isNotFinished = item.presentNumber < item.totalNumber
-//                if (isNotFinished) return
-//                item.copy(untilTodayFinished = true)
-//            } else item
-//        }
-//        if (!isNotFinished) {
-//            setOnBoardingList()
-//        }
-//    }
 
 //    //TODO 진행 중인 강의를 update 하는
 //    private fun updateLessonItemCount(count: Int, lessonId: Int) {
@@ -211,7 +134,7 @@ class TodayLessonViewModel @Inject constructor(
     fun fetchTodayLessonList() {
         todayLessonJob.cancelIfActive()
         todayLessonJob = viewModelScope.launch {
-            fetchLessonTodayListUseCase().onEach { result ->
+            fetchTodayLessonListUseCase().onEach { result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
@@ -235,55 +158,56 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     private fun setLessonList(result: List<TodayLessonResponse>) {
-        _todayLessonList.value = if (result.isEmpty()) {
-            listOf(
-                TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.EMPTY),
-                TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.EMPTY),
-                TodayLessonUiModel.TodayLessonEmptyItem
-            )
-        } else {
-            result.groupBy {
-                it.untilTodayFinished
-            }.values.map { todayLessonList ->
-                todayLessonList.map { lesson ->
-                    if (lesson.untilTodayFinished) {
-                        TodayLessonUiModel.TodayLessonFinishedItem(lesson)
-                    } else {
-                        TodayLessonUiModel.TodayLessonDoingItem(lesson)
-                    }
-                }
-                //flatMap 때문일 수도 있음
-            }.flatMap { todayLessons ->
-                when (todayLessons.first()) {
-                    is TodayLessonUiModel.TodayLessonDoingItem -> {
-                        todayLessons.toMutableList().apply {
-                            add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.DOING))
+        _todayLessonList.update {
+            if (result.isEmpty()) {
+                listOf(
+                    TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.EMPTY),
+                    TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.EMPTY),
+                    TodayLessonUiModel.TodayLessonEmptyItem
+                )
+            } else {
+                result.groupBy {
+                    it.untilTodayFinished
+                }.values.map { todayLessonList ->
+                    todayLessonList.map { lesson ->
+                        if (lesson.untilTodayFinished) {
+                            TodayLessonUiModel.TodayLessonFinishedItem(lesson)
+                        } else {
+                            TodayLessonUiModel.TodayLessonDoingItem(lesson)
                         }
                     }
-                    is TodayLessonUiModel.TodayLessonFinishedItem -> {
-                        todayLessons.toMutableList().apply {
-                            add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.FINISHED))
+                }.flatMap { todayLessons ->
+                    when (todayLessons.first()) {
+                        is TodayLessonUiModel.TodayLessonDoingItem -> {
+                            todayLessons.toMutableList().apply {
+                                add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.DOING))
+                            }
                         }
-                    }
-                    else -> return
-                }
-            }.let { lessons ->
-                val isFinished = lessons.find { it is TodayLessonUiModel.TodayLessonDoingItem } == null
-                val isNotStarted = lessons.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
-                when {
-                    isFinished -> {
-                        lessons.toMutableList().apply {
-                            add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.FINISHED))
+                        is TodayLessonUiModel.TodayLessonFinishedItem -> {
+                            todayLessons.toMutableList().apply {
+                                add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.FINISHED))
+                            }
                         }
+                        else -> return
                     }
-                    isNotStarted -> {
-                        lessons.toMutableList().apply {
-                            add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.NOT_START))
+                }.let { lessons ->
+                    val isFinished = lessons.find { it is TodayLessonUiModel.TodayLessonDoingItem } == null
+                    val isNotStarted = lessons.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
+                    when {
+                        isFinished -> {
+                            lessons.toMutableList().apply {
+                                add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.FINISHED))
+                            }
                         }
-                    }
-                    else -> {
-                        lessons.toMutableList().apply {
-                            add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.DOING))
+                        isNotStarted -> {
+                            lessons.toMutableList().apply {
+                                add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.NOT_START))
+                            }
+                        }
+                        else -> {
+                            lessons.toMutableList().apply {
+                                add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.DOING))
+                            }
                         }
                     }
                 }
@@ -292,6 +216,7 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     //TODO isNotStarted 상태와 isDoing 상태를 구분하기 위해 하나라도 0 이 아닌게 있으면 새로고침을 해줘야한다
+    // 그러려면 해당 아이템 뿐만 아니라 전체 아이템에 대한 탐색을 필요로 한다
     fun updateLessonCount(count: Int, lesson: TodayLessonResponse) {
         updateLessonCountJob.cancelIfActive()
         updateLessonCountJob = viewModelScope.launch {
@@ -306,7 +231,6 @@ class TodayLessonViewModel @Inject constructor(
                             if (!lesson.untilTodayFinished) {
                                 if (result.data.presentNumber == lesson.untilTodayNumber) {
                                     // refresh
-                                    // TODO 어쨌든 fetch 를 통해 refresh 를 수행하면 미세하게 깜빡거리는 현상은 생길 수 밖에 없다.
                                     fetchTodayLessonList()
                                 } else {
                                     // updateLessonItemCount(count, lesson.lessonId)

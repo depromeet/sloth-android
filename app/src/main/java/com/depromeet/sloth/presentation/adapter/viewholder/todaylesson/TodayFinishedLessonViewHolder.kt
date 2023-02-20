@@ -14,16 +14,12 @@ class TodayFinishedLessonViewHolder(
             binding.apply {
                 tvTodayLessonRemain.text = if (todayLesson.remainDay == 0) "D-Day" else "D-${todayLesson.remainDay}"
                 tvTodayLessonCategory.text = todayLesson.categoryName
-                if (todayLesson.siteName.isNotEmpty()) {
-                    tvTodayLessonSite.text = todayLesson.siteName
-                } else {
-                    tvTodayLessonSite.visibility = View.GONE
-                }
+                tvTodayLessonSite.text = todayLesson.siteName
                 tvTodayLessonName.text = todayLesson.lessonName
                 tvTodayLessonCurrentNumber.text = todayLesson.presentNumber.toString()
                 tvTodayLessonTotalNumber.text = todayLesson.untilTodayNumber.toString()
 
-                if(todayLesson.totalNumber == todayLesson.presentNumber) {
+                if(todayLesson.presentNumber == todayLesson.totalNumber) {
                     clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_finished_top)
                     clTodayFinishedBottom.visibility = View.VISIBLE
                 } else {

@@ -190,13 +190,13 @@
     <string name="lesson_update_count_fail">강의를 갱신하지 못했어요</string>
     <string name="lesson_update_count_fail_by_internet_error">강의를 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
 
-<!--    LessonList-->
+    <!--    LessonList-->
     <string name="lesson_list_title_not_register">등록되어 있는 강의가 없네요?</string>
     <string name="lesson_list_title_current_lesson">진행중인 강의</string>
     <string name="lesson_list_title_plan_lesson">예정된 강의</string>
     <string name="lesson_list_title_past_lesson">지난 강의</string>
 
-<!--    TodayLesson-->
+    <!--    TodayLesson-->
     <string name="today_lesson_title_empty_lesson">아래 버튼을 눌러 강의를 등록해주세요</string>
     <string name="today_lesson_title_finished_lesson">오늘까지 완료한 강의</string>
     <string name="today_lesson_title_doing_lesson">오늘까지 들어야하는 강의</string>
