@@ -66,7 +66,7 @@ class LessonListViewModel @Inject constructor(
         _navigateToRegisterLessonEvent.emit(Unit)
     }
 
-    fun navigateToNotificationList() = viewModelScope.launch {
+    fun onNotificationClicked() = viewModelScope.launch {
         _navigateToNotificationListEvent.emit(Unit)
     }
 
