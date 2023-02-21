@@ -33,8 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/gray_100"
-                app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/today_lesson_menu" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
