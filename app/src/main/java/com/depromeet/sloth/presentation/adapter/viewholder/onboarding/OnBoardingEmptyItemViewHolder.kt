@@ -1,7 +1,7 @@
 package com.depromeet.sloth.presentation.adapter.viewholder.onboarding
 
 import androidx.recyclerview.widget.RecyclerView
-import com.depromeet.sloth.databinding.ItemTodayLessonEmptyBinding
+import com.depromeet.sloth.databinding.ItemOnBoardingEmptyBinding
 
-class OnBoardingEmptyLessonViewHolder(val binding: ItemTodayLessonEmptyBinding) :
+class OnBoardingEmptyItemViewHolder(val binding: ItemOnBoardingEmptyBinding) :
     RecyclerView.ViewHolder(binding.root)

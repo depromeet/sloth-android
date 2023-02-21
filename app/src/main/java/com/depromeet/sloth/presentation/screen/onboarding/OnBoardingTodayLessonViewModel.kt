@@ -2,33 +2,29 @@ package com.depromeet.sloth.presentation.screen.onboarding
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
-import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.UpdateTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
 @HiltViewModel
 class OnBoardingTodayLessonViewModel @Inject constructor(
-    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val updateTodayLessonOnBoardingStatusUseCase: UpdateTodayLessonOnBoardingStatusUseCase,
-    private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
-    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
-    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> = _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
+    private val _onBoardingList = MutableStateFlow(
+        listOf(TodayLessonResponse("튜토리얼", 0, "나공이와 대결하기\n: 게이지를 빨리 채워 완료해봐요!", 0, 1, "", false, 3, 3))
+    )
+    val onBoardingList: StateFlow<List<TodayLessonResponse>> = _onBoardingList.asStateFlow()
 
-    private val _todayLessonOnBoardingComplete = MutableStateFlow(false)
-    val todayLessonOnBoardingComplete: StateFlow<Boolean> = _todayLessonOnBoardingComplete.asStateFlow()
+    private val _onBoardingUiModelList = MutableStateFlow(emptyList<OnBoardingUiModel>())
+    val onBoardingUiModelList: StateFlow<List<OnBoardingUiModel>> = _onBoardingUiModelList.asStateFlow()
 
-    private val _onBoardingList = MutableStateFlow(emptyList<OnBoardingUiModel>())
-    val onBoardingList: StateFlow<List<OnBoardingUiModel>> = _onBoardingList.asStateFlow()
-
-    private val _navigateToOnBoardingClickPlusDialogEvent = MutableSharedFlow<Unit>()
+    private val _navigateToOnBoardingClickPlusDialogEvent = MutableSharedFlow<Unit>(replay = 1)
     val navigateToOnBoardingClickPlusDialogEvent: SharedFlow<Unit> = _navigateToOnBoardingClickPlusDialogEvent.asSharedFlow()
 
     private val _navigateToOnBoardingRegisterLessonDialogEvent = MutableSharedFlow<Unit>()
@@ -39,40 +35,11 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
 
     init {
         navigateToOnBoardingClickPlusDialog()
+        setOnBoardingItem()
     }
 
     private fun navigateToOnBoardingClickPlusDialog() = viewModelScope.launch {
         _navigateToOnBoardingClickPlusDialogEvent.emit(Unit)
-    }
-
-    fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
-    }
-
-    fun updateTodayLessonOnBoardingStatus() {
-        _todayLessonOnBoardingComplete.value = true
-    }
-
-    fun fetchOnBoardingTodayLessonList() {
-        _onBoardingList.update {
-            listOf(
-                OnBoardingUiModel.OnBoardingHeaderItem(OnBoardingType.DOING),
-                OnBoardingUiModel.OnBoardingTitleItem(OnBoardingType.DOING),
-                OnBoardingUiModel.OnBoardingDoingItem(
-                    TodayLessonResponse(
-                        "튜토리얼",
-                        0,
-                        "나공이와 대결하기\n: 게이지를 빨리 채워 완료해봐요!",
-                        0,
-                        1,
-                        "",
-                        false,
-                        3,
-                        3
-                    )
-                )
-            )
-        }
     }
 
     // TODO update function 을 이용 해야 할듯
@@ -83,88 +50,108 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         } else {
             decreaseOnBoardingItemCount()
         }
-        refreshOnBoardingItem()
     }
 
     private fun increaseOnBoardingItemCount() {
+        lateinit var newItem: TodayLessonResponse
+        var flag = false
+
         val currentList = _onBoardingList.value.toMutableList()
-        for (i in currentList.indices) {
-            if (currentList[i] is OnBoardingUiModel.OnBoardingDoingItem) {
-                val currentTodayLesson = (currentList[i] as OnBoardingUiModel.OnBoardingDoingItem).todayLesson
-                val isOutOfRange = currentTodayLesson.presentNumber == currentTodayLesson.untilTodayNumber
-                if (isOutOfRange) return
-                val updateTodayLesson = currentTodayLesson.copy(presentNumber = currentTodayLesson.presentNumber + 1)
-                currentList[i] = (currentList[i] as OnBoardingUiModel.OnBoardingDoingItem).copy(todayLesson = updateTodayLesson)
-                break
+        for ((index, item) in currentList.withIndex()) {
+            val isOutOfRange = item.presentNumber == item.totalNumber
+            if (isOutOfRange) return
+
+            val isFinished = item.presentNumber + 1 == item.untilTodayNumber
+            if (isFinished) {
+                newItem = item.copy(presentNumber = item.presentNumber + 1, untilTodayFinished = true)
+                flag = true
+            } else {
+                newItem = item.copy(presentNumber = item.presentNumber + 1)
+            }
+            currentList[index] = newItem
+            _onBoardingList.value = currentList
+            if (flag) {
+                Timber.d("갱신")
+                setOnBoardingItem()
             }
         }
-        currentList.map {
-            when (it) {
-                is OnBoardingUiModel.OnBoardingDoingItem -> {
-                    if (it.todayLesson.presentNumber == it.todayLesson.untilTodayNumber) {
-                        it.copy(todayLesson = it.todayLesson.copy(untilTodayFinished = true))
-                    } else {
-                        it
-                    }
-                }
-                else -> it
-            }
-        }
-        _onBoardingList.value = currentList
     }
 
     private fun decreaseOnBoardingItemCount() {
+        lateinit var newItem: TodayLessonResponse
+        var flag = false
+
         val currentList = _onBoardingList.value.toMutableList()
-        for (i in currentList.indices) {
-            if (currentList[i] is OnBoardingUiModel.OnBoardingDoingItem) {
-                val currentTodayLesson = (currentList[i] as OnBoardingUiModel.OnBoardingDoingItem).todayLesson
-                val isOutOfRange = currentTodayLesson.presentNumber == 0
-                if (isOutOfRange) return
-                val updateTodayLesson = currentTodayLesson.copy(presentNumber = currentTodayLesson.presentNumber - 1)
-                currentList[i] = (currentList[i] as OnBoardingUiModel.OnBoardingDoingItem).copy(todayLesson = updateTodayLesson)
-                break
+        for ((index, item) in currentList.withIndex()) {
+            val isOutOfRange = item.presentNumber == 0
+            if (isOutOfRange) return
+
+            val isNotFinished = item.presentNumber == item.untilTodayNumber
+            if (isNotFinished) {
+                newItem = item.copy(presentNumber = item.presentNumber - 1, untilTodayFinished = false)
+                flag = true
+            } else {
+                newItem = item.copy(presentNumber = item.presentNumber - 1)
+            }
+            currentList[index] = newItem
+            _onBoardingList.value = currentList
+            if (flag) {
+                Timber.d("갱신")
+                setOnBoardingItem()
             }
         }
-        currentList.map {
-            when (it) {
-                is OnBoardingUiModel.OnBoardingDoingItem -> {
-                    if (it.todayLesson.presentNumber < it.todayLesson.untilTodayNumber) {
-                        it.copy(todayLesson = it.todayLesson.copy(untilTodayFinished = false))
-                    } else {
-                        it
-                    }
-                }
-                else -> it
-            }
-        }
-        _onBoardingList.value = currentList
     }
 
-    //TODO Header, Title 다 바꿔줘야 한다...
-    private fun refreshOnBoardingItem() {
-        val currentList = _onBoardingList.value.toMutableList()
-        currentList.map {
-            when (it) {
-                is OnBoardingUiModel.OnBoardingDoingItem -> {
-                    if (it.todayLesson.untilTodayFinished) {
-                        OnBoardingUiModel.OnBoardingFinishedItem(it.todayLesson)
-                        // 로그 안찍힘
-                    } else {
-                        it
+    private fun setOnBoardingItem() {
+        _onBoardingUiModelList.update {
+            if (_onBoardingList.value.isEmpty()) {
+                listOf(
+                    OnBoardingUiModel.OnBoardingHeaderItem(OnBoardingType.EMPTY),
+                    OnBoardingUiModel.OnBoardingTitleItem(OnBoardingType.EMPTY),
+                    OnBoardingUiModel.OnBoardingEmptyItem
+                )
+            } else {
+                onBoardingList.value.groupBy {
+                    it.untilTodayFinished
+                }.values.map { todayLessonList ->
+                    todayLessonList.map { lesson ->
+                        if (lesson.untilTodayFinished) {
+                            OnBoardingUiModel.OnBoardingFinishedItem(lesson)
+                        } else {
+                            OnBoardingUiModel.OnBoardingDoingItem(lesson)
+                        }
+                    }
+                }.flatMap { todayLessons ->
+                    when (todayLessons.first()) {
+                        is OnBoardingUiModel.OnBoardingDoingItem -> {
+                            todayLessons.toMutableList().apply {
+                                add(0, OnBoardingUiModel.OnBoardingTitleItem(OnBoardingType.DOING))
+                            }
+                        }
+                        is OnBoardingUiModel.OnBoardingFinishedItem -> {
+                            todayLessons.toMutableList().apply {
+                                add(0, OnBoardingUiModel.OnBoardingTitleItem(OnBoardingType.FINISHED))
+                            }
+                        }
+                        else -> return
+                    }
+                }.let { lessons ->
+                    val isFinished = lessons.find { it is OnBoardingUiModel.OnBoardingDoingItem } == null
+                    when {
+                        isFinished -> {
+                            lessons.toMutableList().apply {
+                                add(0, OnBoardingUiModel.OnBoardingHeaderItem(OnBoardingType.FINISHED))
+                            }
+                        }
+                        else -> {
+                            lessons.toMutableList().apply {
+                                add(0, OnBoardingUiModel.OnBoardingHeaderItem(OnBoardingType.DOING))
+                            }
+                        }
                     }
                 }
-                is OnBoardingUiModel.OnBoardingFinishedItem -> {
-                    if (!it.todayLesson.untilTodayFinished) {
-                        OnBoardingUiModel.OnBoardingDoingItem(it.todayLesson)
-                        // 로그 안찍힘
-                    } else {
-                        it
-                    }
-                }
-                else -> it
             }
         }
-        _onBoardingList.value = currentList
     }
 
     fun navigateToOnBoardingLessonRegisterDialog() = viewModelScope.launch {
@@ -175,10 +162,16 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
 
     private fun initOnBoardingList() {
         _onBoardingList.update { emptyList() }
+        setOnBoardingItem()
     }
 
     fun navigateToRegisterLesson() = viewModelScope.launch {
+        updateOnBoardingTodayLessonStatus()
         _navigateToRegisterLessonEvent.emit(Unit)
+    }
+
+    private fun updateOnBoardingTodayLessonStatus() = viewModelScope.launch {
+        updateTodayLessonOnBoardingStatusUseCase()
     }
 
     override fun retry() = Unit

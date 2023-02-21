@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
-import com.depromeet.sloth.databinding.ItemOnBoardingDoingBinding
-import com.depromeet.sloth.databinding.ItemOnBoardingFinishedBinding
-import com.depromeet.sloth.databinding.ItemOnBoardingHeaderBinding
-import com.depromeet.sloth.databinding.ItemOnBoardingTitleBinding
+import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.onboarding.*
 import com.depromeet.sloth.presentation.screen.onboarding.OnBoardingItemClickListener
 import com.depromeet.sloth.presentation.screen.onboarding.OnBoardingUiModel
@@ -46,6 +43,14 @@ class OnBoardingAdapter(
                 )
             )
 
+            R.layout.item_on_boarding_empty -> OnBoardingEmptyItemViewHolder(
+                ItemOnBoardingEmptyBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
             R.layout.item_on_boarding_doing -> OnBoardingDoingItemViewHolder(
                 ItemOnBoardingDoingBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -75,7 +80,7 @@ class OnBoardingAdapter(
                 bind(uiModel.itemType)
             }
 
-            is OnBoardingUiModel.OnBoardingEmptyItem -> (holder as OnBoardingEmptyLessonViewHolder).apply {
+            is OnBoardingUiModel.OnBoardingEmptyItem -> (holder as OnBoardingEmptyItemViewHolder).apply {
                 binding.clTodayLesson.setOnSingleClickListener { clickListener.onClick() }
             }
 
@@ -120,7 +125,7 @@ class OnBoardingAdapter(
         return when (getItem(position)) {
             is OnBoardingUiModel.OnBoardingHeaderItem -> R.layout.item_on_boarding_header
             is OnBoardingUiModel.OnBoardingTitleItem -> R.layout.item_on_boarding_title
-            is OnBoardingUiModel.OnBoardingEmptyItem -> R.layout.item_today_lesson_empty
+            is OnBoardingUiModel.OnBoardingEmptyItem -> R.layout.item_on_boarding_empty
             is OnBoardingUiModel.OnBoardingDoingItem -> R.layout.item_on_boarding_doing
             is OnBoardingUiModel.OnBoardingFinishedItem -> R.layout.item_on_boarding_finished
             else -> throw IllegalStateException("Unknown viewType")

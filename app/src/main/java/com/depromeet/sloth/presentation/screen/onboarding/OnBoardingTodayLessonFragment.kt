@@ -31,12 +31,6 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
         OnBoardingAdapter(onBoardingItemClickListener)
     }
 
-    override fun onStart() {
-        super.onStart()
-        // 여기에 두면 매번 초기화가 이루어짐
-        onBoardingTodayLessonViewModel.fetchOnBoardingTodayLessonList()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind {
@@ -77,7 +71,7 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
             }
 
             launch {
-                onBoardingList.collect {
+                onBoardingUiModelList.collect {
                     onBoardingAdapter.submitList(it)
                 }
             }
