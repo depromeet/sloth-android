@@ -9,6 +9,10 @@ class OnBoardingTitleViewHolder(val binding: ItemOnBoardingTitleBinding) : Recyc
     fun bind(headerType: OnBoardingType) {
         binding.apply {
             when(headerType) {
+                OnBoardingType.EMPTY -> {
+                    tvTodayLessonTitle.setText(R.string.today_lesson_title_empty_lesson)
+                }
+
                 OnBoardingType.DOING -> {
                     tvTodayLessonTitle.setText(R.string.today_lesson_title_doing_lesson)
                 }

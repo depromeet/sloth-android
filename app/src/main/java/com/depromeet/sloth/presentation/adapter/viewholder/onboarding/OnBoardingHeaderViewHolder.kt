@@ -10,6 +10,11 @@ class OnBoardingHeaderViewHolder(val binding: ItemOnBoardingHeaderBinding) : Rec
     fun bind(headerType: OnBoardingType) {
         binding.apply {
             when(headerType) {
+                OnBoardingType.EMPTY -> {
+                    tvTodayLessonHeader.setText(R.string.today_lesson_header_on_boarding_empty)
+                    GlideApp.with(itemView.context).load(R.drawable.ic_today_lesson_header_empty).into(ivTodayLessonHeader)
+                }
+
                 OnBoardingType.DOING -> {
                     tvTodayLessonHeader.setText(R.string.today_lesson_header_on_boarding_start)
                     GlideApp.with(itemView.context).load(R.drawable.ic_today_lesson_header_doing).into(ivTodayLessonHeader)

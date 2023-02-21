@@ -201,11 +201,12 @@
     <string name="today_lesson_title_finished_lesson">오늘까지 완료한 강의</string>
     <string name="today_lesson_title_doing_lesson">오늘까지 들어야하는 강의</string>
 
+    <string name="today_lesson_header_empty">등록되어 있는\n강의가 없네요!</string>
     <string name="today_lesson_header_doing">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</string>
     <string name="today_lesson_header_not_start">시작이 반인데…\n너 설마 아직도\n시작 안했어?</string>
     <string name="today_lesson_header_finished">젠장..\n오늘은\n나의 완패다..</string>
-    <string name="today_lesson_header_empty">등록되어 있는\n강의가 없네요!</string>
 
+    <string name="today_lesson_header_on_boarding_empty">등록되어 있는\n강의가 없네요!</string>
     <string name="today_lesson_header_on_boarding_start">"어서와\n나랑 대결은\n처음이지?"</string>
     <string name="today_lesson_header_on_boarding_finished">"크윽..\n처음치고 굉장히\n잘하는데"</string>
 
