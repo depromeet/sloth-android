@@ -8,7 +8,6 @@ import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.usecase.login.FetchLoginStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
-import com.depromeet.sloth.extensions.cancelIfActive
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -183,7 +182,8 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     fun fetchTodayLessonList() {
-        todayLessonJob.cancelIfActive()
+        if (todayLessonJob != null) return
+
         todayLessonJob = viewModelScope.launch {
             fetchTodayLessonListUseCase().onEach { result ->
                 setLoading(result is Result.Loading)
@@ -270,7 +270,8 @@ class TodayLessonViewModel @Inject constructor(
 
     // TODO 리스트 갱신이 안 이루어지는 이슈
     fun updateLessonCount(count: Int, lesson: TodayLessonResponse) {
-        updateLessonCountJob.cancelIfActive()
+        if (updateLessonCountJob != null) return
+
         updateLessonCountJob = viewModelScope.launch {
             updateLessonCountUseCase(count = count, lessonId = lesson.lessonId)
                 .onEach { result ->

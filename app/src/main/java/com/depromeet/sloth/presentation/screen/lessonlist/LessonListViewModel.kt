@@ -7,7 +7,6 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.lesson.FetchLessonListUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchLessonListOnBoardingStatusUseCase
 import com.depromeet.sloth.domain.usecase.member.UpdateLessonListOnBoardingStatusUseCase
-import com.depromeet.sloth.extensions.cancelIfActive
 import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -60,29 +59,32 @@ class LessonListViewModel @Inject constructor(
     // 종료가 되지 않았다면 빠꾸
     // 종료 되었다면 UseCase 를 호출하는 식으로 구현해야 UDF 를 위반하지 않는다
     // TODO stock market app 참고 해서 예외처리 코드 개선
-    fun fetchLessonList() = viewModelScope.launch {
-        lessonListJob.cancelIfActive()
-        fetchLessonListUseCase()
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setInternetError(false)
-                        setLessonList(result.data)
-                    }
-                    is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+    fun fetchLessonList() {
+        if (lessonListJob != null) return
+
+        lessonListJob = viewModelScope.launch {
+            fetchLessonListUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setInternetError(false)
+                            setLessonList(result.data)
+                        }
+                        is Result.Error -> {
+                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
+                                setInternetError(true)
+                            } else if (result.statusCode == UNAUTHORIZED) {
+                                navigateToExpireDialog()
+                            } else {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                            }
                         }
                     }
                 }
-            }
+        }
     }
 
     private fun setLessonList(result: List<LessonListResponse>) {
