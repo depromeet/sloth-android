@@ -16,7 +16,7 @@ import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+//TODO 강의 등록 popUp 설정 조건부로 설정해야함
 @AndroidEntryPoint
 class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
@@ -24,7 +24,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private val lessonListItemClickListener = LessonListItemClickListener(
         onRegisterClick = { lessonListViewModel.navigateToRegisterLesson() },
-        onLessonClick = { lesson -> lessonListViewModel.navigateToLessonDetail(lesson.lessonId.toString())}
+        onLessonClick = { lesson -> lessonListViewModel.navigateToLessonDetail(lesson.lessonId.toString()) }
     )
 
     private val lessonListAdapter by lazy {
@@ -76,34 +76,19 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun initObserver() = with(lessonListViewModel) {
         repeatOnStarted {
-            // TODO 투데이 화면에서 온보딩 안끝났으면 아예 강의 목록 화면으로 넘어오지 못하도록 로직 처리
-            //  check 를 통해 온보딩 로직이 끝나지 않았다면 빠꾸
-            //  근데 그러면 checkDetail OnBoarding 화면을 띄울 수 없음 -> onBoardingStatus 를 분리
-//            launch {
-//                checkOnBoardingCompleteEvent
-//                    .collect { isOnBoardingComplete ->
-//                        if (!isOnBoardingComplete) {
-//                            val action = LessonListFragmentDirections.actionLessonListToTodayLesson()
-//                            findNavController().safeNavigate(action)
-//                        }
-//                    }
-//
-//                    .collect { isCompleteOnBoarding ->
-//                        when (isCompleteOnBoarding) {
-//                            true -> Unit
-//                            false -> showOnBoardingCheckDetail()
-//                        }
-//                    }
-//            }
-//
-//            launch {
-//                showOnBoardingCheckDetailEvent
-//                    .collect {
-//                        val action =
-//                            LessonListFragmentDirections.actionLessonListToOnBoardingCheckDetailDialog()
-//                        findNavController().safeNavigate(action)
-//                    }
-//            }
+            launch {
+                checkLessonListOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
+                        if (!isOnBoardingComplete) {
+                            navigateToOnBoardingCheckDetail()
+                        }
+                    }
+            }
+
+            launch {
+                navigateToOnBoardingCheckDetailEvent.collect {
+                    showOnBoardingCheckDetail()
+                }
+            }
 
             launch {
                 lessonList.collect {
@@ -113,22 +98,22 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
             launch {
                 navigateRegisterLessonEvent.collect {
-                        val action = LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
-                        findNavController().safeNavigate(action)
-                    }
+                    val action = LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                    findNavController().safeNavigate(action)
+                }
             }
 
             launch {
                 navigateToLessonDetailEvent.collect { lessonId ->
-                        val action = LessonListFragmentDirections.actionLessonListToLessonDetail(lessonId)
-                        findNavController().safeNavigate(action)
-                    }
+                    val action = LessonListFragmentDirections.actionLessonListToLessonDetail(lessonId)
+                    findNavController().safeNavigate(action)
+                }
             }
 
             launch {
                 navigateToNotificationListEvent.collect {
-                        showWaitDialog()
-                    }
+                    showWaitDialog()
+                }
             }
 
             launch {
@@ -139,20 +124,26 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
             launch {
                 navigateToExpireDialogEvent.collect {
-                        showExpireDialog()
-                    }
+                    showExpireDialog()
+                }
             }
 
             launch {
                 showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
+    }
+
+    private fun showOnBoardingCheckDetail() {
+        val action = LessonListFragmentDirections.actionLessonListToOnBoardingCheckDetailDialog()
+        findNavController().safeNavigate(action)
     }
 
     private fun showWaitDialog() {
         val action = LessonListFragmentDirections.actionLessonListToWaitDialog()
         findNavController().safeNavigate(action)
     }
+
 }

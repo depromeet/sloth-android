@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -43,8 +44,11 @@ class TodayLessonViewModel @Inject constructor(
     private val _todayLessonOnBoardingComplete = MutableStateFlow(false)
     val todayLessonOnBoardingComplete: StateFlow<Boolean> = _todayLessonOnBoardingComplete.asStateFlow()
 
-    private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonUiModel>())
-    val todayLessonList: StateFlow<List<TodayLessonUiModel>> = _todayLessonList.asStateFlow()
+    private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonResponse>())
+    val todayLessonList: StateFlow<List<TodayLessonResponse>> = _todayLessonList.asStateFlow()
+
+    private val _todayLessonUiModelList = MutableStateFlow(emptyList<TodayLessonUiModel>())
+    val todayLessonUiModelList: StateFlow<List<TodayLessonUiModel>> = _todayLessonUiModelList.asStateFlow()
 
     init {
         checkLoginStatus()
@@ -73,62 +77,109 @@ class TodayLessonViewModel @Inject constructor(
         _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
-//    //TODO 진행 중인 강의를 update 하는
-//    private fun updateLessonItemCount(count: Int, lessonId: Int) {
-//        if (count == 1) {
-//            increaseLessonItemCount(lessonId)
-//        } else {
-//            decreaseLessonItemCount(lessonId)
-//        }
-//        // refreshLessonItem(lessonId)
-//    }
+    // TODO update function 을 이용 해야 할듯
+    // 사실 race condition 일어날 조건은 아니긴 함
+    private fun updateTodayLessonCount(count: Int, lessonId: Int) {
+        if (count == 1) {
+            increaseTodayLessonCount(lessonId)
+        } else {
+            decreaseTodayLessonCount(lessonId)
+        }
+    }
 
-//    //TODO lessonUiModel 이라 todayLessonResponse 내부 원소 접근 불가능
-//    private fun increaseLessonItemCount(lessonId: Int) {
-//        _todayLessons.update { list ->
-//            list.map { item ->
-//                if (item.lessonId == lessonId) {
-//                    val isOutOfRange = item.presentNumber == item.totalNumber
-//                    if (isOutOfRange) return
-//                    item.copy(presentNumber = item.presentNumber.plus(1))
-//                } else item
-//            }
-//        }
-//    }
+    //TODO 갱신이 안되는 이슈
+    private fun increaseTodayLessonCount(lessonId: Int) {
+        Timber.d("${_todayLessonList.value}")
+        lateinit var newLesson: TodayLessonResponse
+        var flag = false
 
-//    private fun decreaseLessonItemCount(lessonId: Int) {
-//        _todayLessons.update { list ->
-//            list.map { item ->
-//                if (item.lessonId == lessonId) {
-//                    val isOutOfRange = item.presentNumber == 0
-//                    if (isOutOfRange) return
-//                    item.copy(presentNumber = item.presentNumber.minus(1))
-//                } else item
-//            }
-//        }
-//    }
+        val currentLessonList = _todayLessonList.value.toMutableList()
+        // lessonId 를 통해 갱신할 강의 찾기
+        val lesson = currentLessonList.first { it.lessonId == lessonId }
+        val isOutOfRange = lesson.presentNumber <= lesson.totalNumber
+        if (isOutOfRange) return
 
-//    // TODO 갱신 경우의 수 보강
-//    private fun refreshLessonItem(lessonId: Int) {
-//        _todayLessons.update { list ->
-//            list.map { item ->
-//                if (item.lessonId == lessonId) {
-//                    val isTodayFinished = item.presentNumber >= item.untilTodayNumber
-//                    if (isTodayFinished) {
-//                        item.copy(untilTodayFinished = true)
-//                    } else {
-//                        item.copy(untilTodayFinished = false)
-//                    }
-//                } else item
-//            }
-//        }
-//
-//        // 우선은 갱신을 위해 api 를 재호출 하는 방식으로 구현
-//        // fetchTodayLessonList()
-//    }
+        val isUntilTodayFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
+        val isFinished = lesson.presentNumber + 1 == lesson.totalNumber
+        when {
+            isUntilTodayFinished -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1, untilTodayFinished = true)
+                flag = true
+            }
+            isFinished -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
+                flag = true
+            }
+            else -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
+            }
+        }
+        // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
+        currentLessonList.map {
+            if (it.lessonId == lessonId) {
+                newLesson
+            } else {
+                lesson
+            }
+        }
 
-    fun navigateToOnBoardingLessonRegisterDialog() = viewModelScope.launch {
-        _navigateToOnBoardingRegisterLessonDialogEvent.emit(Unit)
+        val isStart = _todayLessonList.value.all { it.presentNumber == 0 } &&
+                currentLessonList.any { it.presentNumber > 0 }
+        if (isStart) flag = true
+
+        // _todayLessonList.value = currentLessonList
+        _todayLessonList.update { currentLessonList }
+        if (flag) {
+            setTodayLessonList()
+        }
+        Timber.d("${_todayLessonList.value}")
+    }
+
+    // TODO 갱신이 안되는 이슈
+    private fun decreaseTodayLessonCount(lessonId: Int) {
+        Timber.d("${_todayLessonList.value}")
+        lateinit var newLesson: TodayLessonResponse
+        var flag = false
+
+        val currentLessonList = _todayLessonList.value.toMutableList()
+        // lessonId 를 통해 갱신할 강의 찾기
+        val lesson = currentLessonList.first { it.lessonId == lessonId }
+        val isOutOfRange = lesson.presentNumber <= 0
+        if (isOutOfRange) return
+
+        val isUntilTodayNotFinished = lesson.presentNumber <= lesson.untilTodayNumber
+        val isNotFinished = lesson.presentNumber <= lesson.totalNumber
+
+        when {
+            isUntilTodayNotFinished -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1, untilTodayFinished = false)
+                flag = true
+            }
+            isNotFinished -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
+                flag = true
+            }
+            else -> {
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
+            }
+        }
+        // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
+        currentLessonList.map {
+            if (it.lessonId == lessonId) {
+                newLesson
+            } else {
+                lesson
+            }
+        }
+        val isNotStarted = currentLessonList.all { it.presentNumber == 0 }
+        if (isNotStarted) flag = true
+
+        // _todayLessonList.value = currentLessonList
+        _todayLessonList.update { currentLessonList }
+        if (flag) {
+            setTodayLessonList()
+        }
+        Timber.d("${_todayLessonList.value}")
     }
 
     fun fetchTodayLessonList() {
@@ -141,7 +192,8 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        setLessonList(result.data)
+                        _todayLessonList.value = result.data
+                        setTodayLessonList()
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
@@ -157,19 +209,19 @@ class TodayLessonViewModel @Inject constructor(
         }
     }
 
-    private fun setLessonList(result: List<TodayLessonResponse>) {
-        _todayLessonList.update {
-            if (result.isEmpty()) {
+    private fun setTodayLessonList() {
+        _todayLessonUiModelList.update {
+            if (_todayLessonList.value.isEmpty()) {
                 listOf(
                     TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.EMPTY),
                     TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.EMPTY),
                     TodayLessonUiModel.TodayLessonEmptyItem
                 )
             } else {
-                result.groupBy {
+                _todayLessonList.value.groupBy {
                     it.untilTodayFinished
-                }.values.map { todayLessonList ->
-                    todayLessonList.map { lesson ->
+                }.values.map {
+                    it.map { lesson ->
                         if (lesson.untilTodayFinished) {
                             TodayLessonUiModel.TodayLessonFinishedItem(lesson)
                         } else {
@@ -192,7 +244,8 @@ class TodayLessonViewModel @Inject constructor(
                     }
                 }.let { lessons ->
                     val isFinished = lessons.find { it is TodayLessonUiModel.TodayLessonDoingItem } == null
-                    val isNotStarted = lessons.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
+                    val isNotStarted = lessons.find { it is TodayLessonUiModel.TodayLessonFinishedItem } == null &&
+                            lessons.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
                     when {
                         isFinished -> {
                             lessons.toMutableList().apply {
@@ -215,8 +268,7 @@ class TodayLessonViewModel @Inject constructor(
         }
     }
 
-    //TODO isNotStarted 상태와 isDoing 상태를 구분하기 위해 하나라도 0 이 아닌게 있으면 새로고침을 해줘야한다
-    // 그러려면 해당 아이템 뿐만 아니라 전체 아이템에 대한 탐색을 필요로 한다
+    // TODO 리스트 갱신이 안 이루어지는 이슈
     fun updateLessonCount(count: Int, lesson: TodayLessonResponse) {
         updateLessonCountJob.cancelIfActive()
         updateLessonCountJob = viewModelScope.launch {
@@ -227,27 +279,7 @@ class TodayLessonViewModel @Inject constructor(
                     when (result) {
                         is Result.Loading -> return@collect
                         is Result.Success -> {
-                            // DoingLesson
-                            if (!lesson.untilTodayFinished) {
-                                if (result.data.presentNumber == lesson.untilTodayNumber) {
-                                    // refresh
-                                    fetchTodayLessonList()
-                                } else {
-                                    // updateLessonItemCount(count, lesson.lessonId)
-                                }
-                            }
-                            // FinishLesson
-                            else {
-                                if (result.data.presentNumber < lesson.untilTodayNumber ||
-                                    result.data.presentNumber == lesson.totalNumber ||
-                                    count == -1 && result.data.presentNumber + 1 == lesson.totalNumber
-                                ) {
-                                    // refresh
-                                    fetchTodayLessonList()
-                                } else {
-                                    // updateLessonItemCount(count, lesson.lessonId)
-                                }
-                            }
+                            updateTodayLessonCount(count, result.data.lessonId)
                         }
                         is Result.Error -> {
                             if (result.throwable.message == INTERNET_CONNECTION_ERROR) {

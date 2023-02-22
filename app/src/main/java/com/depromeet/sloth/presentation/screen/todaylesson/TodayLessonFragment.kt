@@ -94,7 +94,6 @@ class TodayLessonFragment :
             launch {
                 checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
                     if (!isOnBoardingComplete) {
-                        // showOnBoardingClickPlusDialog()
                         val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
                         findNavController().safeNavigate(action)
                     }
@@ -102,7 +101,7 @@ class TodayLessonFragment :
             }
 
             launch {
-                todayLessonList.collect {
+                todayLessonUiModelList.collect {
                     todayLessonAdapter.submitList(it)
                 }
             }

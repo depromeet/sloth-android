@@ -7,7 +7,6 @@ import com.depromeet.sloth.presentation.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -18,7 +17,7 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val _onBoardingList = MutableStateFlow(
-        listOf(TodayLessonResponse("튜토리얼", 0, "나공이와 대결하기\n: 게이지를 빨리 채워 완료해봐요!", 0, 1, "", false, 3, 3))
+        listOf(TodayLessonResponse(0, "나공이와 대결하기\n: 게이지를 빨리 채워 완료해봐요!", false, 1, "", "", 0, 3, 3))
     )
     val onBoardingList: StateFlow<List<TodayLessonResponse>> = _onBoardingList.asStateFlow()
 
@@ -72,7 +71,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
             currentList[index] = newItem
             _onBoardingList.value = currentList
             if (flag) {
-                Timber.d("갱신")
                 setOnBoardingItem()
             }
         }
@@ -97,7 +95,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
             currentList[index] = newItem
             _onBoardingList.value = currentList
             if (flag) {
-                Timber.d("갱신")
                 setOnBoardingItem()
             }
         }
@@ -156,7 +153,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
     }
 
     fun navigateToOnBoardingLessonRegisterDialog() = viewModelScope.launch {
-        // list 초기화
         initOnBoardingList()
         _navigateToOnBoardingRegisterLessonDialogEvent.emit(Unit)
     }

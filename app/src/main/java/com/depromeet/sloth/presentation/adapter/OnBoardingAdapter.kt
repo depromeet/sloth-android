@@ -88,15 +88,12 @@ class OnBoardingAdapter(
                 bind(uiModel.todayLesson)
 
                 binding.btnTodayLessonPlus.setOnSingleClickListener {
-                    val isOutOfRange = uiModel.todayLesson.presentNumber >= uiModel.todayLesson.totalNumber
-                    if (isOutOfRange) return@setOnSingleClickListener
-
                     clickListener.onPlusClick()
                     uiModel.todayLesson.presentNumber++
                     updateDoingLessonProgress(holder, uiModel.todayLesson)
                 }
                 binding.btnTodayLessonMinus.setOnSingleClickListener {
-                    val isOutOfRange = uiModel.todayLesson.presentNumber == 0
+                    val isOutOfRange = uiModel.todayLesson.presentNumber <= 0
                     if (isOutOfRange) return@setOnSingleClickListener
 
                     clickListener.onMinusClick()
@@ -107,6 +104,9 @@ class OnBoardingAdapter(
             is OnBoardingUiModel.OnBoardingFinishedItem -> (holder as OnBoardingFinishedItemViewHolder).apply {
                 bind(uiModel.todayLesson)
                 binding.btnTodayLessonPlus.setOnSingleClickListener {
+                    val isOutOfRange = uiModel.todayLesson.presentNumber >= uiModel.todayLesson.totalNumber
+                    if (isOutOfRange) return@setOnSingleClickListener
+
                     clickListener.onPlusClick()
                     updateFinishedLessonProgress(holder, uiModel.todayLesson)
                 }

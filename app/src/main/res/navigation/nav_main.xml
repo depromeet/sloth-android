@@ -340,7 +340,9 @@
 
         <action
             android:id="@+id/action_on_boarding_today_lesson_to_nav_register_lesson"
-            app:destination="@id/nav_register_lesson" />
+            app:destination="@id/nav_register_lesson"
+            app:popUpTo="@id/on_boarding_today_lesson"
+            app:popUpToInclusive="true"/>
     </fragment>
 
 </navigation>
