@@ -10,10 +10,8 @@ data class UpdateLessonCountResponse (
     val lessonId: Int,
     @SerializedName("presentNumber")
     val presentNumber: Int,
-    @SerializedName("weeklyFinished")
-    val weeklyFinished: Boolean
 ) {
     companion object {
-        val EMPTY = UpdateLessonCountResponse(false, -1, -1, false)
+        val EMPTY = UpdateLessonCountResponse(false, -1, -1)
     }
 }
