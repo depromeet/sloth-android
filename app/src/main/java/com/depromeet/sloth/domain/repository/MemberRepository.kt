@@ -20,11 +20,11 @@ interface MemberRepository {
 
     suspend fun fetchTodayLessonOnBoardingStatus(): Boolean
 
-    suspend fun updateTodayLessonOnBoardingStatus()
+    suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean)
 
     suspend fun fetchLessonListOnBoardingStatus(): Boolean
 
-    suspend fun updateLessonListOnBoardingStatus()
+    suspend fun updateLessonListOnBoardingStatus(flag: Boolean)
 
     suspend fun deleteAuthToken()
 }

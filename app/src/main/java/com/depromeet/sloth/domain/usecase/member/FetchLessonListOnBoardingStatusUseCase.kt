@@ -7,6 +7,6 @@ class FetchLessonListOnBoardingStatusUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
     suspend operator fun invoke() : Boolean {
-        return memberRepository.fetchTodayLessonOnBoardingStatus()
+        return memberRepository.fetchLessonListOnBoardingStatus()
     }
 }

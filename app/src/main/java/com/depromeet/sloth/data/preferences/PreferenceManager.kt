@@ -77,9 +77,9 @@ class PreferenceManager @Inject constructor(
             prefs[TODAY_LESSON_ON_BOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
-    suspend fun updateTodayLessonOnBoardingStatus() {
+    suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
         context.dataStore.edit { prefs ->
-            prefs[TODAY_LESSON_ON_BOARDING_COMPLETE] = true
+            prefs[TODAY_LESSON_ON_BOARDING_COMPLETE] = flag
         }
     }
 
@@ -97,9 +97,9 @@ class PreferenceManager @Inject constructor(
             prefs[LESSON_LIST_ON_BOARDING_COMPLETE] ?: DEFAULT_BOOLEAN_VALUE
         }
 
-    suspend fun updateLessonListOnBoardingStatus() {
+    suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
         context.dataStore.edit { prefs ->
-            prefs[LESSON_LIST_ON_BOARDING_COMPLETE] = true
+            prefs[LESSON_LIST_ON_BOARDING_COMPLETE] = flag
         }
     }
 

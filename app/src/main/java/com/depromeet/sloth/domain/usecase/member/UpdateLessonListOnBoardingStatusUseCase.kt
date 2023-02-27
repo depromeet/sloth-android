@@ -6,7 +6,7 @@ import javax.inject.Inject
 class UpdateLessonListOnBoardingStatusUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
-    suspend operator fun invoke() {
-        memberRepository.updateTodayLessonOnBoardingStatus()
+    suspend operator fun invoke(flag: Boolean) {
+        memberRepository.updateLessonListOnBoardingStatus(flag)
     }
 }

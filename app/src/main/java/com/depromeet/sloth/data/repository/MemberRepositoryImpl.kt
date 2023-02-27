@@ -125,16 +125,16 @@ class MemberRepositoryImpl @Inject constructor(
         return preferences.getTodayLessonOnBoardingStatus().first()
     }
 
-    override suspend fun updateTodayLessonOnBoardingStatus() {
-        preferences.updateTodayLessonOnBoardingStatus()
+    override suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
+        preferences.updateTodayLessonOnBoardingStatus(flag)
     }
 
     override suspend fun fetchLessonListOnBoardingStatus(): Boolean {
-        return preferences.getTodayLessonOnBoardingStatus().first()
+        return preferences.getLessonListOnBoardingStatus().first()
     }
 
-    override suspend fun updateLessonListOnBoardingStatus() {
-        preferences.updateTodayLessonOnBoardingStatus()
+    override suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
+        preferences.updateLessonListOnBoardingStatus(flag)
     }
 
     override suspend fun deleteAuthToken() {
