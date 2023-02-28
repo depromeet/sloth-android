@@ -3,6 +3,7 @@ package com.depromeet.sloth.presentation.screen.todaylesson
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
+import com.depromeet.sloth.data.model.response.lesson.UpdateLessonCountResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
@@ -40,9 +41,6 @@ class TodayLessonViewModel @Inject constructor(
     val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
-    private val _todayLessonOnBoardingComplete = MutableStateFlow(false)
-    val todayLessonOnBoardingComplete: StateFlow<Boolean> = _todayLessonOnBoardingComplete.asStateFlow()
-
     private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonResponse>())
     val todayLessonList: StateFlow<List<TodayLessonResponse>> = _todayLessonList.asStateFlow()
 
@@ -53,13 +51,9 @@ class TodayLessonViewModel @Inject constructor(
         checkLoginStatus()
     }
 
-    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
-    val navigateRegisterLessonEvent: SharedFlow<Unit> =
+    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Int>()
+    val navigateRegisterLessonEvent: SharedFlow<Int> =
         _navigateToRegisterLessonEvent.asSharedFlow()
-
-    private val _navigateToOnBoardingRegisterLessonDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToOnBoardingRegisterLessonDialogEvent: SharedFlow<Unit> =
-        _navigateToOnBoardingRegisterLessonDialogEvent.asSharedFlow()
 
     private val _navigateToFinishLessonDialogEvent = MutableSharedFlow<String>()
     val navigateToFinishLessonDialogEvent: SharedFlow<String> =
@@ -76,109 +70,102 @@ class TodayLessonViewModel @Inject constructor(
         _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
-    // TODO update function 을 이용 해야 할듯
-    // 사실 race condition 일어날 조건은 아니긴 함
-    private fun updateTodayLessonCount(count: Int, lessonId: Int) {
+    private fun updateTodayLessonCount(count: Int, updateLesson: UpdateLessonCountResponse) {
         if (count == 1) {
-            increaseTodayLessonCount(lessonId)
+            increaseTodayLessonCount(updateLesson.lessonId, updateLesson.presentNumber)
         } else {
-            decreaseTodayLessonCount(lessonId)
+            decreaseTodayLessonCount(updateLesson.lessonId, updateLesson.presentNumber)
         }
     }
 
-    //TODO 갱신이 안되는 이슈
-    private fun increaseTodayLessonCount(lessonId: Int) {
-        Timber.d("${_todayLessonList.value}")
+    private fun increaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
         val currentLessonList = _todayLessonList.value.toMutableList()
         // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
-        val isOutOfRange = lesson.presentNumber <= lesson.totalNumber
+
+        val isOutOfRange = lesson.presentNumber > lesson.totalNumber
         if (isOutOfRange) return
 
-        val isUntilTodayFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
-        val isFinished = lesson.presentNumber + 1 == lesson.totalNumber
+        val isUntilTodayFinished = lesson.presentNumber == lesson.untilTodayNumber
+        val isFinished = lesson.presentNumber == lesson.totalNumber
+
         when {
             isUntilTodayFinished -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1, untilTodayFinished = true)
+                newLesson = lesson.copy(presentNumber = updateCount, untilTodayFinished = true)
                 flag = true
             }
             isFinished -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
+                newLesson = lesson.copy(presentNumber = updateCount)
                 flag = true
             }
             else -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
+                newLesson = lesson.copy(presentNumber = updateCount)
             }
         }
         // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
-        currentLessonList.map {
+        val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
             } else {
-                lesson
+                it
             }
         }
 
-        val isStart = _todayLessonList.value.all { it.presentNumber == 0 } &&
-                currentLessonList.any { it.presentNumber > 0 }
+        val isStart = currentLessonList.all { it.presentNumber == 0 } &&
+                updateLessonList.any { it.presentNumber > 0 }
         if (isStart) flag = true
 
-        // _todayLessonList.value = currentLessonList
-        _todayLessonList.update { currentLessonList }
-        if (flag) {
-            setTodayLessonList()
-        }
-        Timber.d("${_todayLessonList.value}")
+        // _todayLessonList.value = updateLessonList
+        _todayLessonList.update { updateLessonList }
+        if (flag) setTodayLessonList()
     }
 
-    // TODO 갱신이 안되는 이슈
-    private fun decreaseTodayLessonCount(lessonId: Int) {
-        Timber.d("${_todayLessonList.value}")
+    // TODO 한번 완강하기 뜨면 다시 안돌아감
+    private fun decreaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
         val currentLessonList = _todayLessonList.value.toMutableList()
         // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
+        Timber.d("$lesson")
         val isOutOfRange = lesson.presentNumber <= 0
         if (isOutOfRange) return
 
-        val isUntilTodayNotFinished = lesson.presentNumber <= lesson.untilTodayNumber
-        val isNotFinished = lesson.presentNumber <= lesson.totalNumber
+        val isUntilTodayNotFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
+        val isNotFinished = lesson.presentNumber + 1 == lesson.totalNumber
 
         when {
             isUntilTodayNotFinished -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1, untilTodayFinished = false)
+                newLesson = lesson.copy(presentNumber = updateCount, untilTodayFinished = false)
                 flag = true
             }
             isNotFinished -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
+                newLesson = lesson.copy(presentNumber = updateCount)
                 flag = true
             }
             else -> {
-                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
+                newLesson = lesson.copy(presentNumber = updateCount)
             }
         }
         // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
-        currentLessonList.map {
+        val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
             } else {
-                lesson
+                it
             }
         }
-        val isNotStarted = currentLessonList.all { it.presentNumber == 0 }
+        val isNotStarted = currentLessonList.any { it.presentNumber > 0 } &&
+                updateLessonList.all { it.presentNumber == 0 }
         if (isNotStarted) flag = true
 
-        // _todayLessonList.value = currentLessonList
-        _todayLessonList.update { currentLessonList }
-        if (flag) {
-            setTodayLessonList()
-        }
-        Timber.d("${_todayLessonList.value}")
+        // _todayLessonList.value = updateLessonList
+        _todayLessonList.update { updateLessonList }
+        if (flag) setTodayLessonList()
     }
 
     fun fetchTodayLessonList() {
@@ -192,7 +179,8 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        _todayLessonList.value = result.data
+                        // _todayLessonList.value = result.data
+                        _todayLessonList.update { result.data }
                         setTodayLessonList()
                     }
                     is Result.Error -> {
@@ -205,11 +193,13 @@ class TodayLessonViewModel @Inject constructor(
                         }
                     }
                 }
+                todayLessonJob = null
             }
         }
     }
 
     private fun setTodayLessonList() {
+        Timber.d("setTodayLessonList() 호출")
         _todayLessonUiModelList.update {
             if (_todayLessonList.value.isEmpty()) {
                 listOf(
@@ -268,7 +258,6 @@ class TodayLessonViewModel @Inject constructor(
         }
     }
 
-    // TODO 리스트 갱신이 안 이루어지는 이슈
     fun updateLessonCount(count: Int, lesson: TodayLessonResponse) {
         if (updateLessonCountJob != null) return
 
@@ -280,7 +269,8 @@ class TodayLessonViewModel @Inject constructor(
                     when (result) {
                         is Result.Loading -> return@collect
                         is Result.Success -> {
-                            updateTodayLessonCount(count, result.data.lessonId)
+                            //TODO data 로 받아온 presentNumber 를 local update 에 쓰면 동기화 오류 문제가 없지 않을까?
+                            updateTodayLessonCount(count, result.data)
                         }
                         is Result.Error -> {
                             if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
@@ -292,12 +282,13 @@ class TodayLessonViewModel @Inject constructor(
                             }
                         }
                     }
+                    updateLessonCountJob = null
                 }
         }
     }
 
-    fun navigateToRegisterLesson() = viewModelScope.launch {
-        _navigateToRegisterLessonEvent.emit(Unit)
+    fun navigateToRegisterLesson(fragmentId: Int) = viewModelScope.launch {
+        _navigateToRegisterLessonEvent.emit(fragmentId)
     }
 
     fun navigateToWaitDialog() = viewModelScope.launch {
