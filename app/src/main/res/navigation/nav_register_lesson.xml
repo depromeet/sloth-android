@@ -11,10 +11,10 @@
         android:label="RegisterLessonFirstFragment"
         tools:layout="@layout/fragment_register_lesson_first">
 
-<!--        <argument-->
-<!--            android:name="fragment_id"-->
-<!--            app:argType="integer"-->
-<!--            app:nullable="false" />-->
+        <argument
+            android:name="fragment_id"
+            app:argType="integer"
+            app:nullable="false" />
 
         <action
             android:id="@+id/action_register_lesson_first_to_register_lesson_second"

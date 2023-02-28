@@ -37,8 +37,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 @AndroidEntryPoint
-class RegisterLessonSecondFragment :
-    BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
+class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
     private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 

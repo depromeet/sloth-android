@@ -14,8 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RegisterLessonCheckFragment :
-    BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
+class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
     private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 

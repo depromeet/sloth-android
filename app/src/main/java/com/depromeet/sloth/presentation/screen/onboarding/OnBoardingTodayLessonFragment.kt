@@ -4,6 +4,7 @@ import OnBoardingAdapter
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
@@ -33,9 +34,14 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         bind {
             vm = onBoardingTodayLessonViewModel
         }
+
+        // 시스템 백 버튼 비활성화
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { return@addCallback }
+
         initViews()
         initObserver()
     }
@@ -50,6 +56,7 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
     }
 
     private fun initObserver() = with(onBoardingTodayLessonViewModel) {
+
         repeatOnStarted {
             launch {
                 navigateToOnBoardingClickPlusDialogEvent.collect {
