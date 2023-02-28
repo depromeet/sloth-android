@@ -62,10 +62,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 .build()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.on_boarding_today_lesson) {
-                bnvMain.isEnabled = false
-            }
-
             when (destination.id) {
                 R.id.today_lesson, R.id.lesson_list, R.id.manage, R.id.finish_lesson_dialog, R.id.wait_dialog, R.id.logout_dialog, R.id.update_member_dialog, R.id.on_boarding_check_detail_dialog ->
                     bnvMain.visibility = View.VISIBLE

@@ -28,6 +28,9 @@ class LessonListViewModel @Inject constructor(
 
     private var lessonListJob: Job? = null
 
+    // private val _uiState = MutableStateFlow<UiState>(UiState())
+    // val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
     private val _checkLessonListOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
     val checkLessonListOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkLessonListOnBoardingCompleteEvent.asSharedFlow()
@@ -36,8 +39,8 @@ class LessonListViewModel @Inject constructor(
     val navigateToOnBoardingCheckDetailEvent: SharedFlow<Unit> =
         _navigateToOnBoardingCheckDetailEvent.asSharedFlow()
 
-    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
-    val navigateRegisterLessonEvent: SharedFlow<Unit> =
+    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Int>()
+    val navigateRegisterLessonEvent: SharedFlow<Int> =
         _navigateToRegisterLessonEvent.asSharedFlow()
 
     private val _navigateToNotificationListEvent = MutableSharedFlow<Unit>()
@@ -83,9 +86,42 @@ class LessonListViewModel @Inject constructor(
                             }
                         }
                     }
+                    lessonListJob = null
                 }
         }
     }
+
+//    fun fetchLessonList() {
+//        if (lessonListJob != null) return
+//
+//        lessonListJob = viewModelScope.launch {
+//            try {
+//                fetchLessonListUseCase()
+//                    .onEach { result ->
+//                        setLoading(result is Result.Loading)
+//                    }.collect { result ->
+//                        when (result) {
+//                            is Result.Loading -> return@collect
+//                            is Result.Success -> {
+//                                setInternetError(false)
+//                                setLessonList(result.data)
+//                            }
+//                            is Result.Error -> {
+//                                if (result.statusCode == UNAUTHORIZED) {
+//                                    navigateToExpireDialog()
+//                                }
+//                            }
+//                        }
+//                    }
+//            } catch (ioe: IOException) {
+//                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+//                setInternetError(true)
+//            }
+//            finally { lessonListJob = null }
+//        }
+//    }
+
+
 
     private fun setLessonList(result: List<LessonListResponse>) {
         _lessonList.update {
@@ -93,12 +129,13 @@ class LessonListViewModel @Inject constructor(
                 listOf(LessonListUiModel.LessonListEmptyItem)
             } else {
                 result.groupBy {
+                    //TODO 이걸로 groupBy 하면 조기 완료된 강의들이 문제가 됨
+                    //TODO 백엔드 분들께 데이터 수정 요청
                     it.lessonStatus
                 }.values.map { lessonList ->
                     lessonList.map { lesson ->
                         when {
-                            (lesson.isFinished || lesson.lessonStatus == "PAST") ->
-                                LessonListUiModel.LessonListPastItem(lesson)
+                            (lesson.isFinished || lesson.lessonStatus == "PAST") -> LessonListUiModel.LessonListPastItem(lesson)
                             (lesson.lessonStatus == "PLAN") -> LessonListUiModel.LessonListPlanItem(lesson)
                             else -> LessonListUiModel.LessonListCurrentItem(lesson)
                         }
@@ -124,7 +161,7 @@ class LessonListViewModel @Inject constructor(
     }
 
     fun navigateToOnBoardingCheckDetail() = viewModelScope.launch {
-        updateOnBoardingLessonListStatus()
+        updateOnBoardingLessonListStatus(true)
         _navigateToOnBoardingCheckDetailEvent.emit(Unit)
     }
 
@@ -132,8 +169,8 @@ class LessonListViewModel @Inject constructor(
         _checkLessonListOnBoardingCompleteEvent.emit(fetchLessonListOnBoardingStatusUseCase())
     }
 
-    fun navigateToRegisterLesson() = viewModelScope.launch {
-        _navigateToRegisterLessonEvent.emit(Unit)
+    fun navigateToRegisterLesson(fragmentId: Int) = viewModelScope.launch {
+        _navigateToRegisterLessonEvent.emit(fragmentId)
     }
 
     fun navigateToNotificationList() = viewModelScope.launch {
@@ -144,11 +181,17 @@ class LessonListViewModel @Inject constructor(
         _navigateToLessonDetailEvent.emit(lessonId)
     }
 
-    private fun updateOnBoardingLessonListStatus() = viewModelScope.launch {
-        updateLessonListOnBoardingStatusUseCase()
+    private fun updateOnBoardingLessonListStatus(flag: Boolean) = viewModelScope.launch {
+        updateLessonListOnBoardingStatusUseCase(flag)
     }
 
     override fun retry() {
         fetchLessonList()
     }
 }
+
+//data class UiState (
+//    val lessonListInfo: LessonListResponse,
+//    val isLoading: Boolean,
+//    val fetchLessonListResult: LessonListResponse
+//)

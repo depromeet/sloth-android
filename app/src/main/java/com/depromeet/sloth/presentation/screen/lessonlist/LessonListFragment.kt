@@ -16,14 +16,13 @@ import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-//TODO 강의 등록 popUp 설정 조건부로 설정해야함
 @AndroidEntryPoint
 class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.fragment_lesson_list) {
 
     private val lessonListViewModel: LessonListViewModel by viewModels()
 
     private val lessonListItemClickListener = LessonListItemClickListener(
-        onRegisterClick = { lessonListViewModel.navigateToRegisterLesson() },
+        onRegisterClick = { lessonListViewModel.navigateToRegisterLesson(R.id.lesson_list) },
         onLessonClick = { lesson -> lessonListViewModel.navigateToLessonDetail(lesson.lessonId.toString()) }
     )
 
@@ -61,7 +60,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             setOnMenuItemSingleClickListener {
                 when (it.itemId) {
                     R.id.menu_register_lesson -> {
-                        lessonListViewModel.navigateToRegisterLesson()
+                        lessonListViewModel.navigateToRegisterLesson(R.id.lesson_list)
                         true
                     }
                     R.id.menu_notification_list -> {
@@ -78,10 +77,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         repeatOnStarted {
             launch {
                 checkLessonListOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                        if (!isOnBoardingComplete) {
-                            navigateToOnBoardingCheckDetail()
-                        }
-                    }
+                    if (!isOnBoardingComplete) navigateToOnBoardingCheckDetail()
+                }
             }
 
             launch {
@@ -97,8 +94,8 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             }
 
             launch {
-                navigateRegisterLessonEvent.collect {
-                    val action = LessonListFragmentDirections.actionLessonListToRegisterLessonFirst()
+                navigateRegisterLessonEvent.collect { fragmentId ->
+                    val action = LessonListFragmentDirections.actionLessonListToRegisterLessonFirst(fragmentId)
                     findNavController().safeNavigate(action)
                 }
             }

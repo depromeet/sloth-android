@@ -8,8 +8,14 @@
     <fragment
         android:id="@+id/register_lesson_first"
         android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonFirstFragment"
-        tools:layout="@layout/fragment_register_lesson_first"
-        android:label="RegisterLessonFirstFragment">
+        android:label="RegisterLessonFirstFragment"
+        tools:layout="@layout/fragment_register_lesson_first">
+
+<!--        <argument-->
+<!--            android:name="fragment_id"-->
+<!--            app:argType="integer"-->
+<!--            app:nullable="false" />-->
+
         <action
             android:id="@+id/action_register_lesson_first_to_register_lesson_second"
             app:destination="@id/register_lesson_second"
@@ -22,8 +28,9 @@
     <fragment
         android:id="@+id/register_lesson_second"
         android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonSecondFragment"
-        tools:layout="@layout/fragment_register_lesson_second"
-        android:label="RegisterLessonSecondFragment">
+        android:label="RegisterLessonSecondFragment"
+        tools:layout="@layout/fragment_register_lesson_second">
+
         <action
             android:id="@+id/action_register_lesson_second_to_register_lesson_check"
             app:destination="@id/register_lesson_check"
@@ -36,16 +43,13 @@
     <fragment
         android:id="@+id/register_lesson_check"
         android:name="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonCheckFragment"
-        tools:layout="@layout/fragment_register_lesson_check"
-        android:label="RegisterLessonCheckFragment" />
-    <action
-        android:id="@+id/action_register_lesson_check_to_lesson_list"
-        app:destination="@id/lesson_list"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"
-        app:popUpTo="@id/lesson_list"
-        app:popUpToInclusive="true" />
+        android:label="RegisterLessonCheckFragment"
+        tools:layout="@layout/fragment_register_lesson_check">
+
+        <action
+            android:id="@+id/action_register_lesson_check_to_lesson_list"
+            app:destination="@id/lesson_list"/>
+
+    </fragment>
 
 </navigation>

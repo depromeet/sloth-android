@@ -21,7 +21,7 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
     private val onBoardingTodayLessonViewModel: OnBoardingTodayLessonViewModel by viewModels()
 
     private val onBoardingItemClickListener = OnBoardingItemClickListener(
-        onClick = { onBoardingTodayLessonViewModel.navigateToRegisterLesson() },
+        onClick = { onBoardingTodayLessonViewModel.navigateToRegisterLesson(R.id.on_boarding_today_lesson) },
         onPlusClick = { onBoardingTodayLessonViewModel.updateOnBoardingItemCount(1) },
         onMinusClick = { onBoardingTodayLessonViewModel.updateOnBoardingItemCount(-1) },
         onFinishClick = { onBoardingTodayLessonViewModel.navigateToOnBoardingLessonRegisterDialog() }
@@ -64,8 +64,8 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
             }
 
             launch {
-                navigateToRegisterLessonEvent.collect {
-                    val action = OnBoardingTodayLessonFragmentDirections.actionOnBoardingTodayLessonToNavRegisterLesson()
+                navigateToRegisterLessonEvent.collect { fragmentId ->
+                    val action = OnBoardingTodayLessonFragmentDirections.actionOnBoardingTodayLessonToNavRegisterLesson(fragmentId)
                     findNavController().safeNavigate(action)
                 }
             }

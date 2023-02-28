@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-//TODO 온보딩 백스택 핸들링
 @HiltViewModel
 class OnBoardingTodayLessonViewModel @Inject constructor(
     private val updateTodayLessonOnBoardingStatusUseCase: UpdateTodayLessonOnBoardingStatusUseCase,
@@ -30,8 +29,8 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
     private val _navigateToOnBoardingRegisterLessonDialogEvent = MutableSharedFlow<Unit>()
     val navigateToOnBoardingRegisterLessonDialogEvent: SharedFlow<Unit> = _navigateToOnBoardingRegisterLessonDialogEvent.asSharedFlow()
 
-    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Unit>()
-    val navigateToRegisterLessonEvent: SharedFlow<Unit> = _navigateToRegisterLessonEvent.asSharedFlow()
+    private val _navigateToRegisterLessonEvent = MutableSharedFlow<Int>()
+    val navigateToRegisterLessonEvent: SharedFlow<Int> = _navigateToRegisterLessonEvent.asSharedFlow()
 
     init {
         navigateToOnBoardingClickPlusDialog()
@@ -42,8 +41,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         _navigateToOnBoardingClickPlusDialogEvent.emit(Unit)
     }
 
-    // TODO update function 을 이용 해야 할듯
-    // 사실 race condition 일어날 조건은 아니긴 함
     fun updateOnBoardingItemCount(count: Int) {
         if (count == 1) {
             increaseOnBoardingItemCount()
@@ -57,23 +54,20 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         var flag = false
 
         val currentList = _onBoardingList.value.toMutableList()
-        for ((index, item) in currentList.withIndex()) {
-            val isOutOfRange = item.presentNumber == item.totalNumber
-            if (isOutOfRange) return
+        val item = currentList.first()
 
-            val isFinished = item.presentNumber + 1 == item.untilTodayNumber
-            if (isFinished) {
-                newItem = item.copy(presentNumber = item.presentNumber + 1, untilTodayFinished = true)
-                flag = true
-            } else {
-                newItem = item.copy(presentNumber = item.presentNumber + 1)
-            }
-            currentList[index] = newItem
-            _onBoardingList.value = currentList
-            if (flag) {
-                setOnBoardingItem()
-            }
+        val isFinished = item.presentNumber + 1 == item.untilTodayNumber
+        if (isFinished) {
+            newItem = item.copy(presentNumber = item.presentNumber + 1, untilTodayFinished = true)
+            flag = true
+        } else {
+            newItem = item.copy(presentNumber = item.presentNumber + 1)
         }
+        currentList[0] = newItem
+        // _onBoardingList.value = currentList
+        _onBoardingList.update { currentList }
+        if (flag) setOnBoardingItem()
+
     }
 
     private fun decreaseOnBoardingItemCount() {
@@ -81,23 +75,22 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         var flag = false
 
         val currentList = _onBoardingList.value.toMutableList()
-        for ((index, item) in currentList.withIndex()) {
-            val isOutOfRange = item.presentNumber == 0
-            if (isOutOfRange) return
+        val lesson = currentList.first()
+        val isOutOfRange = lesson.presentNumber <= 0
+        if (isOutOfRange) return
 
-            val isNotFinished = item.presentNumber == item.untilTodayNumber
-            if (isNotFinished) {
-                newItem = item.copy(presentNumber = item.presentNumber - 1, untilTodayFinished = false)
-                flag = true
-            } else {
-                newItem = item.copy(presentNumber = item.presentNumber - 1)
-            }
-            currentList[index] = newItem
-            _onBoardingList.value = currentList
-            if (flag) {
-                setOnBoardingItem()
-            }
+        val isNotFinished = lesson.presentNumber == lesson.untilTodayNumber
+        if (isNotFinished) {
+            newItem = lesson.copy(presentNumber = lesson.presentNumber - 1, untilTodayFinished = false)
+            flag = true
+        } else {
+            newItem = lesson.copy(presentNumber = lesson.presentNumber - 1)
         }
+
+        currentList[0] = newItem
+        // _onBoardingList.value = currentList
+        _onBoardingList.update { currentList }
+        if (flag) setOnBoardingItem()
     }
 
     private fun setOnBoardingItem() {
@@ -162,13 +155,13 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         setOnBoardingItem()
     }
 
-    fun navigateToRegisterLesson() = viewModelScope.launch {
-        updateOnBoardingTodayLessonStatus()
-        _navigateToRegisterLessonEvent.emit(Unit)
+    fun navigateToRegisterLesson(fragmentId: Int) = viewModelScope.launch {
+        updateOnBoardingTodayLessonStatus(true)
+        _navigateToRegisterLessonEvent.emit(fragmentId)
     }
 
-    private fun updateOnBoardingTodayLessonStatus() = viewModelScope.launch {
-        updateTodayLessonOnBoardingStatusUseCase()
+    private fun updateOnBoardingTodayLessonStatus(flag: Boolean) = viewModelScope.launch {
+        updateTodayLessonOnBoardingStatusUseCase(flag)
     }
 
     override fun retry() = Unit

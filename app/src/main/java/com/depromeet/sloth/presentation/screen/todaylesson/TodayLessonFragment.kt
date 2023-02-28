@@ -20,9 +20,7 @@ import kotlinx.coroutines.launch
 // TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재 호출하는 것이 아닌, list 를 update 하는 방식으로 변경
 // TODO updateLessonCount API, finishLesson Api 를 호출하는 로직과 리스트 갱신을 분리
 // TODO API 호출을 통한 결과로 리스트를 처음부터 다시 세팅해주지 말고, 기존의 리스트를 갱신하는 식으로 변경
-// TODO 온보딩이 후에 강의 목록화면에서 투데이 화면으로 메뉴 버튼을 눌러도 이동이 안되는 이슈
-// TODO 온보딩이 끝나야지만 todayLessonList를 호출하는 것이 좋아보인다
-// TODO fetchTodayLesson 을 호출하기 위해 프로그래스바 를 띄웠는데 화면이 이동해버려서 로딩을 구독하는 이벤트 핸들러가 프로그래스바를 hide 하지 못하지 않을까?
+// TODO uiState + stateFlow 를 통한 이벤트 처리
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
@@ -30,7 +28,7 @@ class TodayLessonFragment :
     private val todayLessonViewModel: TodayLessonViewModel by viewModels()
 
     private val todayLessonItemClickListener = TodayLessonItemClickListener(
-        onClick = { todayLessonViewModel.navigateToRegisterLesson() },
+        onClick = { todayLessonViewModel.navigateToRegisterLesson(R.id.today_lesson) },
         onPlusClick = { lesson -> todayLessonViewModel.updateLessonCount(1, lesson) },
         onMinusClick = { lesson -> todayLessonViewModel.updateLessonCount(-1, lesson) },
         onFinishClick = { lesson -> todayLessonViewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
@@ -38,11 +36,6 @@ class TodayLessonFragment :
 
     private val todayLessonAdapter by lazy {
         TodayLessonAdapter(todayLessonItemClickListener)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        todayLessonViewModel.fetchTodayLessonList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,8 +49,6 @@ class TodayLessonFragment :
     }
 
     override fun initViews() {
-        // login 확인 -> onboardingStatus -> navigateToOnBoardingTodayLesson
-        // bottom navigation 은?
         binding.rvTodayLesson.apply {
             if (itemDecorationCount == 0) {
                 addItemDecoration(LessonItemDecoration(requireContext(), 16))
@@ -88,7 +79,6 @@ class TodayLessonFragment :
                         val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
                         findNavController().safeNavigate(action)
                     } else {
-                        // UDF 위반
                         todayLessonViewModel.checkTodayLessonOnBoardingComplete()
                     }
                 }
@@ -98,6 +88,8 @@ class TodayLessonFragment :
                     if (!isOnBoardingComplete) {
                         val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
                         findNavController().safeNavigate(action)
+                    } else {
+                        todayLessonViewModel.fetchTodayLessonList()
                     }
                 }
             }
@@ -121,8 +113,8 @@ class TodayLessonFragment :
             }
 
             launch {
-                navigateRegisterLessonEvent.collect {
-                    val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst()
+                navigateRegisterLessonEvent.collect { fragmentId ->
+                    val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst(fragmentId)
                     findNavController().safeNavigate(action)
                 }
             }

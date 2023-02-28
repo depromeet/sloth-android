@@ -29,8 +29,10 @@ class RegisterLessonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
-    private val _registerLessonSuccessEvent = MutableSharedFlow<Unit>()
-    val registerLessonSuccessEvent: SharedFlow<Unit> = _registerLessonSuccessEvent.asSharedFlow()
+    private val fragmentId: Int = checkNotNull(savedStateHandle[KEY_FRAGMENT_ID])
+
+    private val _registerLessonSuccessEvent = MutableSharedFlow<Int>()
+    val registerLessonSuccessEvent: SharedFlow<Int> = _registerLessonSuccessEvent.asSharedFlow()
 
     private val _fetchLessonCategoryListSuccessEvent =
         MutableSharedFlow<List<LessonCategoryResponse>>()
@@ -240,7 +242,7 @@ class RegisterLessonViewModel @Inject constructor(
                 is Result.Loading -> return@collect
                 is Result.Success -> {
                     showToast(stringResourcesProvider.getString(R.string.lesson_register_complete))
-                    _registerLessonSuccessEvent.emit(Unit)
+                    _registerLessonSuccessEvent.emit(fragmentId)
                 }
                 is Result.Error -> {
                     if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
@@ -374,6 +376,8 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     companion object {
+        private const val KEY_FRAGMENT_ID = "fragment_id"
+
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
