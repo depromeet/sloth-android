@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 
 
 // TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재 호출하는 것이 아닌, list 를 update 하는 방식으로 변경
-// TODO updateLessonCount API, finishLesson Api 를 호출하는 로직과 리스트 갱신을 분리
 // TODO API 호출을 통한 결과로 리스트를 처음부터 다시 세팅해주지 말고, 기존의 리스트를 갱신하는 식으로 변경
 // TODO uiState + stateFlow 를 통한 이벤트 처리
 @AndroidEntryPoint

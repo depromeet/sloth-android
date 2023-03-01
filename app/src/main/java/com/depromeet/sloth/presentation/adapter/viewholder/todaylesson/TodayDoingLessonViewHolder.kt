@@ -22,9 +22,6 @@ class TodayDoingLessonViewHolder(
                     it.max = todayLesson.untilTodayNumber * 1000
                     it.progress = todayLesson.presentNumber * 1000
                 }
-                btnTodayLessonPlus.setOnClickListener {
-                    viewTodayLessonLottie.playAnimation()
-                }
             }
         }
     }

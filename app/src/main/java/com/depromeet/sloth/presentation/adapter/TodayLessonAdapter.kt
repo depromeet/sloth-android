@@ -83,11 +83,14 @@ class TodayLessonAdapter(
             }
             is TodayLessonUiModel.TodayLessonDoingItem -> (holder as TodayDoingLessonViewHolder).apply {
                 bind(uiModel.todayLesson)
-                binding.btnTodayLessonPlus.setOnSingleClickListener {
-                    clickListener.onPlusClick(uiModel.todayLesson)
-                    uiModel.todayLesson.presentNumber++
-                    //TODO API 가 성공적으로 호출되서 결과를 받아올때 호출하고 싶음, 근데 애니메이션 같은 경우엔 뷰에서 작업을 해야할거고
-                    updateDoingLessonProgress(holder, uiModel.todayLesson)
+                binding.apply {
+                    //TODO API 가 성공적으로 호출되서 결과를 받아올때 호출하고 싶음, 근데 애니메이션 같은 경우엔 뷰에서 작업을 진행해야함
+                    btnTodayLessonPlus.setOnSingleClickListener {
+                        viewTodayLessonLottie.playAnimation()
+                        clickListener.onPlusClick(uiModel.todayLesson)
+                        uiModel.todayLesson.presentNumber++
+                        updateDoingLessonProgress(holder, uiModel.todayLesson)
+                    }
                 }
                 binding.btnTodayLessonMinus.setOnSingleClickListener {
                     val isOutOfRange = uiModel.todayLesson.presentNumber <= 0
