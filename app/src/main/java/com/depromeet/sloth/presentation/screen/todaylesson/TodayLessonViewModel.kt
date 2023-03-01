@@ -21,7 +21,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-// TODO OnBoarding Validation 은 login 처럼 viewModel init 내에서 딱 한번만 호출하여 매번 호출되지 않도록
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
@@ -78,6 +77,8 @@ class TodayLessonViewModel @Inject constructor(
         }
     }
 
+    // TODO isStarted 조건 만족시 화면 갱신이 안되는 이슈
+    // flag 는 true 로 바뀌어서 setTodayLessonList() 를 호출함
     private fun increaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
@@ -123,7 +124,8 @@ class TodayLessonViewModel @Inject constructor(
         if (flag) setTodayLessonList()
     }
 
-    // TODO 한번 완강하기 뜨면 다시 안돌아감
+    // TODO isNotStarted 조건 만족시 화면 갱신이 안되는 이슈
+    // flag 는 true 로 바뀌어서 setTodayLessonList() 를 호출함
     private fun decreaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false

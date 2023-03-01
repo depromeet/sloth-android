@@ -6,6 +6,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
 import com.depromeet.sloth.databinding.ItemTodayLessonFinishedBinding
 
+
 class TodayFinishedLessonViewHolder(
     val binding: ItemTodayLessonFinishedBinding,
 ): RecyclerView.ViewHolder(binding.root) {
