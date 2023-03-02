@@ -86,30 +86,34 @@ class OnBoardingAdapter(
 
             is OnBoardingUiModel.OnBoardingDoingItem -> (holder as OnBoardingDoingItemViewHolder).apply {
                 bind(uiModel.todayLesson)
+                binding.apply {
+                    btnTodayLessonPlus.setOnSingleClickListener {
+                        viewTodayLessonLottie.playAnimation()
+                        clickListener.onPlusClick()
+                        uiModel.todayLesson.presentNumber++
+                        updateDoingLessonProgress(holder, uiModel.todayLesson)
+                    }
+                    btnTodayLessonMinus.setOnSingleClickListener {
+                        val isOutOfRange = uiModel.todayLesson.presentNumber <= 0
+                        if (isOutOfRange) return@setOnSingleClickListener
 
-                binding.btnTodayLessonPlus.setOnSingleClickListener {
-                    clickListener.onPlusClick()
-                    uiModel.todayLesson.presentNumber++
-                    updateDoingLessonProgress(holder, uiModel.todayLesson)
-                }
-                binding.btnTodayLessonMinus.setOnSingleClickListener {
-                    val isOutOfRange = uiModel.todayLesson.presentNumber <= 0
-                    if (isOutOfRange) return@setOnSingleClickListener
-
-                    clickListener.onMinusClick()
-                    uiModel.todayLesson.presentNumber--
-                    updateDoingLessonProgress(holder, uiModel.todayLesson)
+                        clickListener.onMinusClick()
+                        uiModel.todayLesson.presentNumber--
+                        updateDoingLessonProgress(holder, uiModel.todayLesson)
+                    }
                 }
             }
             is OnBoardingUiModel.OnBoardingFinishedItem -> (holder as OnBoardingFinishedItemViewHolder).apply {
                 bind(uiModel.todayLesson)
-                binding.btnTodayLessonMinus.setOnSingleClickListener {
-                    clickListener.onMinusClick()
-                    uiModel.todayLesson.presentNumber--
-                    updateFinishedLessonProgress(holder, uiModel.todayLesson)
-                }
-                binding.clTodayFinishedBottom.setOnSingleClickListener {
-                    clickListener.onFinishClick()
+                binding.apply {
+                    btnTodayLessonMinus.setOnSingleClickListener {
+                        clickListener.onMinusClick()
+                        uiModel.todayLesson.presentNumber--
+                        updateFinishedLessonProgress(holder, uiModel.todayLesson)
+                    }
+                    clTodayFinishedBottom.setOnSingleClickListener {
+                        clickListener.onFinishClick()
+                    }
                 }
             }
         }

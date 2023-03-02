@@ -10,14 +10,9 @@ class OnBoardingDoingItemViewHolder(val binding: ItemOnBoardingDoingBinding) : R
             binding.apply {
                 tvTodayLessonCurrentNumber.text = todayLesson.presentNumber.toString()
                 tvTodayLessonTotalNumber.text = todayLesson.untilTodayNumber.toString()
-
                 pbTodayLessonBar.let {
                     it.max = todayLesson.untilTodayNumber * 1000
                     it.progress = todayLesson.presentNumber * 1000
-                }
-
-                btnTodayLessonPlus.setOnClickListener {
-                    viewTodayLessonLottie.playAnimation()
                 }
             }
         }
