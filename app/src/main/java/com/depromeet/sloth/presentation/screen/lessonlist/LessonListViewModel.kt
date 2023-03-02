@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 // TODO 변수 명에 ~list 지양 by Clean Code
+// TODO stock market app 참고 해서 네트워크 예외처리 코드 개선
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
     private val fetchLessonListUseCase: FetchLessonListUseCase,
@@ -54,14 +55,6 @@ class LessonListViewModel @Inject constructor(
     private val _lessonList = MutableStateFlow<List<LessonListUiModel>>(emptyList())
     val lessonList: StateFlow<List<LessonListUiModel>> = _lessonList.asStateFlow()
 
-    init {
-        checkLessonListOnBoardingComplete()
-    }
-
-    //TODO fetchLessonInfo 내에서 onBoarding 이 종료 되었는지 먼저 검사 하고
-    // 종료가 되지 않았다면 빠꾸
-    // 종료 되었다면 UseCase 를 호출하는 식으로 구현해야 UDF 를 위반하지 않는다
-    // TODO stock market app 참고 해서 예외처리 코드 개선
     fun fetchLessonList() {
         if (lessonListJob != null) return
 
@@ -165,7 +158,7 @@ class LessonListViewModel @Inject constructor(
         _navigateToOnBoardingCheckDetailEvent.emit(Unit)
     }
 
-    private fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
+    fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
         _checkLessonListOnBoardingCompleteEvent.emit(fetchLessonListOnBoardingStatusUseCase())
     }
 
