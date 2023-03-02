@@ -19,13 +19,13 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLessonBinding>(R.layout.fragment_on_boarding_today_lesson) {
 
-    private val onBoardingTodayLessonViewModel: OnBoardingTodayLessonViewModel by viewModels()
+    private val viewModel: OnBoardingTodayLessonViewModel by viewModels()
 
     private val onBoardingItemClickListener = OnBoardingItemClickListener(
-        onClick = { onBoardingTodayLessonViewModel.navigateToRegisterLesson(R.id.on_boarding_today_lesson) },
-        onPlusClick = { onBoardingTodayLessonViewModel.updateOnBoardingItemCount(1) },
-        onMinusClick = { onBoardingTodayLessonViewModel.updateOnBoardingItemCount(-1) },
-        onFinishClick = { onBoardingTodayLessonViewModel.navigateToOnBoardingLessonRegisterDialog() }
+        onClick = { viewModel.navigateToRegisterLesson(R.id.on_boarding_today_lesson) },
+        onPlusClick = { viewModel.updateOnBoardingItemCount(1) },
+        onMinusClick = { viewModel.updateOnBoardingItemCount(-1) },
+        onFinishClick = { viewModel.navigateToOnBoardingLessonRegisterDialog() }
     )
 
     private val onBoardingAdapter by lazy {
@@ -36,7 +36,7 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = onBoardingTodayLessonViewModel
+            vm = viewModel
         }
 
         // 시스템 백 버튼 비활성화
@@ -55,48 +55,47 @@ class OnBoardingTodayLessonFragment : BaseFragment<FragmentOnBoardingTodayLesson
         }
     }
 
-    private fun initObserver() = with(onBoardingTodayLessonViewModel) {
-
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                navigateToOnBoardingClickPlusDialogEvent.collect {
+                viewModel.navigateToOnBoardingClickPlusDialogEvent.collect {
                     showOnBoardingClickPlusDialog()
                 }
             }
 
             launch {
-                navigateToOnBoardingRegisterLessonDialogEvent.collect {
+                viewModel.navigateToOnBoardingRegisterLessonDialogEvent.collect {
                     showOnBoardingRegisterLessonDialog()
                 }
             }
 
             launch {
-                navigateToRegisterLessonEvent.collect { fragmentId ->
+                viewModel.navigateToRegisterLessonEvent.collect { fragmentId ->
                     val action = OnBoardingTodayLessonFragmentDirections.actionOnBoardingTodayLessonToNavRegisterLesson(fragmentId)
                     findNavController().safeNavigate(action)
                 }
             }
 
             launch {
-                onBoardingUiModelList.collect {
+                viewModel.onBoardingUiModelList.collect {
                     onBoardingAdapter.submitList(it)
                 }
             }
 
             launch {
-                isLoading.collect { isLoading ->
+                viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
             }
 
             launch {
-                navigateToExpireDialogEvent.collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                     showExpireDialog()
                 }
             }
 
             launch {
-                showToastEvent.collect { message ->
+                viewModel.showToastEvent.collect { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
