@@ -70,12 +70,16 @@ class LessonListViewModel @Inject constructor(
                             setLessonList(result.data)
                         }
                         is Result.Error -> {
-                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                setInternetError(true)
-                            } else if (result.statusCode == UNAUTHORIZED) {
-                                navigateToExpireDialog()
-                            } else {
-                                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                                }
                             }
                         }
                     }

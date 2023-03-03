@@ -21,6 +21,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
+// TODO UiState + stateFlow 를 통한 이벤트 처리
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
@@ -36,7 +37,7 @@ class TodayLessonViewModel @Inject constructor(
     private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
     val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
 
-    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
+    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
     val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
@@ -78,7 +79,10 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     // TODO isStarted 조건 만족시 화면 갱신이 안되는 이슈
-    // flag 는 true 로 바뀌어서 setTodayLessonList() 를 호출함
+    // flag 가 변경 되지 않음
+    // 리스트 수정 작업 이전에 이미 갱신이 이뤄짐
+    // 어댑터에서 ++ 해준게 뷰모델 데이터에 반영이 되는건가?
+    // 온보딩에서 코드와 투데이화면에서의 코드가 다른 이유
     private fun increaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
@@ -86,13 +90,14 @@ class TodayLessonViewModel @Inject constructor(
         val currentLessonList = _todayLessonList.value.toMutableList()
         // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
-
+        Timber.d("$lesson")
         val isOutOfRange = lesson.presentNumber > lesson.totalNumber
         if (isOutOfRange) return
 
         val isUntilTodayFinished = lesson.presentNumber == lesson.untilTodayNumber
         val isFinished = lesson.presentNumber == lesson.totalNumber
 
+        // Timber.d("$currentLessonList")
         when {
             isUntilTodayFinished -> {
                 newLesson = lesson.copy(presentNumber = updateCount, untilTodayFinished = true)
@@ -106,6 +111,7 @@ class TodayLessonViewModel @Inject constructor(
                 newLesson = lesson.copy(presentNumber = updateCount)
             }
         }
+        Timber.d("$newLesson")
         // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
         val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
@@ -115,6 +121,7 @@ class TodayLessonViewModel @Inject constructor(
             }
         }
 
+        // Timber.d("$updateLessonList")
         val isStart = currentLessonList.all { it.presentNumber == 0 } &&
                 updateLessonList.any { it.presentNumber > 0 }
         if (isStart) flag = true
@@ -125,7 +132,10 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     // TODO isNotStarted 조건 만족시 화면 갱신이 안되는 이슈
-    // flag 는 true 로 바뀌어서 setTodayLessonList() 를 호출함
+    // flag 가 변경 되지 않음
+    // 리스트 수정 작업 이전에 이미 갱신이 이뤄짐
+    // 어댑터에서 -- 해준게 뷰모델 데이터에 반영이 되는건가? 그렇다
+    // 온보딩에서 코드와 투데이화면에서의 코드가 다른 이유
     private fun decreaseTodayLessonCount(lessonId: Int, updateCount: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
@@ -133,10 +143,13 @@ class TodayLessonViewModel @Inject constructor(
         val currentLessonList = _todayLessonList.value.toMutableList()
         // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
+
         Timber.d("$lesson")
         val isOutOfRange = lesson.presentNumber <= 0
         if (isOutOfRange) return
 
+        // 선반영 되고 있다는 것을 알고있음
+        // Timber.d("$currentLessonList")
         val isUntilTodayNotFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
         val isNotFinished = lesson.presentNumber + 1 == lesson.totalNumber
 
@@ -153,6 +166,8 @@ class TodayLessonViewModel @Inject constructor(
                 newLesson = lesson.copy(presentNumber = updateCount)
             }
         }
+        Timber.d("$newLesson")
+
         // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
         val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
@@ -161,6 +176,7 @@ class TodayLessonViewModel @Inject constructor(
                 it
             }
         }
+        Timber.d("$updateLessonList")
         val isNotStarted = currentLessonList.any { it.presentNumber > 0 } &&
                 updateLessonList.all { it.presentNumber == 0 }
         if (isNotStarted) flag = true
@@ -186,12 +202,16 @@ class TodayLessonViewModel @Inject constructor(
                         setTodayLessonList()
                     }
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                            }
                         }
                     }
                 }
@@ -212,8 +232,8 @@ class TodayLessonViewModel @Inject constructor(
             } else {
                 _todayLessonList.value.groupBy {
                     it.untilTodayFinished
-                }.values.map {
-                    it.map { lesson ->
+                }.values.map { todayLessonList ->
+                    todayLessonList.map { lesson ->
                         if (lesson.untilTodayFinished) {
                             TodayLessonUiModel.TodayLessonFinishedItem(lesson)
                         } else {
@@ -275,12 +295,16 @@ class TodayLessonViewModel @Inject constructor(
                             updateTodayLessonCount(count, result.data)
                         }
                         is Result.Error -> {
-                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail_by_internet_error))
-                            } else if (result.statusCode == UNAUTHORIZED) {
-                                navigateToExpireDialog()
-                            } else {
-                                showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail_by_internet_error))
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
+                                }
                             }
                         }
                     }
