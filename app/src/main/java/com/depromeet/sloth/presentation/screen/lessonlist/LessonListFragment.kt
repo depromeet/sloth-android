@@ -15,7 +15,6 @@ import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -78,10 +77,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 viewModel.checkLessonListOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
                     if (!isOnBoardingComplete) {
-                        Timber.d("온보딩 완료 안됨")
                         viewModel.navigateToOnBoardingCheckDetail()
-                    } else {
-                        Timber.d("온보딩 완료됨")
                     }
                 }
             }
