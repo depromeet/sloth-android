@@ -68,6 +68,7 @@ class LessonListViewModel @Inject constructor(
                         is Result.Success -> {
                             setInternetError(false)
                             setLessonList(result.data)
+                            checkLessonListOnBoardingComplete()
                         }
                         is Result.Error -> {
                             when {
