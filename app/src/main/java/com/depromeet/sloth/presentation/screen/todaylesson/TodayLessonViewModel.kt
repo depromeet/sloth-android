@@ -3,7 +3,6 @@ package com.depromeet.sloth.presentation.screen.todaylesson
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
-import com.depromeet.sloth.data.model.response.lesson.UpdateLessonCountResponse
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
@@ -17,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -40,6 +38,13 @@ class TodayLessonViewModel @Inject constructor(
     private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
     val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
+
+    private val _navigateToLoginEvent = MutableSharedFlow<Unit>()
+    val navigateToLoginEvent = _navigateToLoginEvent.asSharedFlow()
+
+    private val _navigateToTodayLessonOnBoardingEvent = MutableSharedFlow<Unit>()
+    val navigateToTodayLessonOnBoardingEvent = _navigateToTodayLessonOnBoardingEvent.asSharedFlow()
+
 
     private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonResponse>())
     val todayLessonList: StateFlow<List<TodayLessonResponse>> = _todayLessonList.asStateFlow()
@@ -64,55 +69,52 @@ class TodayLessonViewModel @Inject constructor(
 
     private fun checkLoginStatus() = viewModelScope.launch {
         _autoLoginEvent.emit(fetchLoginStatusUseCase())
+//        val isLoggedIn = fetchLoginStatusUseCase()
+//        if (isLoggedIn) checkTodayLessonOnBoardingComplete()
+//        else _navigateToLoginEvent.emit(Unit)
     }
 
     fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
         _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
+//        val isTodayLessonOnBoardingComplete = fetchTodayLessonOnBoardingStatusUseCase()
+//        if (!isTodayLessonOnBoardingComplete) _navigateToTodayLessonOnBoardingEvent.emit(Unit)
+//        else fetchTodayLessonList()
     }
 
-    private fun updateTodayLessonCount(count: Int, updateLesson: UpdateLessonCountResponse) {
+    private fun updateTodayLessonCount(count: Int, lessonId: Int) {
         if (count == 1) {
-            increaseTodayLessonCount(updateLesson.lessonId, updateLesson.presentNumber)
+            increaseTodayLessonCount(lessonId)
         } else {
-            decreaseTodayLessonCount(updateLesson.lessonId, updateLesson.presentNumber)
+            decreaseTodayLessonCount(lessonId)
         }
     }
 
-    // TODO isStarted 조건 만족시 화면 갱신이 안되는 이슈
-    // flag 가 변경 되지 않음
-    // 리스트 수정 작업 이전에 이미 갱신이 이뤄짐
-    // 어댑터에서 ++ 해준게 뷰모델 데이터에 반영이 되는건가?
-    // 온보딩에서 코드와 투데이화면에서의 코드가 다른 이유
-    private fun increaseTodayLessonCount(lessonId: Int, updateCount: Int) {
+    private fun increaseTodayLessonCount(lessonId: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
         val currentLessonList = _todayLessonList.value.toMutableList()
-        // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
-        Timber.d("$lesson")
+
         val isOutOfRange = lesson.presentNumber > lesson.totalNumber
         if (isOutOfRange) return
 
-        val isUntilTodayFinished = lesson.presentNumber == lesson.untilTodayNumber
-        val isFinished = lesson.presentNumber == lesson.totalNumber
+        val isUntilTodayFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
+        val isFinished = lesson.presentNumber + 1 == lesson.totalNumber
 
-        // Timber.d("$currentLessonList")
         when {
             isUntilTodayFinished -> {
-                newLesson = lesson.copy(presentNumber = updateCount, untilTodayFinished = true)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1, untilTodayFinished = true)
                 flag = true
             }
             isFinished -> {
-                newLesson = lesson.copy(presentNumber = updateCount)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
                 flag = true
             }
             else -> {
-                newLesson = lesson.copy(presentNumber = updateCount)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
             }
         }
-        Timber.d("$newLesson")
-        // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
         val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
@@ -120,55 +122,41 @@ class TodayLessonViewModel @Inject constructor(
                 it
             }
         }
-
-        // Timber.d("$updateLessonList")
         val isStart = currentLessonList.all { it.presentNumber == 0 } &&
                 updateLessonList.any { it.presentNumber > 0 }
         if (isStart) flag = true
 
-        // _todayLessonList.value = updateLessonList
         _todayLessonList.update { updateLessonList }
         if (flag) setTodayLessonList()
     }
 
-    // TODO isNotStarted 조건 만족시 화면 갱신이 안되는 이슈
-    // flag 가 변경 되지 않음
-    // 리스트 수정 작업 이전에 이미 갱신이 이뤄짐
-    // 어댑터에서 -- 해준게 뷰모델 데이터에 반영이 되는건가? 그렇다
-    // 온보딩에서 코드와 투데이화면에서의 코드가 다른 이유
-    private fun decreaseTodayLessonCount(lessonId: Int, updateCount: Int) {
+    private fun decreaseTodayLessonCount(lessonId: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
         val currentLessonList = _todayLessonList.value.toMutableList()
-        // lessonId 를 통해 갱신할 강의 찾기
         val lesson = currentLessonList.first { it.lessonId == lessonId }
 
-        Timber.d("$lesson")
         val isOutOfRange = lesson.presentNumber <= 0
         if (isOutOfRange) return
 
-        // 선반영 되고 있다는 것을 알고있음
-        // Timber.d("$currentLessonList")
-        val isUntilTodayNotFinished = lesson.presentNumber + 1 == lesson.untilTodayNumber
-        val isNotFinished = lesson.presentNumber + 1 == lesson.totalNumber
+        val isUntilTodayNotFinished = lesson.presentNumber == lesson.untilTodayNumber
+        val isNotFinished = lesson.presentNumber == lesson.totalNumber
 
         when {
             isUntilTodayNotFinished -> {
-                newLesson = lesson.copy(presentNumber = updateCount, untilTodayFinished = false)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1, untilTodayFinished = false)
                 flag = true
             }
             isNotFinished -> {
-                newLesson = lesson.copy(presentNumber = updateCount)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
                 flag = true
             }
             else -> {
-                newLesson = lesson.copy(presentNumber = updateCount)
+                newLesson = lesson.copy(presentNumber = lesson.presentNumber - 1)
             }
         }
-        Timber.d("$newLesson")
 
-        // currentLessonList 내에 lessonId 를 통해 강의를 찾아 교체
         val updateLessonList = currentLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
@@ -176,12 +164,10 @@ class TodayLessonViewModel @Inject constructor(
                 it
             }
         }
-        Timber.d("$updateLessonList")
         val isNotStarted = currentLessonList.any { it.presentNumber > 0 } &&
                 updateLessonList.all { it.presentNumber == 0 }
         if (isNotStarted) flag = true
 
-        // _todayLessonList.value = updateLessonList
         _todayLessonList.update { updateLessonList }
         if (flag) setTodayLessonList()
     }
@@ -197,7 +183,6 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        // _todayLessonList.value = result.data
                         _todayLessonList.update { result.data }
                         setTodayLessonList()
                     }
@@ -221,7 +206,6 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     private fun setTodayLessonList() {
-        Timber.d("setTodayLessonList() 호출")
         _todayLessonUiModelList.update {
             if (_todayLessonList.value.isEmpty()) {
                 listOf(
@@ -281,6 +265,7 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     fun updateLessonCount(count: Int, lesson: TodayLessonResponse) {
+        updateTodayLessonCount(count, lesson.lessonId)
         if (updateLessonCountJob != null) return
 
         updateLessonCountJob = viewModelScope.launch {
@@ -290,10 +275,7 @@ class TodayLessonViewModel @Inject constructor(
                 }.collect { result ->
                     when (result) {
                         is Result.Loading -> return@collect
-                        is Result.Success -> {
-                            //TODO data 로 받아온 presentNumber 를 local update 에 쓰면 동기화 오류 문제가 없지 않을까?
-                            updateTodayLessonCount(count, result.data)
-                        }
+                        is Result.Success -> Unit
                         is Result.Error -> {
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {

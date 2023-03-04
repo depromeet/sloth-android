@@ -15,23 +15,29 @@ import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
-// TODO list 를 viewModel 내에서 관리하여, 변경이 발생할 경우 매번 재 호출하는 것이 아닌, list 를 update 하는 방식으로 변경
-// TODO API 호출을 통한 결과로 리스트를 처음부터 다시 세팅해주지 말고, 기존의 리스트를 갱신하는 식으로 변경
-// TODO uiState + stateFlow 를 통한 이벤트 처리
+// TODO 로그가 2의 배수 번 호출되는 이슈 뭐지...???
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
 
-    private val todayLessonViewModel: TodayLessonViewModel by viewModels()
+    private val viewModel: TodayLessonViewModel by viewModels()
 
     private val todayLessonItemClickListener = TodayLessonItemClickListener(
-        onClick = { todayLessonViewModel.navigateToRegisterLesson(R.id.today_lesson) },
-        onPlusClick = { lesson -> todayLessonViewModel.updateLessonCount(1, lesson) },
-        onMinusClick = { lesson -> todayLessonViewModel.updateLessonCount(-1, lesson) },
-        onFinishClick = { lesson -> todayLessonViewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
+        onClick = { viewModel.navigateToRegisterLesson(R.id.today_lesson) },
+        onPlusClick = { lesson -> viewModel.updateLessonCount(1, lesson) },
+        // onPlusClick = { viewModel.updateLessonCount(1) },
+        onMinusClick = { lesson -> viewModel.updateLessonCount(-1, lesson) },
+        // onMinusClick = { viewModel.updateLessonCount(-1) },
+        onFinishClick = { lesson -> viewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
     )
+
+//    override fun onStart() {
+//        super.onStart()
+//        viewModel.fetchTodayLessonList()
+//    }
 
     private val todayLessonAdapter by lazy {
         TodayLessonAdapter(todayLessonItemClickListener)
@@ -40,7 +46,7 @@ class TodayLessonFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind {
-            vm = todayLessonViewModel
+            vm = viewModel
         }
         initViews()
         initListener()
@@ -56,82 +62,100 @@ class TodayLessonFragment :
         }
     }
 
-    private fun initListener() = with(binding) {
-        tbTodayLesson.apply {
-            setOnMenuItemSingleClickListener {
-                when (it.itemId) {
-                    R.id.menu_notification_list -> {
-                        todayLessonViewModel.navigateToWaitDialog()
-                        true
-                    }
-                    else -> false
+
+    private fun initListener() {
+        binding.tbTodayLesson.setOnMenuItemSingleClickListener {
+            when (it.itemId) {
+                R.id.menu_notification_list -> {
+                    viewModel.navigateToWaitDialog()
+                    true
                 }
+                else -> false
             }
         }
     }
 
-    private fun initObserver() = with(todayLessonViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                autoLoginEvent.collect { isLoggedIn ->
+                viewModel.autoLoginEvent.collect { isLoggedIn ->
                     if (!isLoggedIn) {
                         val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
                         findNavController().safeNavigate(action)
                     } else {
-                        todayLessonViewModel.checkTodayLessonOnBoardingComplete()
+                        Timber.d("자동 로그인")
+                        viewModel.checkTodayLessonOnBoardingComplete()
                     }
                 }
             }
+            //TODO 한번 다른화면 갔다가 오면 호출이 2배씩 늘어남
+            // api 는 중복 호출을 막아놔서 한번씩만 호출되긴 함
             launch {
-                checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
+                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
                     if (!isOnBoardingComplete) {
+                        Timber.d("온보딩 완료 안됨")
                         val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
                         findNavController().safeNavigate(action)
                     } else {
-                        todayLessonViewModel.fetchTodayLessonList()
+                        Timber.d("온보딩 완료")
+                        viewModel.fetchTodayLessonList()
                     }
                 }
             }
 
             launch {
-                todayLessonUiModelList.collect {
+                viewModel.navigateToLoginEvent.collect {
+                    val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
+                    findNavController().safeNavigate(action)
+                }
+            }
+
+            launch {
+                viewModel.navigateToTodayLessonOnBoardingEvent.collect {
+                    val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
+                    findNavController().safeNavigate(action)
+                }
+            }
+
+            launch {
+                viewModel.todayLessonUiModelList.collect {
                     todayLessonAdapter.submitList(it)
                 }
             }
 
             launch {
-                navigateToWaitDialogEvent.collect {
+                viewModel.navigateToWaitDialogEvent.collect {
                     showWaitDialog()
                 }
             }
 
             launch {
-                navigateToFinishLessonDialogEvent.collect { lessonId ->
+                viewModel.navigateToFinishLessonDialogEvent.collect { lessonId ->
                     showFinishLessonDialog(lessonId)
                 }
             }
 
             launch {
-                navigateRegisterLessonEvent.collect { fragmentId ->
+                viewModel.navigateRegisterLessonEvent.collect { fragmentId ->
                     val action = TodayLessonFragmentDirections.actionTodayLessonToRegisterLessonFirst(fragmentId)
                     findNavController().safeNavigate(action)
                 }
             }
 
             launch {
-                isLoading.collect { isLoading ->
+                viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
             }
 
             launch {
-                navigateToExpireDialogEvent.collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                     showExpireDialog()
                 }
             }
 
             launch {
-                showToastEvent.collect { message ->
+                viewModel.showToastEvent.collect { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }

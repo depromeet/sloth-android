@@ -64,7 +64,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
             newItem = item.copy(presentNumber = item.presentNumber + 1)
         }
         currentList[0] = newItem
-        // _onBoardingList.value = currentList
         _onBoardingList.update { currentList }
         if (flag) setOnBoardingItem()
 
@@ -75,20 +74,19 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         var flag = false
 
         val currentList = _onBoardingList.value.toMutableList()
-        val lesson = currentList.first()
-        val isOutOfRange = lesson.presentNumber <= 0
+        val item = currentList.first()
+        val isOutOfRange = item.presentNumber <= 0
         if (isOutOfRange) return
 
-        val isNotFinished = lesson.presentNumber == lesson.untilTodayNumber
+        val isNotFinished = item.presentNumber == item.untilTodayNumber
         if (isNotFinished) {
-            newItem = lesson.copy(presentNumber = lesson.presentNumber - 1, untilTodayFinished = false)
+            newItem = item.copy(presentNumber = item.presentNumber - 1, untilTodayFinished = false)
             flag = true
         } else {
-            newItem = lesson.copy(presentNumber = lesson.presentNumber - 1)
+            newItem = item.copy(presentNumber = item.presentNumber - 1)
         }
 
         currentList[0] = newItem
-        // _onBoardingList.value = currentList
         _onBoardingList.update { currentList }
         if (flag) setOnBoardingItem()
     }
@@ -102,7 +100,7 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
                     OnBoardingUiModel.OnBoardingEmptyItem
                 )
             } else {
-                onBoardingList.value.groupBy {
+                _onBoardingList.value.groupBy {
                     it.untilTodayFinished
                 }.values.map { todayLessonList ->
                     todayLessonList.map { lesson ->
