@@ -6,6 +6,6 @@ sealed class OnBoardingUiModel {
     object OnBoardingEmptyItem : OnBoardingUiModel()
     data class OnBoardingHeaderItem(val itemType: OnBoardingType) : OnBoardingUiModel()
     data class OnBoardingTitleItem(val itemType: OnBoardingType) : OnBoardingUiModel()
-    data class OnBoardingDoingItem(val todayLesson: TodayLessonResponse) : OnBoardingUiModel()
-    data class OnBoardingFinishedItem(val todayLesson: TodayLessonResponse) : OnBoardingUiModel()
+    data class OnBoardingDoingItem(val onBoardingItem: TodayLessonResponse) : OnBoardingUiModel()
+    data class OnBoardingFinishedItem(val onBoardingItem: TodayLessonResponse) : OnBoardingUiModel()
 }

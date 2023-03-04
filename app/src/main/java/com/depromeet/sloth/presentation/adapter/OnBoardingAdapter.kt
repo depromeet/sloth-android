@@ -17,8 +17,8 @@ class OnBoardingAdapter(
 ) : ListAdapter<OnBoardingUiModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<OnBoardingUiModel>() {
         override fun areItemsTheSame(oldItem: OnBoardingUiModel, newItem: OnBoardingUiModel): Boolean {
-            return (oldItem is OnBoardingUiModel.OnBoardingDoingItem && newItem is OnBoardingUiModel.OnBoardingDoingItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId) ||
-                    (oldItem is OnBoardingUiModel.OnBoardingFinishedItem && newItem is OnBoardingUiModel.OnBoardingFinishedItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId)
+            return (oldItem is OnBoardingUiModel.OnBoardingDoingItem && newItem is OnBoardingUiModel.OnBoardingDoingItem && oldItem.onBoardingItem.lessonId == newItem.onBoardingItem.lessonId) ||
+                    (oldItem is OnBoardingUiModel.OnBoardingFinishedItem && newItem is OnBoardingUiModel.OnBoardingFinishedItem && oldItem.onBoardingItem.lessonId == newItem.onBoardingItem.lessonId)
         }
 
         override fun areContentsTheSame(oldItem: OnBoardingUiModel, newItem: OnBoardingUiModel): Boolean {
@@ -85,31 +85,31 @@ class OnBoardingAdapter(
             }
 
             is OnBoardingUiModel.OnBoardingDoingItem -> (holder as OnBoardingDoingItemViewHolder).apply {
-                bind(uiModel.todayLesson)
+                bind(uiModel.onBoardingItem)
                 binding.apply {
                     btnTodayLessonPlus.setOnSingleClickListener {
                         viewTodayLessonLottie.playAnimation()
                         clickListener.onPlusClick()
-                        uiModel.todayLesson.presentNumber++
-                        updateDoingLessonProgress(holder, uiModel.todayLesson)
+                        uiModel.onBoardingItem.presentNumber++
+                        updateDoingLessonProgress(holder, uiModel.onBoardingItem)
                     }
                     btnTodayLessonMinus.setOnSingleClickListener {
-                        val isOutOfRange = uiModel.todayLesson.presentNumber <= 0
+                        val isOutOfRange = uiModel.onBoardingItem.presentNumber <= 0
                         if (isOutOfRange) return@setOnSingleClickListener
 
                         clickListener.onMinusClick()
-                        uiModel.todayLesson.presentNumber--
-                        updateDoingLessonProgress(holder, uiModel.todayLesson)
+                        uiModel.onBoardingItem.presentNumber--
+                        updateDoingLessonProgress(holder, uiModel.onBoardingItem)
                     }
                 }
             }
             is OnBoardingUiModel.OnBoardingFinishedItem -> (holder as OnBoardingFinishedItemViewHolder).apply {
-                bind(uiModel.todayLesson)
+                bind(uiModel.onBoardingItem)
                 binding.apply {
                     btnTodayLessonMinus.setOnSingleClickListener {
                         clickListener.onMinusClick()
-                        uiModel.todayLesson.presentNumber--
-                        updateFinishedLessonProgress(holder, uiModel.todayLesson)
+                        uiModel.onBoardingItem.presentNumber--
+                        updateFinishedLessonProgress(holder, uiModel.onBoardingItem)
                     }
                     clTodayFinishedBottom.setOnSingleClickListener {
                         clickListener.onFinishClick()

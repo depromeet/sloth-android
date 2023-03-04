@@ -85,7 +85,6 @@ class TodayLessonAdapter(
             is TodayLessonUiModel.TodayLessonDoingItem -> (holder as TodayDoingLessonViewHolder).apply {
                 bind(uiModel.todayLesson)
                 binding.apply {
-                    //TODO API 가 성공적으로 호출되서 결과를 받아올때 호출하고 싶음, 근데 애니메이션 같은 경우엔 뷰에서 작업을 진행해야함
                     btnTodayLessonPlus.setOnSingleClickListener {
                         viewTodayLessonLottie.playAnimation()
                         clickListener.onPlusClick(uiModel.todayLesson)
