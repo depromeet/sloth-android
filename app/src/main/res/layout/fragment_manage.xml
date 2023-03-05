@@ -23,7 +23,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_manage_member_info"
@@ -84,13 +84,13 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
-                        android:id="@+id/tv_setting"
+                        android:id="@+id/tv_manage_setting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/bg_manage_setting_rounded_gray"
                         android:gravity="center"
-                        android:text="설정"
+                        android:text="@string/setting"
                         android:textColor="@color/gray_600"
                         android:textSize="14dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -99,64 +99,8 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--                    android:id="@+id/cl_manage_member_info"-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:background="@color/white"-->
-                <!--                    android:paddingBottom="36dp"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@id/cl_manage_menu"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent">-->
-
-                <!--                    <ImageView-->
-                <!--                        android:id="@+id/iv_manage_profile_image"-->
-                <!--                        onSingleClick="@{()-> vm.navigateToUpdateProfileDialog()}"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginTop="56dp"-->
-                <!--                        android:contentDescription="@string/profile_image"-->
-                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                        app:layout_constraintTop_toTopOf="parent"-->
-                <!--                        app:srcCompat="@drawable/ic_profile_oval" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/tv_manage_profile_name"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginTop="8dp"-->
-                <!--                        android:ellipsize="end"-->
-                <!--                        android:maxLines="1"-->
-                <!--                        android:paddingHorizontal="32dp"-->
-                <!--                        android:text="@{vm.uiState.memberName}"-->
-                <!--                        android:textColor="@color/gray_600"-->
-                <!--                        android:textSize="20dp"-->
-                <!--                        android:textStyle="bold"-->
-                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                        app:layout_constraintTop_toBottomOf="@id/iv_manage_profile_image"-->
-                <!--                        tools:text="@string/profile_name" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/tv_manage_profile_email"-->
-                <!--                        email="@{vm.uiState.email}"-->
-                <!--                        isEmailProvided="@{vm.uiState.isEmailProvided}"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:layout_marginTop="4dp"-->
-                <!--                        android:textColor="@color/gray_500"-->
-                <!--                        android:textSize="14dp"-->
-                <!--                        app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                <!--                        app:layout_constraintTop_toBottomOf="@id/tv_manage_profile_name"-->
-                <!--                        tools:text="@string/profile_email" />-->
-
-                <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
-
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_investment_information"
+                    android:id="@+id/cl_manage_investment_information"
                     android:layout_width="0dp"
                     android:layout_height="218dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +118,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/tv_investment_description"
+                            android:id="@+id/tv_manage_investment_description"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
@@ -194,12 +138,12 @@
                             android:textColor="@color/gray_600"
                             android:textSize="20dp"
                             android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@+id/tv_investment_description"
+                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_description"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:text="종찬님은요..." />
 
                         <TextView
-                            android:id="@+id/tv_investment_information"
+                            android:id="@+id/tv_manage_investment_information"
                             priceFormat="@{vm.uiState.expiredLessonsPrice}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -208,7 +152,7 @@
                             android:textSize="20dp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_investment_description"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_manage_investment_description"
                             tools:text="30,000원" />
 
                         <TextView
@@ -218,11 +162,11 @@
                             android:textColor="@color/gray_600"
                             android:textSize="20dp"
                             android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@+id/tv_investment_information"
-                            app:layout_constraintTop_toTopOf="@+id/tv_investment_information" />
+                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_information"
+                            app:layout_constraintTop_toTopOf="@+id/tv_manage_investment_information" />
 
                         <com.skydoves.progressview.ProgressView
-                            android:id="@+id/pb_lesson_detail_current_lesson_progress"
+                            android:id="@+id/pv_manage_current_lesson_progress"
                             setProgressRate="@{vm.uiState.currentProgressRate}"
                             android:layout_width="0dp"
                             android:layout_height="16dp"
@@ -230,9 +174,8 @@
                             android:layout_marginTop="28dp"
                             android:layout_marginEnd="20dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tv_investment_information"
+                            app:layout_constraintTop_toBottomOf="@id/tv_manage_investment_information"
                             app:progressView_autoAnimate="true"
                             app:progressView_colorBackground="@color/primary_100"
                             app:progressView_colorProgress="@color/primary_500"
@@ -249,21 +192,6 @@
                             app:progressView_radius="12dp"
                             tools:progressView_labelText="40%" />
 
-                        <!--                        <ProgressBar-->
-                        <!--                            android:id="@+id/pb_investment_money_bar"-->
-                        <!--                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
-                        <!--                            android:layout_width="0dp"-->
-                        <!--                            android:layout_height="16dp"-->
-                        <!--                            android:layout_marginStart="20dp"-->
-                        <!--                            android:layout_marginTop="28dp"-->
-                        <!--                            android:layout_marginEnd="20dp"-->
-                        <!--                            android:max="10000"-->
-                        <!--                            android:progressDrawable="@drawable/bg_lesson_list_progress"-->
-                        <!--                            app:layout_constraintEnd_toEndOf="parent"-->
-                        <!--                            app:layout_constraintHorizontal_bias="0.0"-->
-                        <!--                            app:layout_constraintStart_toStartOf="parent"-->
-                        <!--                            app:layout_constraintTop_toBottomOf="@id/tv_investment_information" />-->
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -271,19 +199,30 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginEnd="20dp"
                             android:orientation="vertical"
-                            app:layout_constraintTop_toBottomOf="@+id/pb_lesson_detail_current_lesson_progress">
+                            app:layout_constraintTop_toBottomOf="@+id/pv_manage_current_lesson_progress">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/primary_500_dot"
+                                    android:layout_width="6dp"
+                                    android:layout_height="6dp"
+                                    android:background="@color/primary_500"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:shapeAppearance="@style/circleImageView" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
                                     android:text="내가 회수한 돈"
                                     android:textColor="@color/gray_400"
                                     android:textSize="14dp"
-                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintStart_toEndOf="@id/primary_500_dot"
                                     app:layout_constraintTop_toTopOf="parent" />
 
                                 <TextView
@@ -304,13 +243,24 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/primary_200_dot"
+                                    android:layout_width="6dp"
+                                    android:layout_height="6dp"
+                                    android:background="@color/primary_200"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:shapeAppearance="@style/circleImageView" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
                                     android:text="나공이에게 뺏긴 돈"
                                     android:textColor="@color/gray_400"
                                     android:textSize="14dp"
-                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/primary_200_dot"
                                     app:layout_constraintTop_toTopOf="parent" />
 
                                 <TextView
@@ -338,7 +288,7 @@
                     android:layout_height="97dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cl_investment_information">
+                    app:layout_constraintTop_toBottomOf="@id/cl_manage_investment_information">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="0dp"
