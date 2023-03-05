@@ -69,19 +69,16 @@ class RegisterLessonViewModel @Inject constructor(
         initLessonStartDate()
     }
 
-    private val _lessonName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
+    private val _lessonName = savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
-    private val _lessonTotalNumber =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
+    private val _lessonTotalNumber = savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
     private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
     val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
 
-    private val _lessonCategoryName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
+    private val _lessonCategoryName = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
     val lessonCategoryName: StateFlow<String> = _lessonCategoryName.asStateFlow()
 
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
@@ -93,8 +90,7 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
     val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
 
-    private val _lessonSiteName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
+    private val _lessonSiteName = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
@@ -106,15 +102,13 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
     val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
-    private val _lessonMessage =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
+    private val _lessonMessage = savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
     private val _endDate = savedStateHandle.getMutableStateFlow(KEY_END_DATE, Date())
     val endDate: StateFlow<Date> = _endDate.asStateFlow()
 
-    private val _lessonEndDate =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
+    private val _lessonEndDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
     val lessonEndDate: StateFlow<String> = _lessonEndDate.asStateFlow()
 
     private val _lessonEndDateSelectedItemPosition = savedStateHandle.getMutableStateFlow(
@@ -214,7 +208,7 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
-            add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
+            add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
     }
 
@@ -245,12 +239,14 @@ class RegisterLessonViewModel @Inject constructor(
                     _registerLessonSuccessEvent.emit(fragmentId)
                 }
                 is Result.Error -> {
-                    if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                        showToast(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
-                    } else if (result.statusCode == UNAUTHORIZED) {
-                        navigateToExpireDialog()
-                    } else {
-                        showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
+                    when {
+                        result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                            showToast(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
+                        }
+                        result.statusCode == UNAUTHORIZED -> {
+                            navigateToExpireDialog()
+                        }
+                        else -> showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
                     }
                 }
             }
@@ -269,14 +265,15 @@ class RegisterLessonViewModel @Inject constructor(
                         _fetchLessonCategoryListSuccessEvent.emit(result.data)
                         setInternetError(false)
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
                 }
@@ -295,14 +292,15 @@ class RegisterLessonViewModel @Inject constructor(
                         setLessonSiteList(result.data)
                         _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
                 }

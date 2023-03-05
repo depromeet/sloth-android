@@ -1,8 +1,9 @@
 package com.depromeet.sloth.presentation.ui.notification
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.notification.NotificationListResponse
+import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.notification.FetchNotificationListUseCase
 import com.depromeet.sloth.domain.usecase.notification.UpdateNotificationStateUseCase
 import com.depromeet.sloth.presentation.ui.base.BaseViewModel
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val fetchNotificationListUseCase: FetchNotificationListUseCase,
     private val updateNotificationStateUseCase: UpdateNotificationStateUseCase,
-    savedStateHandle: SavedStateHandle
+    private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
     private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<NotificationListResponse>>()
@@ -39,22 +40,21 @@ class NotificationViewModel @Inject constructor(
                         _fetchLessonListSuccessEvent.emit(result.data)
                     }
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            //showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.notification_list_fetch_fail))
                         }
                     }
                 }
             }
     }
 
-    fun updateNotificationState(
-        alarmId: Long,
-        isStateChanged: () -> Unit
-    ) {
+    fun updateNotificationState(alarmId: Long, isStateChanged: () -> Unit) {
         viewModelScope.launch {
             updateNotificationStateUseCase(alarmId)
                 .onEach { result ->
@@ -67,12 +67,14 @@ class NotificationViewModel @Inject constructor(
                             isStateChanged.invoke()
                         }
                         is Result.Error -> {
-                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                setInternetError(true)
-                            } else if (result.statusCode == UNAUTHORIZED) {
-                                navigateToExpireDialog()
-                            } else {
-                                //showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.notification_list_update_fail))
                             }
                         }
                     }

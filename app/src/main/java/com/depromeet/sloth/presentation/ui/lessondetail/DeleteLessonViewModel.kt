@@ -44,14 +44,15 @@ class DeleteLessonViewModel @Inject constructor(
                         showToast(stringResourcesProvider.getString(R.string.lesson_delete_complete))
                         _deleteLessonSuccessEvent.emit(Unit)
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail_by_internet))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail_by_internet))
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else ->  showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail))
                         }
                     }
                 }

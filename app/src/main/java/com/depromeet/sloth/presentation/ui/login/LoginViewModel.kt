@@ -91,7 +91,6 @@ class LoginViewModel @Inject constructor(
                     is Result.Success -> {
                         fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
                     }
-
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))

@@ -152,7 +152,7 @@
     <string name="lesson_category">카테고리</string>
     <string name="choose_lesson_category">강의 카테고리를 선택해 주세요</string>
     <string name="lesson_site">강의 사이트</string>
-    <string name="choose_lesosn_site">강의 사이트를 선택해 주세요</string>
+    <string name="choose_lesson_site">강의 사이트를 선택해 주세요</string>
     <string name="setup_goal">완강 목표를 설정해 보세요!</string>
     <string name="lesson_start_date">강의 시작일</string>
     <string name="lesson_finish_date">완강 목표일</string>
@@ -196,7 +196,7 @@
     <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
     <string name="delete_lesson_dialog_check">포기하기</string>
 
-    <!--    MyPage-->
+    <!--    Manage-->
     <string name="setting">설정</string>
     <string name="profile_name">이름</string>
     <string name="profile_email">xxx@gmail.com</string>
@@ -209,6 +209,8 @@
     <string name="contact">문의사항</string>
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
+    <string name="notification_list_fetch_fail">알림 목록을 가져오지 못했어요</string>
+    <string name="notification_list_update_fail">알림 목록을 갱신하지 못했어요</string>
 
 
 </resources>

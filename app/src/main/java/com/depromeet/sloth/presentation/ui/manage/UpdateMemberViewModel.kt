@@ -35,8 +35,7 @@ class UpdateMemberViewModel @Inject constructor(
     private val _updateMemberSuccess = MutableSharedFlow<Unit>()
     val updateMemberSuccess: SharedFlow<Unit> = _updateMemberSuccess.asSharedFlow()
 
-    private val _memberName =
-        savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
+    private val _memberName = savedStateHandle.getMutableStateFlow(KEY_MEMBER_NAME, DEFAULT_STRING_VALUE)
     val memberName: StateFlow<String> = _memberName.asStateFlow()
 
     private val _updateMemberValidation = MutableStateFlow(false)
@@ -57,12 +56,14 @@ class UpdateMemberViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.member_update_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.member_update_fail_by_internet_error))
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else ->showToast(stringResourcesProvider.getString(R.string.member_update_fail))
                         }
                     }
                 }

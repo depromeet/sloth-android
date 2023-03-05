@@ -140,14 +140,14 @@ class UpdateLessonViewModel @Inject constructor(
                     _updateLessonSuccessEvent.emit(Unit)
                 }
                 is Result.Error -> {
-                    if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                        showToast(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
-                    }
-                    else if (result.statusCode == UNAUTHORIZED) {
-                        navigateToExpireDialog()
-                    }
-                    else {
-                        showToast(stringResourcesProvider.getString(R.string.lesson_update_fail))
+                    when {
+                        result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                            showToast(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
+                        }
+                        result.statusCode == UNAUTHORIZED -> {
+                            navigateToExpireDialog()
+                        }
+                        else -> showToast(stringResourcesProvider.getString(R.string.lesson_update_fail))
                     }
                 }
             }
@@ -166,16 +166,15 @@ class UpdateLessonViewModel @Inject constructor(
                         setLessonCategoryInfo(result.data)
                         _fetchLessonCategoryListSuccessEvent.emit(result.data)
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        }
-                        else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
                 }
@@ -194,16 +193,15 @@ class UpdateLessonViewModel @Inject constructor(
                         setLessonSiteInfo(result.data)
                         _fetchLessonSiteListSuccessEvent.emit(result.data)
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            setInternetError(true)
-                        }
-                        else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        }
-                        else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                setInternetError(true)
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
                 }
@@ -269,7 +267,7 @@ class UpdateLessonViewModel @Inject constructor(
         _lessonSiteMap.value =
             data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
-            add(0, stringResourcesProvider.getString(R.string.choose_lesosn_site))
+            add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
     }
 

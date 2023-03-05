@@ -76,12 +76,14 @@ class ManageViewModel @Inject constructor(
                             }
                         }
                         is Result.Error -> {
-                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                setInternetError(true)
-                            } else if (result.statusCode == UNAUTHORIZED) {
-                                navigateToExpireDialog()
-                            } else {
-                                showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
                             }
                         }
                     }
@@ -100,8 +102,8 @@ class ManageViewModel @Inject constructor(
                             _uiState.update { memberUiState ->
                                 memberUiState.copy(
                                     currentProgressRate =
-                                        if(result.data.expiredLessonsPrice == 0) 0
-                                        else result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100,
+                                    if (result.data.expiredLessonsPrice == 0) 0
+                                    else result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100,
                                     expiredLessonsCnt = result.data.expiredLessonsCnt,
                                     expiredLessonsPrice = result.data.expiredLessonsPrice,
                                     finishedLessonsCnt = result.data.finishedLessonsCnt,
@@ -112,12 +114,14 @@ class ManageViewModel @Inject constructor(
                             }
                         }
                         is Result.Error -> {
-                            if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                setInternetError(true)
-                            } else if (result.statusCode == UNAUTHORIZED) {
-                                navigateToExpireDialog()
-                            } else {
-                                showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
                             }
                         }
                     }
@@ -143,12 +147,14 @@ class ManageViewModel @Inject constructor(
                                 }
                             }
                             is Result.Error -> {
-                                if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                                    showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
-                                } else if (result.statusCode == UNAUTHORIZED) {
-                                    navigateToExpireDialog()
-                                } else {
-                                    showToast(stringResourcesProvider.getString(R.string.noti_update_fail))
+                                when {
+                                    result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                        showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
+                                    }
+                                    result.statusCode == UNAUTHORIZED -> {
+                                        navigateToExpireDialog()
+                                    }
+                                    else -> showToast(stringResourcesProvider.getString(R.string.noti_update_fail))
                                 }
                             }
                         }
@@ -171,12 +177,14 @@ class ManageViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.logout_fail))
+                        when {
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
                         }
                     }
                 }
@@ -207,7 +215,7 @@ class ManageViewModel @Inject constructor(
         _logoutCancelEvent.emit(Unit)
     }
 
-    fun deleteAuthToken() = viewModelScope.launch {
+    private fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
     }
 

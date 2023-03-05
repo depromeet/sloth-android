@@ -78,9 +78,7 @@ class LessonListViewModel @Inject constructor(
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> {
-                                    showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
-                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                             }
                         }
                     }

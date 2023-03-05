@@ -206,9 +206,7 @@ class TodayLessonViewModel @Inject constructor(
                             result.statusCode == UNAUTHORIZED -> {
                                 navigateToExpireDialog()
                             }
-                            else -> {
-                                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
-                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                         }
                     }
                 }
@@ -296,9 +294,7 @@ class TodayLessonViewModel @Inject constructor(
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> {
-                                    showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
-                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
                             }
                             // adapter 의 애니메이션 기능을 내부에서 수행시키지 못함
                             // rollbackTodayLessonCount(count, lesson.lessonId)
