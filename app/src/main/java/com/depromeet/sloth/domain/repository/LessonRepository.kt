@@ -17,9 +17,6 @@ interface LessonRepository {
 
     fun finishLesson(lessonId: String): Flow<Result<LessonFinishResponse>>
 
-
-    // suspend fun updateLessonCount(count: Int, lessonId: Int): Result<LessonUpdateCountResponse>
-
     fun updateLessonCount(count: Int, lessonId: Int): Flow<Result<UpdateLessonCountResponse>>
 
     fun fetchLessonDetail(lessonId: String): Flow<Result<LessonDetailResponse>>

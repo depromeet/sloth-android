@@ -313,10 +313,6 @@ class TodayLessonViewModel @Inject constructor(
         _navigateToRegisterLessonEvent.emit(fragmentId)
     }
 
-    fun navigateToWaitDialog() = viewModelScope.launch {
-        _navigateToWaitDialogEvent.emit(Unit)
-    }
-
     fun navigateToFinishLessonDialog(lessonId: String) = viewModelScope.launch {
         _navigateToFinishLessonDialogEvent.emit(lessonId)
     }

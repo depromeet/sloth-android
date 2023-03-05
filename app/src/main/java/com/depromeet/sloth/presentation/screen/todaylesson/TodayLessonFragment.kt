@@ -63,7 +63,6 @@ class TodayLessonFragment :
         binding.tbTodayLesson.setOnMenuItemSingleClickListener {
             when (it.itemId) {
                 R.id.menu_notification_list -> {
-                    //viewModel.navigateToWaitDialog()
                     viewModel.onNotificationClicked()
                     true
                 }

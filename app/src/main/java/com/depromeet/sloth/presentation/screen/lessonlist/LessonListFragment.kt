@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
@@ -141,13 +140,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private fun navigateToNotificationList() {
         val action = LessonListFragmentDirections.actionLessonListToNotificationList()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun navigateToLessonDetail(lesson: LessonListResponse) {
-        val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
-            lesson.lessonId.toString()
-        )
         findNavController().safeNavigate(action)
     }
 }

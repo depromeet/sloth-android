@@ -10,11 +10,7 @@ interface MemberRepository {
 
      fun fetchMemberInfo(): Flow<Result<MemberResponse>>
 
-    // fun fetchMemberInfo(): Flow<MemberResponse>
-
-    fun updateMemberInfo(
-        memberUpdateRequest: MemberUpdateRequest,
-    ): Flow<Result<MemberUpdateResponse>>
+    fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest, ): Flow<Result<MemberUpdateResponse>>
 
     fun logout(): Flow<Result<String>>
 

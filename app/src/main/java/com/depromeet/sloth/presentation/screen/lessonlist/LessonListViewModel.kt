@@ -159,7 +159,7 @@ class LessonListViewModel @Inject constructor(
         _navigateToOnBoardingCheckDetailEvent.emit(Unit)
     }
 
-    fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
+    private fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
         _checkLessonListOnBoardingCompleteEvent.emit(fetchLessonListOnBoardingStatusUseCase())
     }
 
