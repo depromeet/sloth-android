@@ -36,10 +36,11 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
 
+//TODO view 에서 .value 로 접근하는 로직
 @AndroidEntryPoint
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
+    private val viewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     private val lessonEndDateAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
@@ -53,7 +54,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = registerLessonViewModel
+            vm = viewModel
         }
         initViews()
         initListener()
@@ -68,30 +69,27 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
     }
 
-    private fun initObserver() = with(registerLessonViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                registerLessonStartDateEvent
-                    .collect {
+                viewModel.registerLessonStartDateEvent.collect {
                         showLessonStartDateCalendar()
                     }
             }
 
             launch {
-                registerLessonEndDateEvent
-                    .collect {
-                        if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                viewModel.registerLessonEndDateEvent.collect {
+                        if (viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
                             showLessonEndDateCalendar()
                         }
                     }
             }
 
             launch {
-                lessonDateRangeValidation
-                    .collect { isEnable ->
+                viewModel.lessonDateRangeValidation.collect { isEnable ->
                         when (isEnable) {
                             false -> {
-                                if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                                if (viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
                                     Toast.makeText(
                                         requireContext(),
                                         getString(R.string.lesson_date_range_validation_error),
@@ -99,17 +97,14 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                                     ).show()
                                 }
                             }
-
                             else -> Unit
                         }
                     }
             }
 
             launch {
-                navigateToRegisterLessonCheckEvent
-                    .collect {
-                        val action =
-                            RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
+                viewModel.navigateToRegisterLessonCheckEvent.collect {
+                        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
                         findNavController().safeNavigate(action)
                     }
             }
@@ -131,9 +126,9 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                registerLessonViewModel.setLessonStartDate(calendar)
+                viewModel.setLessonStartDate(calendar)
                 // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
-                registerLessonViewModel.setLessonEndDateBySpinner(registerLessonViewModel.lessonEndDateSelectedItemPosition.value)
+                viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -142,7 +137,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
     private fun showLessonEndDateCalendar() = with(binding) {
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(registerLessonViewModel.startDate.value.time + DAY))
+                .setValidator(DateValidatorPointForward.from(viewModel.startDate.value.time + DAY))
 
         val materialDateBuilder =
             MaterialDatePicker.Builder.datePicker().apply {
@@ -154,7 +149,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
                 calendar.time = Date(it)
-                registerLessonViewModel.setLessonEndDateByCalendar(calendar)
+                viewModel.setLessonEndDateByCalendar(calendar)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -164,7 +159,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         lessonEndDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnRegisterLessonEndDate.apply {
             adapter = lessonEndDateAdapter
-            setSelection(registerLessonViewModel.lessonEndDateSelectedItemPosition.value, false)
+            setSelection(viewModel.lessonEndDateSelectedItemPosition.value, false)
             setSpinnerListener(this)
         }
     }
@@ -181,16 +176,16 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         spinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                registerLessonViewModel.setLessonEndDateSelectedItemPosition(
+                viewModel.setLessonEndDateSelectedItemPosition(
                     spnRegisterLessonEndDate.selectedItemPosition
                 )
 
                 when (spnRegisterLessonEndDate.selectedItemPosition) {
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
-                        registerLessonViewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
+                        viewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
                     }
 
-                    CUSTOM_SETTING -> registerLessonViewModel.registerLessonEndDate()
+                    CUSTOM_SETTING -> viewModel.registerLessonEndDate()
                 }
                 binding.clRegisterLessonSecond.clearFocus()
             }
@@ -214,7 +209,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    registerLessonViewModel.setLessonPrice(
+                    viewModel.setLessonPrice(
                         charSequence.toString().replace(",", "").toInt()
                     )
                     result =
@@ -256,7 +251,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                registerLessonViewModel.setLessonMessage(text.toString())
+                viewModel.setLessonMessage(text.toString())
             }
 
             override fun afterTextChanged(editable: Editable?) {}

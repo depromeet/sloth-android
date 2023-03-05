@@ -1,6 +1,5 @@
 package com.depromeet.sloth.presentation.screen.manage
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
@@ -15,14 +14,7 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -150,7 +142,6 @@ class ManageViewModel @Inject constructor(
                                     )
                                 }
                             }
-
                             is Result.Error -> {
                                 if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                                     showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))

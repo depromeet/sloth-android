@@ -25,17 +25,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
+//TODO view 에서 .value 로 접근하는 로직
 @AndroidEntryPoint
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
-
+    private val viewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            registerLessonViewModel.lessonCategoryList.value
+            viewModel.lessonCategoryList.value
         )
     }
 
@@ -43,21 +43,21 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            registerLessonViewModel.lessonSiteList.value
+            viewModel.lessonSiteList.value
         )
     }
 
     override fun onStart() {
         super.onStart()
-        registerLessonViewModel.fetchLessonCategoryList()
-        registerLessonViewModel.fetchLessonSiteList()
+        viewModel.fetchLessonCategoryList()
+        viewModel.fetchLessonSiteList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = registerLessonViewModel
+            vm = viewModel
         }
 
         val args: RegisterLessonFirstFragmentArgs by navArgs()
@@ -77,7 +77,6 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
     }
 
     override fun initViews() = with(binding) {
-
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)
@@ -92,50 +91,49 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         }
     }
 
-    private fun initObserver() = with(registerLessonViewModel) {
-
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                fetchLessonCategoryListSuccessEvent.collect {
+                viewModel.fetchLessonCategoryListSuccessEvent.collect {
                         bindAdapter(
                             lessonCategoryAdapter,
                             binding.spnRegisterLessonCategory,
-                            lessonCategorySelectedItemPosition.value
+                            viewModel.lessonCategorySelectedItemPosition.value
                         )
                     }
             }
 
             launch {
-                fetchLessonSiteListSuccessEvent.collect {
+                viewModel.fetchLessonSiteListSuccessEvent.collect {
                         bindAdapter(
                             lessonSiteAdapter,
                             binding.spnRegisterLessonSite,
-                            lessonSiteSelectedItemPosition.value
+                            viewModel.lessonSiteSelectedItemPosition.value
                         )
                     }
             }
 
             launch {
-                navigateToRegisterLessonSecondEvent.collect {
+                viewModel.navigateToRegisterLessonSecondEvent.collect {
                         val action = RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
                         findNavController().safeNavigate(action)
                     }
             }
 
             launch {
-                isLoading.collect { isLoading ->
+                viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
             }
 
             launch {
-                navigateToExpireDialogEvent.collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent.collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
@@ -166,13 +164,13 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         0 -> {
                             when (spinner) {
                                 spnRegisterLessonCategory -> {
-                                    registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                    viewModel.setLessonCategorySelectedItemPosition(
                                         spnRegisterLessonCategory.selectedItemPosition
                                     )
                                 }
 
                                 else -> {
-                                    registerLessonViewModel.setLessonSiteItemPosition(
+                                    viewModel.setLessonSiteItemPosition(
                                         spnRegisterLessonSite.selectedItemPosition
                                     )
                                 }
@@ -182,23 +180,23 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         else -> {
                             when (spinner) {
                                 spnRegisterLessonCategory -> {
-                                    registerLessonViewModel.setLessonCategoryId(
-                                        registerLessonViewModel.lessonCategoryMap.value.filterValues
+                                    viewModel.setLessonCategoryId(
+                                        viewModel.lessonCategoryMap.value.filterValues
                                         { it == spnRegisterLessonCategory.selectedItem }.keys.first()
                                     )
-                                    registerLessonViewModel.setLessonCategoryName(spinner.selectedItem.toString())
-                                    registerLessonViewModel.setLessonCategorySelectedItemPosition(
+                                    viewModel.setLessonCategoryName(spinner.selectedItem.toString())
+                                    viewModel.setLessonCategorySelectedItemPosition(
                                         spnRegisterLessonCategory.selectedItemPosition
                                     )
                                 }
 
                                 else -> {
-                                    registerLessonViewModel.setLessonSiteId(
-                                        registerLessonViewModel.lessonSiteMap.value.filterValues
+                                    viewModel.setLessonSiteId(
+                                        viewModel.lessonSiteMap.value.filterValues
                                         { it == spnRegisterLessonSite.selectedItem }.keys.first()
                                     )
-                                    registerLessonViewModel.setLessonSiteName(spinner.selectedItem.toString())
-                                    registerLessonViewModel.setLessonSiteItemPosition(
+                                    viewModel.setLessonSiteName(spinner.selectedItem.toString())
+                                    viewModel.setLessonSiteItemPosition(
                                         spnRegisterLessonSite.selectedItemPosition
                                     )
                                 }
@@ -218,7 +216,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             override fun beforeTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {}
 
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                registerLessonViewModel.setLessonName(text.toString())
+                viewModel.setLessonName(text.toString())
             }
 
             override fun afterTextChanged(editable: Editable?) {}
@@ -242,8 +240,8 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    registerLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = registerLessonViewModel.lessonTotalNumber.value.toString()
+                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = viewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvRegisterLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
                     } else {

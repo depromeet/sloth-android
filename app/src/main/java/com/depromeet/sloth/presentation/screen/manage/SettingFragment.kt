@@ -17,28 +17,23 @@ import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-/**
- * @author 최철훈
- * @created 2023-02-16
- * @desc
- */
+
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
 
-    private val manageViewModel: ManageViewModel by viewModels()
+    private val viewModel: ManageViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = manageViewModel
+            vm = viewModel
         }
-
-        init()
+        initListener()
         initObserver()
     }
 
-    private fun init() {
+    private fun initListener() {
         binding.tbSetting.setOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
@@ -46,25 +41,22 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         }
     }
 
-    private fun initObserver() = with(manageViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                navigateToContactEvent
-                    .collect {
+                viewModel.navigateToContactEvent.collect {
                         sendEmail()
                     }
             }
 
             launch {
-                navigateToPrivatePolicyEvent
-                    .collect {
+                viewModel.navigateToPrivatePolicyEvent.collect {
                         showPrivatePolicy()
                     }
             }
 
             launch {
-                navigateToLogoutDialogEvent
-                    .collect {
+                viewModel.navigateToLogoutDialogEvent.collect {
                         showLogoutDialog()
                     }
             }
@@ -99,5 +91,4 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         val action = SettingFragmentDirections.actionManageToLogoutDialog()
         findNavController().safeNavigate(action)
     }
-
 }

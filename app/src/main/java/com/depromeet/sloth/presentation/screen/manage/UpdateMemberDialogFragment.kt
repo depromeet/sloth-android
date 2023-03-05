@@ -24,12 +24,12 @@ import kotlinx.coroutines.launch
 class UpdateMemberDialogFragment :
     BaseDialogFragment<FragmentUpdateMemberDialogBinding>(R.layout.fragment_update_member_dialog) {
 
-    private val updateMemberViewModel: UpdateMemberViewModel by viewModels()
+    private val viewModel: UpdateMemberViewModel by viewModels()
 
     private val updateMemberTextChangeListener by lazy {
         DebounceEditTextListener(
-            scope = updateMemberViewModel.viewModelScope,
-            onDebounceEditTextChange = updateMemberViewModel::setMemberName,
+            scope = viewModel.viewModelScope,
+            onDebounceEditTextChange = viewModel::setMemberName,
             debouncePeriod = 0L
         )
     }
@@ -38,7 +38,7 @@ class UpdateMemberDialogFragment :
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = updateMemberViewModel
+            vm = viewModel
         }
         initViews()
         initObserver()
@@ -49,43 +49,36 @@ class UpdateMemberDialogFragment :
         focusInputForm(etMemberName)
     }
 
-    private fun initObserver() = with(updateMemberViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                updateMemberSuccess
-                    .collect {
+                viewModel.updateMemberSuccess.collect {
                         navigateToManage()
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }
     }
 
-    private fun focusInputForm(editText: EditText) = with(updateMemberViewModel) {
+    private fun focusInputForm(editText: EditText) = with(viewModel) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence?,

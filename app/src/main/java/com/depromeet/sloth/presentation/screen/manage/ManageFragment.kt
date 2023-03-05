@@ -1,21 +1,15 @@
 package com.depromeet.sloth.presentation.screen.manage
 
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentManageBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.presentation.screen.base.BaseFragment
-import com.depromeet.sloth.presentation.screen.login.LoginBottomSheetFragmentDirections
-import com.depromeet.sloth.util.CELLPHONE_INFO_DIVER
-import com.depromeet.sloth.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,67 +17,57 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val manageViewModel: ManageViewModel by viewModels()
+    private val viewModel: ManageViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
-        manageViewModel.fetchMemberInfo()
+        viewModel.fetchMemberInfo()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = manageViewModel
+            vm = viewModel
         }
-
-        init()
+        initListener()
         initObserver()
     }
 
-    private fun init() {
+    private fun initListener() {
         binding.tvSetting.setOnClickListener {
             navigateToSetting()
         }
     }
 
-    private fun initObserver() = with(manageViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                navigateToUpdateMemberDialogEvent
-                    .collect {
+                viewModel.navigateToUpdateMemberDialogEvent.collect {
                         showUpdateMemberDialog()
                     }
             }
 
             launch {
-                navigateToWithdrawalDialogEvent
-                    .collect {
+                viewModel.navigateToWithdrawalDialogEvent.collect {
                         showWithdrawalDialog()
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
@@ -97,7 +81,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     private fun showUpdateMemberDialog() {
         val action = ManageFragmentDirections.actionManageToUpdateMemberDialog(
-            manageViewModel.uiState.value.memberName
+            viewModel.uiState.value.memberName
         )
         findNavController().safeNavigate(action)
     }

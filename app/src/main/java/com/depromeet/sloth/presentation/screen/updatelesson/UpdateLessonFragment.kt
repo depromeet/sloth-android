@@ -18,17 +18,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
+//TODO view 에서 .value 로 접근하고 있음
 @AndroidEntryPoint
 class UpdateLessonFragment :
     BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {
 
-    private val updateLessonViewModel: UpdateLessonViewModel by viewModels()
+    private val viewModel: UpdateLessonViewModel by viewModels()
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            updateLessonViewModel.lessonCategoryList.value
+            viewModel.lessonCategoryList.value
         )
     }
 
@@ -36,7 +37,7 @@ class UpdateLessonFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            updateLessonViewModel.lessonSiteList.value
+            viewModel.lessonSiteList.value
         )
     }
 
@@ -44,7 +45,7 @@ class UpdateLessonFragment :
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = updateLessonViewModel
+            vm = viewModel
         }
         initViews()
         initListener()
@@ -59,85 +60,73 @@ class UpdateLessonFragment :
         validatePriceInputForm(etUpdateLessonPrice)
     }
 
-    private fun initListener() = with(binding) {
-        tbUpdateLesson.setNavigationOnClickListener {
+    private fun initListener() {
+        binding.tbUpdateLesson.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
         }
     }
 
-    private fun initObserver() = with(updateLessonViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                updateLessonSuccessEvent
-                    .collect {
-                        navigateToLessonDetail()
-                    }
+                viewModel.updateLessonSuccessEvent.collect {
+                    navigateToLessonDetail()
+                }
             }
 
             launch {
-                fetchLessonCategoryListSuccessEvent
-                    .collect {
-                        bindAdapter(
-                            lessonCategoryAdapter,
-                            binding.spnUpdateLessonCategory,
-                            lessonCategorySelectedItemPosition.value
-                        )
-                    }
+                viewModel.fetchLessonCategoryListSuccessEvent.collect {
+                    bindAdapter(
+                        lessonCategoryAdapter,
+                        binding.spnUpdateLessonCategory,
+                        viewModel.lessonCategorySelectedItemPosition.value
+                    )
+                }
             }
 
             launch {
-                fetchLessonSiteListSuccessEvent
-                    .collect {
-                        bindAdapter(
-                            lessonSiteAdapter,
-                            binding.spnUpdateLessonSite,
-                            lessonSiteSelectedItemPosition.value
-                        )
-                    }
+                viewModel.fetchLessonSiteListSuccessEvent.collect {
+                    bindAdapter(
+                        lessonSiteAdapter,
+                        binding.spnUpdateLessonSite,
+                        viewModel.lessonSiteSelectedItemPosition.value
+                    )
+                }
             }
 
             launch {
-                lessonTotalNumberValidation
-                    .collect { isEnable ->
-                        when (isEnable) {
-                            false -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.lesson_number_validation_error),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            else -> Unit
+                viewModel.lessonTotalNumberValidation.collect { isEnable ->
+                    when (isEnable) {
+                        false -> {
+                            Toast.makeText(
+                                requireContext(), getString(R.string.lesson_number_validation_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
+
+                        else -> Unit
                     }
+                }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
-                        showExpireDialog()
-                    }
+                viewModel.navigateToExpireDialogEvent.collect {
+                    showExpireDialog()
+                }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                viewModel.showToastEvent.collect { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -162,7 +151,7 @@ class UpdateLessonFragment :
             }
 
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
-                updateLessonViewModel.setLessonName(text.toString())
+                viewModel.setLessonName(text.toString())
             }
 
             override fun afterTextChanged(editable: Editable?) {}
@@ -192,8 +181,8 @@ class UpdateLessonFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && charSequence.toString() != result) {
-                    updateLessonViewModel.setLessonTotalNumber(charSequence.toString().toInt())
-                    result = updateLessonViewModel.lessonTotalNumber.value.toString()
+                    viewModel.setLessonTotalNumber(charSequence.toString().toInt())
+                    result = viewModel.lessonTotalNumber.value.toString()
                     if (result[0] == '0') {
                         tvUpdateLessonTotalNumberInfo.setBackgroundResource(R.drawable.bg_register_lesson_rounded_edit_text_error)
                     } else {
@@ -238,7 +227,7 @@ class UpdateLessonFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 if (!TextUtils.isEmpty(charSequence!!.toString()) && charSequence.toString() != result) {
-                    updateLessonViewModel.setLessonPrice(
+                    viewModel.setLessonPrice(
                         charSequence.toString().replace(",", "").toInt()
                     )
                     result =
@@ -300,13 +289,13 @@ class UpdateLessonFragment :
                         0 -> {
                             when (spinner) {
                                 spnUpdateLessonCategory -> {
-                                    updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                    viewModel.setLessonCategorySelectedItemPosition(
                                         spnUpdateLessonCategory.selectedItemPosition
                                     )
                                 }
 
                                 else -> {
-                                    updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                    viewModel.setLessonSiteSelectedItemPosition(
                                         spnUpdateLessonSite.selectedItemPosition
                                     )
                                 }
@@ -316,21 +305,21 @@ class UpdateLessonFragment :
                         else -> {
                             when (spinner) {
                                 spnUpdateLessonCategory -> {
-                                    updateLessonViewModel.setLessonCategoryId(
-                                        updateLessonViewModel.lessonCategoryMap.value.filterValues
+                                    viewModel.setLessonCategoryId(
+                                        viewModel.lessonCategoryMap.value.filterValues
                                         { it == spnUpdateLessonCategory.selectedItem }.keys.first()
                                     )
-                                    updateLessonViewModel.setLessonCategorySelectedItemPosition(
+                                    viewModel.setLessonCategorySelectedItemPosition(
                                         spnUpdateLessonCategory.selectedItemPosition
                                     )
                                 }
 
                                 else -> {
-                                    updateLessonViewModel.setLessonSiteId(
-                                        updateLessonViewModel.lessonSiteMap.value.filterValues
+                                    viewModel.setLessonSiteId(
+                                        viewModel.lessonSiteMap.value.filterValues
                                         { it == spnUpdateLessonSite.selectedItem }.keys.first()
                                     )
-                                    updateLessonViewModel.setLessonSiteSelectedItemPosition(
+                                    viewModel.setLessonSiteSelectedItemPosition(
                                         spnUpdateLessonSite.selectedItemPosition
                                     )
                                 }

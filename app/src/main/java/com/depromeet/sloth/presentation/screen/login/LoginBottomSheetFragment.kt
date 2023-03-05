@@ -38,7 +38,7 @@ import timber.log.Timber
 class LoginBottomSheetFragment :
     BaseBottomSheetFragment<FragmentLoginBottomDialogBinding>(R.layout.fragment_login_bottom_dialog) {
 
-    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var loginLauncher: ActivityResultLauncher<Intent>
@@ -75,55 +75,45 @@ class LoginBottomSheetFragment :
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = loginViewModel
+            vm = viewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(loginViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                googleLoginEvent
-                    .collect {
+                viewModel.googleLoginEvent.collect {
                         loginWithGoogle()
                     }
             }
 
             launch {
-                kakaoLoginEvent
-                    .collect {
+                viewModel.kakaoLoginEvent.collect {
                         loginWithKakao()
                     }
             }
 
             launch {
-                navigateToRegisterBottomSheetEvent
-                    .collect {
+                viewModel.navigateToRegisterBottomSheetEvent.collect {
                         showRegisterBottomSheet()
                     }
             }
 
             launch {
-                registerNotificationTokenSuccessEvent
-                    .collect {
+                viewModel.registerNotificationTokenSuccessEvent.collect {
                         navigateToTodayLesson()
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
@@ -149,7 +139,7 @@ class LoginBottomSheetFragment :
         try {
             val authCode = completedTask.getResult(ApiException::class.java)?.serverAuthCode
             authCode?.run {
-                loginViewModel.fetchGoogleAuthInfo(this)
+                viewModel.fetchGoogleAuthInfo(this)
             } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
@@ -161,17 +151,13 @@ class LoginBottomSheetFragment :
     private suspend fun loginWithKakao() {
         try {
             val oAuthToken = UserApiClient.loginWithKakao(requireContext())
-            loginViewModel.fetchSlothAuthInfo(oAuthToken.accessToken, KAKAO)
+            viewModel.fetchSlothAuthInfo(oAuthToken.accessToken, KAKAO)
         } catch (error: Throwable) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                Timber.tag(TAG).d("사용자가 명시적으로 취소")
+                Timber.d("사용자가 명시적으로 취소")
             } else {
-                Timber.tag(TAG).e(error, "인증 에러 발생")
+                Timber.e(error, "인증 에러 발생")
             }
         }
-    }
-
-    companion object {
-        const val TAG = "LoginBottomSheetFragment"
     }
 }

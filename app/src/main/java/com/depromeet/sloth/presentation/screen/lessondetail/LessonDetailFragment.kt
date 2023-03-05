@@ -17,39 +17,36 @@ import kotlinx.coroutines.launch
 class LessonDetailFragment :
     BaseFragment<FragmentLessonDetailBinding>(R.layout.fragment_lesson_detail) {
 
-    private val lessonDetailViewModel: LessonDetailViewModel by viewModels()
+    private val viewModel: LessonDetailViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
-        lessonDetailViewModel.fetchLessonDetail()
+        viewModel.fetchLessonDetail()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = lessonDetailViewModel
+            vm = viewModel
         }
         initListener()
         initObserver()
     }
 
-    private fun initListener() = with(binding) {
-        tbLessonDetail.setNavigationOnClickListener {
+    private fun initListener() {
+        binding.tbLessonDetail.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
             }
         }
     }
 
-    private fun initObserver() = with(lessonDetailViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                navigateToUpdateLessonEvent
-                    .collect { lessonDetail ->
-                        val action =
-                            LessonDetailFragmentDirections.actionLessonDetailToUpdateLesson(
+                viewModel.navigateToUpdateLessonEvent.collect { lessonDetail ->
+                        val action = LessonDetailFragmentDirections.actionLessonDetailToUpdateLesson(
                                 lessonDetail
                             )
                         findNavController().safeNavigate(action)
@@ -57,32 +54,25 @@ class LessonDetailFragment :
             }
 
             launch {
-                navigateToDeleteLessonDialogEvent
-                    .collect {
-                        showLessonDeleteDialog(lessonDetailViewModel.lessonId)
+                viewModel.navigateToDeleteLessonDialogEvent.collect {
+                        showLessonDeleteDialog(viewModel.lessonId)
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }

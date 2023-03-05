@@ -1,13 +1,11 @@
 package com.depromeet.sloth.presentation.screen.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
-import com.depromeet.sloth.data.model.response.notification.NotificationListResponse
 import com.depromeet.sloth.databinding.FragmentNotificationListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
@@ -16,31 +14,36 @@ import com.depromeet.sloth.presentation.screen.base.BaseFragment
 import com.depromeet.sloth.presentation.screen.manage.UpdateMemberDialogFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 internal class NotificationListFragment :
     BaseFragment<FragmentNotificationListBinding>(R.layout.fragment_notification_list) {
 
     private lateinit var notificationAdapter: NotificationAdapter
-    private val notificationViewModel: NotificationViewModel by viewModels()
+    private val viewModel: NotificationViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = notificationViewModel
+            vm = viewModel
         }
-
+        initViews()
         initListener()
         initObserver()
 
-        notificationViewModel.fetchNotificationList()
+        viewModel.fetchNotificationList()
+    }
+
+    override fun initViews() {
+        super.initViews()
     }
 
     private fun initListener() {
         notificationAdapter = NotificationAdapter {
-            notificationViewModel.updateNotificationState(it) {
-                Log.e("updateNotificationState", it.toString())
+            viewModel.updateNotificationState(it) {
+                Timber.tag("updateNotificationState").e(it.toString())
             }
         }
         binding.rvNotificationList.adapter = notificationAdapter
@@ -52,29 +55,22 @@ internal class NotificationListFragment :
         }
     }
 
-    private fun initObserver() = with(notificationViewModel) {
+    private fun initObserver()  {
         repeatOnStarted {
-
             launch {
-                fetchLessonListSuccessEvent
-                    .collect {
+                viewModel.fetchLessonListSuccessEvent.collect {
                         notificationAdapter.setNotificationList(it)
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }

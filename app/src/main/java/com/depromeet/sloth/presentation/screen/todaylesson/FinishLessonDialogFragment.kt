@@ -18,53 +18,44 @@ import kotlinx.coroutines.launch
 class FinishLessonDialogFragment :
     BaseDialogFragment<FragmentFinishLessonDialogBinding>(R.layout.fragment_finish_lesson_dialog) {
 
-    private val finishLessonViewModel: FinishLessonViewModel by viewModels()
+    private val viewModel: FinishLessonViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind {
-            vm = finishLessonViewModel
+            vm = viewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(finishLessonViewModel) {
-
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                finishLessonSuccessEvent
-                    .collect {
+                viewModel.finishLessonSuccessEvent.collect {
                         navigateToTodayLesson()
                     }
             }
 
             launch {
-                finishLessonCancelEvent
-                    .collect {
+                viewModel.finishLessonCancelEvent.collect {
                         closeFinishLessonDialog()
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }

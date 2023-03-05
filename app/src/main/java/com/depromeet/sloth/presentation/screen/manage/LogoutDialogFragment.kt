@@ -17,36 +17,33 @@ import kotlinx.coroutines.launch
 class LogoutDialogFragment :
     BaseDialogFragment<FragmentLogoutDialogBinding>(R.layout.fragment_logout_dialog) {
 
-    private val manageViewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = manageViewModel
+            vm = viewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(manageViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
-                logoutSuccessEvent
-                    .collect {
+                viewModel.logoutSuccessEvent.collect {
                         navigateToLogin()
                     }
             }
 
             launch {
-                logoutCancelEvent
-                    .collect {
+                viewModel.logoutCancelEvent.collect {
                         closeLogoutDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }

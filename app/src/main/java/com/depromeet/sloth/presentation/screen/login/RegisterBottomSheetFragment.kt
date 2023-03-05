@@ -18,64 +18,56 @@ import kotlinx.coroutines.launch
 class RegisterBottomSheetFragment :
     BaseBottomSheetFragment<FragmentRegisterBottomDialogBinding>(R.layout.fragment_register_bottom_dialog) {
 
-    private val loginViewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModel: LoginViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = loginViewModel
+            vm = viewModel
         }
         initObserver()
     }
 
-    private fun initObserver() = with(loginViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                registerNotificationTokenSuccessEvent
-                    .collect {
+                viewModel.registerNotificationTokenSuccessEvent.collect {
                         navigateToTodayLesson()
                     }
             }
 
             launch {
-                navigateToPrivatePolicyEvent.collect {
+                viewModel.navigateToPrivatePolicyEvent.collect {
                     showPrivatePolicy()
                 }
             }
 
             launch {
-                registerAgreeEvent.collect {
-                    createAndRegisterNotificationToken()
+                viewModel.registerAgreeEvent.collect {
+                    viewModel.createAndRegisterNotificationToken()
                 }
             }
 
             launch {
-                registerCancelEvent.collect {
+                viewModel.registerCancelEvent.collect {
                     closeRegisterBottomSheet()
                 }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                viewModel.isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                viewModel.showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }
     }
-
 
     private fun navigateToTodayLesson() {
         val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToTodayLesson()
@@ -88,8 +80,7 @@ class RegisterBottomSheetFragment :
     }
 
     private fun showPrivatePolicy() {
-        val action =
-            RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToSlothPolicyWebview()
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToSlothPolicyWebview()
         findNavController().safeNavigate(action)
     }
 }

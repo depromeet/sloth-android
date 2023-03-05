@@ -16,13 +16,13 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBinding>(R.layout.fragment_register_lesson_check) {
 
-    private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
+    private val viewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         bind {
-            vm = registerLessonViewModel
+            vm = viewModel
         }
         initListener()
         initObserver()
@@ -36,11 +36,10 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
         }
     }
 
-    private fun initObserver() = with(registerLessonViewModel) {
+    private fun initObserver() {
         repeatOnStarted {
-
             launch {
-                registerLessonSuccessEvent.collect { fragmentId ->
+                viewModel.registerLessonSuccessEvent.collect { fragmentId ->
                     when (fragmentId) {
                         R.id.today_lesson -> {
                             val action = RegisterLessonCheckFragmentDirections.actionRegisterLessonCheckToLessonList()
@@ -70,25 +69,25 @@ class RegisterLessonCheckFragment : BaseFragment<FragmentRegisterLessonCheckBind
             }
 
             launch {
-                navigateToRegisterLessonSecondEvent.collect {
+                viewModel.navigateToRegisterLessonSecondEvent.collect {
                     findNavController().navigateUp()
                 }
             }
 
             launch {
-                isLoading.collect { isLoading ->
+                viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
             }
 
             launch {
-                navigateToExpireDialogEvent.collect {
+                viewModel.navigateToExpireDialogEvent.collect {
                     showExpireDialog()
                 }
             }
 
             launch {
-                showToastEvent.collect { message ->
+                viewModel.showToastEvent.collect { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
