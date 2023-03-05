@@ -36,6 +36,9 @@ class ManageViewModel @Inject constructor(
     val navigateToUpdateMemberDialogEvent: SharedFlow<Unit> =
         _navigateToUpdateMemberDialogEvent.asSharedFlow()
 
+    private val _navigateToSettingEvent = MutableSharedFlow<Unit>()
+    val navigateToSettingEvent: SharedFlow<Unit> = _navigateToSettingEvent.asSharedFlow()
+
     private val _navigateToContactEvent = MutableSharedFlow<Unit>()
     val navigateToContactEvent: SharedFlow<Unit> = _navigateToContactEvent.asSharedFlow()
 
@@ -193,6 +196,10 @@ class ManageViewModel @Inject constructor(
 
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
         _navigateToUpdateMemberDialogEvent.emit(Unit)
+    }
+
+    fun navigateToSetting() = viewModelScope.launch {
+        _navigateToSettingEvent.emit(Unit)
     }
 
     fun navigateToPrivacyPolicy() = viewModelScope.launch {
