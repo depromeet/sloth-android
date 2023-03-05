@@ -89,6 +89,14 @@ class TodayLessonViewModel @Inject constructor(
         }
     }
 
+    private fun rollbackTodayLessonCount(count: Int, lessonId: Int) {
+        if (count == 1) {
+            decreaseTodayLessonCount(lessonId)
+        } else {
+            increaseTodayLessonCount(lessonId)
+        }
+    }
+
     private fun increaseTodayLessonCount(lessonId: Int) {
         lateinit var newLesson: TodayLessonResponse
         var flag = false
@@ -288,6 +296,8 @@ class TodayLessonViewModel @Inject constructor(
                                     showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
                                 }
                             }
+                            // adapter 의 애니메이션 기능을 내부에서 수행시키지 못함
+                            // rollbackTodayLessonCount(count, lesson.lessonId)
                         }
                     }
                     updateLessonCountJob = null

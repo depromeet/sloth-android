@@ -15,10 +15,9 @@ import com.depromeet.sloth.presentation.screen.custom.LessonItemDecoration
 import com.depromeet.sloth.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
-// TODO 로그가 2의 배수 번 호출되는 이슈 뭐지...???
+// event 가 중복으로 호출 되는 이슈
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
@@ -28,9 +27,7 @@ class TodayLessonFragment :
     private val todayLessonItemClickListener = TodayLessonItemClickListener(
         onClick = { viewModel.navigateToRegisterLesson(R.id.today_lesson) },
         onPlusClick = { lesson -> viewModel.updateLessonCount(1, lesson) },
-        // onPlusClick = { viewModel.updateLessonCount(1) },
         onMinusClick = { lesson -> viewModel.updateLessonCount(-1, lesson) },
-        // onMinusClick = { viewModel.updateLessonCount(-1) },
         onFinishClick = { lesson -> viewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
     )
 
@@ -62,7 +59,6 @@ class TodayLessonFragment :
         }
     }
 
-
     private fun initListener() {
         binding.tbTodayLesson.setOnMenuItemSingleClickListener {
             when (it.itemId) {
@@ -83,21 +79,18 @@ class TodayLessonFragment :
                         val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
                         findNavController().safeNavigate(action)
                     } else {
-                        Timber.d("자동 로그인")
                         viewModel.checkTodayLessonOnBoardingComplete()
                     }
                 }
             }
-            //TODO 한번 다른화면 갔다가 오면 호출이 2배씩 늘어남
+            // 다른 화면 갔다가 돌아 오면 collect 내부의 로그 호출이 2배씩 늘어남
             // api 는 중복 호출을 막아놔서 한번씩만 호출되긴 함
             launch {
                 viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
                     if (!isOnBoardingComplete) {
-                        Timber.d("온보딩 완료 안됨")
                         val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
                         findNavController().safeNavigate(action)
                     } else {
-                        Timber.d("온보딩 완료")
                         viewModel.fetchTodayLessonList()
                     }
                 }
