@@ -197,6 +197,7 @@
     <string name="delete_lesson_dialog_check">포기하기</string>
 
     <!--    MyPage-->
+    <string name="setting">설정</string>
     <string name="profile_name">이름</string>
     <string name="profile_email">xxx@gmail.com</string>
     <string name="member_name">이름</string>
