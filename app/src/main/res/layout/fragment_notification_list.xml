@@ -10,7 +10,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.screen.notification.NotificationViewModel" />
+            type="com.depromeet.sloth.presentation.ui.notification.NotificationViewModel" />
 
     </data>
 

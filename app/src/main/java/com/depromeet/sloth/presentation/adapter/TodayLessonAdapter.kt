@@ -9,8 +9,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
 import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.todaylesson.*
-import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonItemClickListener
-import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonUiModel
+import com.depromeet.sloth.presentation.ui.todaylesson.TodayLessonItemClickListener
+import com.depromeet.sloth.presentation.ui.todaylesson.TodayLessonUiModel
 import com.depromeet.sloth.util.setOnSingleClickListener
 
 class TodayLessonAdapter(

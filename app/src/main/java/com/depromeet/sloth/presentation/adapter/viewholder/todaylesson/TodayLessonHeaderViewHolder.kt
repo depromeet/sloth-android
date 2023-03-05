@@ -3,7 +3,7 @@ package com.depromeet.sloth.presentation.adapter.viewholder.todaylesson
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ItemTodayLessonHeaderBinding
-import com.depromeet.sloth.presentation.screen.todaylesson.TodayLessonType
+import com.depromeet.sloth.presentation.ui.todaylesson.TodayLessonType
 import com.depromeet.sloth.util.GlideApp
 
 class TodayLessonHeaderViewHolder(val binding: ItemTodayLessonHeaderBinding) : RecyclerView.ViewHolder(binding.root) {

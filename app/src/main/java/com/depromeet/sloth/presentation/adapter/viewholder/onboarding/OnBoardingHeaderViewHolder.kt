@@ -3,7 +3,7 @@ package com.depromeet.sloth.presentation.adapter.viewholder.onboarding
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ItemOnBoardingHeaderBinding
-import com.depromeet.sloth.presentation.screen.onboarding.OnBoardingType
+import com.depromeet.sloth.presentation.ui.onboarding.OnBoardingType
 import com.depromeet.sloth.util.GlideApp
 
 class OnBoardingHeaderViewHolder(val binding: ItemOnBoardingHeaderBinding) : RecyclerView.ViewHolder(binding.root) {

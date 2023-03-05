@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.screen.updatelesson.UpdateLessonViewModel" />
+            type="com.depromeet.sloth.presentation.ui.updatelesson.UpdateLessonViewModel" />
 
     </data>
 

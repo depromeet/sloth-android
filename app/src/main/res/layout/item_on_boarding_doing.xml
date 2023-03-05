@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_today_lesson_remain"
                 tools:ignore="HardcodedText" />
 
-            <com.depromeet.sloth.presentation.screen.custom.ArcProgressBar
+            <com.depromeet.sloth.presentation.ui.custom.ArcProgressBar
                 android:id="@+id/pb_today_lesson_bar"
                 android:layout_width="295dp"
                 android:layout_height="100dp"

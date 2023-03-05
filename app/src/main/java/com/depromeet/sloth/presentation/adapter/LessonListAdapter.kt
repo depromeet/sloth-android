@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.lessonlist.*
-import com.depromeet.sloth.presentation.screen.lessonlist.LessonListItemClickListener
-import com.depromeet.sloth.presentation.screen.lessonlist.LessonListUiModel
+import com.depromeet.sloth.presentation.ui.lessonlist.LessonListItemClickListener
+import com.depromeet.sloth.presentation.ui.lessonlist.LessonListUiModel
 import com.depromeet.sloth.util.setOnSingleClickListener
 
 class LessonListAdapter(

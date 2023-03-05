@@ -3,7 +3,7 @@ package com.depromeet.sloth.presentation.adapter.viewholder.lessonlist
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.ItemLessonListTitleBinding
-import com.depromeet.sloth.presentation.screen.lessonlist.LessonListType
+import com.depromeet.sloth.presentation.ui.lessonlist.LessonListType
 
 class LessonListTitleViewHolder(val binding: ItemLessonListTitleBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(headerType: LessonListType, count: Int?) {

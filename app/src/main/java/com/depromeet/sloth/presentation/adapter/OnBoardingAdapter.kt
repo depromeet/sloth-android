@@ -8,8 +8,8 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
 import com.depromeet.sloth.databinding.*
 import com.depromeet.sloth.presentation.adapter.viewholder.onboarding.*
-import com.depromeet.sloth.presentation.screen.onboarding.OnBoardingItemClickListener
-import com.depromeet.sloth.presentation.screen.onboarding.OnBoardingUiModel
+import com.depromeet.sloth.presentation.ui.onboarding.OnBoardingItemClickListener
+import com.depromeet.sloth.presentation.ui.onboarding.OnBoardingUiModel
 import com.depromeet.sloth.util.setOnSingleClickListener
 
 class OnBoardingAdapter(
