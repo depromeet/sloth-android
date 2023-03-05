@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
+import com.depromeet.sloth.data.model.response.lesson.LessonListResponse
 import com.depromeet.sloth.databinding.FragmentLessonListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
@@ -64,7 +65,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
                     true
                 }
                 R.id.menu_notification_list -> {
-                    viewModel.navigateToNotificationList()
+                    viewModel.onNotificationClicked()
                     true
                 }
                 else -> false
@@ -76,9 +77,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         repeatOnStarted {
             launch {
                 viewModel.checkLessonListOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                    if (!isOnBoardingComplete) {
-                        viewModel.navigateToOnBoardingCheckDetail()
-                    }
+                    if (!isOnBoardingComplete) viewModel.navigateToOnBoardingCheckDetail()
                 }
             }
 
@@ -111,7 +110,6 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
             launch {
                 viewModel.navigateToNotificationListEvent.collect {
                     navigateToNotificationList()
-                    // showWaitDialog()
                 }
             }
 
@@ -141,18 +139,12 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
         findNavController().safeNavigate(action)
     }
 
-    private fun showWaitDialog() {
-        val action = LessonListFragmentDirections.actionLessonListToWaitDialog()
-        findNavController().safeNavigate(action)
-    }
-
     private fun navigateToNotificationList() {
-        val action =
-            LessonListFragmentDirections.actionLessonListToNotificationList()
+        val action = LessonListFragmentDirections.actionLessonListToNotificationList()
         findNavController().safeNavigate(action)
     }
 
-    private fun navigateToLessonDetail(lesson: LessonAllResponse) {
+    private fun navigateToLessonDetail(lesson: LessonListResponse) {
         val action = LessonListFragmentDirections.actionLessonListToLessonDetail(
             lesson.lessonId.toString()
         )

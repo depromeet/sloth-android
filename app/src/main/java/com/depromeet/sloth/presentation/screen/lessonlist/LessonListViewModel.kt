@@ -119,16 +119,12 @@ class LessonListViewModel @Inject constructor(
 //        }
 //    }
 
-
-
     private fun setLessonList(result: List<LessonListResponse>) {
         _lessonList.update {
             if (result.isEmpty()) {
                 listOf(LessonListUiModel.LessonListEmptyItem)
             } else {
                 result.groupBy {
-                    //TODO 이걸로 groupBy 하면 조기 완료된 강의들이 문제가 됨
-                    //TODO 백엔드 분들께 데이터 수정 요청
                     it.lessonStatus
                 }.values.map { lessonList ->
                     lessonList.map { lesson ->

@@ -162,10 +162,6 @@
             app:popUpTo="@id/today_lesson" />
 
         <action
-            android:id="@+id/action_today_lesson_to_wait_dialog"
-            app:destination="@id/wait_dialog" />
-
-        <action
             android:id="@+id/action_today_lesson_to_finish_lesson_dialog"
             app:destination="@id/finish_lesson_dialog" />
 
@@ -212,10 +208,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/today_lesson" />
-
-        <action
-            android:id="@+id/action_lesson_list_to_wait_dialog"
-            app:destination="@id/wait_dialog" />
 
         <action
             android:id="@+id/action_lesson_list_to_on_boarding_check_detail_dialog"
@@ -338,12 +330,6 @@
         android:name="com.depromeet.sloth.presentation.screen.manage.LogoutDialogFragment"
         android:label="LogoutDialogFragment"
         tools:layout="@layout/fragment_logout_dialog" />
-
-    <dialog
-        android:id="@+id/wait_dialog"
-        android:name="com.depromeet.sloth.presentation.screen.lessonlist.WaitDialogFragment"
-        android:label="WaitDialogFragment"
-        tools:layout="@layout/fragment_wait_dialog" />
 
     <dialog
         android:id="@+id/delete_lesson_dialog"

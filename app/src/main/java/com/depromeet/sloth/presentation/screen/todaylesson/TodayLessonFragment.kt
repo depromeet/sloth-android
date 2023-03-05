@@ -119,15 +119,9 @@ class TodayLessonFragment :
 
             launch {
                 viewModel.navigateToWaitDialogEvent.collect {
-                    showWaitDialog()
+                    navigateToNotificationList()
                 }
             }
-//            launch {
-//                navigateToWaitDialogEvent
-//                    .collect {
-//                        showWaitDialog()
-//                    }
-//            }
 
             launch {
                 viewModel.navigateToFinishLessonDialogEvent.collect { lessonId ->
@@ -161,7 +155,7 @@ class TodayLessonFragment :
             }
 
             launch {
-                navigateToNotificationListEvent
+                viewModel.navigateToNotificationListEvent
                     .collect {
                         navigateToNotificationList()
                     }
@@ -170,19 +164,12 @@ class TodayLessonFragment :
     }
 
     private fun navigateToLogin() {
-        val action =
-            TodayLessonFragmentDirections.actionTodayLessonToLogin()
+        val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
         findNavController().safeNavigate(action)
     }
 
     private fun navigateToNotificationList() {
-        val action =
-            TodayLessonFragmentDirections.actionTodayLessonToNotificationList()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun showWaitDialog() {
-        val action = TodayLessonFragmentDirections.actionTodayLessonToWaitDialog()
+        val action = TodayLessonFragmentDirections.actionTodayLessonToNotificationList()
         findNavController().safeNavigate(action)
     }
 
