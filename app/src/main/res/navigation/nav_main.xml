@@ -66,8 +66,7 @@
         android:id="@+id/sloth_policy_webview"
         android:name="com.depromeet.sloth.presentation.screen.login.SlothPolicyWebViewFragment"
         android:label="SlothPolicyWebViewFragment"
-        tools:layout="@layout/fragment_sloth_policy_web_view">
-    </fragment>
+        tools:layout="@layout/fragment_sloth_policy_web_view" />
 
     <dialog
         android:id="@+id/login_bottom_dialog"
@@ -134,7 +133,14 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim">
+
+            <argument
+                android:name="fragment_id"
+                app:argType="integer"
+                app:nullable="false" />
+
+        </action>
 
         <action
             android:id="@+id/action_today_lesson_to_login"
@@ -162,6 +168,12 @@
         <action
             android:id="@+id/action_today_lesson_to_finish_lesson_dialog"
             app:destination="@id/finish_lesson_dialog" />
+
+        <action
+            android:id="@+id/action_today_lesson_to_on_Boarding_today_lesson"
+            app:destination="@id/on_boarding_today_lesson"
+            app:popUpTo="@id/today_lesson"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -184,7 +196,13 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim">
+
+            <argument
+                android:name="fragment_id"
+                app:argType="integer"
+                app:nullable="false" />
+        </action>
 
         <action
             android:id="@+id/action_lesson_list_to_notification_list"
@@ -198,6 +216,10 @@
         <action
             android:id="@+id/action_lesson_list_to_wait_dialog"
             app:destination="@id/wait_dialog" />
+
+        <action
+            android:id="@+id/action_lesson_list_to_on_boarding_check_detail_dialog"
+            app:destination="@id/on_boarding_check_detail_dialog" />
     </fragment>
 
     <fragment
@@ -218,6 +240,14 @@
             android:id="@+id/action_manage_to_update_member_dialog"
             app:destination="@id/update_member_dialog" />
 
+        <action
+            android:id="@+id/action_manage_to_logout_dialog"
+            app:destination="@id/logout_dialog" />
+
+        <action
+            android:id="@+id/action_manage_to_today_lesson"
+            app:destination="@id/today_lesson"
+            app:popUpTo="@id/manage" />
     </fragment>
 
     <fragment
@@ -335,5 +365,48 @@
             app:argType="string" />
 
     </dialog>
+
+    <dialog
+        android:id="@+id/on_boarding_check_detail_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingCheckDetailDialogFragment"
+        android:label="OnBoardingCheckDetailDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_check_detail_dialog" />
+    <dialog
+
+        android:id="@+id/on_boarding_register_lesson_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingRegisterLessonDialogFragment"
+        android:label="OnBoardingRegisterLessonDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_register_lesson_dialog" />
+
+    <dialog
+        android:id="@+id/on_boarding_click_plus_dialog"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingClickPlusDialogFragment"
+        android:label="OnBoardingClickPlusDialogFragment"
+        tools:layout="@layout/fragment_on_boarding_click_plus_dialog" />
+
+    <fragment
+        android:id="@+id/on_boarding_today_lesson"
+        android:name="com.depromeet.sloth.presentation.screen.onboarding.OnBoardingTodayLessonFragment"
+        android:label="OnBoardingTodayLessonFragment"
+        tools:layout="@layout/fragment_on_boarding_today_lesson">
+
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_on_boarding_click_plus_dialog"
+            app:destination="@id/on_boarding_click_plus_dialog" />
+
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_on_boarding_register_lesson_dialog"
+            app:destination="@id/on_boarding_register_lesson_dialog" />
+
+        <action
+            android:id="@+id/action_on_boarding_today_lesson_to_nav_register_lesson"
+            app:destination="@id/nav_register_lesson">
+
+            <argument
+                android:name="fragment_id"
+                app:argType="integer"
+                app:nullable="false" />
+        </action>
+    </fragment>
 
 </navigation>

@@ -43,15 +43,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun initNavigation() = with(binding) {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_home_container) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_home_container) as NavHostFragment
 
         val navController = navHostFragment.findNavController()
 
         bnvMain.apply {
             setupWithNavController(navController)
             itemIconTintList = null
-
         }
 
         // BottomNavigationView radius 설정
@@ -65,10 +63,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.today_lesson, R.id.lesson_list, R.id.manage, R.id.finish_lesson_dialog,
-                    R.id.wait_dialog, R.id.logout_dialog, R.id.update_member_dialog ->
+                R.id.today_lesson, R.id.lesson_list, R.id.manage, R.id.finish_lesson_dialog, R.id.wait_dialog, R.id.logout_dialog, R.id.update_member_dialog, R.id.on_boarding_check_detail_dialog ->
                     bnvMain.visibility = View.VISIBLE
-
                 else -> bnvMain.visibility = View.GONE
             }
         }

@@ -163,7 +163,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:layout_marginTop="42dp"
                         android:gravity="center"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="4dp"
@@ -171,7 +170,7 @@
                         android:textSize="12dp"
                         android:visibility="gone"
                         app:layout_constraintStart_toEndOf="@id/tv_lesson_detail_remain_day"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_lesson_detail_remain_day"
                         tools:background="@drawable/bg_rounded_chip_caution"
                         tools:text="@string/lesson_warning"
                         tools:visibility="visible" />

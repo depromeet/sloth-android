@@ -12,8 +12,10 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentRegisterLessonFirstBinding
 import com.depromeet.sloth.extensions.*
@@ -24,10 +26,10 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class RegisterLessonFirstFragment :
-    BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
+class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 
     private val registerLessonViewModel: RegisterLessonViewModel by hiltNavGraphViewModels(R.id.nav_register_lesson)
+
 
     private val lessonCategoryAdapter: ArrayAdapter<String> by lazy {
         ArrayAdapter<String>(
@@ -57,12 +59,25 @@ class RegisterLessonFirstFragment :
         bind {
             vm = registerLessonViewModel
         }
+
+        val args: RegisterLessonFirstFragmentArgs by navArgs()
+        if (args.fragmentId ==  R.id.on_boarding_today_lesson) {
+            // 뒤로가기 버튼 없애기
+            binding.tbLayout.tbRegisterLesson.navigationIcon = null
+
+            // 온보딩에서 진입 했을 경우에만 시스템 백 버튼 비활성화
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+                 return@addCallback
+            }
+        }
+
         initViews()
         initListener()
         initObserver()
     }
 
     override fun initViews() = with(binding) {
+
         focusInputForm(etRegisterLessonName)
         validateInputForm(etRegisterLessonTotalNumber)
         focusSpinnerForm(spnRegisterLessonCategory)
@@ -78,11 +93,10 @@ class RegisterLessonFirstFragment :
     }
 
     private fun initObserver() = with(registerLessonViewModel) {
-        repeatOnStarted {
 
+        repeatOnStarted {
             launch {
-                fetchLessonCategoryListSuccessEvent
-                    .collect {
+                fetchLessonCategoryListSuccessEvent.collect {
                         bindAdapter(
                             lessonCategoryAdapter,
                             binding.spnRegisterLessonCategory,
@@ -92,8 +106,7 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                fetchLessonSiteListSuccessEvent
-                    .collect {
+                fetchLessonSiteListSuccessEvent.collect {
                         bindAdapter(
                             lessonSiteAdapter,
                             binding.spnRegisterLessonSite,
@@ -103,34 +116,26 @@ class RegisterLessonFirstFragment :
             }
 
             launch {
-                navigateToRegisterLessonSecondEvent
-                    .collect {
-                        val action =
-                            RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
+                navigateToRegisterLessonSecondEvent.collect {
+                        val action = RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
                         findNavController().safeNavigate(action)
                     }
             }
 
             launch {
-                isLoading
-                    .collect { isLoading ->
-                        when (isLoading) {
-                            true -> showProgress()
-                            false -> hideProgress()
-                        }
-                    }
+                isLoading.collect { isLoading ->
+                    if (isLoading) showProgress() else hideProgress()
+                }
             }
 
             launch {
-                navigateToExpireDialogEvent
-                    .collect {
+                navigateToExpireDialogEvent.collect {
                         showExpireDialog()
                     }
             }
 
             launch {
-                showToastEvent
-                    .collect { message ->
+                showToastEvent.collect { message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
