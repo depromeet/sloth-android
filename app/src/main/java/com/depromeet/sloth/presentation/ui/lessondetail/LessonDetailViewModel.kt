@@ -11,6 +11,7 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,6 +30,8 @@ class LessonDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private var fetchLessonDetailJob: Job? = null
+
     val lessonId: String = checkNotNull(savedStateHandle[KEY_LESSON_ID])
 
     private val _uiState = MutableStateFlow(LessonDetailUiState())
@@ -42,49 +45,54 @@ class LessonDetailViewModel @Inject constructor(
     val navigateToDeleteLessonDialogEvent: SharedFlow<String> =
         _navigateToDeleteLessonDialogEvent.asSharedFlow()
 
-    fun fetchLessonDetail() = viewModelScope.launch {
-        fetchLessonDetailUseCase(lessonId)
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setInternetError(false)
-                        _uiState.update { lessonDetailUiState ->
-                            lessonDetailUiState.copy(
-                                lessonId = result.data.lessonId.toString(),
-                                categoryName = result.data.categoryName,
-                                currentProgressRate = result.data.currentProgressRate,
-                                endDate = result.data.endDate,
-                                goalProgressRate = result.data.goalProgressRate,
-                                isFinished = result.data.isFinished,
-                                lessonName = result.data.lessonName,
-                                message = result.data.message,
-                                presentNumber = result.data.presentNumber,
-                                price = result.data.price,
-                                remainDay = result.data.remainDay,
-                                siteName = result.data.siteName,
-                                startDate = result.data.startDate,
-                                totalNumber = result.data.totalNumber,
-                                wastePrice = result.data.wastePrice,
-                            )
-                        }
-                    }
+    fun fetchLessonDetail() {
+        if (fetchLessonDetailJob != null) return
 
-                    is Result.Error -> {
-                        when {
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                setInternetError(true)
+        viewModelScope.launch {
+            fetchLessonDetailUseCase(lessonId)
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setInternetError(false)
+                            _uiState.update { lessonDetailUiState ->
+                                lessonDetailUiState.copy(
+                                    lessonId = result.data.lessonId.toString(),
+                                    categoryName = result.data.categoryName,
+                                    currentProgressRate = result.data.currentProgressRate,
+                                    endDate = result.data.endDate,
+                                    goalProgressRate = result.data.goalProgressRate,
+                                    isFinished = result.data.isFinished,
+                                    lessonName = result.data.lessonName,
+                                    message = result.data.message,
+                                    presentNumber = result.data.presentNumber,
+                                    price = result.data.price,
+                                    remainDay = result.data.remainDay,
+                                    siteName = result.data.siteName,
+                                    startDate = result.data.startDate,
+                                    totalNumber = result.data.totalNumber,
+                                    wastePrice = result.data.wastePrice,
+                                )
                             }
-                            result.statusCode == UNAUTHORIZED -> {
-                                navigateToExpireDialog()
+                        }
+
+                        is Result.Error -> {
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                             }
-                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
                         }
                     }
+                    fetchLessonDetailJob = null
                 }
-            }
+        }
     }
 
     fun navigateToUpdateLesson() = viewModelScope.launch {

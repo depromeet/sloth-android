@@ -66,7 +66,6 @@ class OnBoardingTodayLessonViewModel @Inject constructor(
         currentList[0] = newItem
         _onBoardingList.update { currentList }
         if (flag) setOnBoardingItem()
-
     }
 
     private fun decreaseOnBoardingItemCount() {

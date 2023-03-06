@@ -11,6 +11,7 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,38 +26,17 @@ class NotificationViewModel @Inject constructor(
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
+    private var fetchNotificationListJob: Job? = null
+    private var updateNotificationStatusJob: Job? = null
+
     private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<NotificationListResponse>>()
     val fetchLessonListSuccessEvent: SharedFlow<List<NotificationListResponse>> = _fetchLessonListSuccessEvent.asSharedFlow()
 
-    fun fetchNotificationList() = viewModelScope.launch {
-        fetchNotificationListUseCase(0, 99999)
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setInternetError(false)
-                        _fetchLessonListSuccessEvent.emit(result.data)
-                    }
-                    is Result.Error -> {
-                        when {
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                setInternetError(true)
-                            }
-                            result.statusCode == UNAUTHORIZED -> {
-                                navigateToExpireDialog()
-                            }
-                            else -> showToast(stringResourcesProvider.getString(R.string.notification_list_fetch_fail))
-                        }
-                    }
-                }
-            }
-    }
+    fun fetchNotificationList() {
+        if (fetchNotificationListJob != null) return
 
-    fun updateNotificationState(alarmId: Long, isStateChanged: () -> Unit) {
-        viewModelScope.launch {
-            updateNotificationStateUseCase(alarmId)
+        fetchNotificationListJob = viewModelScope.launch {
+            fetchNotificationListUseCase(0, 99999)
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -64,6 +44,36 @@ class NotificationViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
+                            _fetchLessonListSuccessEvent.emit(result.data)
+                        }
+                        is Result.Error -> {
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.notification_list_fetch_fail))
+                            }
+                        }
+                    }
+                    fetchNotificationListJob = null
+                }
+        }
+    }
+
+    fun updateNotificationState(notificationId: Long, isStateChanged: () -> Unit) {
+        if (updateNotificationStatusJob != null) return
+
+        updateNotificationStatusJob = viewModelScope.launch {
+            updateNotificationStateUseCase(notificationId)
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
                             isStateChanged.invoke()
                         }
                         is Result.Error -> {
@@ -78,6 +88,7 @@ class NotificationViewModel @Inject constructor(
                             }
                         }
                     }
+                    updateNotificationStatusJob = null
                 }
         }
     }

@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.sloth.R
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.di.StringResourcesProvider
-import com.depromeet.sloth.domain.usecase.lesson.FetchLessonStatisticsInformationUseCase
+import com.depromeet.sloth.domain.usecase.lesson.FetchLessonStatisticsInfoUseCase
 import com.depromeet.sloth.domain.usecase.member.DeleteAuthTokenUseCase
 import com.depromeet.sloth.domain.usecase.member.FetchMemberInfoUseCase
 import com.depromeet.sloth.domain.usecase.member.LogOutUseCase
@@ -14,6 +14,7 @@ import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
 import com.depromeet.sloth.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,9 +26,12 @@ class ManageViewModel @Inject constructor(
     private val logOutUseCase: LogOutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
-    private val fetchLessonStatisticsInformationUseCase: FetchLessonStatisticsInformationUseCase,
+    private val fetchLessonStatisticsInfoUseCase: FetchLessonStatisticsInfoUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
+
+    private var fetchLessonStatisticsInfoJob: Job? = null
+    private var updateNotificationStatusJob: Job? = null
 
     private val _uiState = MutableStateFlow(MemberUiState())
     val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
@@ -59,7 +63,11 @@ class ManageViewModel @Inject constructor(
     private val _logoutCancelEvent = MutableSharedFlow<Unit>()
     val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
 
-    fun fetchMemberInfo() {
+    init {
+        fetchMemberInfo()
+    }
+
+    private fun fetchMemberInfo() {
         viewModelScope.launch {
             fetchMemberInfoUseCase()
                 .onEach { result ->
@@ -92,9 +100,13 @@ class ManageViewModel @Inject constructor(
                     }
                 }
         }
+    }
 
-        viewModelScope.launch {
-            fetchLessonStatisticsInformationUseCase()
+    fun fetchLessonStatisticsInfo() {
+        if (fetchLessonStatisticsInfoJob != null) return
+
+        fetchLessonStatisticsInfoJob = viewModelScope.launch {
+             fetchLessonStatisticsInfoUseCase()
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -128,11 +140,14 @@ class ManageViewModel @Inject constructor(
                             }
                         }
                     }
+                     fetchLessonStatisticsInfoJob = null
                 }
         }
     }
 
     fun updateNotificationSwitch(check: Boolean) {
+        if (updateNotificationStatusJob != null) return
+
         if (uiState.value.isPushAlarmUse != check) {
             viewModelScope.launch {
                 updateNotificationStatusUseCase(NotificationUpdateRequest(check))
@@ -161,6 +176,7 @@ class ManageViewModel @Inject constructor(
                                 }
                             }
                         }
+                        updateNotificationStatusJob = null
                     }
             }
         }

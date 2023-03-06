@@ -29,7 +29,7 @@ class TodayLessonViewModel @Inject constructor(
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
-    private var todayLessonJob: Job? = null
+    private var fetchTodayLessonJob: Job? = null
     private var updateLessonCountJob: Job? = null
 
     private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
@@ -185,9 +185,9 @@ class TodayLessonViewModel @Inject constructor(
     }
 
     fun fetchTodayLessonList() {
-        if (todayLessonJob != null) return
+        if (fetchTodayLessonJob != null) return
 
-        todayLessonJob = viewModelScope.launch {
+        fetchTodayLessonJob = viewModelScope.launch {
             fetchTodayLessonListUseCase().onEach { result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
@@ -210,7 +210,7 @@ class TodayLessonViewModel @Inject constructor(
                         }
                     }
                 }
-                todayLessonJob = null
+                fetchTodayLessonJob = null
             }
         }
     }

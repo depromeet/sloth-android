@@ -23,6 +23,11 @@ internal class NotificationListFragment :
     private lateinit var notificationAdapter: NotificationAdapter
     private val viewModel: NotificationViewModel by viewModels()
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchNotificationList()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -32,8 +37,6 @@ internal class NotificationListFragment :
         initViews()
         initListener()
         initObserver()
-
-        viewModel.fetchNotificationList()
     }
 
     override fun initViews() {

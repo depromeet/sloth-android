@@ -21,7 +21,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     override fun onStart() {
         super.onStart()
-        viewModel.fetchMemberInfo()
+        viewModel.fetchLessonStatisticsInfo()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

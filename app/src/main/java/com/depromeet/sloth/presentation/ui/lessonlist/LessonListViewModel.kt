@@ -27,7 +27,7 @@ class LessonListViewModel @Inject constructor(
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
-    private var lessonListJob: Job? = null
+    private var fetchLessonListJob: Job? = null
 
     // private val _uiState = MutableStateFlow<UiState>(UiState())
     // val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -56,9 +56,9 @@ class LessonListViewModel @Inject constructor(
     val lessonList: StateFlow<List<LessonListUiModel>> = _lessonList.asStateFlow()
 
     fun fetchLessonList() {
-        if (lessonListJob != null) return
+        if (fetchLessonListJob != null) return
 
-        lessonListJob = viewModelScope.launch {
+        fetchLessonListJob = viewModelScope.launch {
             fetchLessonListUseCase()
                 .onEach { result ->
                     setLoading(result is Result.Loading)
@@ -82,7 +82,7 @@ class LessonListViewModel @Inject constructor(
                             }
                         }
                     }
-                    lessonListJob = null
+                    fetchLessonListJob = null
                 }
         }
     }

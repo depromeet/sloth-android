@@ -15,6 +15,7 @@ import com.depromeet.sloth.extensions.getPickerDateToDash
 import com.depromeet.sloth.presentation.ui.base.BaseViewModel
 import com.depromeet.sloth.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -28,6 +29,9 @@ class RegisterLessonViewModel @Inject constructor(
     private val stringResourcesProvider: StringResourcesProvider,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
+
+    private var fetchLessonCategoryListJob: Job? = null
+    private var fetchLessonSiteListJob: Job? = null
 
     private val fragmentId: Int = checkNotNull(savedStateHandle[KEY_FRAGMENT_ID])
 
@@ -253,58 +257,68 @@ class RegisterLessonViewModel @Inject constructor(
         }
     }
 
-    fun fetchLessonCategoryList() = viewModelScope.launch {
-        fetchLessonCategoryListUseCase()
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setLessonCategoryList(result.data)
-                        _fetchLessonCategoryListSuccessEvent.emit(result.data)
-                        setInternetError(false)
-                    }
-                    is Result.Error -> {
-                        when {
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                setInternetError(true)
+    fun fetchLessonCategoryList() {
+        if (fetchLessonCategoryListJob != null) return
+
+        fetchLessonCategoryListJob = viewModelScope.launch {
+            fetchLessonCategoryListUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setLessonCategoryList(result.data)
+                            _fetchLessonCategoryListSuccessEvent.emit(result.data)
+                            setInternetError(false)
+                        }
+                        is Result.Error -> {
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                             }
-                            result.statusCode == UNAUTHORIZED -> {
-                                navigateToExpireDialog()
-                            }
-                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail))
                         }
                     }
+                    fetchLessonCategoryListJob = null
                 }
-            }
+        }
     }
 
-    fun fetchLessonSiteList() = viewModelScope.launch {
-        fetchLessonSiteListUseCase()
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        setInternetError(false)
-                        setLessonSiteList(result.data)
-                        _fetchLessonSiteListSuccessEvent.emit(result.data)
-                    }
-                    is Result.Error -> {
-                        when {
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                setInternetError(true)
+    fun fetchLessonSiteList() {
+        if (fetchLessonSiteListJob != null) return
+
+        fetchLessonSiteListJob = viewModelScope.launch {
+            fetchLessonSiteListUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            setInternetError(false)
+                            setLessonSiteList(result.data)
+                            _fetchLessonSiteListSuccessEvent.emit(result.data)
+                        }
+                        is Result.Error -> {
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    setInternetError(true)
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                             }
-                            result.statusCode == UNAUTHORIZED -> {
-                                navigateToExpireDialog()
-                            }
-                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail))
                         }
                     }
+                    fetchLessonSiteListJob = null
                 }
-            }
+        }
     }
 
     fun setLessonCategorySelectedItemPosition(position: Int) {
