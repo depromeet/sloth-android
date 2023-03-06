@@ -12,8 +12,8 @@ class NotificationViewHolder(val binding: ItemNotificationBinding) :
     fun bind(
         notification: NotificationListResponse,
     ) = with(binding) {
-        tvNotificationTitle.text = notification.message
-        tvNotificationContent.text = notification.title
+        tvNotificationTitle.text = notification.title
+        tvNotificationContent.text = notification.message
         tvNotificationDate.text = notification.occurrenceTime.split(" ").first()
 
         if(notification.readTime.isNullOrEmpty()) {

@@ -212,6 +212,7 @@
     <string name="notification_list_fetch_fail">알림 목록을 가져오지 못했어요</string>
     <string name="notification_list_update_fail">알림 목록을 갱신하지 못했어요</string>
     <string name="notification_list_update_fail_by_internet_error">알림 목록을 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
+    <string name="notification">알림</string>
 
 
 </resources>
