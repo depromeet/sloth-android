@@ -175,13 +175,13 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tv_manage_investment_info"
+                            app:progress="@{vm.uiState.currentProgressRate}"
                             app:progressView_autoAnimate="true"
                             app:progressView_colorBackground="@color/primary_100"
                             app:progressView_colorProgress="@color/primary_500"
                             app:progressView_max="100"
                             app:progressView_min="0"
                             app:progressView_padding="1dp"
-                            app:progressView_progress="@{vm.uiState.currentProgressRate}"
                             app:progressView_progressFromPrevious="true"
                             app:progressView_radius="12dp" />
 
