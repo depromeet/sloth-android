@@ -11,7 +11,7 @@ import com.depromeet.sloth.databinding.ItemLessonListCurrentBinding
 import com.depromeet.sloth.extensions.changeDecimalFormat
 import kotlin.math.ceil
 
-class CurrentLessonViewHolder(val binding: ItemLessonListCurrentBinding, ) : RecyclerView.ViewHolder(binding.root) {
+class CurrentLessonViewHolder(val binding: ItemLessonListCurrentBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(lesson: LessonListResponse) {
         itemView.apply {
             binding.apply {
