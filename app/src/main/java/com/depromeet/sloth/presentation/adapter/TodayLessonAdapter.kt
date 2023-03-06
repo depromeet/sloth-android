@@ -1,6 +1,5 @@
 import android.animation.ObjectAnimator
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -113,22 +112,12 @@ class TodayLessonAdapter(
                         clickListener.onPlusClick(uiModel.todayLesson)
                         uiModel.todayLesson.presentNumber++
                         updateFinishedLessonProgress(holder, uiModel.todayLesson)
-
-                        if(uiModel.todayLesson.presentNumber == uiModel.todayLesson.totalNumber) {
-                            clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_finished_top)
-                            clTodayFinishedBottom.visibility = View.VISIBLE
-                        }
                     }
 
                     btnTodayLessonMinus.setOnSingleClickListener {
                         clickListener.onMinusClick(uiModel.todayLesson)
                         uiModel.todayLesson.presentNumber--
                         updateFinishedLessonProgress(holder, uiModel.todayLesson)
-
-                        if(uiModel.todayLesson.presentNumber + 1 == uiModel.todayLesson.totalNumber) {
-                            clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_not_finished_top)
-                            clTodayFinishedBottom.visibility = View.GONE
-                        }
                     }
 
                     clTodayFinishedBottom.setOnSingleClickListener {

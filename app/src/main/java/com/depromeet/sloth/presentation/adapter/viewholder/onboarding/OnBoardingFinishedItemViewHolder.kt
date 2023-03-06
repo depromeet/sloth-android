@@ -7,13 +7,13 @@ import com.depromeet.sloth.data.model.response.lesson.TodayLessonResponse
 import com.depromeet.sloth.databinding.ItemOnBoardingFinishedBinding
 
 class OnBoardingFinishedItemViewHolder(val binding: ItemOnBoardingFinishedBinding): RecyclerView.ViewHolder(binding.root) {
-    fun bind(todayLesson: TodayLessonResponse) {
+    fun bind(onBoardingItem: TodayLessonResponse) {
         itemView.apply {
             binding.apply {
-                tvTodayLessonCurrentNumber.text = todayLesson.presentNumber.toString()
-                tvTodayLessonTotalNumber.text = todayLesson.untilTodayNumber.toString()
+                tvTodayLessonCurrentNumber.text = onBoardingItem.presentNumber.toString()
+                tvTodayLessonTotalNumber.text = onBoardingItem.untilTodayNumber.toString()
 
-                if(todayLesson.presentNumber == todayLesson.totalNumber) {
+                if(onBoardingItem.presentNumber == onBoardingItem.totalNumber) {
                     clTodayFinishedTop.setBackgroundResource(R.drawable.bg_today_lesson_finished_top)
                     clTodayFinishedBottom.visibility = View.VISIBLE
                 } else {
