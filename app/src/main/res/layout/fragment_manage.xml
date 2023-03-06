@@ -144,7 +144,7 @@
                             tools:text="종찬님은요..." />
 
                         <TextView
-                            android:id="@+id/tv_manage_investment_information"
+                            android:id="@+id/tv_manage_investment_info"
                             priceFormat="@{vm.uiState.expiredLessonsPrice}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -163,34 +163,27 @@
                             android:textColor="@color/gray_600"
                             android:textSize="20dp"
                             android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_information"
-                            app:layout_constraintTop_toTopOf="@+id/tv_manage_investment_information" />
+                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_info"
+                            app:layout_constraintTop_toTopOf="@+id/tv_manage_investment_info" />
 
                         <com.skydoves.progressview.ProgressView
                             android:id="@+id/pv_manage_current_lesson_progress"
-                            setProgressRate="@{vm.uiState.currentProgressRate}"
                             android:layout_width="0dp"
                             android:layout_height="16dp"
-                            android:layout_marginTop="28dp"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="28dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tv_manage_investment_information"
+                            app:layout_constraintTop_toBottomOf="@id/tv_manage_investment_info"
                             app:progressView_autoAnimate="true"
                             app:progressView_colorBackground="@color/primary_100"
                             app:progressView_colorProgress="@color/primary_500"
-                            app:progressView_labelColorInner="@color/white"
-                            app:progressView_labelColorOuter="@color/black"
-                            app:progressView_labelConstraints="align_progress"
-                            app:progressView_labelSize="10sp"
-                            app:progressView_labelSpace="10dp"
-                            app:progressView_labelTypeface="bold"
                             app:progressView_max="100"
                             app:progressView_min="0"
                             app:progressView_padding="1dp"
+                            app:progressView_progress="@{vm.uiState.currentProgressRate}"
                             app:progressView_progressFromPrevious="true"
-                            app:progressView_radius="12dp"
-                            tools:progressView_labelText="40%" />
+                            app:progressView_radius="12dp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
