@@ -79,7 +79,7 @@ class NotificationViewModel @Inject constructor(
                         is Result.Error -> {
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                    setInternetError(true)
+                                    showToast(stringResourcesProvider.getString(R.string.notification_list_update_fail))
                                 }
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
@@ -93,5 +93,5 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    override fun retry() = Unit
+    override fun retry() = fetchNotificationList()
 }

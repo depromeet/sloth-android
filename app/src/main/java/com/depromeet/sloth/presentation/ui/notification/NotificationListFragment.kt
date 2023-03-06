@@ -8,10 +8,8 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentNotificationListBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
-import com.depromeet.sloth.extensions.safeNavigate
 import com.depromeet.sloth.presentation.adapter.NotificationAdapter
 import com.depromeet.sloth.presentation.ui.base.BaseFragment
-import com.depromeet.sloth.presentation.ui.manage.UpdateMemberDialogFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,8 +18,18 @@ import timber.log.Timber
 internal class NotificationListFragment :
     BaseFragment<FragmentNotificationListBinding>(R.layout.fragment_notification_list) {
 
-    private lateinit var notificationAdapter: NotificationAdapter
     private val viewModel: NotificationViewModel by viewModels()
+
+    // TODO 화면 이동 이벤트 추가
+    private val notificationItemClickListener = NotificationItemClickListener {
+        viewModel.updateNotificationState(it) {
+            Timber.tag("updateNotificationState").d(it.toString())
+        }
+    }
+
+    private val notificationAdapter by lazy {
+        NotificationAdapter(notificationItemClickListener)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -41,16 +49,10 @@ internal class NotificationListFragment :
 
     override fun initViews() {
         super.initViews()
+        binding.rvNotificationList.adapter = notificationAdapter
     }
 
     private fun initListener() {
-        notificationAdapter = NotificationAdapter {
-            viewModel.updateNotificationState(it) {
-                Timber.tag("updateNotificationState").e(it.toString())
-            }
-        }
-        binding.rvNotificationList.adapter = notificationAdapter
-
         binding.tbNotification.setNavigationOnClickListener {
             if (!findNavController().navigateUp()) {
                 requireActivity().finish()
@@ -62,7 +64,7 @@ internal class NotificationListFragment :
         repeatOnStarted {
             launch {
                 viewModel.fetchLessonListSuccessEvent.collect {
-                        notificationAdapter.setNotificationList(it)
+                        notificationAdapter.submitList(it)
                     }
             }
 
@@ -78,10 +80,5 @@ internal class NotificationListFragment :
                     }
             }
         }
-    }
-
-    private fun navigateUp() {
-        val action = UpdateMemberDialogFragmentDirections.actionUpdateMemberDialogToManage()
-        findNavController().safeNavigate(action)
     }
 }

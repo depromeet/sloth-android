@@ -106,7 +106,7 @@ class ManageViewModel @Inject constructor(
         if (fetchLessonStatisticsInfoJob != null) return
 
         fetchLessonStatisticsInfoJob = viewModelScope.launch {
-             fetchLessonStatisticsInfoUseCase()
+            fetchLessonStatisticsInfoUseCase()
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -117,8 +117,8 @@ class ManageViewModel @Inject constructor(
                             _uiState.update { memberUiState ->
                                 memberUiState.copy(
                                     currentProgressRate =
-                                    if (result.data.expiredLessonsPrice == 0) 0
-                                    else result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100,
+                                    if (result.data.expiredLessonsPrice == 0) 0f
+                                    else (result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100).toFloat(),
                                     expiredLessonsCnt = result.data.expiredLessonsCnt,
                                     expiredLessonsPrice = result.data.expiredLessonsPrice,
                                     finishedLessonsCnt = result.data.finishedLessonsCnt,
@@ -140,7 +140,7 @@ class ManageViewModel @Inject constructor(
                             }
                         }
                     }
-                     fetchLessonStatisticsInfoJob = null
+                    fetchLessonStatisticsInfoJob = null
                 }
         }
     }
@@ -182,32 +182,34 @@ class ManageViewModel @Inject constructor(
         }
     }
 
-    fun logout() = viewModelScope.launch {
-        logOutUseCase()
-            .onEach { result ->
-                setLoading(result is Result.Loading)
-            }.collect { result ->
-                when (result) {
-                    is Result.Loading -> return@collect
-                    is Result.Success -> {
-                        showToast(stringResourcesProvider.getString(R.string.logout_complete))
-                        deleteAuthToken()
-                        _logoutSuccessEvent.emit(Unit)
-                    }
+    fun logout() {
+        viewModelScope.launch {
+            logOutUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            showToast(stringResourcesProvider.getString(R.string.logout_complete))
+                            deleteAuthToken()
+                            _logoutSuccessEvent.emit(Unit)
+                        }
 
-                    is Result.Error -> {
-                        when {
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                        is Result.Error -> {
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
                             }
-                            result.statusCode == UNAUTHORIZED -> {
-                                navigateToExpireDialog()
-                            }
-                            else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
                         }
                     }
                 }
-            }
+        }
     }
 
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
@@ -243,7 +245,7 @@ class ManageViewModel @Inject constructor(
     }
 
     override fun retry() {
-        fetchMemberInfo()
+        fetchLessonStatisticsInfo()
     }
 
     data class MemberUiState(
@@ -251,7 +253,7 @@ class ManageViewModel @Inject constructor(
         val memberName: String = "",
         val isEmailProvided: Boolean = false,
         val isPushAlarmUse: Boolean = false,
-        val currentProgressRate: Int = 0,
+        val currentProgressRate: Float = 0f,
         val expiredLessonsCnt: Int = 0,
         val expiredLessonsPrice: Int = 0,
         val finishedLessonsCnt: Int = 0,
