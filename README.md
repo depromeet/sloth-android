@@ -12,8 +12,8 @@
 
 - 개발 기간 : 2021.09.11 ~ing
 - Team 
-  - Android 개발자 :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
-
+  - Android Developer :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
+- [Trouble Shooting](https://github.com/depromeet/sloth-android/wiki)
 # About
 
 **Features**
