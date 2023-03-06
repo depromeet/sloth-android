@@ -45,9 +45,7 @@ class TodayLessonViewModel @Inject constructor(
     private val _navigateToTodayLessonOnBoardingEvent = MutableSharedFlow<Unit>()
     val navigateToTodayLessonOnBoardingEvent = _navigateToTodayLessonOnBoardingEvent.asSharedFlow()
 
-
-    private val _todayLessonList = MutableStateFlow(emptyList<TodayLessonResponse>())
-    val todayLessonList: StateFlow<List<TodayLessonResponse>> = _todayLessonList.asStateFlow()
+    private var todayLessonList = emptyList<TodayLessonResponse>()
 
     private val _todayLessonUiModelList = MutableStateFlow(emptyList<TodayLessonUiModel>())
     val todayLessonUiModelList: StateFlow<List<TodayLessonUiModel>> = _todayLessonUiModelList.asStateFlow()
@@ -105,8 +103,7 @@ class TodayLessonViewModel @Inject constructor(
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
-        val currentLessonList = _todayLessonList.value.toMutableList()
-        val lesson = currentLessonList.first { it.lessonId == lessonId }
+        val lesson = todayLessonList.first { it.lessonId == lessonId }
 
         val isOutOfRange = lesson.presentNumber > lesson.totalNumber
         if (isOutOfRange) return
@@ -127,18 +124,18 @@ class TodayLessonViewModel @Inject constructor(
                 newLesson = lesson.copy(presentNumber = lesson.presentNumber + 1)
             }
         }
-        val updateLessonList = currentLessonList.map {
+        val updateLessonList = todayLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
             } else {
                 it
             }
         }
-        val isStart = currentLessonList.all { it.presentNumber == 0 } &&
+        val isStart = todayLessonList.all { it.presentNumber == 0 } &&
                 updateLessonList.any { it.presentNumber > 0 }
         if (isStart) flag = true
 
-        _todayLessonList.update { updateLessonList }
+        todayLessonList = updateLessonList
         if (flag) setTodayLessonList()
     }
 
@@ -146,8 +143,7 @@ class TodayLessonViewModel @Inject constructor(
         lateinit var newLesson: TodayLessonResponse
         var flag = false
 
-        val currentLessonList = _todayLessonList.value.toMutableList()
-        val lesson = currentLessonList.first { it.lessonId == lessonId }
+        val lesson = todayLessonList.first { it.lessonId == lessonId }
 
         val isOutOfRange = lesson.presentNumber <= 0
         if (isOutOfRange) return
@@ -169,18 +165,18 @@ class TodayLessonViewModel @Inject constructor(
             }
         }
 
-        val updateLessonList = currentLessonList.map {
+        val updateLessonList = todayLessonList.map {
             if (it.lessonId == lessonId) {
                 newLesson
             } else {
                 it
             }
         }
-        val isNotStarted = currentLessonList.any { it.presentNumber > 0 } &&
+        val isNotStarted = todayLessonList.any { it.presentNumber > 0 } &&
                 updateLessonList.all { it.presentNumber == 0 }
         if (isNotStarted) flag = true
 
-        _todayLessonList.update { updateLessonList }
+        todayLessonList = updateLessonList
         if (flag) setTodayLessonList()
     }
 
@@ -195,7 +191,7 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        _todayLessonList.update { result.data }
+                        todayLessonList = result.data
                         setTodayLessonList()
                     }
                     is Result.Error -> {
@@ -217,54 +213,54 @@ class TodayLessonViewModel @Inject constructor(
 
     private fun setTodayLessonList() {
         _todayLessonUiModelList.update {
-            if (_todayLessonList.value.isEmpty()) {
+            if (todayLessonList.isEmpty()) {
                 listOf(
                     TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.EMPTY),
                     TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.EMPTY),
                     TodayLessonUiModel.TodayLessonEmptyItem
                 )
             } else {
-                _todayLessonList.value.groupBy {
+                todayLessonList.groupBy {
                     it.untilTodayFinished
-                }.values.map { todayLessonList ->
-                    todayLessonList.map { lesson ->
+                }.values.map {
+                    it.map { lesson ->
                         if (lesson.untilTodayFinished) {
                             TodayLessonUiModel.TodayLessonFinishedItem(lesson)
                         } else {
                             TodayLessonUiModel.TodayLessonDoingItem(lesson)
                         }
                     }
-                }.flatMap { todayLessons ->
-                    when (todayLessons.first()) {
+                }.flatMap {
+                    when (it.first()) {
                         is TodayLessonUiModel.TodayLessonDoingItem -> {
-                            todayLessons.toMutableList().apply {
+                            it.toMutableList().apply {
                                 add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.DOING))
                             }
                         }
                         is TodayLessonUiModel.TodayLessonFinishedItem -> {
-                            todayLessons.toMutableList().apply {
+                            it.toMutableList().apply {
                                 add(0, TodayLessonUiModel.TodayLessonTitleItem(TodayLessonType.FINISHED))
                             }
                         }
                         else -> return
                     }
-                }.let { lessons ->
-                    val isFinished = lessons.find { it is TodayLessonUiModel.TodayLessonDoingItem } == null
-                    val isNotStarted = lessons.find { it is TodayLessonUiModel.TodayLessonFinishedItem } == null &&
-                            lessons.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
+                }.let {
+                    val isFinished = it.find { it is TodayLessonUiModel.TodayLessonDoingItem } == null
+                    val isNotStarted = it.find { it is TodayLessonUiModel.TodayLessonFinishedItem } == null &&
+                            it.filterIsInstance<TodayLessonUiModel.TodayLessonDoingItem>().all { it.todayLesson.presentNumber == 0 }
                     when {
                         isFinished -> {
-                            lessons.toMutableList().apply {
+                            it.toMutableList().apply {
                                 add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.FINISHED))
                             }
                         }
                         isNotStarted -> {
-                            lessons.toMutableList().apply {
+                            it.toMutableList().apply {
                                 add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.NOT_START))
                             }
                         }
                         else -> {
-                            lessons.toMutableList().apply {
+                            it.toMutableList().apply {
                                 add(0, TodayLessonUiModel.TodayLessonHeaderItem(TodayLessonType.DOING))
                             }
                         }
