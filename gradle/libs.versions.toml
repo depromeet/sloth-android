@@ -11,6 +11,7 @@ material = "1.7.0"
 splash = "1.0.0"
 constraintlayout = "2.1.4"
 recyclerview = "1.2.1"
+paging3 = "3.1.1"
 activity = "1.5.1"
 fragment = "1.5.4"
 lifecycle = "2.5.1"
@@ -63,6 +64,7 @@ activity = { module = "androidx.activity:activity-ktx", version.ref = "activity"
 fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+paging3 = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging3"}
 
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }

@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.fragment)
     implementation(libs.recyclerview)
+    implementation(libs.paging3)
     implementation(libs.datastore)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
