@@ -9,7 +9,14 @@ import javax.inject.Inject
 class FetchNotificationListUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
+
     operator fun invoke(page: Int, size: Int): Flow<Result<List<NotificationListResponse>>> {
         return notificationRepository.fetchNotificationList(page, size)
     }
+
+    /*
+    operator fun invoke(page: Int, size: Int): Flow<PagingData<NotificationListResponse>> {
+        return notificationRepository.fetchNotificationList(page, size)
+    }
+     */
 }

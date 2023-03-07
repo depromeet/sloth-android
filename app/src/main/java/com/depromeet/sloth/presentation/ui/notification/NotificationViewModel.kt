@@ -32,6 +32,17 @@ class NotificationViewModel @Inject constructor(
     private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<NotificationListResponse>>()
     val fetchLessonListSuccessEvent: SharedFlow<List<NotificationListResponse>> = _fetchLessonListSuccessEvent.asSharedFlow()
 
+    /*
+    val notificationList: Flow<PagingData<NotificationListResponse>> =
+        fetchNotificationListUseCase(STARTING_PAGE_INDEX, PAGING_SIZE)
+            .cachedIn(viewModelScope)
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                PagingData.empty()
+            )
+     */
+
     fun fetchNotificationList() {
         if (fetchNotificationListJob != null) return
 
@@ -94,4 +105,5 @@ class NotificationViewModel @Inject constructor(
     }
 
     override fun retry() = fetchNotificationList()
+    // override fun retry() = Unit
 }

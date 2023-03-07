@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+//TODO 뷰모델 내에서만 핸들링하는 변수 일반 변수로 변경
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,

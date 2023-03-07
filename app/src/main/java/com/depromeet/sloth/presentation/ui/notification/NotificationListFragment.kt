@@ -21,6 +21,7 @@ internal class NotificationListFragment :
     private val viewModel: NotificationViewModel by viewModels()
 
     // TODO 화면 이동 이벤트 추가
+    // TODO 리스트 최하단에 튜토리얼을 다시 할 수 있는 로직 구현하기
     private val notificationItemClickListener = NotificationItemClickListener {
         viewModel.updateNotificationState(it) {
             Timber.tag("updateNotificationState").d(it.toString())
@@ -29,6 +30,7 @@ internal class NotificationListFragment :
 
     private val notificationAdapter by lazy {
         NotificationAdapter(notificationItemClickListener)
+        // NotificationPagingAdapter(notificationItemClickListener)
     }
 
     override fun onStart() {
@@ -50,6 +52,13 @@ internal class NotificationListFragment :
     override fun initViews() {
         super.initViews()
         binding.rvNotificationList.adapter = notificationAdapter
+        /*
+        binding.rvNotificationList.adapter = notificationAdapter.withLoadStateFooter(
+            footer = NotificationLoadStateAdapter(
+                notificationAdapter::retry
+            )
+        )
+         */
     }
 
     private fun initListener() {
@@ -66,6 +75,12 @@ internal class NotificationListFragment :
                 viewModel.fetchLessonListSuccessEvent.collect {
                         notificationAdapter.submitList(it)
                     }
+
+                /*
+                viewModel.notificationList.collectLatest {
+                    notificationAdapter.submitData(it)
+                }
+                 */
             }
 
             launch {

@@ -34,3 +34,6 @@ const val MESSAGE_TYPE = "message/rfc822"
 const val INTERNET_CONNECTION_ERROR = "Internet Connection Error"
 const val UNAUTHORIZED = 401
 
+const val STARTING_PAGE_INDEX = 1
+const val PAGING_SIZE = 15
+
