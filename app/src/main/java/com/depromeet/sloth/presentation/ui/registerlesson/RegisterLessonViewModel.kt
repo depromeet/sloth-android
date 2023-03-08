@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-//TODO 뷰모델 내에서만 핸들링하는 변수 일반 변수로 변경
 @HiltViewModel
 class RegisterLessonViewModel @Inject constructor(
     private val registerLessonUseCase: RegisterLessonUseCase,
@@ -80,8 +79,8 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonTotalNumber = savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, 0)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonCategoryId = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_ID, 0)
-    val lessonCategoryId: StateFlow<Int> = _lessonCategoryId.asStateFlow()
+    private var lessonCategoryId = 0
+    private var lessonSiteId = 0
 
     private val _lessonCategoryName = savedStateHandle.getMutableStateFlow(KEY_LESSON_CATEGORY_NAME, DEFAULT_STRING_VALUE)
     val lessonCategoryName: StateFlow<String> = _lessonCategoryName.asStateFlow()
@@ -91,9 +90,6 @@ class RegisterLessonViewModel @Inject constructor(
     )
     val lessonCategorySelectedItemPosition: StateFlow<Int> =
         _lessonCategorySelectedItemPosition.asStateFlow()
-
-    private val _lessonSiteId = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_ID, 0)
-    val lessonSiteId: StateFlow<Int> = _lessonSiteId.asStateFlow()
 
     private val _lessonSiteName = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
@@ -126,11 +122,8 @@ class RegisterLessonViewModel @Inject constructor(
     private val lessonEndDateSelectEvent: StateFlow<Boolean> =
         _lessonEndDateSelectEvent.asStateFlow()
 
-    private val _lessonCategoryMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
-    val lessonCategoryMap: StateFlow<HashMap<Int, String>> = _lessonCategoryMap.asStateFlow()
-
-    private val _lessonSiteMap = MutableStateFlow<HashMap<Int, String>>(hashMapOf())
-    val lessonSiteMap: StateFlow<HashMap<Int, String>> = _lessonSiteMap.asStateFlow()
+    private var lessonCategoryMap = hashMapOf<Int, String>()
+    private var lessonSiteMap = hashMapOf<Int, String>()
 
     private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
@@ -167,9 +160,8 @@ class RegisterLessonViewModel @Inject constructor(
     )
 
     private fun initLessonStartDate() {
-        val today = Date()
         val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
-        calendar.time = today
+        calendar.time = Date()
         _startDate.value = calendar.time
         _lessonStartDate.value = getPickerDateToDash(calendar.time)
     }
@@ -202,16 +194,14 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     private fun setLessonCategoryList(data: List<LessonCategoryResponse>) {
-        _lessonCategoryMap.value =
-            data.map { it.categoryId to it.categoryName }.toMap() as HashMap<Int, String>
+        lessonCategoryMap = data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
     private fun setLessonSiteList(data: List<LessonSiteResponse>) {
-        _lessonSiteMap.value =
-            data.map { it.siteId to it.siteName }.toMap() as HashMap<Int, String>
+        lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
@@ -225,12 +215,12 @@ class RegisterLessonViewModel @Inject constructor(
         registerLessonUseCase(
             LessonRegisterRequest(
                 alertDays = null,
-                categoryId = lessonCategoryId.value,
+                categoryId = lessonCategoryId,
                 endDate = lessonEndDate.value,
                 lessonName = lessonName.value,
                 message = lessonMessage.value,
                 price = lessonPrice.value,
-                siteId = lessonSiteId.value,
+                siteId = lessonSiteId,
                 startDate = lessonStartDate.value,
                 totalNumber = lessonTotalNumber.value
             )
@@ -343,16 +333,16 @@ class RegisterLessonViewModel @Inject constructor(
         _lessonTotalNumber.value = lessonTotalNumber
     }
 
-    fun setLessonCategoryId(lessonCategoryId: Int) {
-        _lessonCategoryId.value = lessonCategoryId
+    fun setLessonCategoryId(lessonCategory: String) {
+        lessonCategoryId = lessonCategoryMap.filterValues { it == lessonCategory }.keys.first()
     }
 
     fun setLessonCategoryName(lessonCategoryName: String) {
         _lessonCategoryName.value = lessonCategoryName
     }
 
-    fun setLessonSiteId(lessonSiteId: Int) {
-        _lessonSiteId.value = lessonSiteId
+    fun setLessonSiteId(lessonSite: String) {
+        lessonSiteId = lessonSiteMap.filterValues { it == lessonSite }.keys.first()
     }
 
     fun setLessonSiteName(lessonSiteName: String) {
@@ -394,18 +384,14 @@ class RegisterLessonViewModel @Inject constructor(
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_NAME = "lessonCategoryName"
-        private const val KEY_LESSON_CATEGORY_ID = "lessonCategoryId"
-        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION =
-            "lessonCategorySelectedItemPosition"
+        private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
         private const val KEY_LESSON_SITE_NAME = "lessonSiteName"
-        private const val KEY_LESSON_SITE_ID = "lessonSiteId"
         private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
         private const val KEY_START_DATE = "startDate"
         private const val KEY_END_DATE = "endDate"
         private const val KEY_LESSON_START_DATE = "lessonStartDate"
         private const val KEY_LESSON_END_DATE = "lessonEndDate"
-        private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION =
-            "lessonEndDateSelectedItemPosition"
+        private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
         private const val KEY_LESSON_PRICE = "lessonPrice"
         private const val KEY_LESSON_MESSAGE = "lessonMessage"
 

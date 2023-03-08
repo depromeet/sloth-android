@@ -180,10 +180,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                         else -> {
                             when (spinner) {
                                 spnRegisterLessonCategory -> {
-                                    viewModel.setLessonCategoryId(
-                                        viewModel.lessonCategoryMap.value.filterValues
-                                        { it == spnRegisterLessonCategory.selectedItem }.keys.first()
-                                    )
+                                    viewModel.setLessonCategoryId(spnRegisterLessonCategory.selectedItem.toString())
                                     viewModel.setLessonCategoryName(spinner.selectedItem.toString())
                                     viewModel.setLessonCategorySelectedItemPosition(
                                         spnRegisterLessonCategory.selectedItemPosition
@@ -191,10 +188,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                                 }
 
                                 else -> {
-                                    viewModel.setLessonSiteId(
-                                        viewModel.lessonSiteMap.value.filterValues
-                                        { it == spnRegisterLessonSite.selectedItem }.keys.first()
-                                    )
+                                    viewModel.setLessonSiteId(spnRegisterLessonSite.selectedItem.toString())
                                     viewModel.setLessonSiteName(spinner.selectedItem.toString())
                                     viewModel.setLessonSiteItemPosition(
                                         spnRegisterLessonSite.selectedItemPosition

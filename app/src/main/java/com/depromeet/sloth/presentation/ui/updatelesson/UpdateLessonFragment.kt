@@ -305,20 +305,14 @@ class UpdateLessonFragment :
                         else -> {
                             when (spinner) {
                                 spnUpdateLessonCategory -> {
-                                    viewModel.setLessonCategoryId(
-                                        viewModel.lessonCategoryMap.value.filterValues
-                                        { it == spnUpdateLessonCategory.selectedItem }.keys.first()
-                                    )
+                                    viewModel.setLessonCategoryId(spnUpdateLessonCategory.selectedItem.toString())
                                     viewModel.setLessonCategorySelectedItemPosition(
                                         spnUpdateLessonCategory.selectedItemPosition
                                     )
                                 }
 
                                 else -> {
-                                    viewModel.setLessonSiteId(
-                                        viewModel.lessonSiteMap.value.filterValues
-                                        { it == spnUpdateLessonSite.selectedItem }.keys.first()
-                                    )
+                                    viewModel.setLessonSiteId(spnUpdateLessonSite.selectedItem.toString())
                                     viewModel.setLessonSiteSelectedItemPosition(
                                         spnUpdateLessonSite.selectedItemPosition
                                     )
