@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
-//TODO view 에서 .value 로 접근하고 있음
+//TODO view 에서 .value 로 접근하고 있는 부분 수정
 @AndroidEntryPoint
 class UpdateLessonFragment :
     BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.*
 
-//TODO view 에서 .value 로 접근하는 로직
+//TODO view 에서 .value 로 접근하는 부분 수정
 @AndroidEntryPoint
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
