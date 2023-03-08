@@ -116,9 +116,7 @@ class ManageViewModel @Inject constructor(
                             setInternetError(false)
                             _uiState.update { memberUiState ->
                                 memberUiState.copy(
-                                    currentProgressRate =
-                                    if (result.data.expiredLessonsPrice == 0) 0f
-                                    else (result.data.finishedLessonsPrice / result.data.expiredLessonsPrice * 100).toFloat(),
+                                    currentProgressRate = (result.data.finishedLessonsPrice * 100 / result.data.expiredLessonsPrice).toFloat(),
                                     expiredLessonsCnt = result.data.expiredLessonsCnt,
                                     expiredLessonsPrice = result.data.expiredLessonsPrice,
                                     finishedLessonsCnt = result.data.finishedLessonsCnt,
