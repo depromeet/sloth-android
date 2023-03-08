@@ -11,6 +11,7 @@ import com.depromeet.sloth.util.DEFAULT_STRING_VALUE
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.KEY_AUTHORIZATION
 import com.depromeet.sloth.util.Result
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -41,7 +42,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body() ?: listOf(LessonTodayResponse.EMPTY)))
+                emit(Result.Success(response.body() ?: listOf(TodayLessonResponse.EMPTY)))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -61,9 +62,9 @@ class LessonRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun fetchAllLessonList() = flow {
+    override fun fetchLessonList() = flow {
         emit(Result.Loading)
-        val response = lessonService.fetchAllLessonList() ?: run {
+        val response = lessonService.fetchLessonList() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -73,7 +74,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body() ?: listOf(LessonAllResponse.EMPTY)))
+                emit(Result.Success(response.body() ?: listOf(LessonListResponse.EMPTY)))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -125,71 +126,38 @@ class LessonRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun updateLessonCount(
-        count: Int,
-        lessonId: Int,
-    ): Result<LessonUpdateCountResponse> {
-        try {
-            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId))?.run {
-                return when (this.code()) {
-                    200 -> {
-                        val newAccessToken = headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                        if (newAccessToken.isNotEmpty()) {
-                            preferences.updateAccessToken(newAccessToken)
-                        }
-                        Result.Success(this.body() ?: LessonUpdateCountResponse.EMPTY)
-                    }
-
-                    else -> Result.Error(Exception(message()), this.code())
+    override fun updateLessonCount(count: Int, lessonId: Int) = flow {
+        emit(Result.Loading)
+        val response =
+            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId)) ?: run {
+                emit(Result.Error(Exception("Response is null")))
+                return@flow
+            }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
                 }
-            } ?: return Result.Error(Exception("Retrofit Exception"))
-        } catch (exception: Exception) {
-            return when(exception) {
+                emit(Result.Success(response.body() ?: UpdateLessonCountResponse.EMPTY))
+            }
+
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable ->
+            when (throwable) {
                 is IOException -> {
                     // Handle Internet Connection Error
-                    Result.Error(Exception(INTERNET_CONNECTION_ERROR))
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
                 }
 
                 else -> {
                     // Handle Other Error
-                    Result.Error(exception)
+                    emit(Result.Error(throwable))
                 }
             }
         }
-    }
-
-//    override fun updateLessonCount(count: Int, lessonId: Int) = flow {
-//        emit(Result.Loading)
-//        val response =
-//            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId)) ?: run {
-//                emit(Result.Error(Exception("Response is null")))
-//                return@flow
-//            }
-//        when (response.code()) {
-//            200 -> {
-//                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-//                if (newAccessToken.isNotEmpty()) {
-//                    preferences.updateAccessToken(newAccessToken)
-//                }
-//                emit(Result.Success(response.body() ?: LessonUpdateCountResponse.EMPTY))
-//            }
-//
-//            else -> emit(Result.Error(Exception(response.message()), response.code()))
-//        }
-//    }
-//        .catch { throwable ->
-//            when (throwable) {
-//                is IOException -> {
-//                    // Handle Internet Connection Error
-//                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-//                }
-//
-//                else -> {
-//                    // Handle Other Error
-//                    emit(Result.Error(throwable))
-//                }
-//            }
-//        }
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
@@ -369,6 +337,40 @@ class LessonRepositoryImpl @Inject constructor(
                     preferences.updateAccessToken(newAccessToken)
                 }
                 emit(Result.Success(response.body() ?: LessonUpdateResponse.EMPTY))
+            }
+
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
+
+    override fun fetchLessonStatisticsInformation() = flow {
+        emit(Result.Loading)
+        val response =
+            lessonService.fetchLessonStatisticsInformation()
+                ?: run {
+                    emit(Result.Error(Exception("Response is null")))
+                    return@flow
+                }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
+                }
+                emit(Result.Success(response.body() ?: LessonStatisticsResponse.EMPTY))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))

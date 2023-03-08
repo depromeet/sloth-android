@@ -9,13 +9,14 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.screen.registerlesson.RegisterLessonViewModel" />
+            type="com.depromeet.sloth.presentation.ui.registerlesson.RegisterLessonViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_register_lesson_first"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/white">
 
         <include

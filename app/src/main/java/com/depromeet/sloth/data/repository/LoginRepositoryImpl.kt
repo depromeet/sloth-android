@@ -25,7 +25,7 @@ class LoginRepositoryImpl @Inject constructor(
     private val googleLoginService: GoogleLoginService
 ) : LoginRepository {
 
-    override suspend fun checkLoggedIn(): Boolean {
+    override suspend fun fetchLoginStatus(): Boolean {
         val accessToken = preferences.getAccessToken().first()
         val refreshToken = preferences.getRefreshToken().first()
 

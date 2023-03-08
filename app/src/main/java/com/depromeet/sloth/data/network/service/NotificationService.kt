@@ -3,6 +3,7 @@ package com.depromeet.sloth.data.network.service
 import com.depromeet.sloth.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.sloth.data.model.request.notification.NotificationUpdateRequest
 import com.depromeet.sloth.data.model.response.notification.NotificationFetchResponse
+import com.depromeet.sloth.data.model.response.notification.NotificationListResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -26,4 +27,15 @@ interface NotificationService {
     suspend fun fetchFCMToken(
         @Path("deviceId") deviceId: String
     ): Response<NotificationFetchResponse>?
+
+    @GET("/api/alarms")
+    suspend fun fetchNotificationList(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<List<NotificationListResponse>>?
+
+    @PATCH("/api/alarms/{alarmId}/read-time")
+    suspend fun updateNotificationState(
+        @Path("alarmId") alarmId: Long,
+    ): Response<String>?
 }

@@ -10,15 +10,15 @@ import retrofit2.http.*
 
 interface LessonService {
     @GET("api/lesson/doing")
-    suspend fun fetchTodayLessonList(): Response<List<LessonTodayResponse>>?
+    suspend fun fetchTodayLessonList(): Response<List<TodayLessonResponse>>?
 
     @GET("api/lesson/list")
-    suspend fun fetchAllLessonList(): Response<List<LessonAllResponse>>?
+    suspend fun fetchLessonList(): Response<List<LessonListResponse>>?
 
     @PATCH("api/lesson/number")
     suspend fun updateLessonCount(
         @Body lessonUpdateCountRequest: LessonUpdateCountRequest
-    ): Response<LessonUpdateCountResponse>?
+    ): Response<UpdateLessonCountResponse>?
 
     @GET("api/lesson/detail/{lessonId}")
     suspend fun fetchLessonDetail(
@@ -51,4 +51,7 @@ interface LessonService {
 
     @GET("api/site/list")
     suspend fun fetchLessonSiteList(): Response<List<LessonSiteResponse>>?
+
+    @GET("api/lesson/stats")
+    suspend fun fetchLessonStatisticsInformation(): Response<LessonStatisticsResponse>?
 }

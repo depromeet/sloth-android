@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.sloth.presentation.screen.manage.ManageViewModel" />
+            type="com.depromeet.sloth.presentation.ui.manage.ManageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,8 +19,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -29,10 +28,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_manage_member_info"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="104dp"
                     android:background="@color/white"
-                    android:paddingBottom="36dp"
-                    app:layout_constraintBottom_toTopOf="@id/cl_manage_menu"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -40,62 +37,81 @@
                     <ImageView
                         android:id="@+id/iv_manage_profile_image"
                         onSingleClick="@{()-> vm.navigateToUpdateProfileDialog()}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="56dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="16dp"
                         android:contentDescription="@string/profile_image"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_profile_oval" />
 
-                    <TextView
-                        android:id="@+id/tv_manage_profile_name"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:paddingHorizontal="32dp"
-                        android:text="@{vm.uiState.memberName}"
-                        android:textColor="@color/gray_600"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/iv_manage_profile_image"
-                        tools:text="@string/profile_name" />
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/iv_manage_profile_image"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tv_manage_profile_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="@{vm.uiState.memberName}"
+                            android:textColor="@color/gray_600"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="@string/profile_name" />
+
+                        <TextView
+                            android:id="@+id/tv_manage_profile_email"
+                            email="@{vm.uiState.email}"
+                            isEmailProvided="@{vm.uiState.isEmailProvided}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/gray_500"
+                            android:textSize="14dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_manage_profile_name"
+                            tools:text="@string/profile_email" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
-                        android:id="@+id/tv_manage_profile_email"
-                        email="@{vm.uiState.email}"
-                        isEmailProvided="@{vm.uiState.isEmailProvided}"
+                        android:id="@+id/tv_manage_setting"
+                        onSingleClick="@{()-> vm.navigateToSetting()}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/gray_500"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/bg_manage_setting_rounded_gray"
+                        android:gravity="center"
+                        android:text="@string/setting"
+                        android:textColor="@color/gray_600"
                         android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_manage_profile_name"
-                        tools:text="@string/profile_email" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_manage_menu"
+                    android:id="@+id/cl_manage_investment_information"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="218dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cl_manage_member_info">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_contact"
                         onSingleClick="@{()-> vm.navigateToContact()}"
                         android:layout_width="0dp"
-                        android:layout_height="70dp"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="12dp"
                         android:background="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -103,188 +119,279 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
+                            android:id="@+id/tv_manage_investment_description"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
-                            android:text="@string/contact"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_privacy"
-                        onSingleClick="@{()-> vm.navigateToPrivacyPolicy()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_contact">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/privacy"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_logout"
-                        onSingleClick="@{()->vm.navigateToLogoutDialog()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_privacy">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/logout"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_withdrawal"
-                        onSingleClick="@{()->vm.navigateToWithdrawalDialog()}"
-                        android:layout_width="0dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/withdraw"
-                            android:textColor="@color/gray_500"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/right_arrow"
-                            android:src="@drawable/ic_manage_right_arrow"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/cl_manage_push_notification"
-                        android:layout_width="0dp"
-                        android:layout_height="96dp"
-                        android:layout_marginTop="1dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/iv_manage_push_noti_sloth"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="18dp"
-                            android:contentDescription="@string/profile_image"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_manage_push_noti_sloth" />
-
-                        <TextView
-                            android:id="@+id/tv_manage_push_noti"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/push_noti"
-                            android:textColor="@color/black"
-                            android:textSize="14dp"
+                            android:layout_marginTop="36dp"
+                            android:text="지금까지 "
+                            android:textColor="@color/gray_600"
+                            android:textSize="20dp"
                             android:textStyle="bold"
-                            app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
-                            app:layout_constraintTop_toTopOf="@id/iv_manage_push_noti_sloth" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="@string/please_push_noti_on"
-                            android:textSize="12dp"
-                            app:layout_constraintStart_toEndOf="@id/iv_manage_push_noti_sloth"
-                            app:layout_constraintTop_toBottomOf="@id/tv_manage_push_noti" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/sc_manage_notification_status"
-                            android:layout_width="56dp"
-                            android:layout_height="28dp"
-                            android:layout_marginEnd="18dp"
-                            android:background="@null"
-                            android:checked="@{vm.uiState.pushAlarmUse}"
-                            android:onCheckedChanged="@{(_, isChecked) -> vm.updateNotificationSwitch(isChecked)}"
-                            android:thumb="@drawable/selector_thumb"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="36dp"
+                            android:text="@{vm.uiState.memberName + `님은요...`}"
+                            android:textColor="@color/gray_600"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_description"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:switchMinWidth="52dp"
-                            app:track="@drawable/selector_switch" />
+                            tools:text="종찬님은요..." />
+
+                        <TextView
+                            android:id="@+id/tv_manage_investment_info"
+                            priceFormat="@{vm.uiState.expiredLessonsPrice}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textColor="@color/primary_500"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_manage_investment_description"
+                            tools:text="30,000원" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="을 투자해서"
+                            android:textColor="@color/gray_600"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/tv_manage_investment_info"
+                            app:layout_constraintTop_toTopOf="@+id/tv_manage_investment_info" />
+
+                        <com.skydoves.progressview.ProgressView
+                            android:id="@+id/pv_manage_current_lesson_progress"
+                            android:layout_width="0dp"
+                            android:layout_height="16dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="28dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_manage_investment_info"
+                            app:progress="@{vm.uiState.currentProgressRate}"
+                            app:progressView_autoAnimate="true"
+                            app:progressView_colorBackground="@color/primary_100"
+                            app:progressView_colorProgress="@color/primary_500"
+                            app:progressView_max="100"
+                            app:progressView_min="0"
+                            app:progressView_padding="1dp"
+                            app:progressView_progressFromPrevious="true"
+                            app:progressView_radius="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="20dp"
+                            android:orientation="vertical"
+                            app:layout_constraintTop_toBottomOf="@+id/pv_manage_current_lesson_progress">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/primary_500_dot"
+                                    android:layout_width="6dp"
+                                    android:layout_height="6dp"
+                                    android:background="@color/primary_500"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:shapeAppearance="@style/circleImageView" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:text="내가 회수한 돈"
+                                    android:textColor="@color/gray_400"
+                                    android:textSize="14dp"
+                                    app:layout_constraintStart_toEndOf="@id/primary_500_dot"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tv_take_money"
+                                    priceFormat="@{vm.uiState.finishedLessonsPrice}"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/primary_500"
+                                    android:textSize="14dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:text="30,000원" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/primary_200_dot"
+                                    android:layout_width="6dp"
+                                    android:layout_height="6dp"
+                                    android:background="@color/primary_200"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:shapeAppearance="@style/circleImageView" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:text="나공이에게 뺏긴 돈"
+                                    android:textColor="@color/gray_400"
+                                    android:textSize="14dp"
+                                    app:layout_constraintStart_toEndOf="@+id/primary_200_dot"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tv_take_away_money"
+                                    priceFormat="@{vm.uiState.notFinishedLessonsPrice}"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/gray_600"
+                                    android:textSize="14dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:text="20,000원" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_lesson_info"
+                    android:layout_width="0dp"
+                    android:layout_height="97dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_manage_investment_information">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="완강 총 개수"
+                                    android:textColor="@color/primary_500"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_expired_lesson_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.expiredLessonsCnt)}"
+                                    android:textColor="@color/primary_500"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold"
+                                    tools:text="7개" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/gray_100" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="완강 성공 개수"
+                                    android:textColor="@color/gray_500"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_finished_lesson_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.finishedLessonsCnt)}"
+                                    android:textColor="@color/gray_600"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold"
+                                    tools:text="3개" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/gray_100" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="완강 실패 개수"
+                                    android:textColor="@color/gray_500"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_not_finished_lesson_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@{@string/unit_lesson_total_number(vm.uiState.notFinishedLessonsCnt)}"
+                                    android:textColor="@color/gray_600"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold"
+                                    tools:text="4개" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

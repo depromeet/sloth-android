@@ -10,13 +10,17 @@ interface MemberRepository {
 
      fun fetchMemberInfo(): Flow<Result<MemberResponse>>
 
-    // fun fetchMemberInfo(): Flow<MemberResponse>
-
-    fun updateMemberInfo(
-        memberUpdateRequest: MemberUpdateRequest,
-    ): Flow<Result<MemberUpdateResponse>>
+    fun updateMemberInfo(memberUpdateRequest: MemberUpdateRequest, ): Flow<Result<MemberUpdateResponse>>
 
     fun logout(): Flow<Result<String>>
+
+    suspend fun fetchTodayLessonOnBoardingStatus(): Boolean
+
+    suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean)
+
+    suspend fun fetchLessonListOnBoardingStatus(): Boolean
+
+    suspend fun updateLessonListOnBoardingStatus(flag: Boolean)
 
     suspend fun deleteAuthToken()
 }
