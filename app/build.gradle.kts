@@ -21,8 +21,8 @@ android {
         applicationId = "com.depromeet.sloth"
         minSdk = 24
         targetSdk = 32
-        versionCode = 24
-        versionName = "1.0.19"
+        versionCode = 26
+        versionName = "1.0.21"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -52,7 +52,7 @@ android {
         }
 
         getByName("release") {
-            isDebuggable = true
+            isDebuggable = false
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
