@@ -18,6 +18,7 @@ class TodayLessonTitleViewHolder(val binding: ItemTodayLessonTitleBinding) : Rec
                 TodayLessonType.FINISHED -> {
                     tvTodayLessonTitle.setText(R.string.today_lesson_title_finished_lesson)
                 }
+                else -> throw IllegalStateException("Unknown headerType $headerType")
             }
         }
     }

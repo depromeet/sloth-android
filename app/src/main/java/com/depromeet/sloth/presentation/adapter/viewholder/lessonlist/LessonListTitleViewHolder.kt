@@ -18,6 +18,7 @@ class LessonListTitleViewHolder(val binding: ItemLessonListTitleBinding) : Recyc
                 LessonListType.PAST -> {
                     tvLessonListTitle.setText(R.string.lesson_list_title_past_lesson)
                 }
+                else -> throw IllegalStateException("Unknown headerType $headerType")
             }
             tvLessonListCount.text = itemView.context.getString(R.string.lesson_count_unit, count.toString())
         }
