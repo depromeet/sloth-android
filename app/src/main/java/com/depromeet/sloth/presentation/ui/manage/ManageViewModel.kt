@@ -20,6 +20,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+data class MemberUiState(
+    val email: String = "",
+    val memberName: String = "",
+    val isEmailProvided: Boolean = false,
+    val isPushAlarmUse: Boolean = false,
+    val currentProgressRate: Float = 0f,
+    val expiredLessonsCnt: Int = 0,
+    val expiredLessonsPrice: Int = 0,
+    val finishedLessonsCnt: Int = 0,
+    val finishedLessonsPrice: Int = 0,
+    val notFinishedLessonsCnt: Int = 0,
+    val notFinishedLessonsPrice: Int = 0
+)
+
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,
@@ -246,18 +260,4 @@ class ManageViewModel @Inject constructor(
     override fun retry() {
         fetchLessonStatisticsInfo()
     }
-
-    data class MemberUiState(
-        val email: String = "",
-        val memberName: String = "",
-        val isEmailProvided: Boolean = false,
-        val isPushAlarmUse: Boolean = false,
-        val currentProgressRate: Float = 0f,
-        val expiredLessonsCnt: Int = 0,
-        val expiredLessonsPrice: Int = 0,
-        val finishedLessonsCnt: Int = 0,
-        val finishedLessonsPrice: Int = 0,
-        val notFinishedLessonsCnt: Int = 0,
-        val notFinishedLessonsPrice: Int = 0
-    )
 }

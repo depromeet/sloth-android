@@ -183,7 +183,7 @@ class LessonListViewModel @Inject constructor(
 }
 
 //data class UiState (
-//    val lessonListInfo: LessonListResponse,
-//    val isLoading: Boolean,
-//    val fetchLessonListResult: LessonListResponse
+//    val lessonList: List<LessonListResponse> = emptyList(),
+//    val isLoading: Boolean = false,
+//    val errorMessage: String? = null,
 //)

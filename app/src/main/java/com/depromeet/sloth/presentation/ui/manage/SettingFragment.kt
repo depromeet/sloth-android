@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-// TODO 화면 전환 시 푸시알림 수신버튼이 비활성화 -> 활성화되는 애니메이션이 보이는 현상 제거
+// TODO 처음 세팅 화면에 진입했을때 스위치 버튼의 애니메이션이 보이는 현상 해결(비활성화 -> 활성화)
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
 
