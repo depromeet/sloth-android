@@ -21,8 +21,8 @@ android {
         applicationId = "com.depromeet.sloth"
         minSdk = 24
         targetSdk = 32
-        versionCode = 27
-        versionName = "1.1.0"
+        versionCode = 28
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
