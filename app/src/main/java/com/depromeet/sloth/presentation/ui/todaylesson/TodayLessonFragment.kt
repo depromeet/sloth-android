@@ -17,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-// event 가 중복으로 호출 되는 이슈
 @AndroidEntryPoint
 class TodayLessonFragment :
     BaseFragment<FragmentTodayLessonBinding>(R.layout.fragment_today_lesson) {
@@ -30,11 +29,6 @@ class TodayLessonFragment :
         onMinusClick = { lesson -> viewModel.updateLessonCount(-1, lesson) },
         onFinishClick = { lesson -> viewModel.navigateToFinishLessonDialog(lesson.lessonId.toString()) }
     )
-
-//    override fun onStart() {
-//        super.onStart()
-//        viewModel.fetchTodayLessonList()
-//    }
 
     private val todayLessonAdapter by lazy {
         TodayLessonAdapter(todayLessonItemClickListener)
@@ -78,18 +72,6 @@ class TodayLessonFragment :
                     if (!isLoggedIn) {
                         navigateToLogin()
                     } else {
-                        viewModel.checkTodayLessonOnBoardingComplete()
-                    }
-                }
-            }
-            // 다른 화면 갔다가 돌아 오면 collect 내부의 로그 호출이 2배씩 늘어남
-            // api 는 중복 호출을 막아놔서 한번씩만 호출되긴 함
-            launch {
-                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                    if (!isOnBoardingComplete) {
-                        val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
-                        findNavController().safeNavigate(action)
-                    } else {
                         viewModel.fetchTodayLessonList()
                     }
                 }
@@ -98,13 +80,6 @@ class TodayLessonFragment :
             launch {
                 viewModel.navigateToLoginEvent.collect {
                     val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
-                    findNavController().safeNavigate(action)
-                }
-            }
-
-            launch {
-                viewModel.navigateToTodayLessonOnBoardingEvent.collect {
-                    val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
                     findNavController().safeNavigate(action)
                 }
             }

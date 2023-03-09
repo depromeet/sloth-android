@@ -5,6 +5,7 @@ import com.depromeet.sloth.R
 import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.login.FetchGoogleAuthInfoUseCase
 import com.depromeet.sloth.domain.usecase.login.FetchSlothAuthInfoUseCase
+import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.domain.usecase.notification.RegisterNotificationTokenUseCase
 import com.depromeet.sloth.presentation.ui.base.BaseViewModel
 import com.depromeet.sloth.util.GOOGLE
@@ -25,13 +26,14 @@ class LoginViewModel @Inject constructor(
     private val fetchGoogleAuthInfoUseCase: FetchGoogleAuthInfoUseCase,
     private val fetchSlothAuthInfoUseCase: FetchSlothAuthInfoUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
+    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
 
-    private val _registerNotificationTokenSuccessEvent = MutableSharedFlow<Unit>()
-    val registerNotificationTokenSuccessEvent: SharedFlow<Unit> =
-        _registerNotificationTokenSuccessEvent.asSharedFlow()
+    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
+    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
+        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
@@ -69,7 +71,7 @@ class LoginViewModel @Inject constructor(
         _kakaoLoginEvent.emit(Unit)
     }
 
-    fun navigateToSlothPolicyWebview() = viewModelScope.launch {
+    fun navigateToSlothPolicyWebView() = viewModelScope.launch {
         _navigateToPrivatePolicyEvent.emit(Unit)
     }
 
@@ -150,9 +152,8 @@ class LoginViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        _registerNotificationTokenSuccessEvent.emit(Unit)
+                        checkTodayLessonOnBoardingComplete()
                     }
-
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.please_check_internet))
@@ -162,6 +163,10 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
+    }
+
+    private fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
+        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
     override fun retry() = Unit

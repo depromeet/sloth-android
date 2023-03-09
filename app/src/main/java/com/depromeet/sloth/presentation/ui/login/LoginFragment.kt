@@ -29,12 +29,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private fun initObserver()  {
         repeatOnStarted {
             launch {
-                viewModel.registerNotificationTokenSuccessEvent.collect {
-                        navigateToTodayLesson()
-                    }
-            }
-
-            launch {
                 viewModel.navigateToLoginBottomSheetEvent.collect {
                         showLoginBottomSheet()
                     }
@@ -56,11 +50,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private fun showLoginBottomSheet() {
         val action = LoginFragmentDirections.actionLoginToLoginBottomDialog()
-        findNavController().safeNavigate(action)
-    }
-
-    private fun navigateToTodayLesson() {
-        val action = LoginFragmentDirections.actionLoginToTodayLesson()
         findNavController().safeNavigate(action)
     }
 }

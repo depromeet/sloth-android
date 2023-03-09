@@ -7,7 +7,6 @@ import com.depromeet.sloth.di.StringResourcesProvider
 import com.depromeet.sloth.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.sloth.domain.usecase.lesson.UpdateLessonCountUseCase
 import com.depromeet.sloth.domain.usecase.login.FetchLoginStatusUseCase
-import com.depromeet.sloth.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.sloth.presentation.ui.base.BaseViewModel
 import com.depromeet.sloth.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.sloth.util.Result
@@ -23,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
-    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -32,23 +30,19 @@ class TodayLessonViewModel @Inject constructor(
     private var fetchTodayLessonJob: Job? = null
     private var updateLessonCountJob: Job? = null
 
-    private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
-    val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
-
-    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
-    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
-        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
-
-    private val _navigateToLoginEvent = MutableSharedFlow<Unit>()
-    val navigateToLoginEvent = _navigateToLoginEvent.asSharedFlow()
-
-    private val _navigateToTodayLessonOnBoardingEvent = MutableSharedFlow<Unit>()
-    val navigateToTodayLessonOnBoardingEvent = _navigateToTodayLessonOnBoardingEvent.asSharedFlow()
-
     private var todayLessonList = emptyList<TodayLessonResponse>()
+
+    // private val _uiState = MutableStateFlow<UiState>(UiState())
+    // val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _todayLessonUiModelList = MutableStateFlow(emptyList<TodayLessonUiModel>())
     val todayLessonUiModelList: StateFlow<List<TodayLessonUiModel>> = _todayLessonUiModelList.asStateFlow()
+
+    private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
+    val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
+
+    private val _navigateToLoginEvent = MutableSharedFlow<Unit>()
+    val navigateToLoginEvent = _navigateToLoginEvent.asSharedFlow()
 
     private val _navigateToNotificationListEvent = MutableSharedFlow<Unit>()
     val navigateToNotificationListEvent: SharedFlow<Unit> =
@@ -71,16 +65,6 @@ class TodayLessonViewModel @Inject constructor(
 
     private fun checkLoginStatus() = viewModelScope.launch {
         _autoLoginEvent.emit(fetchLoginStatusUseCase())
-//        val isLoggedIn = fetchLoginStatusUseCase()
-//        if (isLoggedIn) checkTodayLessonOnBoardingComplete()
-//        else _navigateToLoginEvent.emit(Unit)
-    }
-
-    fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
-//        val isTodayLessonOnBoardingComplete = fetchTodayLessonOnBoardingStatusUseCase()
-//        if (!isTodayLessonOnBoardingComplete) _navigateToTodayLessonOnBoardingEvent.emit(Unit)
-//        else fetchTodayLessonList()
     }
 
     private fun updateTodayLessonCount(count: Int, lessonId: Int) {
@@ -88,14 +72,6 @@ class TodayLessonViewModel @Inject constructor(
             increaseTodayLessonCount(lessonId)
         } else {
             decreaseTodayLessonCount(lessonId)
-        }
-    }
-
-    private fun rollbackTodayLessonCount(count: Int, lessonId: Int) {
-        if (count == 1) {
-            decreaseTodayLessonCount(lessonId)
-        } else {
-            increaseTodayLessonCount(lessonId)
         }
     }
 
@@ -292,8 +268,6 @@ class TodayLessonViewModel @Inject constructor(
                                 }
                                 else -> showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail))
                             }
-                            // adapter 의 애니메이션 기능을 내부에서 수행시키지 못함
-                            // rollbackTodayLessonCount(count, lesson.lessonId)
                         }
                     }
                     updateLessonCountJob = null
@@ -317,3 +291,9 @@ class TodayLessonViewModel @Inject constructor(
         fetchTodayLessonList()
     }
 }
+
+//data class UiState (
+//    val todayLessonList: List<TodayLessonResponse> = emptyList(),
+//    val isLoading: Boolean = false,
+//    val errorMessage: String? = null,
+//)

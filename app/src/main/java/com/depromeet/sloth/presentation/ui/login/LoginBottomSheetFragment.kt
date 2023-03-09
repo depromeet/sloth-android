@@ -11,13 +11,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
+import com.depromeet.sloth.BuildConfig
 import com.depromeet.sloth.R
 import com.depromeet.sloth.databinding.FragmentLoginBottomDialogBinding
 import com.depromeet.sloth.extensions.repeatOnStarted
 import com.depromeet.sloth.extensions.safeNavigate
-import com.depromeet.sloth.presentation.ui.base.BaseBottomSheetFragment
 import com.depromeet.sloth.presentation.login.loginWithKakao
-import com.depromeet.sloth.BuildConfig
+import com.depromeet.sloth.presentation.ui.base.BaseBottomSheetFragment
 import com.depromeet.sloth.util.KAKAO
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -101,9 +101,13 @@ class LoginBottomSheetFragment :
             }
 
             launch {
-                viewModel.registerNotificationTokenSuccessEvent.collect {
+                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
+                    if (!isOnBoardingComplete) {
+                        navigateToTodayLessonOnBoarding()
+                    } else {
                         navigateToTodayLesson()
                     }
+                }
             }
 
             launch {
@@ -118,6 +122,11 @@ class LoginBottomSheetFragment :
                     }
             }
         }
+    }
+
+    private fun navigateToTodayLessonOnBoarding() {
+        val action = LoginBottomSheetFragmentDirections.actionLoginBottomDialogToOnBoardingTodayLesson()
+        findNavController().safeNavigate(action)
     }
 
     private fun navigateToTodayLesson() {

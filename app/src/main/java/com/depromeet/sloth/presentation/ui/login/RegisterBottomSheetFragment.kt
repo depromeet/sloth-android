@@ -32,9 +32,13 @@ class RegisterBottomSheetFragment :
     private fun initObserver() {
         repeatOnStarted {
             launch {
-                viewModel.registerNotificationTokenSuccessEvent.collect {
+                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
+                    if (!isOnBoardingComplete) {
+                        navigateToTodayLessonOnBoarding()
+                    } else {
                         navigateToTodayLesson()
                     }
+                }
             }
 
             launch {
@@ -67,6 +71,11 @@ class RegisterBottomSheetFragment :
                     }
             }
         }
+    }
+
+    private fun navigateToTodayLessonOnBoarding() {
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToOnBoardingTodayLesson()
+        findNavController().safeNavigate(action)
     }
 
     private fun navigateToTodayLesson() {
