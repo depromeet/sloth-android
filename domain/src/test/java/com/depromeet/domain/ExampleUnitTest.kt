@@ -1,4 +1,4 @@
-package com.depromeent.sloth
+package com.depromeet.domain
 
 import org.junit.Test
 

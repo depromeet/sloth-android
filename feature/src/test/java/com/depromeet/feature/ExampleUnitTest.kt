@@ -1,4 +1,4 @@
-package com.depromeet.sloth
+package com.depromeet.feature
 
 import org.junit.Test
 
