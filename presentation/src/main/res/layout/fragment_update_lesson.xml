@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.depromeet.presentation.ui.updatelesson.UpdateLessonViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_update_lesson"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/tb_update_lesson"
+            style="@style/Widget.Sloth.Toolbar.WithArrow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_update_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/update_lesson"
+                android:textColor="@color/gray_600"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <ScrollView
+            android:id="@+id/nsv_update_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_update_lesson">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_name"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="34dp"
+                    android:text="@string/lesson_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/et_update_lesson_name"
+                    style="@style/Widget.Sloth.EditText.Gray"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:text="@{vm.lessonName}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_name"
+                    tools:hint="@string/lesson_name" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_total_number"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_update_lesson_name" />
+
+                <EditText
+                    android:id="@+id/et_update_lesson_total_number"
+                    style="@style/Widget.Sloth.EditText.Gray"
+                    lessonTotalNumberHint="@{vm.lessonTotalNumber}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:paddingHorizontal="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_total_number"
+                    tools:hint="@string/lesson_count" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_total_number_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="18dp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_total_number" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_category"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_category"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_update_lesson_total_number" />
+
+                <Spinner
+                    android:id="@+id/spn_update_lesson_category"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/gray_500"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_update_lesson_category" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_site"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_site"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/spn_update_lesson_category" />
+
+                <Spinner
+                    android:id="@+id/spn_update_lesson_site"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_register_lesson_rounded_spinner_gray"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/gray_500"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_site" />
+
+                <TextView
+                    android:id="@+id/tv_update_start_lesson"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_start_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spn_update_lesson_site" />
+
+                <TextView
+                    android:id="@+id/tv_update_start_lesson_date"
+                    lessonDate="@{vm.lessonDetail.startDate}"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_update_lesson_rounded_spinner_disabled"
+                    android:padding="16dp"
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/gray_500"
+                    android:textSize="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson" />
+
+                <TextView
+                    android:id="@+id/tv_update_end_lesson"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_finish_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_start_lesson_date" />
+
+                <TextView
+                    android:id="@+id/tv_update_end_lesson_date"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    lessonDate="@{vm.lessonDetail.endDate}"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_update_lesson_rounded_spinner_disabled"
+                    android:padding="16dp"
+                    android:paddingHorizontal="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_price"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_price"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_end_lesson_date" />
+
+                <EditText
+                    android:id="@+id/et_update_lesson_price"
+                    style="@style/Widget.Sloth.EditText.Gray"
+                    lessonPriceHint="@{vm.lessonPrice}"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="9"
+                    android:padding="16dp"
+                    android:paddingHorizontal="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price"
+                    tools:hint="@string/lesson_price" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_price_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:paddingHorizontal="12dp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_price"
+                    tools:text="@string/lesson_price" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_message"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/lesson_message"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_update_lesson_price" />
+
+                <TextView
+                    android:id="@+id/tv_update_lesson_message_info"
+                    style="@style/Widget.Sloth.TextView.Gray"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_update_lesson_rounded_edit_text_disabled"
+                    android:ellipsize="end"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:padding="16dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="@{vm.lessonDetail.message}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message"
+                    tools:text="@string/lesson_message_info" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_update_lesson"
+                    style="@style/Widget.Sloth.Button"
+                    onSingleClick="@{()->vm.updateLesson()}"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:enabled="@{vm.updateLessonButtonState}"
+                    android:text="@string/finish"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_update_lesson_message_info" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <include
+            android:id="@+id/update_lesson_network_error"
+            layout="@layout/item_network_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:vm="@{vm}"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

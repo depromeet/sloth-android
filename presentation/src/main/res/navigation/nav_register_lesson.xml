@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_register_lesson"
+    app:startDestination="@id/register_lesson_first">
+
+    <fragment
+        android:id="@+id/register_lesson_first"
+        android:name="com.depromeet.presentation.ui.registerlesson.RegisterLessonFirstFragment"
+        android:label="RegisterLessonFirstFragment"
+        tools:layout="@layout/fragment_register_lesson_first">
+
+        <argument
+            android:name="fragment_id"
+            app:argType="integer"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/action_register_lesson_first_to_register_lesson_second"
+            app:destination="@id/register_lesson_second"
+            app:enterAnim="@anim/slide_right_enter"
+            app:exitAnim="@anim/slide_right_exit"
+            app:popEnterAnim="@anim/slide_left_enter"
+            app:popExitAnim="@anim/slide_left_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_lesson_second"
+        android:name="com.depromeet.presentation.ui.registerlesson.RegisterLessonSecondFragment"
+        android:label="RegisterLessonSecondFragment"
+        tools:layout="@layout/fragment_register_lesson_second">
+
+        <action
+            android:id="@+id/action_register_lesson_second_to_register_lesson_check"
+            app:destination="@id/register_lesson_check"
+            app:enterAnim="@anim/slide_right_enter"
+            app:exitAnim="@anim/slide_right_exit"
+            app:popEnterAnim="@anim/slide_left_enter"
+            app:popExitAnim="@anim/slide_left_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_lesson_check"
+        android:name="com.depromeet.presentation.ui.registerlesson.RegisterLessonCheckFragment"
+        android:label="RegisterLessonCheckFragment"
+        tools:layout="@layout/fragment_register_lesson_check">
+
+        <action
+            android:id="@+id/action_register_lesson_check_to_lesson_list"
+            app:destination="@id/lesson_list"/>
+
+    </fragment>
+
+</navigation>

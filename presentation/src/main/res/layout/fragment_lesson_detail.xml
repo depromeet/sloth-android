@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.depromeet.presentation.ui.lessondetail.LessonDetailViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/tb_lesson_detail"
+            style="@style/Widget.Sloth.Toolbar.WithArrow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#F9FAF9"
+            android:elevation="0dp"
+            android:visibility="@{vm.internetError ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_detail_update_lesson"
+                onSingleClick="@{() -> vm.navigateToUpdateLesson()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:text="@string/update"
+                android:textColor="@color/gray_600"
+                android:textSize="16dp" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_lesson_detail">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_lesson_detail_summary"
+                    android:layout_width="0dp"
+                    android:layout_height="202dp"
+                    android:background="#F9F9F9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/iv_lesson_detail_sloth"
+                        currentProgressRate="@{vm.uiState.currentProgressRate}"
+                        goalProgressRate="@{vm.uiState.goalProgressRate}"
+                        android:layout_width="163dp"
+                        android:layout_height="160dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="27dp"
+                        android:contentDescription="@string/sloth_image"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/ic_lesson_detail_sloth_steadily_listen" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_summary"
+                        currentProgressRate="@{vm.uiState.currentProgressRate}"
+                        goalProgressRate="@{vm.uiState.goalProgressRate}"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:paddingStart="36dp"
+                        android:paddingEnd="24dp"
+                        android:textColor="#2B2B2B"
+                        android:textSize="22dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/tv_lesson_detail_waste_money"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toEndOf="@id/iv_lesson_detail_sloth"
+                        app:layout_constraintTop_toTopOf="@id/iv_lesson_detail_sloth"
+                        tools:text="@string/mission_fail" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_waste_money"
+                        isVisible="@{vm.uiState.goalProgressRate}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:text="@string/waste_money"
+                        android:textColor="@color/gray_500"
+                        android:textSize="13dp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_lesson_detail_waste_money_info"
+                        app:layout_constraintStart_toStartOf="@id/tv_lesson_detail_summary" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_waste_money_info"
+                        goalProgressRate="@{vm.uiState.goalProgressRate}"
+                        priceFormat="@{vm.uiState.wastePrice}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/primary_500"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_lesson_detail_sloth"
+                        app:layout_constraintStart_toStartOf="@id/tv_lesson_detail_waste_money"
+                        tools:text="@string/waste_money_info" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_lesson_detail_summary">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/gl_lesson_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_begin="32dp"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_remain_day"
+                        d_day="@{vm.uiState.remainDay}"
+                        goalProgressRate="@{vm.uiState.goalProgressRate}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/gray_600"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/gl_lesson_detail"
+                        tools:text="@string/d_remain_day" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_warning"
+                        goalProgressRate="@{vm.uiState.goalProgressRate}"
+                        remainDay="@{vm.uiState.remainDay}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:gravity="center"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="12dp"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toEndOf="@id/tv_lesson_detail_remain_day"
+                        app:layout_constraintTop_toTopOf="@id/tv_lesson_detail_remain_day"
+                        tools:background="@drawable/bg_rounded_chip_caution"
+                        tools:text="@string/lesson_warning"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="@{vm.uiState.lessonName}"
+                        android:textColor="@color/gray_600"
+                        android:textSize="24dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_lesson_detail_remain_day"
+                        tools:text="@string/lesson_name_info" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_rounded_chip_grey"
+                        android:gravity="center"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text="@{vm.uiState.categoryName}"
+                        android:textColor="@color/gray_600"
+                        android:textSize="12dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_lesson_detail_name"
+                        tools:ignore="HardcodedText"
+                        tools:text="개발" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_site"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_rounded_chip_grey"
+                        android:gravity="center"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text="@{vm.uiState.siteName}"
+                        android:textColor="@color/gray_600"
+                        android:textSize="12dp"
+                        app:layout_constraintStart_toEndOf="@id/tv_lesson_detail_category"
+                        app:layout_constraintTop_toBottomOf="@id/tv_lesson_detail_name"
+                        tools:ignore="HardcodedText"
+                        tools:text="인프런" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_lesson_detail_progress"
+                        android:layout_width="0dp"
+                        android:layout_height="146dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="24dp"
+                        android:backgroundTint="@color/primary_100"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_lesson_detail_site">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/tv_lesson_detail_progress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="20dp"
+                                android:text="@string/lesson_progress"
+                                android:textColor="@color/gray_600"
+                                android:textSize="16dp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="22dp"
+                                android:layout_marginEnd="16dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/tv_lesson_detail_end_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/lesson_detail_goal_date"
+                                    android:textColor="@color/gray_500"
+                                    android:textSize="14dp"
+                                    app:layout_constraintEnd_toStartOf="@id/tv_lesson_detail_end_date_info"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tv_lesson_detail_end_date_info"
+                                    lessonDate="@{vm.uiState.endDate}"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/gray_600"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:text="@string/lesson_goal_date_info" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="44dp"
+                                android:layout_marginEnd="16dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/tv_lesson_detail_present_number"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/lesson_present_number"
+                                    android:textColor="@color/gray_500"
+                                    android:textSize="14dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@id/tv_lesson_detail_present_lesson_progress"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tv_lesson_detail_present_lesson_progress"
+                                    present="@{vm.uiState.presentNumber}"
+                                    total="@{vm.uiState.totalNumber}"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/gray_600"
+                                    android:textSize="14dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    tools:text="@string/lesson_present_number_info" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <TextView
+                                android:id="@+id/tv_lesson_detail_present_lesson_progress_rate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="82dp"
+                                android:text="@string/lesson_current_progress"
+                                android:textColor="@color/gray_500"
+                                android:textSize="12dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.skydoves.progressview.ProgressView
+                                android:id="@+id/pb_lesson_detail_current_lesson_progress"
+                                setProgressRate="@{vm.uiState.currentProgressRate}"
+                                android:layout_width="228dp"
+                                android:layout_height="14dp"
+                                android:layout_marginTop="84dp"
+                                android:layout_marginEnd="16dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:progressView_autoAnimate="true"
+                                app:progressView_colorBackground="@color/white"
+                                app:progressView_colorProgress="@color/primary_400"
+                                app:progressView_labelColorInner="@color/white"
+                                app:progressView_labelColorOuter="@color/black"
+                                app:progressView_labelConstraints="align_progress"
+                                app:progressView_labelSize="10sp"
+                                app:progressView_labelSpace="10dp"
+                                app:progressView_labelTypeface="bold"
+                                app:progressView_max="100"
+                                app:progressView_min="0"
+                                app:progressView_padding="1dp"
+                                app:progressView_progressFromPrevious="true"
+                                app:progressView_radius="12dp"
+                                tools:progressView_labelText="40%" />
+
+                            <TextView
+                                android:id="@+id/tv_lesson_detail_goal_lesson_progress_rate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="109dp"
+                                android:text="@string/lesson_goal_progress"
+                                android:textColor="@color/gray_500"
+                                android:textSize="12dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.skydoves.progressview.ProgressView
+                                android:id="@+id/pb_lesson_detail_goal_lesson_progress"
+                                setProgressRate="@{vm.uiState.goalProgressRate}"
+                                android:layout_width="228dp"
+                                android:layout_height="14dp"
+                                android:layout_marginTop="111dp"
+                                android:layout_marginEnd="16dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:progressView_autoAnimate="true"
+                                app:progressView_colorBackground="@color/white"
+                                app:progressView_colorProgress="@color/primary_600"
+                                app:progressView_labelColorInner="@color/white"
+                                app:progressView_labelColorOuter="@color/black"
+                                app:progressView_labelConstraints="align_progress"
+                                app:progressView_labelSize="10sp"
+                                app:progressView_labelSpace="10dp"
+                                app:progressView_labelTypeface="bold"
+                                app:progressView_max="100"
+                                app:progressView_min="0"
+                                app:progressView_padding="1dp"
+                                app:progressView_progressFromPrevious="true"
+                                app:progressView_radius="12dp"
+                                tools:progressView_labelText="65%" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="40dp"
+                        android:text="@string/lesson_info"
+                        android:textColor="@color/gray_600"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="92dp"
+                        android:text="@string/lesson_count"
+                        android:textColor="@color/gray_500"
+                        android:textSize="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_count_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="92dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{@string/unit_lesson_number(vm.uiState.totalNumber)}"
+                        android:textColor="@color/gray_600"
+                        android:textSize="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress"
+                        tools:text="@string/lesson_count_info" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="128dp"
+                        android:text="@string/lesson_period"
+                        android:textColor="@color/gray_500"
+                        android:textSize="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_lesson_period_info"
+                        endDate="@{vm.uiState.endDate}"
+                        startDate="@{vm.uiState.startDate}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="128dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/gray_600"
+                        android:textSize="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress"
+                        tools:text="@string/lesson_period_date_info" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="164dp"
+                        android:text="@string/lesson_price"
+                        android:textColor="@color/gray_500"
+                        android:textSize="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_price_info"
+                        priceFormat="@{vm.uiState.price}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="164dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/gray_600"
+                        android:textSize="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress"
+                        tools:text="@string/lesson_price_info" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="200dp"
+                        android:text="@string/lesson_message"
+                        android:textColor="@color/gray_500"
+                        android:textSize="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress" />
+
+                    <TextView
+                        android:id="@+id/tv_lesson_detail_message_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="200dp"
+                        android:layout_marginEnd="16dp"
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:maxLines="2"
+                        android:text="@{vm.uiState.message}"
+                        android:textColor="@color/gray_600"
+                        android:textSize="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_lesson_detail_message"
+                        app:layout_constraintTop_toBottomOf="@id/cv_lesson_detail_progress"
+                        tools:text="@string/lesson_message_info" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_lesson_detail_delete_lesson"
+                        style="@style/Widget.Sloth.Button.Delete"
+                        onSingleClick="@{() -> vm.navigateToDeleteLessonDialog()}"
+                        android:layout_width="match_parent"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="36dp"
+                        android:layout_marginBottom="36dp"
+                        android:text="@string/delete"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_lesson_detail_message_info" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <include
+            android:id="@+id/lesson_detail_network_error"
+            layout="@layout/item_network_error"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{vm.internetError ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_lesson_detail"
+            app:vm="@{vm}"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

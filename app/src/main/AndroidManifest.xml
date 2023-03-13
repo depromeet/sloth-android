@@ -17,34 +17,6 @@
         android:theme="@style/Theme.Sloth"
         android:usesCleartextTraffic="true"
         tools:targetApi="s">
-        <activity
-            android:name=".presentation.ui.MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Sloth.Splash"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="oauth"
-                    android:scheme="@string/kakao_native_key" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -54,7 +26,7 @@
             android:resource="@color/sloth" />
 
         <service
-            android:name=".service.FirebaseService"
+            android:name="com.depromeet.presentation.service.FirebaseService"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+   <data>
+      <import type="com.depromeet.presentation.BuildConfig"/>
+
+   </data>
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+      <com.google.android.material.appbar.MaterialToolbar
+          android:id="@+id/tb_sloth_policy"
+          style="@style/Widget.Sloth.Toolbar.WithArrow"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+         <EditText
+             android:id="@+id/et_sloth_policy_address_bar"
+             android:layout_width="280dp"
+             android:layout_height="32dp"
+             android:background="@drawable/bg_sloth_policy_address_bar"
+             android:text="@{BuildConfig.POLICY_WEB_VIEW_URL}"
+             android:inputType="textUri"
+             android:paddingHorizontal="16dp"
+             android:selectAllOnFocus="true"
+             android:textSize="14dp"
+             android:gravity="center_vertical"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />
+
+      </com.google.android.material.appbar.MaterialToolbar>
+
+      <WebView
+          android:id="@+id/wv_web_view"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          app:layout_constraintTop_toBottomOf="@id/tb_sloth_policy"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent" />
+
+      <androidx.core.widget.ContentLoadingProgressBar
+          android:id="@+id/pb_sloth_policy_content_loading"
+          android:layout_width="0dp"
+          android:layout_height="2dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/tb_sloth_policy"
+          style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+          app:layout_constraintRight_toRightOf="parent" />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

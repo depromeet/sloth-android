@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "328671196053",
+    "project_id": "nanagong-336615",
+    "storage_bucket": "nanagong-336615.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328671196053:android:afbea7becb3b254f7dbc9c",
+        "android_client_info": {
+          "package_name": "com.depromeet.presentation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328671196053-2jb95rthjgjdjfb9pccdl1n3uo74rkji.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.presentation",
+            "certificate_hash": "f03331124c8be25022866f47a6118935e26146db"
+          }
+        },
+        {
+          "client_id": "328671196053-45gda05en3hgvgp7pfoikao9utt69du2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.presentation",
+            "certificate_hash": "c7ef690eac5a3cef2b30aa9e0005a6fda15c9116"
+          }
+        },
+        {
+          "client_id": "328671196053-q0sd5o806rvq3k3cqpc962lg3sdu0qg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.presentation",
+            "certificate_hash": "2b9462c25ed804c496cf08cb26f5ef15677519fb"
+          }
+        },
+        {
+          "client_id": "328671196053-qhgsst093q723p254smam91jm6mo0b3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.presentation",
+            "certificate_hash": "70efc84bb51ac352a03af84a0cb2be331018b3cb"
+          }
+        },
+        {
+          "client_id": "328671196053-t2vfqdro8f1gnd5bhbde2i36aupcd8df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.depromeet.presentation",
+            "certificate_hash": "b4ded07aef1f0feacdf86ce3e702dc7ef734b6db"
+          }
+        },
+        {
+          "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_sxMOM9vfjiELrjfey-tJVU16c3cV1U4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "328671196053-5rt14d38oq8f00d0uqtam0p6v359cb7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
