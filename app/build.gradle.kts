@@ -15,14 +15,14 @@ plugins {
 
 android {
     namespace = "com.depromeet.sloth"
-    compileSdk = 32
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId = "com.depromeet.sloth"
-        minSdk = 24
-        targetSdk = 32
-        versionCode = 28
-        versionName = "1.1.1"
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
+        versionCode = ProjectConfig.versionCode
+        versionName = ProjectConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

@@ -18,4 +18,3 @@ rootProject.name = "sloth"
 include(":app")
 include(":data")
 include(":domain")
-include(":feature")
