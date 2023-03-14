@@ -10,11 +10,3 @@ internal fun LessonUpdateResponse.toEntity() = LessonUpdateEntity(
     siteId = siteId,
     totalNumber = totalNumber
 )
-
-internal fun LessonUpdateEntity.toModel() = LessonUpdateResponse(
-    categoryId = categoryId,
-    lessonId = lessonId,
-    lessonName = lessonName,
-    siteId = siteId,
-    totalNumber = totalNumber
-)

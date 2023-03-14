@@ -11,11 +11,3 @@ internal fun MemberResponse.toEntity() =  MemberEntity(
     isEmailProvided = isEmailProvided,
     isPushAlarmUse = isPushAlarmUse
 )
-
-internal fun MemberEntity.toModel() =  MemberResponse(
-    email = email,
-    memberId = memberId,
-    memberName = memberName,
-    isEmailProvided = isEmailProvided,
-    isPushAlarmUse = isPushAlarmUse
-)

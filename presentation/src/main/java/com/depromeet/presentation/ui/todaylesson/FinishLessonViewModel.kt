@@ -44,7 +44,6 @@ class FinishLessonViewModel @Inject constructor(
                         showToast(stringResourcesProvider.getString(R.string.lesson_finish_complete))
                         _finishLessonSuccessEvent.emit(Unit)
                     }
-
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))

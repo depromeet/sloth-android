@@ -8,9 +8,3 @@ internal fun UpdateLessonCountResponse.toEntity() = UpdateLessonCountEntity(
     lessonId = lessonId,
     presentNumber = presentNumber
 )
-
-internal fun UpdateLessonCountEntity.toModel() = UpdateLessonCountResponse(
-    isFinished = isFinished,
-    lessonId = lessonId,
-    presentNumber = presentNumber
-)

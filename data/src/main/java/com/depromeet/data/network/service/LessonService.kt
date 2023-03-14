@@ -14,7 +14,7 @@ interface LessonService {
     suspend fun fetchTodayLessonList(): Response<List<TodayLessonResponse>>?
 
     @GET("api/lesson/list")
-    suspend fun fetchLessonList(): Response<List<LessonListResponse>>?
+    suspend fun fetchLessonList(): Response<List<LessonResponse>>?
 
     @PATCH("api/lesson/number")
     suspend fun updateLessonCount(

@@ -9,8 +9,7 @@ import com.depromeet.data.preferences.PreferenceManager
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.data.util.KEY_AUTHORIZATION
-import com.depromeet.domain.entity.LessonRegisterRequestEntity
-import com.depromeet.domain.entity.LessonUpdateRequestEntity
+import com.depromeet.domain.entity.*
 import com.depromeet.domain.repository.LessonRepository
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.catch
@@ -21,7 +20,6 @@ import javax.inject.Inject
 
 // TODO 반복되는 함수 모듈화 (baseResponse 를 만들어서 모든 경우를 커버하도록)
 // TODO State emit helper 함수 적용
-// TODO Empty 일 때 핸들링 개선
 class LessonRepositoryImpl @Inject constructor(
     private val preferences: PreferenceManager,
     private val lessonService: LessonService
@@ -39,11 +37,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.map { todayLesson ->
-                    todayLesson.toEntity()
-                } ?: listOf(TodayLessonResponse.EMPTY).map { todayLesson ->
-                    todayLesson.toEntity()
-                }))
+                emit(Result.Success(response.body()?.toEntity() ?: emptyList<TodayLessonEntity>()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -75,11 +69,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.map { lesson ->
-                    lesson.toEntity()
-                } ?: listOf(LessonListResponse.EMPTY).map { lesson ->
-                    lesson.toEntity()
-                }))
+                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonEntity>()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -275,12 +265,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.map { lessonCategory ->
-                    lessonCategory.toEntity()
-                } ?: listOf(LessonCategoryResponse.EMPTY).map { lessonCategory ->
-                    lessonCategory.toEntity()
-
-                }))
+                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonCategoryEntity>()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -312,11 +297,7 @@ class LessonRepositoryImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.map { lessonSite ->
-                    lessonSite.toEntity()
-                } ?: listOf(LessonSiteResponse.EMPTY).map { lessonSite ->
-                    lessonSite.toEntity()
-                }))
+                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonSiteEntity>()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))

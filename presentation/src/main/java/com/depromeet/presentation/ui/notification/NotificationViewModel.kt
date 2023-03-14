@@ -7,7 +7,7 @@ import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.mapper.toUiModel
-import com.depromeet.presentation.model.NotificationList
+import com.depromeet.presentation.model.Notification
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
@@ -31,8 +31,8 @@ class NotificationViewModel @Inject constructor(
     private var fetchNotificationListJob: Job? = null
     private var updateNotificationStatusJob: Job? = null
 
-    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<NotificationList>>()
-    val fetchLessonListSuccessEvent: SharedFlow<List<NotificationList>> = _fetchLessonListSuccessEvent.asSharedFlow()
+    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<Notification>>()
+    val fetchLessonListSuccessEvent: SharedFlow<List<Notification>> = _fetchLessonListSuccessEvent.asSharedFlow()
 
     /*
     val notificationList: Flow<PagingData<NotificationListResponse>> =
@@ -49,7 +49,7 @@ class NotificationViewModel @Inject constructor(
         if (fetchNotificationListJob != null) return
 
         fetchNotificationListJob = viewModelScope.launch {
-            fetchNotificationListUseCase(0, 99999)
+            fetchNotificationListUseCase(0, 9999)
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -57,9 +57,7 @@ class NotificationViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            _fetchLessonListSuccessEvent.emit(result.data.map {notification ->
-                                notification.toUiModel()
-                            })
+                            _fetchLessonListSuccessEvent.emit(result.data.toUiModel())
                         }
                         is Result.Error -> {
                             when {
@@ -109,5 +107,4 @@ class NotificationViewModel @Inject constructor(
     }
 
     override fun retry() = fetchNotificationList()
-    // override fun retry() = Unit
 }

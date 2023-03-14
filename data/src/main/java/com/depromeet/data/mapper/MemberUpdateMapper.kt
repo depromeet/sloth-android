@@ -7,7 +7,3 @@ import com.depromeet.domain.entity.MemberUpdateEntity
 internal fun MemberUpdateResponse.toEntity() = MemberUpdateEntity(
     memberName = memberName
 )
-
-internal fun MemberUpdateEntity.toModel() = MemberUpdateResponse(
-    memberName = memberName
-)

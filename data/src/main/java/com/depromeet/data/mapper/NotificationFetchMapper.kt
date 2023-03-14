@@ -8,8 +8,3 @@ internal fun NotificationFetchResponse.toEntity() = NotificationFetchEntity(
     deviceId = deviceId,
     fcmToken = fcmToken
 )
-
-internal fun NotificationFetchEntity.toModel() = NotificationFetchResponse(
-    deviceId = deviceId,
-    fcmToken = fcmToken
-)

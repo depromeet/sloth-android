@@ -168,9 +168,7 @@ class TodayLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        todayLessonList = result.data.map { todayLesson ->
-                            todayLesson.toUiModel()
-                        }
+                        todayLessonList = result.data.toUiModel()
                         setTodayLessonList()
                     }
                     is Result.Error -> {

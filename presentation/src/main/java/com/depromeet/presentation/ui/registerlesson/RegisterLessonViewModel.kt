@@ -266,12 +266,8 @@ class RegisterLessonViewModel @Inject constructor(
                     when (result) {
                         is Result.Loading -> return@collect
                         is Result.Success -> {
-                            setLessonCategoryList(result.data.map { lessonCategory ->
-                                lessonCategory.toUiModel()
-                            })
-                            _fetchLessonCategoryListSuccessEvent.emit(result.data.map { lessonCategory ->
-                                lessonCategory.toUiModel()
-                            })
+                            setLessonCategoryList(result.data.toUiModel())
+                            _fetchLessonCategoryListSuccessEvent.emit(result.data.toUiModel())
                             setInternetError(false)
                         }
                         is Result.Error -> {
@@ -303,12 +299,8 @@ class RegisterLessonViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            setLessonSiteList(result.data.map { lessonSite ->
-                                lessonSite.toUiModel()
-                            })
-                            _fetchLessonSiteListSuccessEvent.emit(result.data.map { lessonSite ->
-                                lessonSite.toUiModel()
-                            })
+                            setLessonSiteList(result.data.toUiModel())
+                            _fetchLessonSiteListSuccessEvent.emit(result.data.toUiModel())
                         }
                         is Result.Error -> {
                             when {

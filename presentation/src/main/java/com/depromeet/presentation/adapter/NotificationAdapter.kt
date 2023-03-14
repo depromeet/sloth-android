@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.depromeet.presentation.adapter.viewholder.notification.NotificationViewHolder
 import com.depromeet.presentation.databinding.ItemNotificationBinding
-import com.depromeet.presentation.model.NotificationList
+import com.depromeet.presentation.model.Notification
 import com.depromeet.presentation.ui.notification.NotificationItemClickListener
 import com.depromeet.presentation.util.setOnSingleClickListener
 
 
-class NotificationAdapter(private val clickListener: NotificationItemClickListener) : ListAdapter<NotificationList, NotificationViewHolder>(
-    object : DiffUtil.ItemCallback<NotificationList>() {
-        override fun areItemsTheSame(oldItem: NotificationList, newItem: NotificationList): Boolean {
+class NotificationAdapter(private val clickListener: NotificationItemClickListener) : ListAdapter<Notification, NotificationViewHolder>(
+    object : DiffUtil.ItemCallback<Notification>() {
+        override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean {
             return oldItem.alarmId == newItem.alarmId
         }
 
-        override fun areContentsTheSame(oldItem: NotificationList, newItem: NotificationList): Boolean {
+        override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
             return oldItem == newItem
         }
     }

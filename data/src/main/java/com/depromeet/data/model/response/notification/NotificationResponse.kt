@@ -3,7 +3,7 @@ package com.depromeet.data.model.response.notification
 import com.google.gson.annotations.SerializedName
 
 
-data class NotificationListResponse (
+data class NotificationResponse (
     @SerializedName("alarmContentId")
     val alarmContentId: Long,
     @SerializedName("alarmId")
@@ -22,7 +22,7 @@ data class NotificationListResponse (
     val url: String
 ) {
     companion object {
-        val EMPTY = NotificationListResponse(0L, 0L, "", "", "", "", "", "")
+        val EMPTY = NotificationResponse(0L, 0L, "", "", "", "", "", "")
     }
 }
 

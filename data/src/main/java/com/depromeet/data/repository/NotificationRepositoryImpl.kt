@@ -6,12 +6,12 @@ import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.mapper.toModel
 import com.depromeet.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.data.model.response.notification.NotificationFetchResponse
-import com.depromeet.data.model.response.notification.NotificationListResponse
 import com.depromeet.data.network.service.NotificationService
 import com.depromeet.data.preferences.PreferenceManager
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.data.util.KEY_AUTHORIZATION
+import com.depromeet.domain.entity.NotificationEntity
 import com.depromeet.domain.entity.NotificationUpdateRequestEntity
 import com.depromeet.domain.repository.NotificationRepository
 import com.depromeet.domain.util.Result
@@ -54,59 +54,34 @@ class NotificationRepositoryImpl @Inject constructor(
 
 
     override fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity) = flow {
-            emit(Result.Loading)
-            val response = notificationService.updateFCMTokenUse(notificationUpdateRequestEntity.toModel()) ?: run {
-                emit(Result.Error(Exception("Response is null")))
-                return@flow
-            }
-            when (response.code()) {
-                200 -> {
-                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                    if (newAccessToken.isNotEmpty()) {
-                        preferences.updateAccessToken(newAccessToken)
-                    }
-                    emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+        emit(Result.Loading)
+        val response = notificationService.updateFCMTokenUse(notificationUpdateRequestEntity.toModel()) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
                 }
-                else -> emit(Result.Error(Exception(response.message()), response.code()))
+                emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+            }
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
             }
         }
-            .catch { throwable ->
-                when (throwable) {
-                    is IOException -> {
-                        // Handle Internet Connection Error
-                        emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                    }
-                    else -> {
-                        // Handle Other Error
-                        emit(Result.Error(throwable))
-                    }
-                }
-            }
-
-
-// response 형식 바뀌면 해당 메소드 사용
-//    override fun updateNotificationStatus(notificationUpdateRequest: NotificationUpdateRequest) =
-//        flow {
-//            emit(Result.Loading)
-//            val response = notificationService.updateFCMTokenUse(
-//                notificationUpdateRequest
-//            ) ?: run {
-//                emit(Result.Error(Exception("Response is null")))
-//                return@flow
-//            }
-//            when (response.code()) {
-//                200 -> {
-//                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-//                    if (newAccessToken.isNotEmpty()) {
-//                        preferences.updateAccessToken(newAccessToken)
-//                    }
-//                    emit(Result.Success(response.body() ?: NotificationUpdateResponse.EMPTY))
-//                }
-//                else -> emit(Result.Error(Exception(response.message())))
-//            }
-//        }
-//            .catch { throwable -> emit(Result.Error(throwable)) }
-
 
     override fun fetchNotificationToken(deviceId: String) = flow {
         emit(Result.Loading)
@@ -129,27 +104,23 @@ class NotificationRepositoryImpl @Inject constructor(
 
 
     override fun fetchNotificationList(page: Int, size: Int) = flow {
-            emit(Result.Loading)
-            val response = notificationService.fetchNotificationList(page, size) ?: run {
-                emit(Result.Error(Exception("Response is null")))
-                return@flow
-            }
-            when (response.code()) {
-                200 -> {
-                    val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                    if (newAccessToken.isNotEmpty()) {
-                        preferences.updateAccessToken(newAccessToken)
-                    }
-                    emit(Result.Success(response.body()?.map { notification ->
-                        notification.toEntity()
-                    } ?: listOf(NotificationListResponse.EMPTY).map { notification ->
-                        notification.toEntity()
-                    }))
-                }
-                else -> emit(Result.Error(Exception(response.message())))
-            }
+        emit(Result.Loading)
+        val response = notificationService.fetchNotificationList(page, size) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
         }
-            .catch { throwable -> emit(Result.Error(throwable)) }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
+                }
+                emit(Result.Success(response.body()?.toEntity() ?: emptyList<NotificationEntity>()))
+            }
+            else -> emit(Result.Error(Exception(response.message())))
+        }
+    }
+        .catch { throwable -> emit(Result.Error(throwable)) }
 
 
     /*
@@ -175,33 +146,33 @@ class NotificationRepositoryImpl @Inject constructor(
      */
 
     override fun updateNotificationState(alarmId: Long) = flow {
-            emit(Result.Loading)
-            val response = notificationService.updateNotificationState(alarmId) ?: run {
-                emit(Result.Error(Exception("Response is null")))
-                return@flow
-            }
-            when (response.code()) {
-                200 -> {
-                    val newAccessToken =
-                        response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                    if (newAccessToken.isNotEmpty()) {
-                        preferences.updateAccessToken(newAccessToken)
-                    }
-                    emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+        emit(Result.Loading)
+        val response = notificationService.updateNotificationState(alarmId) ?: run {
+            emit(Result.Error(Exception("Response is null")))
+            return@flow
+        }
+        when (response.code()) {
+            200 -> {
+                val newAccessToken =
+                    response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
+                if (newAccessToken.isNotEmpty()) {
+                    preferences.updateAccessToken(newAccessToken)
                 }
-                else -> emit(Result.Error(Exception(response.message()), response.code()))
+                emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+            }
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }
+        .catch { throwable ->
+            when (throwable) {
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
             }
         }
-            .catch { throwable ->
-                when (throwable) {
-                    is IOException -> {
-                        // Handle Internet Connection Error
-                        emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                    }
-                    else -> {
-                        // Handle Other Error
-                        emit(Result.Error(throwable))
-                    }
-                }
-            }
 }

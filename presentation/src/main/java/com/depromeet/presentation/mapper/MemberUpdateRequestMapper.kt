@@ -7,7 +7,3 @@ import com.depromeet.presentation.model.MemberUpdateRequest
 internal fun MemberUpdateRequest.toEntity() = MemberUpdateRequestEntity(
     memberName = memberName
 )
-
-internal fun MemberUpdateRequestEntity.toUiModel() = MemberUpdateRequest(
-    memberName = memberName
-)

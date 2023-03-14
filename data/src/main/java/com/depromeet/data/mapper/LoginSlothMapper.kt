@@ -10,11 +10,3 @@ internal fun LoginSlothResponse.toEntity() = LoginSlothEntity(
     refreshTokenExpireTime = refreshTokenExpireTime,
     isNewMember = isNewMember
 )
-
-internal fun LoginSlothEntity.toModel() = LoginSlothResponse(
-    accessToken = accessToken,
-    accessTokenExpireTime = accessTokenExpireTime,
-    refreshToken = refreshToken,
-    refreshTokenExpireTime = refreshTokenExpireTime,
-    isNewMember = isNewMember
-)

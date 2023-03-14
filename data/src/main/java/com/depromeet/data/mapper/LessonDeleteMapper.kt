@@ -7,8 +7,3 @@ internal fun LessonDeleteResponse.toEntity() = LessonDeleteEntity(
     code = code,
     message = message
 )
-
-internal fun LessonDeleteEntity.toModel() = LessonDeleteResponse(
-    code = code,
-    message = message
-)

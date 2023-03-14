@@ -148,12 +148,8 @@ class UpdateLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        setLessonCategoryInfo(result.data.map { lessonCategory ->
-                            lessonCategory.toUiModel()
-                        })
-                        _fetchLessonCategoryListSuccessEvent.emit(result.data.map { lessonCategory ->
-                            lessonCategory.toUiModel()
-                        })
+                        setLessonCategoryInfo(result.data.toUiModel())
+                        _fetchLessonCategoryListSuccessEvent.emit(result.data.toUiModel())
                     }
                     is Result.Error -> {
                         when {
@@ -179,12 +175,8 @@ class UpdateLessonViewModel @Inject constructor(
                     is Result.Loading -> return@collect
                     is Result.Success -> {
                         setInternetError(false)
-                        setLessonSiteInfo(result.data.map { lessonSite ->
-                            lessonSite.toUiModel()
-                        })
-                        _fetchLessonSiteListSuccessEvent.emit(result.data.map { lessonSite ->
-                            lessonSite.toUiModel()
-                        })
+                        setLessonSiteInfo(result.data.toUiModel())
+                        _fetchLessonSiteListSuccessEvent.emit(result.data.toUiModel())
                     }
                     is Result.Error -> {
                         when {

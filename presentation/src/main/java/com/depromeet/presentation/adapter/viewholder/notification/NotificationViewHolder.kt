@@ -4,13 +4,13 @@ import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.ItemNotificationBinding
-import com.depromeet.presentation.model.NotificationList
+import com.depromeet.presentation.model.Notification
 
 
 class NotificationViewHolder(val binding: ItemNotificationBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(notification: NotificationList) = with(binding) {
+    fun bind(notification: Notification) = with(binding) {
         tvNotificationTitle.text = notification.title
         tvNotificationContent.text = notification.message
         tvNotificationDate.text = notification.occurrenceTime.split(" ").first()

@@ -3,7 +3,7 @@ package com.depromeet.data.paging
 import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.depromeet.data.model.response.notification.NotificationListResponse
+import com.depromeet.data.model.response.notification.NotificationResponse
 import com.depromeet.data.network.service.NotificationService
 import com.depromeet.data.util.PAGING_SIZE
 import com.depromeet.data.util.STARTING_PAGE_INDEX
@@ -13,11 +13,11 @@ import java.io.IOException
 
 class NotificationPagingSource(
     private val notificationApi: NotificationService
-) : PagingSource<Int, NotificationListResponse>() {
+) : PagingSource<Int, NotificationResponse>() {
 
     // 페이지를 갱신 할때 수행 되는 함수
     // key 의 초기값은 null, load 함수 참고
-    override fun getRefreshKey(state: PagingState<Int, NotificationListResponse>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, NotificationResponse>): Int? {
         // 가장 최근의 접근한 page 를 state.anchorPosition 으로 받고
         // 그 주위의 페이지를 읽어 오도록 키를 반환 해주는 역할
         return state.anchorPosition?.let { anchorPosition ->
@@ -27,7 +27,7 @@ class NotificationPagingSource(
     }
 
     // pager 가 데이터를 호출할 때마다 불리는 함수
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NotificationListResponse> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NotificationResponse> {
         return try {
             val pageNumber = params.key ?: STARTING_PAGE_INDEX
             val response = notificationApi.fetchNotificationList(pageNumber, params.loadSize)

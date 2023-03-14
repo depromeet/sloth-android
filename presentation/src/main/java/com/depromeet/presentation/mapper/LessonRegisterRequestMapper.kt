@@ -15,15 +15,3 @@ internal fun LessonRegisterRequest.toEntity() = LessonRegisterRequestEntity(
     startDate = startDate,
     totalNumber = totalNumber
 )
-
-internal fun LessonRegisterRequestEntity.toUiModel() = LessonRegisterRequest(
-    alertDays = alertDays,
-    categoryId = categoryId,
-    endDate = endDate,
-    lessonName = lessonName,
-    message = message,
-    price = price,
-    siteId = siteId,
-    startDate = startDate,
-    totalNumber = totalNumber
-)

@@ -11,11 +11,3 @@ internal fun LessonUpdateRequest.toEntity() = LessonUpdateRequestEntity(
     siteId = siteId,
     totalNumber = totalNumber
 )
-
-internal fun LessonUpdateRequestEntity.toUiModel() = LessonUpdateRequest(
-    categoryId = categoryId,
-    lessonName = lessonName,
-    price = price,
-    siteId = siteId,
-    totalNumber = totalNumber
-)

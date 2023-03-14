@@ -69,9 +69,7 @@ class LessonListViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            setLessonList(result.data.map { lesson ->
-                                lesson.toUiModel()
-                            })
+                            setLessonList(result.data.toUiModel())
                             checkLessonListOnBoardingComplete()
                         }
                         is Result.Error -> {
@@ -104,7 +102,7 @@ class LessonListViewModel @Inject constructor(
 //                            is Result.Loading -> return@collect
 //                            is Result.Success -> {
 //                                setInternetError(false)
-//                                setLessonList(result.data)
+//                                setLessonList(result.data.toUiModel())
 //                            }
 //                            is Result.Error -> {
 //                                if (result.statusCode == UNAUTHORIZED) {

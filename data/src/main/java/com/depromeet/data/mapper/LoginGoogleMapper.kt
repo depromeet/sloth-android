@@ -11,11 +11,3 @@ internal fun LoginGoogleResponse.toEntity() = LoginGoogleEntity(
     tokenType = tokenType,
     idToken = idToken
 )
-
-internal fun LoginGoogleEntity.toModel() = LoginGoogleResponse(
-    accessToken = accessToken,
-    expiresIn = expiresIn,
-    scope = scope,
-    tokenType = tokenType,
-    idToken = idToken
-)

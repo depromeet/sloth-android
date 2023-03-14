@@ -7,7 +7,3 @@ import com.depromeet.domain.entity.LessonRegisterEntity
 internal fun LessonRegisterResponse.toEntity() = LessonRegisterEntity(
     lessonId = lessonId
 )
-
-internal fun LessonRegisterEntity.toModel() = LessonRegisterResponse(
-    lessonId = lessonId
-)

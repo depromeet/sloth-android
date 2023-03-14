@@ -1,7 +1,7 @@
 package com.depromeet.domain.entity
 
 
-data class NotificationListEntity (
+data class NotificationEntity (
     val alarmContentId: Long,
     val alarmId: Long,
     val alarmType: String,
