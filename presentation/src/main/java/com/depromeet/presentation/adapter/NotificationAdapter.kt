@@ -31,7 +31,7 @@ class NotificationAdapter(private val clickListener: NotificationItemClickListen
         holder.apply {
             bind(currentList[position])
             binding.root.setOnSingleClickListener {
-                clickListener.onClick(currentList[position].alarmId)
+                clickListener.onClick(currentList[position])
             }
         }
     }

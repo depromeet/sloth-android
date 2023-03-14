@@ -76,11 +76,14 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun updateNotificationState(notificationId: Long, isStateChanged: () -> Unit) {
+    fun updateNotificationState(notification: Notification, isStateChanged: () -> Unit) {
+        // 이미 읽은 알림일 경우 api 를 호출 하지 않음
+        if (notification.readTime != null) return
+
         if (updateNotificationStatusJob != null) return
 
         updateNotificationStatusJob = viewModelScope.launch {
-            updateNotificationStateUseCase(notificationId)
+            updateNotificationStateUseCase(notification.alarmId)
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->

@@ -1,6 +1,8 @@
 package com.depromeet.presentation.ui.notification
 
+import com.depromeet.presentation.model.Notification
+
 
 data class NotificationItemClickListener(
-    val onClick: (Long) -> Unit,
+    val onClick: (Notification) -> Unit,
 )

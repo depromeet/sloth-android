@@ -33,7 +33,7 @@ class NotificationPagingAdapter(private val clickListener: NotificationItemClick
         pagedNotification?.let { notification ->
             holder.bind(notification)
             holder.itemView.setOnSingleClickListener {
-                clickListener.onClick(notification.alarmId)
+                clickListener.onClick(notification)
             }
         }
     }
