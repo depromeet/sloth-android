@@ -1,10 +1,8 @@
 package com.depromeet.presentation.extensions
 
-import android.annotation.SuppressLint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 fun getPickerDateToDash(date: Date): String {
@@ -13,23 +11,9 @@ fun getPickerDateToDash(date: Date): String {
     return formatter.format(date)
 }
 
-fun changeDateFormatToDash(date: ArrayList<String>): String {
-    val yearOfDate = date[0]
-    val monthOfDate = addLeadingZero(date[1])
-    val dayOfDate = addLeadingZero(date[2])
-
-    return "${yearOfDate}-${monthOfDate}-$dayOfDate"
-}
-
-fun getPickerDateToDot(date: Date): String {
-    val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA)
-
-    return formatter.format(date)
-}
-
 fun changeDecimalFormat(data: Int): String {
-    val df = DecimalFormat("#,###")
-    val changedPriceFormat = df.format(data)
+    val decimalFormant = DecimalFormat("#,###")
+    val changedPriceFormat = decimalFormant.format(data)
 
     return "${changedPriceFormat}원"
 }
@@ -67,11 +51,4 @@ fun addLeadingZero(data: String): String {
         tmp = "0$tmp"
     }
     return tmp
-}
-
-@SuppressLint("SimpleDateFormat")
-fun stringToDate(string: String): Date? {
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-
-    return dateFormat.parse(string)
 }
