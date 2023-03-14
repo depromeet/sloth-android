@@ -4,7 +4,7 @@ import com.depromeet.domain.entity.NotificationEntity
 import com.depromeet.presentation.model.Notification
 
 
-internal fun List<NotificationEntity>.toUiModel(): List<Notification> = map{
+internal fun List<NotificationEntity>.toUiModel(): List<Notification> = map {
     Notification(
         alarmContentId = it.alarmContentId,
         alarmId = it.alarmId,

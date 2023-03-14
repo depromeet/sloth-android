@@ -19,7 +19,7 @@ data class NotificationResponse (
     @SerializedName("title")
     val title: String,
     @SerializedName("url")
-    val url: String
+    val url: String?
 ) {
     companion object {
         val EMPTY = NotificationResponse(0L, 0L, "", "", "", "", "", "")

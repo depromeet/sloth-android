@@ -9,5 +9,5 @@ data class NotificationEntity (
     val occurrenceTime: String,
     val readTime: String?,
     val title: String,
-    val url: String
+    val url: String?
 )
