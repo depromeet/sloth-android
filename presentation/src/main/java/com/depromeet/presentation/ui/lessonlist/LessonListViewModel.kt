@@ -8,7 +8,7 @@ import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.mapper.toUiModel
-import com.depromeet.presentation.model.LessonList
+import com.depromeet.presentation.model.Lesson
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
@@ -121,7 +121,7 @@ class LessonListViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun setLessonList(result: List<LessonList>) {
+    private fun setLessonList(result: List<Lesson>) {
         _lessonList.update {
             if (result.isEmpty()) {
                 listOf(LessonListUiModel.LessonListEmptyItem)

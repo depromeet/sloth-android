@@ -8,12 +8,12 @@ import androidx.core.animation.addListener
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.presentation.databinding.ItemLessonListCurrentBinding
 import com.depromeet.presentation.extensions.changeDecimalFormat
-import com.depromeet.presentation.model.LessonList
+import com.depromeet.presentation.model.Lesson
 import kotlin.math.ceil
 
 
 class CurrentLessonViewHolder(val binding: ItemLessonListCurrentBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(lesson: LessonList) {
+    fun bind(lesson: Lesson) {
         itemView.apply {
             binding.apply {
                 val progressRate = (lesson.currentProgressRate / 100.0f)

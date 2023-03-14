@@ -4,12 +4,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.ItemLessonListPastBinding
 import com.depromeet.presentation.extensions.changeDecimalFormat
-import com.depromeet.presentation.model.LessonList
+import com.depromeet.presentation.model.Lesson
 import kotlin.math.ceil
 
 
 class PastLessonViewHolder(val binding: ItemLessonListPastBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(lesson: LessonList) {
+    fun bind(lesson: Lesson) {
         itemView.apply {
             binding.apply {
                 tvLessonListCategory.text = lesson.categoryName

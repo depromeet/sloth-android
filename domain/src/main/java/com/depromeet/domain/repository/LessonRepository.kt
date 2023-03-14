@@ -9,7 +9,7 @@ interface LessonRepository {
 
     fun fetchTodayLessonList(): Flow<Result<List<TodayLessonEntity>>>
 
-    fun fetchLessonList(): Flow<Result<List<LessonListEntity>>>
+    fun fetchLessonList(): Flow<Result<List<LessonEntity>>>
 
     fun finishLesson(lessonId: String): Flow<Result<LessonFinishEntity>>
 

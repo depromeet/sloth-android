@@ -1,14 +1,18 @@
 package com.depromeet.domain.entity
 
 
-data class LessonEntity(
-    val alertDays: String? = "",
-    val categoryName: String = "",
-    val endDate: ArrayList<String> = arrayListOf(),
-    val lessonName: String = "",
-    val message: String? = "",
-    val price: Int = 0,
-    val siteName: String = "",
-    val startDate: ArrayList<String> = arrayListOf(),
-    val totalNumber: Int = 0,
+data class LessonEntity (
+    val categoryName: String,
+    val currentProgressRate: Int,
+    val endDate: String,
+    val goalProgressRate: Int,
+    val isFinished: Boolean,
+    val lessonId: Int,
+    val lessonName: String,
+    val lessonStatus: String,
+    val price: Int,
+    val remainDay: Int,
+    val siteName: String,
+    val startDate: String,
+    val totalNumber: Int
 )

@@ -1,13 +1,19 @@
 package com.depromeet.presentation.model
 
+
 data class Lesson(
-    val alertDays: String? = "",
     val categoryName: String = "",
-    val endDate: ArrayList<String> = arrayListOf(),
+    val currentProgressRate: Int = 0,
+    val endDate: String = "",
+    val goalProgressRate: Int = 0,
+    val isFinished: Boolean = false,
+    val lessonId: Int = 0,
     val lessonName: String = "",
-    val message: String? = "",
+    val lessonStatus: String = "",
     val price: Int = 0,
+    val remainDay: Int = 0,
     val siteName: String = "",
-    val startDate: ArrayList<String> = arrayListOf(),
-    val totalNumber: Int = 0,
+    val startDate: String = "",
+    val totalNumber: Int = 0
 )
+

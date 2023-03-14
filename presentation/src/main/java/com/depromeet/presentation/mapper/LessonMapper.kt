@@ -3,26 +3,33 @@ package com.depromeet.presentation.mapper
 import com.depromeet.domain.entity.LessonEntity
 import com.depromeet.presentation.model.Lesson
 
-
 internal fun Lesson.toEntity() = LessonEntity(
-    alertDays = alertDays,
     categoryName = categoryName,
+    currentProgressRate = currentProgressRate,
     endDate = endDate,
+    goalProgressRate = goalProgressRate,
+    isFinished = isFinished,
+    lessonId = lessonId,
     lessonName = lessonName,
-    message = message,
+    lessonStatus = lessonStatus,
     price = price,
+    remainDay = remainDay,
     siteName = siteName,
     startDate = startDate,
     totalNumber = totalNumber
 )
 
 internal fun LessonEntity.toUiModel() = Lesson(
-    alertDays = alertDays,
     categoryName = categoryName,
+    currentProgressRate = currentProgressRate,
     endDate = endDate,
+    goalProgressRate = goalProgressRate,
+    isFinished = isFinished,
+    lessonId = lessonId,
     lessonName = lessonName,
-    message = message,
+    lessonStatus = lessonStatus,
     price = price,
+    remainDay = remainDay,
     siteName = siteName,
     startDate = startDate,
     totalNumber = totalNumber

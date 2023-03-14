@@ -3,11 +3,11 @@ package com.depromeet.presentation.adapter.viewholder.lessonlist
 import androidx.recyclerview.widget.RecyclerView
 import com.depromeet.presentation.databinding.ItemLessonListPlanBinding
 import com.depromeet.presentation.extensions.changeDecimalFormat
-import com.depromeet.presentation.model.LessonList
+import com.depromeet.presentation.model.Lesson
 
 
 class PlanLessonViewHolder(val binding: ItemLessonListPlanBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(lesson: LessonList) {
+    fun bind(lesson: Lesson) {
         itemView.apply {
             binding.apply {
                 tvLessonListCategory.text = lesson.categoryName
