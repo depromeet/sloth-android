@@ -83,6 +83,16 @@
                 app:radius="150dp" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/today_lesson_item_description"
+                android:textColor="@color/gray_400"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toTopOf="@id/tv_today_lesson_current_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
                 android:id="@+id/tv_today_lesson_current_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

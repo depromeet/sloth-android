@@ -127,6 +127,8 @@
     <string name="today_lesson_header_not_start">시작이 반인데…\n너 설마 아직도\n시작 안했어?</string>
     <string name="today_lesson_header_finished">젠장..\n오늘은\n나의 완패다..</string>
 
+    <string name="today_lesson_item_description">들어야 할 강의 수</string>
+
     <string name="lesson_update_count_fail">강의를 갱신하지 못했어요</string>
     <string name="lesson_update_count_fail_by_internet_error">강의를 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
 
