@@ -2,13 +2,14 @@ package com.depromeet.presentation.ui.manage
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.depromeet.presentation.NavMainDirections
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.FragmentExpiredDialogBinding
-import com.depromeet.presentation.ui.base.BaseDialogFragment
 import com.depromeet.presentation.extensions.repeatOnStarted
+import com.depromeet.presentation.ui.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 class ExpiredDialogFragment :
     BaseDialogFragment<FragmentExpiredDialogBinding>(R.layout.fragment_expired_dialog) {
 
-    private val viewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModel: ExpiredViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,20 +32,18 @@ class ExpiredDialogFragment :
     private fun initObserver() {
         repeatOnStarted {
             launch {
-                viewModel.logoutSuccessEvent.collect {
+                viewModel.navigateToLoginEvent.collect {
                         navigateToLogin()
-                    }
-            }
-
-            launch {
-                viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
             }
         }
     }
 
     private fun navigateToLogin() {
-        findNavController().navigate(R.id.action_global_to_login)
+        val action = NavMainDirections.actionGlobalToLogin()
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(findNavController().backQueue[1].destination.id, true)
+            .build()
+        findNavController().navigate(action, navOptions)
     }
 }
