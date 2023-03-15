@@ -171,8 +171,12 @@ class LessonListViewModel @Inject constructor(
         _navigateToNotificationListEvent.emit(Unit)
     }
 
-    fun navigateToLessonDetail(lessonId: String) = viewModelScope.launch {
-        _navigateToLessonDetailEvent.emit(lessonId)
+    fun navigateToLessonDetail(lesson: Lesson) {
+        if (lesson.lessonStatus == "PAST") return
+
+        viewModelScope.launch {
+            _navigateToLessonDetailEvent.emit(lesson.lessonId.toString())
+        }
     }
 
     private fun updateOnBoardingLessonListStatus(flag: Boolean) = viewModelScope.launch {

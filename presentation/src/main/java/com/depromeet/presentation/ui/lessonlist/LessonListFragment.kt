@@ -24,7 +24,7 @@ class LessonListFragment : BaseFragment<FragmentLessonListBinding>(R.layout.frag
 
     private val lessonListItemClickListener = LessonListItemClickListener(
         onRegisterClick = { viewModel.navigateToRegisterLesson(R.id.lesson_list) },
-        onLessonClick = { lesson -> viewModel.navigateToLessonDetail(lesson.lessonId.toString()) }
+        onLessonClick = { lesson -> viewModel.navigateToLessonDetail(lesson) }
     )
 
     private val lessonListAdapter by lazy {
