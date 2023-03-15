@@ -1,3 +1,8 @@
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21")
+    }
+}
 // Top-level build file where you can add configuration options common to all sub-projects/module
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {

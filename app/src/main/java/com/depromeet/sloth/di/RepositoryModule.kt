@@ -1,19 +1,24 @@
 package com.depromeet.sloth.di
 
-import com.depromeet.sloth.domain.repository.LessonRepository
-import com.depromeet.sloth.data.repository.LessonRepositoryImpl
-import com.depromeet.sloth.domain.repository.LoginRepository
-import com.depromeet.sloth.data.repository.LoginRepositoryImpl
-import com.depromeet.sloth.domain.repository.MemberRepository
-import com.depromeet.sloth.data.repository.MemberRepositoryImpl
-import com.depromeet.sloth.domain.repository.NotificationRepository
-import com.depromeet.sloth.data.repository.NotificationRepositoryImpl
+import com.depromeet.data.network.service.*
+import com.depromeet.data.repository.LessonRepositoryImpl
+import com.depromeet.data.repository.LoginRepositoryImpl
+import com.depromeet.data.repository.MemberRepositoryImpl
+import com.depromeet.data.repository.NotificationRepositoryImpl
+import com.depromeet.domain.repository.LessonRepository
+import com.depromeet.domain.repository.LoginRepository
+import com.depromeet.domain.repository.MemberRepository
+import com.depromeet.domain.repository.NotificationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+//TODO 멀티 모듈 구조로 리팩토링 하면서 클래스의 변화가 존재
+// 이전과 이후를 비교 및 학습
+// di 패키지를 data 모듈에서 app 모듈로 이동시켰더니 빌드됨
+// Repository 는 interface 이기 때문에 @Binds 를 사용 해서 Hilt 가 의존성 객체를 생성할 수 있게 설정 해줌
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
@@ -34,3 +39,32 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun provideNotificationRepository(notificationRepositoryImpl: NotificationRepositoryImpl): NotificationRepository
 }
+
+//@Module
+//@InstallIn(SingletonComponent::class)
+//class RepositoryModule {
+//
+//    @Singleton
+//    @Provides
+//    internal fun provideLessonRepository(preferences: PreferenceManager, lessonService: LessonService): LessonRepository {
+//        return LessonRepositoryImpl(preferences, lessonService)
+//    }
+//
+//    @Singleton
+//    @Provides
+//    internal fun provideMemberRepository(preferences: PreferenceManager, memberService: MemberService): MemberRepository {
+//        return MemberRepositoryImpl(preferences, memberService)
+//    }
+//
+//    @Singleton
+//    @Provides
+//    internal fun provideLoginRepository(preferences: PreferenceManager, slothLoginService: SlothLoginService, googleLoginService: GoogleLoginService): LoginRepository {
+//        return LoginRepositoryImpl(preferences, slothLoginService, googleLoginService)
+//    }
+//
+//    @Singleton
+//    @Provides
+//    internal fun provideNotificationRepository(@ApplicationContext context: Context, preferences: PreferenceManager, notificationService: NotificationService): NotificationRepository {
+//        return NotificationRepositoryImpl(context, preferences, notificationService)
+//    }
+//}

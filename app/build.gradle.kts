@@ -15,14 +15,14 @@ plugins {
 
 android {
     namespace = "com.depromeet.sloth"
-    compileSdk = 32
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId = "com.depromeet.sloth"
-        minSdk = 24
-        targetSdk = 32
-        versionCode = 28
-        versionName = "1.1.1"
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
+        versionCode = ProjectConfig.versionCode
+        versionName = ProjectConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,6 +78,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":data"))
+    implementation(project(":domain"))
+    implementation(project(":presentation"))
+
     implementation(libs.core)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -91,7 +95,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.fragment)
     implementation(libs.recyclerview)
-    implementation(libs.paging3)
+    implementation(libs.paging.runtime)
     implementation(libs.datastore)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
@@ -113,5 +117,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.crashlytics)
+
+    coreLibraryDesugaring(libs.desugar.jdk)
 }
 

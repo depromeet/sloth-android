@@ -28,7 +28,7 @@
 -keep class com.google.android.gms.** { *; }
 
 # retrofit 사용시 json을 생성/파싱을 위한 class들에 대해 난독화 제외
--keep class com.depromeet.sloth.data.model.** { *; }
+-keep class com.depromeet.data.model.** { *; }
 
 # navigation 사용시 argument 로전달하는 class들에 대해 난독화 제외
--keep class com.depromeet.sloth.presentation.model.** { *; }
+-keep class com.depromeet.presentation.model.** { *; }
