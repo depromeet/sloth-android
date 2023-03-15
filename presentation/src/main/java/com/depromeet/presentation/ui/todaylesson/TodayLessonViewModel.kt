@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.domain.usecase.lesson.UpdateLessonCountUseCase
 import com.depromeet.domain.usecase.login.FetchLoginStatusUseCase
+import com.depromeet.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -23,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
+    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -39,8 +41,15 @@ class TodayLessonViewModel @Inject constructor(
     private val _todayLessonUiModelList = MutableStateFlow(emptyList<TodayLessonUiModel>())
     val todayLessonUiModelList: StateFlow<List<TodayLessonUiModel>> = _todayLessonUiModelList.asStateFlow()
 
+//    private val _autoLoginEvent = MutableEventFlow<Boolean>(replay = 1)
+//    val autoLoginEvent: EventFlow<Boolean> = _autoLoginEvent.asEventFlow()
+
     private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
     val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
+
+    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>()
+    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
+        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
     private val _navigateToLoginEvent = MutableSharedFlow<Unit>()
     val navigateToLoginEvent = _navigateToLoginEvent.asSharedFlow()
@@ -66,6 +75,10 @@ class TodayLessonViewModel @Inject constructor(
 
     private fun checkLoginStatus() = viewModelScope.launch {
         _autoLoginEvent.emit(fetchLoginStatusUseCase())
+    }
+
+    fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
+        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
     }
 
     private fun updateTodayLessonCount(count: Int, lessonId: Int) {

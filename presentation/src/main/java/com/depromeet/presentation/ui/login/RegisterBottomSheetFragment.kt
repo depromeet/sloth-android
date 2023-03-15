@@ -32,16 +32,6 @@ class RegisterBottomSheetFragment :
     private fun initObserver() {
         repeatOnStarted {
             launch {
-                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                    if (!isOnBoardingComplete) {
-                        navigateToTodayLessonOnBoarding()
-                    } else {
-                        navigateToTodayLesson()
-                    }
-                }
-            }
-
-            launch {
                 viewModel.navigateToPrivatePolicyEvent.collect {
                     showPrivatePolicy()
                 }
@@ -60,6 +50,12 @@ class RegisterBottomSheetFragment :
             }
 
             launch {
+                viewModel.registerNotificationTokenSuccessEvent.collect {
+                    navigateToTodayLesson()
+                }
+            }
+
+            launch {
                 viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
@@ -71,11 +67,6 @@ class RegisterBottomSheetFragment :
                     }
             }
         }
-    }
-
-    private fun navigateToTodayLessonOnBoarding() {
-        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToOnBoardingTodayLesson()
-        findNavController().safeNavigate(action)
     }
 
     private fun navigateToTodayLesson() {

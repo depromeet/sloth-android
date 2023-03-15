@@ -85,29 +85,25 @@ class LoginBottomSheetFragment :
         repeatOnStarted {
             launch {
                 viewModel.googleLoginEvent.collect {
-                        loginWithGoogle()
-                    }
+                    loginWithGoogle()
+                }
             }
 
             launch {
                 viewModel.kakaoLoginEvent.collect {
-                        loginWithKakao()
-                    }
+                    loginWithKakao()
+                }
             }
 
             launch {
                 viewModel.navigateToRegisterBottomSheetEvent.collect {
-                        showRegisterBottomSheet()
-                    }
+                    showRegisterBottomSheet()
+                }
             }
 
             launch {
-                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingComplete ->
-                    if (!isOnBoardingComplete) {
-                        navigateToTodayLessonOnBoarding()
-                    } else {
-                        navigateToTodayLesson()
-                    }
+                viewModel.registerNotificationTokenSuccessEvent.collect {
+                    navigateToTodayLesson()
                 }
             }
 
@@ -119,15 +115,10 @@ class LoginBottomSheetFragment :
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
-    }
-
-    private fun navigateToTodayLessonOnBoarding() {
-        val action = LoginBottomSheetFragmentDirections.actionLoginBottomDialogToOnBoardingTodayLesson()
-        findNavController().safeNavigate(action)
     }
 
     private fun navigateToTodayLesson() {

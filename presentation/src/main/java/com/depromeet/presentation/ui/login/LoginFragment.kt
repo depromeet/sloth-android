@@ -7,9 +7,9 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.FragmentLoginBinding
-import com.depromeet.presentation.ui.base.BaseFragment
 import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
+import com.depromeet.presentation.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,12 +27,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         initObserver()
     }
 
-    private fun initObserver()  {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
                 viewModel.navigateToLoginBottomSheetEvent.collect {
-                        showLoginBottomSheet()
-                    }
+                    showLoginBottomSheet()
+                }
             }
 
             launch {
@@ -43,8 +43,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

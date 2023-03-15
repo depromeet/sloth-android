@@ -3,14 +3,13 @@ package com.depromeet.presentation.ui.login
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.login.FetchGoogleAuthInfoUseCase
 import com.depromeet.domain.usecase.login.FetchSlothAuthInfoUseCase
-import com.depromeet.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.usecase.notification.RegisterNotificationTokenUseCase
+import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.ui.base.BaseViewModel
-import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.domain.util.Result
 import com.depromeet.presentation.util.GOOGLE
+import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,14 +26,18 @@ class LoginViewModel @Inject constructor(
     private val fetchGoogleAuthInfoUseCase: FetchGoogleAuthInfoUseCase,
     private val fetchSlothAuthInfoUseCase: FetchSlothAuthInfoUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
-    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
+    // private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
 
-    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
-    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
-        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
+//    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
+//    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
+//        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
+
+//    private val _checkTodayLessonOnBoardingCompleteEvent = MutableEventFlow<Boolean>()
+//    val checkTodayLessonOnBoardingCompleteEvent: EventFlow<Boolean> =
+//        _checkTodayLessonOnBoardingCompleteEvent.asEventFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
@@ -43,6 +46,10 @@ class LoginViewModel @Inject constructor(
     private val _navigateToRegisterBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToRegisterBottomSheetEvent: SharedFlow<Unit> =
         _navigateToRegisterBottomSheetEvent.asSharedFlow()
+
+    private val _registerNotificationTokenSuccessEvent = MutableSharedFlow<Unit>()
+    val registerNotificationTokenSuccessEvent: SharedFlow<Unit> =
+        _registerNotificationTokenSuccessEvent.asSharedFlow()
 
     private val _googleLoginEvent = MutableSharedFlow<Unit>()
     val googleLoginEvent: SharedFlow<Unit> = _googleLoginEvent.asSharedFlow()
@@ -153,7 +160,7 @@ class LoginViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        checkTodayLessonOnBoardingComplete()
+                        registerNotificationTokenSuccess()
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
@@ -166,8 +173,8 @@ class LoginViewModel @Inject constructor(
             }
     }
 
-    private fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
+    private fun registerNotificationTokenSuccess() = viewModelScope.launch {
+        _registerNotificationTokenSuccessEvent.emit(Unit)
     }
 
     override fun retry() = Unit

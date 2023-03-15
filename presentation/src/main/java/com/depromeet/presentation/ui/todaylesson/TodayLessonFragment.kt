@@ -69,10 +69,20 @@ class TodayLessonFragment :
         repeatOnStarted {
             launch {
                 viewModel.autoLoginEvent.collect { isLoggedIn ->
-                    if (!isLoggedIn) {
-                        navigateToLogin()
+                    if (isLoggedIn) {
+                        viewModel.checkTodayLessonOnBoardingComplete()
                     } else {
+                        navigateToLogin()
+                    }
+                }
+            }
+
+            launch {
+                viewModel.checkTodayLessonOnBoardingCompleteEvent.collect { isOnBoardingCompleted ->
+                    if (isOnBoardingCompleted) {
                         viewModel.fetchTodayLessonList()
+                    } else {
+                        navigateToOnBoardingTodayLesson()
                     }
                 }
             }
@@ -129,14 +139,19 @@ class TodayLessonFragment :
 
             launch {
                 viewModel.navigateToNotificationListEvent.collect {
-                        navigateToNotificationList()
-                    }
+                    navigateToNotificationList()
+                }
             }
         }
     }
 
     private fun navigateToLogin() {
         val action = TodayLessonFragmentDirections.actionTodayLessonToLogin()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun navigateToOnBoardingTodayLesson() {
+        val action = TodayLessonFragmentDirections.actionTodayLessonToOnBoardingTodayLesson()
         findNavController().safeNavigate(action)
     }
 

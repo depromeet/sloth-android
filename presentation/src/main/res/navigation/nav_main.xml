@@ -13,9 +13,7 @@
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"
-        app:popUpTo="@id/today_lesson"
-        app:popUpToInclusive="true" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
     <action
         android:id="@+id/action_global_to_expired_dialog"
@@ -88,11 +86,6 @@
             app:popUpTo="@id/login"
             app:popUpToInclusive="true" />
 
-        <action
-            android:id="@+id/action_login_bottom_dialog_to_on_boarding_today_lesson"
-            app:destination="@id/on_boarding_today_lesson"
-            app:popUpTo="@id/login"
-            app:popUpToInclusive="true"/>
     </dialog>
 
     <dialog
@@ -124,11 +117,6 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/login"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_register_bottom_dialog_to_on_boarding_today_lesson"
-            app:destination="@id/on_boarding_today_lesson"
-            app:popUpTo="@id/login"
-            app:popUpToInclusive="true"/>
     </dialog>
 
 
@@ -175,6 +163,12 @@
         <action
             android:id="@+id/action_today_lesson_to_finish_lesson_dialog"
             app:destination="@id/finish_lesson_dialog" />
+
+        <action
+            android:id="@+id/action_today_lesson_to_on_boarding_today_lesson"
+            app:destination="@id/on_boarding_today_lesson"
+            app:popUpTo="@id/today_lesson"
+            app:popUpToInclusive="true"/>
 
     </fragment>
 
@@ -392,11 +386,11 @@
 
         <action
             android:id="@+id/action_on_boarding_today_lesson_to_nav_register_lesson"
+            app:destination="@id/nav_register_lesson"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:destination="@id/nav_register_lesson">
+            app:popExitAnim="@anim/nav_default_pop_exit_anim">
 
             <argument
                 android:name="fragment_id"
