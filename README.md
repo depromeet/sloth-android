@@ -58,23 +58,36 @@
 **Foldering**
 ```
 .
+├── app
+│   ├── di
+│   ├── initialize
+│   └──  SlothApplication
+├── buildSrc
 ├── data
+│   ├── mapper
 │   ├── model
 │   ├── network
+│   ├── paging
 │   ├── preferences
-│   └── repository
-├── di
-├── domain
 │   ├── repository
-│   └── usecase
-├── extensions
-├── initialize
-├── presentation
-│   ├── adapter
-│   ├── model
-│   └── screen
-├── service
-└── util
+│   └── util
+├── domain
+│   ├── entity
+│   ├── repository
+│   ├── usecase
+│   └── util
+├── gradle
+│   └── libs.versions.toml
+└──  presentation
+    ├── adapter
+    ├── di
+    ├── extenstions
+    ├── mapper
+    ├── extenstions
+    ├── service
+    ├── ui
+    └── util
+
 
 ```
 
