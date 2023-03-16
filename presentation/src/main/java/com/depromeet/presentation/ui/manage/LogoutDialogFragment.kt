@@ -33,20 +33,20 @@ class LogoutDialogFragment : BaseDialogFragment<FragmentLogoutDialogBinding>(R.l
         repeatOnStarted {
             launch {
                 viewModel.logoutSuccessEvent.collect {
-                        navigateToLogin()
-                    }
+                    navigateToLogin()
+                }
             }
 
             launch {
                 viewModel.logoutCancelEvent.collect {
-                        closeLogoutDialog()
-                    }
+                    closeLogoutDialog()
+                }
             }
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -58,11 +58,6 @@ class LogoutDialogFragment : BaseDialogFragment<FragmentLogoutDialogBinding>(R.l
     }
 
     private fun navigateToLogin() {
-//        val navController = findNavController()
-//        val backStack = navController.backQueue
-//        val bottomBackStackEntry = backStack[1] // 최하단 BackStackEntry
-//        val popUpToFragmentId = bottomBackStackEntry.destination.id // 최하단 Fragment의 ID
-//        val popUpToFragmentLabel = bottomBackStackEntry.destination.label
         val action = NavMainDirections.actionGlobalToLogin()
         val navOptions = NavOptions.Builder()
             .setPopUpTo(findNavController().backQueue[1].destination.id, true)
