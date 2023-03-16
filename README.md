@@ -1,5 +1,6 @@
 # 나나공 (나보다 나무늘보가 공부 열심히 한다)
-![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
+
+<img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/225545924-9dd06f2a-bc89-45ac-aea4-3182bda66b95.png">
 
 디프만 10기 4조 신동빈센조 나나공 Android Repository
 
@@ -8,6 +9,7 @@
 - Behance: https://www.behance.net/gallery/133424149/_?locale=ko_KR
 
 # Overview
+![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
 > 모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
 
 - 개발 기간 : 2021.09.11 ~ing
@@ -58,29 +60,42 @@
 **Foldering**
 ```
 .
+├── app
+│   ├── di
+│   ├── initialize
+│   └── application
+├── buildSrc
 ├── data
+│   ├── mapper
 │   ├── model
 │   ├── network
+│   ├── paging
 │   ├── preferences
-│   └── repository
-├── di
-├── domain
 │   ├── repository
-│   └── usecase
-├── extensions
-├── initialize
-├── presentation
-│   ├── adapter
-│   ├── model
-│   └── screen
-├── service
-└── util
+│   └── util
+├── domain
+│   ├── entity
+│   ├── repository
+│   ├── usecase
+│   └── util
+├── gradle
+│   └── libs.versions.toml
+└── presentation
+    ├── adapter
+    ├── di
+    ├── extenstions
+    ├── mapper
+    ├── extenstions
+    ├── service
+    ├── ui
+    └── util
+
 
 ```
 
 # ToDo
-- 네트워크 상태 처리 개선  
--  멀티 모듈화
+- [x] 멀티 모듈화
+- [ ] 네트워크 상태 처리 개선  
 
 # WireFrame
 - 로그인 
