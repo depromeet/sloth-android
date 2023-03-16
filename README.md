@@ -61,7 +61,7 @@
 ├── app
 │   ├── di
 │   ├── initialize
-│   └──  SlothApplication
+│   └── application
 ├── buildSrc
 ├── data
 │   ├── mapper
