@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.Telephony.BaseMmsColumns.MESSAGE_TYPE
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,6 +15,7 @@ import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
 import com.depromeet.presentation.ui.base.BaseFragment
 import com.depromeet.presentation.util.CELLPHONE_INFO_DIVER
+import com.depromeet.presentation.util.MESSAGE_TYPE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
