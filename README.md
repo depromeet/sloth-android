@@ -78,7 +78,7 @@
 │   └── util
 ├── gradle
 │   └── libs.versions.toml
-└──  presentation
+└── presentation
     ├── adapter
     ├── di
     ├── extenstions
