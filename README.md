@@ -99,7 +99,7 @@
 
 # WireFrame
 - 로그인 
-<img width="812" alt="image" src="https://user-images.githubusercontent.com/51016231/200229589-5ea2dab3-07ea-4bf5-8757-7e1fb8ac212f.png">
+<img width="1012" alt="image" src="https://user-images.githubusercontent.com/51016231/225786605-0af55efe-f608-419b-bd3b-9a2efc853e64.png">
 
 - 홈화면 (투데이, 강의목록, 마이페이지(강의 통계), 알림목록)
 <img width="1025" alt="image" src="https://user-images.githubusercontent.com/51016231/225782095-85a43d1a-98f7-49eb-96f9-9eacfa147721.png">
