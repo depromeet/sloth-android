@@ -14,7 +14,7 @@
 
 - 개발 기간 : 2021.09.11 ~ing
 - Team 
-  - Android Developer :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
+  Android Developer :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
 - [Trouble Shooting](https://github.com/depromeet/sloth-android/wiki)
 # About
 
@@ -101,16 +101,16 @@
 - 로그인 
 <img width="812" alt="image" src="https://user-images.githubusercontent.com/51016231/200229589-5ea2dab3-07ea-4bf5-8757-7e1fb8ac212f.png">
 
-- 강의 등록
-<img width="712" alt="image" src="https://user-images.githubusercontent.com/51016231/200233062-30177f75-33c7-4245-b2b1-b16c52db8a50.png">
+- 홈화면 (투데이, 강의목록, 마이페이지(강의 통계), 알림목록)
+<img width="1025" alt="image" src="https://user-images.githubusercontent.com/51016231/225782095-85a43d1a-98f7-49eb-96f9-9eacfa147721.png">
 
-- 홈화면 (투데이, 강의목록, 마이페이지)
-<img width="716" alt="image" src="https://user-images.githubusercontent.com/51016231/200232753-7826bf68-6b9e-47a7-ae76-8cd0c880d00a.png">
+- 강의 등록
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/51016231/225783992-98d1d4bb-b322-4927-adfb-db4efb7c7971.png">
 
 - 강의 상세화면, 수정화면, 삭제화면
-<img width="950" alt="image" src="https://user-images.githubusercontent.com/51016231/200232331-f890ea1b-0849-46b9-a60c-801e7910f573.png">
+<img width="756" alt="image" src="https://user-images.githubusercontent.com/51016231/225783651-9fabe4ed-e6e0-4c44-a4fc-ac6816de3b70.png">
 
-- 마이페이지 화면 메뉴 (프로필 수정, 문의, 개인정보 처리 방침, 로그아웃)
-<img width="946" alt="image" src="https://user-images.githubusercontent.com/51016231/200232788-fd1b8d22-6403-443a-aa1b-7228ee0078a6.png">
+- 설정 화면, 프로필 수정,문의, 개인정보 처리 방침
+<img width="1031" alt="image" src="https://user-images.githubusercontent.com/51016231/225783202-679d053e-bc7b-4d51-9da4-e9ed6d5e2f14.png">
 
 
