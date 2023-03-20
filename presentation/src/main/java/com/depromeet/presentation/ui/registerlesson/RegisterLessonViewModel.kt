@@ -120,14 +120,8 @@ class RegisterLessonViewModel @Inject constructor(
     private var lessonCategoryMap = hashMapOf<Int, String>()
     private var lessonSiteMap = hashMapOf<Int, String>()
 
-    private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
-
-//    var lessonCategoryList = mutableListOf<String>()
-//    var lessonSiteList = mutableListOf<String>()
-
-    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
+    var lessonCategoryList = mutableListOf<String>()
+    var lessonSiteList = mutableListOf<String>()
 
     private val _lessonDateRangeValidation = MutableStateFlow(true)
     val lessonDateRangeValidation: StateFlow<Boolean> = _lessonDateRangeValidation.asStateFlow()
@@ -167,12 +161,11 @@ class RegisterLessonViewModel @Inject constructor(
     fun setLessonEndDateBySpinner() {
         if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) return
 
-        val startDate = lessonStartDate.value
         when (lessonEndDateSelectedItemPosition.value) {
-            ONE_WEEK -> _lessonEndDate.value = startDate.plusDays(7)
-            ONE_MONTH -> _lessonEndDate.value = startDate.plusMonths(1)
-            TWO_MONTH -> _lessonEndDate.value = startDate.plusMonths(2)
-            THREE_MONTH -> _lessonEndDate.value = startDate.plusMonths(3)
+            ONE_WEEK -> _lessonEndDate.value = lessonEndDate.value.plusDays(7)
+            ONE_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(1)
+            TWO_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(2)
+            THREE_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(3)
         }
         setLessonDateRangeValidation()
     }
@@ -184,22 +177,16 @@ class RegisterLessonViewModel @Inject constructor(
 
     private fun initLessonCategoryList(data: List<LessonCategory>) {
         lessonCategoryMap = data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
-        _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
+        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
-//        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
-//            add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
-//        }
     }
 
     private fun initLessonSiteList(data: List<LessonSite>) {
         lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
-        _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
+        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
-//        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
-//            add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
-//        }
     }
 
     @SuppressLint("NewApi")

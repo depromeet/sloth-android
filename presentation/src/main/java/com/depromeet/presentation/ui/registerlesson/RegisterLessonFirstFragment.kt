@@ -33,8 +33,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value
-            // viewModel.lessonCategoryList
+            viewModel.lessonCategoryList
         )
     }
 
@@ -42,8 +41,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value
-            // viewModel.lessonSiteList
+            viewModel.lessonSiteList
         )
     }
 

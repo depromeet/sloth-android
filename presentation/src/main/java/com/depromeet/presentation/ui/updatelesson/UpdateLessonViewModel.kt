@@ -64,8 +64,8 @@ class UpdateLessonViewModel @Inject constructor(
     private var lessonCategoryMap = hashMapOf<Int, String>()
     private var lessonSiteMap = hashMapOf<Int, String>()
 
-    private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
+    var lessonCategoryList = mutableListOf<String>()
+    var lessonSiteList = mutableListOf<String>()
 
     private var lessonCategoryId = 0
     private var lessonSiteId = 0
@@ -76,9 +76,6 @@ class UpdateLessonViewModel @Inject constructor(
 
     val lessonCategorySelectedItemPosition: StateFlow<Int> =
         _lessonCategorySelectedItemPosition.asStateFlow()
-
-    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
@@ -226,27 +223,27 @@ class UpdateLessonViewModel @Inject constructor(
     )
 
     private fun setLessonCategoryInfo(data: List<LessonCategory>) {
-        setLessonCategoryList(data)
+        initLessonCategoryList(data)
         setLessonCategoryId(lessonDetail.categoryName)
-        setLessonCategorySelectedItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap[lessonCategoryId]))
+        setLessonCategorySelectedItemPosition(lessonCategoryList.indexOf(lessonCategoryMap[lessonCategoryId]))
     }
 
-    private fun setLessonCategoryList(data: List<LessonCategory>) {
+    private fun initLessonCategoryList(data: List<LessonCategory>) {
         lessonCategoryMap = data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
-        _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
+        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
     private fun setLessonSiteInfo(data: List<LessonSite>) {
-        setLessonSiteList(data)
+        initLessonSiteList(data)
         setLessonSiteId(lessonDetail.siteName)
-        setLessonSiteSelectedItemPosition(lessonSiteList.value.indexOf(lessonSiteMap[lessonSiteId]))
+        setLessonSiteSelectedItemPosition(lessonSiteList.indexOf(lessonSiteMap[lessonSiteId]))
     }
 
-    private fun setLessonSiteList(data: List<LessonSite>) {
+    private fun initLessonSiteList(data: List<LessonSite>) {
         lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
-        _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
+        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
     }

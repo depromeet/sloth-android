@@ -33,7 +33,7 @@ class UpdateLessonFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value
+            viewModel.lessonCategoryList
         )
     }
 
@@ -41,7 +41,7 @@ class UpdateLessonFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value
+            viewModel.lessonSiteList
         )
     }
 
