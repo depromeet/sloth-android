@@ -80,9 +80,10 @@
 - Gson
 - KAKAO_SDK
 - Glide
-- Firebase Analytics
-- Firebase Cloud Messaging
-- Firebase Crashlytics 
+- Firebase 
+  - Analytics
+  - Cloud Messaging
+  - Crashlytics 
 - Lottie
 - Timber 
 - [ProgressView](https://github.com/skydoves/ProgressView)
