@@ -52,16 +52,13 @@ class UpdateLessonViewModel @Inject constructor(
         fetchLessonSiteList()
     }
 
-    private val _lessonName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
+    private val _lessonName = savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
-    private val _lessonTotalNumber =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
+    private val _lessonTotalNumber = savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonPrice =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
+    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
     val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     private var lessonCategoryMap = hashMapOf<Int, String>()
@@ -261,6 +258,7 @@ class UpdateLessonViewModel @Inject constructor(
 
     companion object {
         private const val KEY_LESSON_DETAIL = "lesson_detail"
+
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
