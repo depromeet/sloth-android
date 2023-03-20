@@ -118,7 +118,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 val startDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
                 viewModel.setLessonStartDate(startDate)
                 // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
-                viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value)
+                viewModel.setLessonEndDateBySpinner()
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
@@ -126,12 +126,10 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
 
     @SuppressLint("NewApi")
     private fun showLessonEndDateCalendar() = with(binding) {
-        val constraintsBuilder =
-            CalendarConstraints.Builder()
+        val constraintsBuilder = CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointForward.from(viewModel.lessonStartDate.value.plusDays(1).toInstant().toEpochMilli()))
 
-        val materialDateBuilder =
-            MaterialDatePicker.Builder.datePicker().apply {
+        val materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
                 setCalendarConstraints(constraintsBuilder.build())
                 setTitleText(getString(R.string.lesson_finish_date))
             }
@@ -168,12 +166,10 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                 viewModel.setLessonEndDateSelectedItemPosition(
                     spnRegisterLessonEndDate.selectedItemPosition
                 )
-
                 when (spnRegisterLessonEndDate.selectedItemPosition) {
                     ONE_WEEK, ONE_MONTH, TWO_MONTH, THREE_MONTH -> {
-                        viewModel.setLessonEndDateBySpinner(spnRegisterLessonEndDate.selectedItemPosition)
+                        viewModel.setLessonEndDateBySpinner()
                     }
-
                     CUSTOM_SETTING -> viewModel.registerLessonEndDate()
                 }
                 binding.clRegisterLessonSecond.clearFocus()
@@ -201,8 +197,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
                     viewModel.setLessonPrice(
                         charSequence.toString().replace(",", "").toInt()
                     )
-                    result =
-                        decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
+                    result = decimalFormat.format(charSequence.toString().replace(",", "").toDouble())
                     editText.setText(result)
                     editText.setSelection(result.length)
 
@@ -242,7 +237,6 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             override fun onTextChanged(text: CharSequence?, i1: Int, i2: Int, i3: Int) {
                 viewModel.setLessonMessage(text.toString())
             }
-
             override fun afterTextChanged(editable: Editable?) {}
         })
 

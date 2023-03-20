@@ -48,8 +48,7 @@ class RegisterLessonViewModel @Inject constructor(
     private val _registerLessonSuccessEvent = MutableSharedFlow<Int>()
     val registerLessonSuccessEvent: SharedFlow<Int> = _registerLessonSuccessEvent.asSharedFlow()
 
-    private val _fetchLessonCategoryListSuccessEvent =
-        MutableSharedFlow<List<LessonCategory>>()
+    private val _fetchLessonCategoryListSuccessEvent = MutableSharedFlow<List<LessonCategory>>()
     val fetchLessonCategoryListSuccessEvent: SharedFlow<List<LessonCategory>> =
         _fetchLessonCategoryListSuccessEvent.asSharedFlow()
 
@@ -113,12 +112,10 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonEndDateSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonEndDateSelectedItemPosition: StateFlow<Int> =
-        _lessonEndDateSelectedItemPosition.asStateFlow()
+    val lessonEndDateSelectedItemPosition: StateFlow<Int> = _lessonEndDateSelectedItemPosition.asStateFlow()
 
     private val _lessonEndDateSelectEvent = MutableStateFlow(false)
-    private val lessonEndDateSelectEvent: StateFlow<Boolean> =
-        _lessonEndDateSelectEvent.asStateFlow()
+    private val lessonEndDateSelectEvent: StateFlow<Boolean> = _lessonEndDateSelectEvent.asStateFlow()
 
     private var lessonCategoryMap = hashMapOf<Int, String>()
     private var lessonSiteMap = hashMapOf<Int, String>()
@@ -167,11 +164,11 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     @SuppressLint("NewApi")
-    fun setLessonEndDateBySpinner(position: Int?) {
-        if (position == CUSTOM_SETTING) return
+    fun setLessonEndDateBySpinner() {
+        if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) return
 
         val startDate = lessonStartDate.value
-        when (position) {
+        when (lessonEndDateSelectedItemPosition.value) {
             ONE_WEEK -> _lessonEndDate.value = startDate.plusDays(7)
             ONE_MONTH -> _lessonEndDate.value = startDate.plusMonths(1)
             TWO_MONTH -> _lessonEndDate.value = startDate.plusMonths(2)
