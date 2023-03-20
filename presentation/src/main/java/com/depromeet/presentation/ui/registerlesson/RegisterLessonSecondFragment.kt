@@ -72,40 +72,31 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         repeatOnStarted {
             launch {
                 viewModel.registerLessonStartDateEvent.collect {
-                        showLessonStartDateCalendar()
-                    }
+                    showLessonStartDateCalendar()
+                }
             }
 
             launch {
                 viewModel.registerLessonEndDateEvent.collect {
-                        if (viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
-                            showLessonEndDateCalendar()
-                        }
+                    if (viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                        showLessonEndDateCalendar()
                     }
+                }
             }
 
             launch {
                 viewModel.lessonDateRangeValidation.collect { isEnable ->
-                        when (isEnable) {
-                            false -> {
-                                if (viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.lesson_date_range_validation_error),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                            else -> Unit
-                        }
+                    if (!isEnable && viewModel.lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) {
+                        Toast.makeText(requireContext(), getString(R.string.lesson_date_range_validation_error), Toast.LENGTH_SHORT).show()
                     }
+                }
             }
 
             launch {
                 viewModel.navigateToRegisterLessonCheckEvent.collect {
-                        val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
-                        findNavController().safeNavigate(action)
-                    }
+                    val action = RegisterLessonSecondFragmentDirections.actionRegisterLessonSecondToRegisterLessonCheck()
+                    findNavController().safeNavigate(action)
+                }
             }
         }
     }

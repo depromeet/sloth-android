@@ -95,8 +95,7 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
-    val lessonCategorySelectedItemPosition: StateFlow<Int> =
-        _lessonCategorySelectedItemPosition.asStateFlow()
+    val lessonCategorySelectedItemPosition: StateFlow<Int> = _lessonCategorySelectedItemPosition.asStateFlow()
 
     private val _lessonSiteName = savedStateHandle.getMutableStateFlow(KEY_LESSON_SITE_NAME, DEFAULT_STRING_VALUE)
     val lessonSiteName: StateFlow<String> = _lessonSiteName.asStateFlow()
@@ -104,8 +103,7 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonSiteSelectedItemPosition: StateFlow<Int> =
-        _lessonSiteSelectedItemPosition.asStateFlow()
+    val lessonSiteSelectedItemPosition: StateFlow<Int> = _lessonSiteSelectedItemPosition.asStateFlow()
 
     private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, 0)
     val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
@@ -134,6 +132,9 @@ class RegisterLessonViewModel @Inject constructor(
 
     private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
+
+//    var lessonCategoryList = mutableListOf<String>()
+//    var lessonSiteList = mutableListOf<String>()
 
     private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
     val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
@@ -200,18 +201,24 @@ class RegisterLessonViewModel @Inject constructor(
         setLessonDateRangeValidation()
     }
 
-    private fun setLessonCategoryList(data: List<LessonCategory>) {
+    private fun initLessonCategoryList(data: List<LessonCategory>) {
         lessonCategoryMap = data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
         _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
+//        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
+//            add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
+//        }
     }
 
-    private fun setLessonSiteList(data: List<LessonSite>) {
+    private fun initLessonSiteList(data: List<LessonSite>) {
         lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
         _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
+//        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
+//            add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
+//        }
     }
 
     private fun setLessonDateRangeValidation() {
@@ -266,7 +273,7 @@ class RegisterLessonViewModel @Inject constructor(
                     when (result) {
                         is Result.Loading -> return@collect
                         is Result.Success -> {
-                            setLessonCategoryList(result.data.toUiModel())
+                            initLessonCategoryList(result.data.toUiModel())
                             _fetchLessonCategoryListSuccessEvent.emit(result.data.toUiModel())
                             setInternetError(false)
                         }
@@ -299,7 +306,7 @@ class RegisterLessonViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            setLessonSiteList(result.data.toUiModel())
+                            initLessonSiteList(result.data.toUiModel())
                             _fetchLessonSiteListSuccessEvent.emit(result.data.toUiModel())
                         }
                         is Result.Error -> {

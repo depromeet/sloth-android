@@ -34,6 +34,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             requireContext(),
             R.layout.item_spinner,
             viewModel.lessonCategoryList.value
+            // viewModel.lessonCategoryList
         )
     }
 
@@ -42,6 +43,7 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
             requireContext(),
             R.layout.item_spinner,
             viewModel.lessonSiteList.value
+            // viewModel.lessonSiteList
         )
     }
 
@@ -59,13 +61,12 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         }
 
         val args: RegisterLessonFirstFragmentArgs by navArgs()
-        if (args.fragmentId ==  R.id.on_boarding_today_lesson) {
+        if (args.fragmentId == R.id.on_boarding_today_lesson) {
             // 뒤로가기 버튼 없애기
             binding.tbLayout.tbRegisterLesson.navigationIcon = null
-
             // 온보딩에서 진입 했을 경우에만 시스템 백 버튼 비활성화
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-                 return@addCallback
+                return@addCallback
             }
         }
 
@@ -93,29 +94,21 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
         repeatOnStarted {
             launch {
                 viewModel.fetchLessonCategoryListSuccessEvent.collect {
-                        bindAdapter(
-                            lessonCategoryAdapter,
-                            binding.spnRegisterLessonCategory,
-                            viewModel.lessonCategorySelectedItemPosition.value
-                        )
-                    }
+                    bindAdapter(lessonCategoryAdapter, binding.spnRegisterLessonCategory)
+                }
             }
 
             launch {
                 viewModel.fetchLessonSiteListSuccessEvent.collect {
-                        bindAdapter(
-                            lessonSiteAdapter,
-                            binding.spnRegisterLessonSite,
-                            viewModel.lessonSiteSelectedItemPosition.value
-                        )
-                    }
+                    bindAdapter(lessonSiteAdapter, binding.spnRegisterLessonSite)
+                }
             }
 
             launch {
                 viewModel.navigateToRegisterLessonSecondEvent.collect {
-                        val action = RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
-                        findNavController().safeNavigate(action)
-                    }
+                    val action = RegisterLessonFirstFragmentDirections.actionRegisterLessonFirstToRegisterLessonSecond()
+                    findNavController().safeNavigate(action)
+                }
             }
 
             launch {
@@ -126,23 +119,23 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
             launch {
                 viewModel.navigateToExpireDialogEvent.collect {
-                        showExpireDialog()
-                    }
+                    showExpireDialog()
+                }
             }
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    private fun bindAdapter(arrayAdapter: ArrayAdapter<String>, spinner: Spinner, position: Int) {
+    private fun bindAdapter(arrayAdapter: ArrayAdapter<String>, spinner: Spinner) {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.apply {
             adapter = arrayAdapter
-            setSelection(position)
+            setSelection(0)
         }
     }
 
@@ -160,38 +153,30 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     when (spinner.selectedItemPosition) {
                         0 -> {
-                            when (spinner) {
-                                spnRegisterLessonCategory -> {
-                                    viewModel.setLessonCategorySelectedItemPosition(
-                                        spnRegisterLessonCategory.selectedItemPosition
-                                    )
-                                }
-
-                                else -> {
-                                    viewModel.setLessonSiteItemPosition(
-                                        spnRegisterLessonSite.selectedItemPosition
-                                    )
-                                }
+                            if (spinner == spnRegisterLessonCategory) {
+                                viewModel.setLessonCategorySelectedItemPosition(
+                                    spnRegisterLessonCategory.selectedItemPosition
+                                )
+                            } else {
+                                viewModel.setLessonSiteItemPosition(
+                                    spnRegisterLessonSite.selectedItemPosition
+                                )
                             }
                         }
 
                         else -> {
-                            when (spinner) {
-                                spnRegisterLessonCategory -> {
-                                    viewModel.setLessonCategoryId(spnRegisterLessonCategory.selectedItem.toString())
-                                    viewModel.setLessonCategoryName(spinner.selectedItem.toString())
-                                    viewModel.setLessonCategorySelectedItemPosition(
-                                        spnRegisterLessonCategory.selectedItemPosition
-                                    )
-                                }
-
-                                else -> {
-                                    viewModel.setLessonSiteId(spnRegisterLessonSite.selectedItem.toString())
-                                    viewModel.setLessonSiteName(spinner.selectedItem.toString())
-                                    viewModel.setLessonSiteItemPosition(
-                                        spnRegisterLessonSite.selectedItemPosition
-                                    )
-                                }
+                            if (spinner == spnRegisterLessonCategory) {
+                                viewModel.setLessonCategoryId(spnRegisterLessonCategory.selectedItem.toString())
+                                viewModel.setLessonCategoryName(spinner.selectedItem.toString())
+                                viewModel.setLessonCategorySelectedItemPosition(
+                                    spnRegisterLessonCategory.selectedItemPosition
+                                )
+                            } else {
+                                viewModel.setLessonSiteId(spnRegisterLessonSite.selectedItem.toString())
+                                viewModel.setLessonSiteName(spinner.selectedItem.toString())
+                                viewModel.setLessonSiteItemPosition(
+                                    spnRegisterLessonSite.selectedItemPosition
+                                )
                             }
                         }
                     }
