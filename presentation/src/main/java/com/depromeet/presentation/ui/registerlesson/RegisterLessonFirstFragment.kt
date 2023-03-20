@@ -23,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-//TODO view 에서 .value 로 접근하는 부분 수정
+//TODO 강의 등록 view 에서 .value 로 접근하는 부분 수정
 @AndroidEntryPoint
 class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBinding>(R.layout.fragment_register_lesson_first) {
 

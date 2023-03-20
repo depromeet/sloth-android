@@ -161,8 +161,8 @@ class RegisterLessonViewModel @Inject constructor(
     )
 
     @SuppressLint("NewApi")
-    fun setLessonStartDate(zonedDateTime: ZonedDateTime) {
-        _lessonStartDate.value = zonedDateTime
+    fun setLessonStartDate(startDate: ZonedDateTime) {
+        _lessonStartDate.value = startDate
         setLessonDateRangeValidation()
     }
 
@@ -180,8 +180,8 @@ class RegisterLessonViewModel @Inject constructor(
         setLessonDateRangeValidation()
     }
 
-    fun setLessonEndDateByCalendar(zonedDateTime: ZonedDateTime) {
-        _lessonEndDate.value = zonedDateTime
+    fun setLessonEndDateByCalendar(endDate: ZonedDateTime) {
+        _lessonEndDate.value = endDate
         setLessonDateRangeValidation()
     }
 

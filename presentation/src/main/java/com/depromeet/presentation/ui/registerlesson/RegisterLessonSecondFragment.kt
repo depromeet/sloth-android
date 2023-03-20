@@ -37,7 +37,6 @@ import java.time.ZonedDateTime
 import java.util.*
 
 
-//TODO view 에서 .value 로 접근하는 부분 수정
 @AndroidEntryPoint
 class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBinding>(R.layout.fragment_register_lesson_second) {
 
@@ -116,8 +115,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         }
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener { utcMillis ->
-                val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
-                viewModel.setLessonStartDate(zonedDateTime)
+                val startDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
+                viewModel.setLessonStartDate(startDate)
                 // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
                 viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value)
             }
@@ -138,8 +137,8 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
             }
         val materialDatePicker = materialDateBuilder.build().apply {
             addOnPositiveButtonClickListener { utcMillis ->
-                val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
-                viewModel.setLessonEndDateByCalendar(zonedDateTime)
+                val endDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
+                viewModel.setLessonEndDateByCalendar(endDate)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
