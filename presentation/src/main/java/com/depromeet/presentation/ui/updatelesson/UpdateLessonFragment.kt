@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 
-//TODO view 에서 .value 로 접근하고 있는 부분 수정
+//TODO 강의 수정 view 에서 .value 로 접근하고 있는 부분 수정
 @AndroidEntryPoint
 class UpdateLessonFragment :
     BaseFragment<FragmentUpdateLessonBinding>(R.layout.fragment_update_lesson) {
@@ -33,7 +33,7 @@ class UpdateLessonFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonCategoryList.value
+            viewModel.lessonCategoryList
         )
     }
 
@@ -41,7 +41,7 @@ class UpdateLessonFragment :
         ArrayAdapter<String>(
             requireContext(),
             R.layout.item_spinner,
-            viewModel.lessonSiteList.value
+            viewModel.lessonSiteList
         )
     }
 
@@ -102,15 +102,8 @@ class UpdateLessonFragment :
 
             launch {
                 viewModel.lessonTotalNumberValidation.collect { isEnable ->
-                    when (isEnable) {
-                        false -> {
-                            Toast.makeText(
-                                requireContext(), getString(R.string.lesson_number_validation_error),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        else -> Unit
+                    if (!isEnable) {
+                        Toast.makeText(requireContext(), getString(R.string.lesson_number_validation_error), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -291,33 +284,28 @@ class UpdateLessonFragment :
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     when (selectedItemPosition) {
                         0 -> {
-                            when (spinner) {
-                                spnUpdateLessonCategory -> {
-                                    viewModel.setLessonCategorySelectedItemPosition(
-                                        spnUpdateLessonCategory.selectedItemPosition
-                                    )
-                                }
-
-                                else -> {
-                                    viewModel.setLessonSiteSelectedItemPosition(
-                                        spnUpdateLessonSite.selectedItemPosition
-                                    )
-                                }
+                            if (spinner == spnUpdateLessonCategory) {
+                                viewModel.setLessonCategorySelectedItemPosition(
+                                    spnUpdateLessonCategory.selectedItemPosition
+                                )
+                            }
+                            else {
+                                viewModel.setLessonSiteSelectedItemPosition(
+                                    spnUpdateLessonSite.selectedItemPosition
+                                )
                             }
                         }
-
                         else -> {
-                            when (spinner) {
-                                spnUpdateLessonCategory -> {
-                                    viewModel.setLessonCategoryId(spnUpdateLessonCategory.selectedItem.toString())
-                                    viewModel.setLessonCategorySelectedItemPosition(
-                                        spnUpdateLessonCategory.selectedItemPosition
-                                    )
+                            if (spinner == spnUpdateLessonCategory) {
+                                viewModel.apply {
+                                    setLessonCategoryId(spnUpdateLessonCategory.selectedItem.toString())
+                                    setLessonCategorySelectedItemPosition(spnUpdateLessonCategory.selectedItemPosition)
                                 }
-
-                                else -> {
-                                    viewModel.setLessonSiteId(spnUpdateLessonSite.selectedItem.toString())
-                                    viewModel.setLessonSiteSelectedItemPosition(
+                            }
+                            else {
+                                viewModel.apply {
+                                    setLessonSiteId(spnUpdateLessonSite.selectedItem.toString())
+                                    setLessonSiteSelectedItemPosition(
                                         spnUpdateLessonSite.selectedItemPosition
                                     )
                                 }

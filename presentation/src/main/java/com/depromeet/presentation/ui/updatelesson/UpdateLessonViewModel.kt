@@ -52,23 +52,20 @@ class UpdateLessonViewModel @Inject constructor(
         fetchLessonSiteList()
     }
 
-    private val _lessonName =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
+    private val _lessonName = savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, lessonDetail.lessonName)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
 
-    private val _lessonTotalNumber =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
+    private val _lessonTotalNumber = savedStateHandle.getMutableStateFlow(KEY_LESSON_TOTAL_NUMBER, lessonDetail.totalNumber)
     val lessonTotalNumber: StateFlow<Int> = _lessonTotalNumber.asStateFlow()
 
-    private val _lessonPrice =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
+    private val _lessonPrice = savedStateHandle.getMutableStateFlow(KEY_LESSON_PRICE, lessonDetail.price)
     val lessonPrice: StateFlow<Int> = _lessonPrice.asStateFlow()
 
     private var lessonCategoryMap = hashMapOf<Int, String>()
     private var lessonSiteMap = hashMapOf<Int, String>()
 
-    private val _lessonCategoryList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonCategoryList: StateFlow<List<String>> = _lessonCategoryList.asStateFlow()
+    var lessonCategoryList = mutableListOf<String>()
+    var lessonSiteList = mutableListOf<String>()
 
     private var lessonCategoryId = 0
     private var lessonSiteId = 0
@@ -76,18 +73,12 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
-
-    val lessonCategorySelectedItemPosition: StateFlow<Int> =
-        _lessonCategorySelectedItemPosition.asStateFlow()
-
-    private val _lessonSiteList = MutableStateFlow<List<String>>(mutableListOf())
-    val lessonSiteList: StateFlow<List<String>> = _lessonSiteList.asStateFlow()
+    val lessonCategorySelectedItemPosition: StateFlow<Int> = _lessonCategorySelectedItemPosition.asStateFlow()
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonSiteSelectedItemPosition: StateFlow<Int> =
-        _lessonSiteSelectedItemPosition.asStateFlow()
+    val lessonSiteSelectedItemPosition: StateFlow<Int> = _lessonSiteSelectedItemPosition.asStateFlow()
 
     private val _lessonTotalNumberValidation = MutableStateFlow(true)
     val lessonTotalNumberValidation: StateFlow<Boolean> = _lessonTotalNumberValidation.asStateFlow()
@@ -229,27 +220,27 @@ class UpdateLessonViewModel @Inject constructor(
     )
 
     private fun setLessonCategoryInfo(data: List<LessonCategory>) {
-        setLessonCategoryList(data)
+        initLessonCategoryList(data)
         setLessonCategoryId(lessonDetail.categoryName)
-        setLessonCategorySelectedItemPosition(lessonCategoryList.value.indexOf(lessonCategoryMap[lessonCategoryId]))
+        setLessonCategorySelectedItemPosition(lessonCategoryList.indexOf(lessonCategoryMap[lessonCategoryId]))
     }
 
-    private fun setLessonCategoryList(data: List<LessonCategory>) {
+    private fun initLessonCategoryList(data: List<LessonCategory>) {
         lessonCategoryMap = data.associate { it.categoryId to it.categoryName } as HashMap<Int, String>
-        _lessonCategoryList.value = data.map { it.categoryName }.toMutableList().apply {
+        lessonCategoryList = data.map { it.categoryName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_category))
         }
     }
 
     private fun setLessonSiteInfo(data: List<LessonSite>) {
-        setLessonSiteList(data)
+        initLessonSiteList(data)
         setLessonSiteId(lessonDetail.siteName)
-        setLessonSiteSelectedItemPosition(lessonSiteList.value.indexOf(lessonSiteMap[lessonSiteId]))
+        setLessonSiteSelectedItemPosition(lessonSiteList.indexOf(lessonSiteMap[lessonSiteId]))
     }
 
-    private fun setLessonSiteList(data: List<LessonSite>) {
+    private fun initLessonSiteList(data: List<LessonSite>) {
         lessonSiteMap = data.associate { it.siteId to it.siteName } as HashMap<Int, String>
-        _lessonSiteList.value = data.map { it.siteName }.toMutableList().apply {
+        lessonSiteList = data.map { it.siteName }.toMutableList().apply {
             add(0, stringResourcesProvider.getString(R.string.choose_lesson_site))
         }
     }
@@ -261,6 +252,7 @@ class UpdateLessonViewModel @Inject constructor(
 
     companion object {
         private const val KEY_LESSON_DETAIL = "lesson_detail"
+
         private const val KEY_LESSON_NAME = "lessonName"
         private const val KEY_LESSON_TOTAL_NUMBER = "lessonCount"
         private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"

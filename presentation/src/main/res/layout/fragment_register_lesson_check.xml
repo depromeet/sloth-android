@@ -259,7 +259,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_start_date_info"
-                            checkLessonDate="@{vm.lessonStartDate}"
+                            lessonDate="@{vm.lessonStartDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -297,7 +297,7 @@
 
                         <TextView
                             android:id="@+id/tv_register_lesson_end_date_info"
-                            checkLessonDate="@{vm.lessonEndDate}"
+                            lessonDate="@{vm.lessonEndDate}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
