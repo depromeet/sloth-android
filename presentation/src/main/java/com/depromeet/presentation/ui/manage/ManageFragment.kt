@@ -3,13 +3,13 @@ package com.depromeet.presentation.ui.manage
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.FragmentManageBinding
-import com.depromeet.presentation.ui.base.BaseFragment
 import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
+import com.depromeet.presentation.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_manage) {
 
-    private val viewModel: ManageViewModel by viewModels()
+    private val viewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     override fun onStart() {
         super.onStart()
