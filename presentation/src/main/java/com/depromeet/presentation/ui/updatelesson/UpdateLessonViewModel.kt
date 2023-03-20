@@ -73,15 +73,12 @@ class UpdateLessonViewModel @Inject constructor(
     private val _lessonCategorySelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION, 0
     )
-
-    val lessonCategorySelectedItemPosition: StateFlow<Int> =
-        _lessonCategorySelectedItemPosition.asStateFlow()
+    val lessonCategorySelectedItemPosition: StateFlow<Int> = _lessonCategorySelectedItemPosition.asStateFlow()
 
     private val _lessonSiteSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_SITE_SELECTED_ITEM_POSITION, 0
     )
-    val lessonSiteSelectedItemPosition: StateFlow<Int> =
-        _lessonSiteSelectedItemPosition.asStateFlow()
+    val lessonSiteSelectedItemPosition: StateFlow<Int> = _lessonSiteSelectedItemPosition.asStateFlow()
 
     private val _lessonTotalNumberValidation = MutableStateFlow(true)
     val lessonTotalNumberValidation: StateFlow<Boolean> = _lessonTotalNumberValidation.asStateFlow()
