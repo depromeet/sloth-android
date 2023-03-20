@@ -1,5 +1,6 @@
 package com.depromeet.presentation.util
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
 import android.widget.EditText
@@ -8,11 +9,11 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
 import com.depromeet.presentation.R
-import com.depromeet.presentation.extensions.changeDateFormat
 import com.depromeet.presentation.extensions.changeDateFormatToDot
-import com.depromeet.presentation.extensions.changeStringToDot
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 // TODO 바인딩어댑터 함수들 단일 책임의 원칙을 만족하도록 수정
 // TODO visibility 관련 작업은 xml에서 직접
@@ -93,13 +94,11 @@ fun setLessonPriceHint(view: EditText, price: Int) = with(view) {
     hint = context.getString(R.string.unit_lesson_price, decimalFormat.format(price))
 }
 
+@SuppressLint("NewApi")
 @BindingAdapter("lessonDate")
-fun setLessonDate(view: TextView, lessonDate: String?) {
-    if (lessonDate.isNullOrBlank()) {
-        view.visibility = View.GONE
-    } else {
-        view.text = changeDateFormat(lessonDate)
-    }
+fun setLessonDate(view: TextView, lessonDate: ZonedDateTime) {
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+    view.text = lessonDate.format(formatter)
 }
 
 @BindingAdapter("goalProgressRate", "d_day")
@@ -165,17 +164,10 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
 fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
     if (date.isNullOrEmpty()) return
     else {
-        text = context.getString(R.string.lesson_end_date_info,
+        text = context.getString(
+            R.string.lesson_end_date_info,
             changeDateFormatToDot(date)
         )
-    }
-}
-
-@BindingAdapter("checkLessonDate")
-fun checkLessonDate(view: TextView, date: String?) = with(view) {
-    if (date.isNullOrEmpty()) return
-    else {
-        text = changeStringToDot(date)
     }
 }
 
@@ -183,7 +175,8 @@ fun checkLessonDate(view: TextView, date: String?) = with(view) {
 fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) =
     with(view) {
         if (!startDate.isNullOrEmpty() and !endDate.isNullOrEmpty()) {
-            text = context.getString(R.string.lesson_period_info,
+            text = context.getString(
+                R.string.lesson_period_info,
                 changeDateFormatToDot(startDate!!),
                 changeDateFormatToDot(endDate!!)
             )
@@ -193,7 +186,7 @@ fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: Arra
 @BindingAdapter("email", "isEmailProvided")
 fun setMemberEmail(view: TextView, email: String, isEmailProvided: Boolean) =
     with(view) {
-        text = if(isEmailProvided) {
+        text = if (isEmailProvided) {
             email
         } else {
             DEFAULT_STRING_VALUE

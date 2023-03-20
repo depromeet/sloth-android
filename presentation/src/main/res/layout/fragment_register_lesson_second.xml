@@ -79,7 +79,7 @@
                 <TextView
                     android:id="@+id/tv_register_lesson_start_date_info"
                     style="@style/Widget.Sloth.TextView.Black"
-                    lessonDate="@{String.valueOf(vm.lessonStartDate)}"
+                    lessonDate="@{vm.lessonStartDate}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -119,7 +119,7 @@
                 <TextView
                     android:id="@+id/tv_register_lesson_end_date_info"
                     style="@style/Widget.Sloth.TextView.Black"
-                    lessonDate="@{String.valueOf(vm.lessonEndDate)}"
+                    lessonDate="@{vm.lessonEndDate}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"

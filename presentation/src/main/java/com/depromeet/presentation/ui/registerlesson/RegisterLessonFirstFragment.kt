@@ -166,17 +166,17 @@ class RegisterLessonFirstFragment : BaseFragment<FragmentRegisterLessonFirstBind
 
                         else -> {
                             if (spinner == spnRegisterLessonCategory) {
-                                viewModel.setLessonCategoryId(spnRegisterLessonCategory.selectedItem.toString())
-                                viewModel.setLessonCategoryName(spinner.selectedItem.toString())
-                                viewModel.setLessonCategorySelectedItemPosition(
-                                    spnRegisterLessonCategory.selectedItemPosition
-                                )
+                                viewModel.apply {
+                                    setLessonCategoryId(spnRegisterLessonCategory.selectedItem.toString())
+                                    setLessonCategoryName(spinner.selectedItem.toString())
+                                    setLessonCategorySelectedItemPosition(spnRegisterLessonCategory.selectedItemPosition)
+                                }
                             } else {
-                                viewModel.setLessonSiteId(spnRegisterLessonSite.selectedItem.toString())
-                                viewModel.setLessonSiteName(spinner.selectedItem.toString())
-                                viewModel.setLessonSiteItemPosition(
-                                    spnRegisterLessonSite.selectedItemPosition
-                                )
+                                viewModel.apply {
+                                    setLessonSiteId(spnRegisterLessonSite.selectedItem.toString())
+                                    setLessonSiteName(spinner.selectedItem.toString())
+                                    setLessonSiteItemPosition(spnRegisterLessonSite.selectedItemPosition)
+                                }
                             }
                         }
                     }

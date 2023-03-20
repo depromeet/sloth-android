@@ -17,7 +17,6 @@ import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
 import com.depromeet.presentation.ui.base.BaseFragment
 import com.depromeet.presentation.ui.registerlesson.RegisterLessonViewModel.Companion.CUSTOM_SETTING
-import com.depromeet.presentation.ui.registerlesson.RegisterLessonViewModel.Companion.DAY
 import com.depromeet.presentation.ui.registerlesson.RegisterLessonViewModel.Companion.ONE_MONTH
 import com.depromeet.presentation.ui.registerlesson.RegisterLessonViewModel.Companion.ONE_WEEK
 import com.depromeet.presentation.ui.registerlesson.RegisterLessonViewModel.Companion.THREE_MONTH
@@ -32,6 +31,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -107,16 +109,15 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         focusInputFormOptional(etRegisterLessonMessage)
     }
 
+    @SuppressLint("NewApi")
     private fun showLessonStartDateCalendar() = with(binding) {
         val materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
             setTitleText(getString(R.string.lesson_start_date))
         }
-
         val materialDatePicker = materialDateBuilder.build().apply {
-            addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
-                calendar.time = Date(it)
-                viewModel.setLessonStartDate(calendar)
+            addOnPositiveButtonClickListener { utcMillis ->
+                val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
+                viewModel.setLessonStartDate(zonedDateTime)
                 // 강의 시작일이 변하면 직접 설정이 아닌 경우엔 완강 목표일도 갱신되어야 한다.
                 viewModel.setLessonEndDateBySpinner(viewModel.lessonEndDateSelectedItemPosition.value)
             }
@@ -124,22 +125,21 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)
     }
 
+    @SuppressLint("NewApi")
     private fun showLessonEndDateCalendar() = with(binding) {
         val constraintsBuilder =
             CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(viewModel.startDate.value.time + DAY))
+                .setValidator(DateValidatorPointForward.from(viewModel.lessonStartDate.value.plusDays(1).toInstant().toEpochMilli()))
 
         val materialDateBuilder =
             MaterialDatePicker.Builder.datePicker().apply {
                 setCalendarConstraints(constraintsBuilder.build())
                 setTitleText(getString(R.string.lesson_finish_date))
             }
-
         val materialDatePicker = materialDateBuilder.build().apply {
-            addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
-                calendar.time = Date(it)
-                viewModel.setLessonEndDateByCalendar(calendar)
+            addOnPositiveButtonClickListener { utcMillis ->
+                val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(utcMillis), ZoneId.of(CALENDAR_TIME_ZONE))
+                viewModel.setLessonEndDateByCalendar(zonedDateTime)
             }
         }
         materialDatePicker.show(childFragmentManager, CALENDAR_TAG)

@@ -1,5 +1,6 @@
 package com.depromeet.presentation.ui.registerlesson
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonCategoryListUseCase
@@ -9,7 +10,6 @@ import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.extensions.getMutableStateFlow
-import com.depromeet.presentation.extensions.getPickerDateToDash
 import com.depromeet.presentation.mapper.toEntity
 import com.depromeet.presentation.mapper.toUiModel
 import com.depromeet.presentation.model.LessonCategory
@@ -24,6 +24,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -62,23 +65,15 @@ class RegisterLessonViewModel @Inject constructor(
     val navigateToRegisterLessonCheckEvent: SharedFlow<Unit> =
         _navigateToRegisterLessonCheckEvent.asSharedFlow()
 
-    private val _registerLessonStartDateEvent = MutableSharedFlow<Date>()
-    val registerLessonStartDateEvent: SharedFlow<Date> =
-        _registerLessonStartDateEvent.asSharedFlow()
+    private val _registerLessonStartDateEvent = MutableSharedFlow<Unit>()
+    val registerLessonStartDateEvent: SharedFlow<Unit> = _registerLessonStartDateEvent.asSharedFlow()
 
-    private val _registerLessonEndDateEvent = MutableSharedFlow<Date>()
-    val registerLessonEndDateEvent: SharedFlow<Date> = _registerLessonEndDateEvent.asSharedFlow()
+    private val _registerLessonEndDateEvent = MutableSharedFlow<Unit>()
+    val registerLessonEndDateEvent: SharedFlow<Unit> = _registerLessonEndDateEvent.asSharedFlow()
 
-    private val _startDate = savedStateHandle.getMutableStateFlow(KEY_START_DATE, Date())
-    val startDate: StateFlow<Date> = _startDate.asStateFlow()
-
-    private val _lessonStartDate =
-        savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, DEFAULT_STRING_VALUE)
-    val lessonStartDate: StateFlow<String> = _lessonStartDate.asStateFlow()
-
-    init {
-        initLessonStartDate()
-    }
+    @SuppressLint("NewApi")
+    private val _lessonStartDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_START_DATE, ZonedDateTime.now(ZoneId.of(CALENDAR_TIME_ZONE)))
+    val lessonStartDate: StateFlow<ZonedDateTime> = _lessonStartDate.asStateFlow()
 
     private val _lessonName = savedStateHandle.getMutableStateFlow(KEY_LESSON_NAME, DEFAULT_STRING_VALUE)
     val lessonName: StateFlow<String> = _lessonName.asStateFlow()
@@ -111,11 +106,9 @@ class RegisterLessonViewModel @Inject constructor(
     private val _lessonMessage = savedStateHandle.getMutableStateFlow(KEY_LESSON_MESSAGE, DEFAULT_STRING_VALUE)
     val lessonMessage: StateFlow<String> = _lessonMessage.asStateFlow()
 
-    private val _endDate = savedStateHandle.getMutableStateFlow(KEY_END_DATE, Date())
-    val endDate: StateFlow<Date> = _endDate.asStateFlow()
-
-    private val _lessonEndDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, DEFAULT_STRING_VALUE)
-    val lessonEndDate: StateFlow<String> = _lessonEndDate.asStateFlow()
+    @SuppressLint("NewApi")
+    private val _lessonEndDate = savedStateHandle.getMutableStateFlow(KEY_LESSON_END_DATE, ZonedDateTime.now(ZoneId.of(CALENDAR_TIME_ZONE)))
+    val lessonEndDate: StateFlow<ZonedDateTime> = _lessonEndDate.asStateFlow()
 
     private val _lessonEndDateSelectedItemPosition = savedStateHandle.getMutableStateFlow(
         KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION, 0
@@ -167,37 +160,28 @@ class RegisterLessonViewModel @Inject constructor(
         initialValue = false
     )
 
-    private fun initLessonStartDate() {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
-        calendar.time = Date()
-        _startDate.value = calendar.time
-        _lessonStartDate.value = getPickerDateToDash(calendar.time)
-    }
-
-    fun setLessonStartDate(calendar: Calendar) {
-        _startDate.value = calendar.time
-        _lessonStartDate.value = getPickerDateToDash(startDate.value)
+    @SuppressLint("NewApi")
+    fun setLessonStartDate(zonedDateTime: ZonedDateTime) {
+        _lessonStartDate.value = zonedDateTime
         setLessonDateRangeValidation()
     }
 
+    @SuppressLint("NewApi")
     fun setLessonEndDateBySpinner(position: Int?) {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone(CALENDAR_TIME_ZONE))
-        calendar.time = startDate.value
+        if (position == CUSTOM_SETTING) return
+
+        val startDate = lessonStartDate.value
         when (position) {
-            ONE_WEEK -> calendar.add(Calendar.DATE, 7)
-            ONE_MONTH -> calendar.add(Calendar.MONTH, 1)
-            TWO_MONTH -> calendar.add(Calendar.MONTH, 2)
-            THREE_MONTH -> calendar.add(Calendar.MONTH, 3)
-            CUSTOM_SETTING -> return
+            ONE_WEEK -> _lessonEndDate.value = startDate.plusDays(7)
+            ONE_MONTH -> _lessonEndDate.value = startDate.plusMonths(1)
+            TWO_MONTH -> _lessonEndDate.value = startDate.plusMonths(2)
+            THREE_MONTH -> _lessonEndDate.value = startDate.plusMonths(3)
         }
-        _endDate.value = calendar.time
-        _lessonEndDate.value = getPickerDateToDash(calendar.time)
         setLessonDateRangeValidation()
     }
 
-    fun setLessonEndDateByCalendar(calendar: Calendar) {
-        _endDate.value = calendar.time
-        _lessonEndDate.value = getPickerDateToDash(calendar.time)
+    fun setLessonEndDateByCalendar(zonedDateTime: ZonedDateTime) {
+        _lessonEndDate.value = zonedDateTime
         setLessonDateRangeValidation()
     }
 
@@ -221,21 +205,24 @@ class RegisterLessonViewModel @Inject constructor(
 //        }
     }
 
+    @SuppressLint("NewApi")
     private fun setLessonDateRangeValidation() {
-        _lessonDateRangeValidation.value = startDate.value <= endDate.value
+        _lessonDateRangeValidation.value = lessonStartDate.value <= lessonEndDate.value
     }
 
+    @SuppressLint("NewApi")
     fun registerLesson() = viewModelScope.launch {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         registerLessonUseCase(
             LessonRegisterRequest(
                 alertDays = null,
                 categoryId = lessonCategoryId,
-                endDate = lessonEndDate.value,
+                endDate = lessonEndDate.value.format(formatter),
                 lessonName = lessonName.value,
                 message = lessonMessage.value,
                 price = lessonPrice.value,
                 siteId = lessonSiteId,
-                startDate = lessonStartDate.value,
+                startDate = lessonStartDate.value.format(formatter),
                 totalNumber = lessonTotalNumber.value
             ).toEntity()
         ).onEach { result ->
@@ -380,11 +367,11 @@ class RegisterLessonViewModel @Inject constructor(
     }
 
     fun registerLessonStartDate() = viewModelScope.launch {
-        _registerLessonStartDateEvent.emit(startDate.value)
+        _registerLessonStartDateEvent.emit(Unit)
     }
 
     fun registerLessonEndDate() = viewModelScope.launch {
-        _registerLessonEndDateEvent.emit(endDate.value)
+        _registerLessonEndDateEvent.emit(Unit)
     }
 
     override fun retry() {
@@ -401,15 +388,12 @@ class RegisterLessonViewModel @Inject constructor(
         private const val KEY_LESSON_CATEGORY_SELECTED_ITEM_POSITION = "lessonCategorySelectedItemPosition"
         private const val KEY_LESSON_SITE_NAME = "lessonSiteName"
         private const val KEY_LESSON_SITE_SELECTED_ITEM_POSITION = "lessonSiteSelectedItemPosition"
-        private const val KEY_START_DATE = "startDate"
-        private const val KEY_END_DATE = "endDate"
-        private const val KEY_LESSON_START_DATE = "lessonStartDate"
-        private const val KEY_LESSON_END_DATE = "lessonEndDate"
+        private const val KEY_LESSON_START_DATE = "startDate"
+        private const val KEY_LESSON_END_DATE = "endDate"
         private const val KEY_LESSON_END_DATE_SELECTED_ITEM_POSITION = "lessonEndDateSelectedItemPosition"
         private const val KEY_LESSON_PRICE = "lessonPrice"
         private const val KEY_LESSON_MESSAGE = "lessonMessage"
 
-        const val DAY = 60L * 60L * 24L
         const val ONE_WEEK = 1
         const val ONE_MONTH = 2
         const val TWO_MONTH = 3
