@@ -1,5 +1,6 @@
 # 나나공 (나보다 나무늘보가 공부 열심히 한다)
-![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
+
+<img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/225545924-9dd06f2a-bc89-45ac-aea4-3182bda66b95.png">
 
 디프만 10기 4조 신동빈센조 나나공 Android Repository
 
@@ -7,26 +8,30 @@
 - Disquiet: https://disquiet.io/product/나나공
 - Behance: https://www.behance.net/gallery/133424149/_?locale=ko_KR
 
-# OverView
+# Overview
+![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
 > 모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
 
 - 개발 기간 : 2021.09.11 ~ing
 - Team 
-  - Android 개발자 : [최철훈](https://github.com/ImIrondroid)  [이지훈](https://github.com/easyhooon)
-
+  Android Developer :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
+- [Trouble Shooting](https://github.com/depromeet/sloth-android/wiki)
 # About
 
 **Features**
-- 0. 구글 로그인 
-- 1. 카카오 로그인 
-- 2. 강의 등록
-- 3. 강의 조회(오늘까지 들어야하는 강의, 전체 강의)
-- 4. 강의 수강 체크 
-- 5. 강의 상세 보기
-- 6. 강의 수정 
-- 7. 강의 삭제 
-- 8. 프로필 수정
-- 9. 푸시 알림
+- 구글 로그인 
+- 카카오 로그인 
+- 강의 등록
+- 강의 조회(오늘까지 들어야하는 강의, 전체 강의)
+- 강의 수강 체크 
+- 강의 상세 확인
+- 강의 수정 
+- 강의 삭제 
+- 프로필 수정
+- 푸시 알림 수신
+- 알림 목록 확인
+- 수강한 강의 통계 확인
+- 온보딩 튜토리얼 
 
 **Technology Stack**
 - Tools : Android Studio
@@ -55,47 +60,57 @@
 **Foldering**
 ```
 .
+├── app
+│   ├── di
+│   ├── initialize
+│   └── application
+├── buildSrc
 ├── data
+│   ├── mapper
 │   ├── model
 │   ├── network
+│   ├── paging
 │   ├── preferences
-│   └── repository
-├── di
-├── domain
 │   ├── repository
-│   └── usecase
-├── extensions
-├── initialize
-├── presentation
-│   ├── adapter
-│   ├── model
-│   └── screen
-├── service
-└── util
+│   └── util
+├── domain
+│   ├── entity
+│   ├── repository
+│   ├── usecase
+│   └── util
+├── gradle
+│   └── libs.versions.toml
+└── presentation
+    ├── adapter
+    ├── di
+    ├── extenstions
+    ├── mapper
+    ├── extenstions
+    ├── service
+    ├── ui
+    └── util
+
 
 ```
 
 # ToDo
-- 네트워크 상태 처리 개선  
-- 알림 목록 화면 구성
-- 강의 수강 통계 화면 구성
-- 온보딩 튜토리얼 구성 
-- 앱 모듈화
+- [x] 멀티 모듈화
+- [ ] 네트워크 상태 처리 개선  
 
 # WireFrame
 - 로그인 
-<img width="812" alt="image" src="https://user-images.githubusercontent.com/51016231/200229589-5ea2dab3-07ea-4bf5-8757-7e1fb8ac212f.png">
+<img width="1012" alt="image" src="https://user-images.githubusercontent.com/51016231/225786605-0af55efe-f608-419b-bd3b-9a2efc853e64.png">
+
+- 홈화면 (투데이, 강의목록, 마이페이지(강의 통계), 알림목록)
+<img width="1025" alt="image" src="https://user-images.githubusercontent.com/51016231/225782095-85a43d1a-98f7-49eb-96f9-9eacfa147721.png">
 
 - 강의 등록
-<img width="712" alt="image" src="https://user-images.githubusercontent.com/51016231/200233062-30177f75-33c7-4245-b2b1-b16c52db8a50.png">
-
-- 홈화면 (투데이, 강의목록, 마이페이지)
-<img width="716" alt="image" src="https://user-images.githubusercontent.com/51016231/200232753-7826bf68-6b9e-47a7-ae76-8cd0c880d00a.png">
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/51016231/225783992-98d1d4bb-b322-4927-adfb-db4efb7c7971.png">
 
 - 강의 상세화면, 수정화면, 삭제화면
-<img width="950" alt="image" src="https://user-images.githubusercontent.com/51016231/200232331-f890ea1b-0849-46b9-a60c-801e7910f573.png">
+<img width="756" alt="image" src="https://user-images.githubusercontent.com/51016231/225783651-9fabe4ed-e6e0-4c44-a4fc-ac6816de3b70.png">
 
-- 마이페이지 화면 메뉴 (프로필 수정, 문의, 개인정보 처리 방침, 로그아웃)
-<img width="946" alt="image" src="https://user-images.githubusercontent.com/51016231/200232788-fd1b8d22-6403-443a-aa1b-7228ee0078a6.png">
+- 설정 화면, 프로필 수정,문의, 개인정보 처리 방침
+<img width="1031" alt="image" src="https://user-images.githubusercontent.com/51016231/225783202-679d053e-bc7b-4d51-9da4-e9ed6d5e2f14.png">
 
 
