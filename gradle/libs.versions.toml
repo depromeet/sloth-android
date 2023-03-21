@@ -103,6 +103,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-remote-config = { module = "com.google.firebase:firebase-config-ktx"}
 
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 
