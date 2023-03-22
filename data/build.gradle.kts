@@ -1,4 +1,4 @@
-import java.util.Properties
+import java.util.*
 
 @Suppress("DSL_SCOPE_VIOLATION", "PropertyName")
 plugins {
@@ -6,6 +6,7 @@ plugins {
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlin.parcelize.get().pluginId)
     id(libs.plugins.secrets.gradle.plugin.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
 }
 
 android {
@@ -69,4 +70,5 @@ dependencies {
     implementation(libs.paging.runtime)
     implementation(libs.datastore)
     implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
