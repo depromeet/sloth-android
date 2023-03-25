@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-//TODO 어떤건 object 로 해야하고 어떤건 class 로 해야 구성해야하는지
+//TODO 어떤 모듈은 object 로, 어떤 모듈은 class 로 구성 해야 하는지 학습
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
