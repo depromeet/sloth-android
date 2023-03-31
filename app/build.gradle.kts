@@ -2,27 +2,27 @@ import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION", "PropertyName")
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.parcelize.get().pluginId)
-    id(libs.plugins.google.service.get().pluginId)
-    id(libs.plugins.hilt.android.get().pluginId)
-    id(libs.plugins.secrets.gradle.plugin.get().pluginId)
-    id(libs.plugins.navigation.safeargs.get().pluginId)
-    id(libs.plugins.firebase.crashlytics.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.google.service)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.secrets.gradle.plugin)
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kapt)
 }
 
 android {
     namespace = "com.depromeet.sloth"
-    compileSdk = ProjectConfig.compileSdk
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.depromeet.sloth"
-        minSdk = ProjectConfig.minSdk
-        targetSdk = ProjectConfig.targetSdk
-        versionCode = ProjectConfig.versionCode
-        versionName = ProjectConfig.versionName
+        minSdk = 24
+        targetSdk = 33
+        versionCode = 34
+        versionName = "1.1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -52,7 +52,7 @@ android {
         }
 
         getByName("release") {
-            isDebuggable = false
+            isDebuggable = true
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

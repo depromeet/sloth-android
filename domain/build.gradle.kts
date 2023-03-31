@@ -1,7 +1,7 @@
-@Suppress("DSL_SCOPE_VIOLATION", "PropertyName")
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(libs.plugins.java.library.get().pluginId)
-    id(libs.plugins.kotlin.jvm.get().pluginId)
+    `java-library`
+    kotlin("jvm")
 }
 
 java {
