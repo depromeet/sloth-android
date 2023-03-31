@@ -42,7 +42,8 @@ class ExpiredDialogFragment :
     private fun navigateToLogin() {
         val action = NavMainDirections.actionGlobalToLogin()
         val navOptions = NavOptions.Builder()
-            .setPopUpTo(findNavController().backQueue[1].destination.id, true)
+            //.setPopUpTo(findNavController().backQueue[1].destination.id, true)
+            .setPopUpTo(findNavController().currentBackStack.value[1].destination.id,true)
             .build()
         findNavController().navigate(action, navOptions)
     }
