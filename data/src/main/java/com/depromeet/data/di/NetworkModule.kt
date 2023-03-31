@@ -1,4 +1,4 @@
-package com.depromeet.sloth.di
+package com.depromeet.data.di
 
 import com.depromeet.data.BuildConfig
 import com.depromeet.data.network.AccessTokenAuthenticator

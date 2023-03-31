@@ -2,20 +2,20 @@ import java.util.*
 
 @Suppress("DSL_SCOPE_VIOLATION", "PropertyName")
 plugins {
-    id(libs.plugins.android.library.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.parcelize.get().pluginId)
-    id(libs.plugins.secrets.gradle.plugin.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.secrets.gradle.plugin)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
 }
 
 android {
     namespace = "com.depromeet.data"
-    compileSdk = ProjectConfig.compileSdk
+    compileSdk = 33
 
     defaultConfig {
-        minSdk = ProjectConfig.minSdk
-        targetSdk = ProjectConfig.targetSdk
+        minSdk = 24
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
