@@ -1,18 +1,21 @@
 package com.depromeet.data.model.request.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+// import com.google.gson.annotations.SerializedName
 
+@Serializable
 data class LessonUpdateRequest (
-    @SerializedName("categoryId")
+    @SerialName("categoryId")
     val categoryId: Int,
-    @SerializedName("lessonName")
+    @SerialName("lessonName")
     val lessonName: String,
-    @SerializedName("price")
+    @SerialName("price")
     val price: Int,
-    @SerializedName("siteId")
+    @SerialName("siteId")
     val siteId: Int,
-    @SerializedName("totalNumber")
+    @SerialName("totalNumber")
     val totalNumber: Int,
 )
 

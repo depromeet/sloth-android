@@ -1,26 +1,28 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class TodayLessonResponse (
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int,
-    @SerializedName("lessonName")
+    @SerialName("lessonName")
     val lessonName: String,
-    @SerializedName("untilTodayFinished")
+    @SerialName("untilTodayFinished")
     val untilTodayFinished: Boolean,
-    @SerializedName("remainDay")
+    @SerialName("remainDay")
     val remainDay: Int,
-    @SerializedName("siteName")
+    @SerialName("siteName")
     val siteName: String,
-    @SerializedName("categoryName")
+    @SerialName("categoryName")
     val categoryName: String,
-    @SerializedName("presentNumber")
+    @SerialName("presentNumber")
     var presentNumber: Int,
-    @SerializedName("untilTodayNumber")
+    @SerialName("untilTodayNumber")
     val untilTodayNumber: Int,
-    @SerializedName("totalNumber")
+    @SerialName("totalNumber")
     val totalNumber: Int,
 ) {
     companion object {

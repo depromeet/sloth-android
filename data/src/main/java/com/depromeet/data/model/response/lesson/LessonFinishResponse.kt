@@ -1,10 +1,12 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonFinishResponse (
-    @SerializedName("isFinished")
+    @SerialName("isFinished")
     val isFinished: Boolean
 ) {
     companion object {

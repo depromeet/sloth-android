@@ -5,7 +5,7 @@ data class LessonDetailEntity(
     val alertDays: String?,
     val categoryName: String,
     val currentProgressRate: Int,
-    val endDate: ArrayList<String>,
+    val endDate: ArrayList<Int>,
     val goalProgressRate: Int,
     val isFinished: Boolean,
     val lessonId: Int,
@@ -15,7 +15,7 @@ data class LessonDetailEntity(
     val price: Int,
     val remainDay: Int,
     val siteName: String,
-    val startDate: ArrayList<String>,
+    val startDate: ArrayList<Int>,
     val totalNumber: Int,
     val wastePrice: Int,
 )

@@ -4,6 +4,7 @@ import java.util.*
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.secrets.gradle.plugin)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
@@ -64,11 +65,16 @@ android {
 dependencies {
     implementation(project(":domain"))
 
+    implementation(libs.kotlin.serialization.json)
+
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okhttp)
+
     implementation(libs.bundles.coroutine)
+
     implementation(libs.paging.runtime)
     implementation(libs.datastore)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 }

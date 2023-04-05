@@ -1,18 +1,20 @@
 package com.depromeet.data.model.response.login
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LoginSlothResponse(
-    @SerializedName("accessToken")
+    @SerialName("accessToken")
     val accessToken: String = "",
-    @SerializedName("accessTokenExpireTime")
+    @SerialName("accessTokenExpireTime")
     val accessTokenExpireTime: String = "",
-    @SerializedName("refreshToken")
+    @SerialName("refreshToken")
     val refreshToken: String = "",
-    @SerializedName("refreshTokenExpireTime")
+    @SerialName("refreshTokenExpireTime")
     val refreshTokenExpireTime: String = "",
-    @SerializedName("isNewMember")
+    @SerialName("isNewMember")
     val isNewMember: Boolean = false
 ) {
     companion object {

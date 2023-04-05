@@ -1,18 +1,20 @@
 package com.depromeet.data.model.response.member
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class MemberResponse(
-    @SerializedName("email")
+    @SerialName("email")
     val email: String = "",
-    @SerializedName("memberId")
+    @SerialName("memberId")
     val memberId: Int = 0,
-    @SerializedName("memberName")
+    @SerialName("memberName")
     val memberName: String = "",
-    @SerializedName("isEmailProvided")
+    @SerialName("isEmailProvided")
     val isEmailProvided: Boolean = false,
-    @SerializedName("isPushAlarmUse")
+    @SerialName("isPushAlarmUse")
     val isPushAlarmUse: Boolean = false,
 ) {
     companion object {

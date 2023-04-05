@@ -10,7 +10,7 @@ fun changeDecimalFormat(data: Int): String {
     return "${changedPriceFormat}원"
 }
 
-fun changeDateFormatToDot(date: ArrayList<String>): String {
+fun changeDateFormatToDot(date: ArrayList<Int>): String {
     val yearOfDate = date[0]
     val monthOfDate = addLeadingZero(date[1])
     val dayOfDate = addLeadingZero(date[2])
@@ -18,8 +18,8 @@ fun changeDateFormatToDot(date: ArrayList<String>): String {
     return "${yearOfDate}. ${monthOfDate}. $dayOfDate"
 }
 
-fun addLeadingZero(data: String): String {
-    var tmp = data
+fun addLeadingZero(data: Int): String {
+    var tmp = data.toString()
     if (tmp.length == 1) {
         tmp = "0$tmp"
     }

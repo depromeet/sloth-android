@@ -1,24 +1,26 @@
 package com.depromeet.data.model.response.notification
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class NotificationResponse (
-    @SerializedName("alarmContentId")
+    @SerialName("alarmContentId")
     val alarmContentId: Long,
-    @SerializedName("alarmId")
+    @SerialName("alarmId")
     val alarmId: Long,
-    @SerializedName("alarmType")
+    @SerialName("alarmType")
     val alarmType: String,
-    @SerializedName("message")
+    @SerialName("message")
     val message: String,
-    @SerializedName("occurrenceTime")
+    @SerialName("occurrenceTime")
     val occurrenceTime: String,
-    @SerializedName("readTime")
+    @SerialName("readTime")
     val readTime: String?,
-    @SerializedName("title")
+    @SerialName("title")
     val title: String,
-    @SerializedName("url")
+    @SerialName("url")
     val url: String?
 ) {
     companion object {

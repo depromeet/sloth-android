@@ -1,10 +1,12 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonRegisterResponse (
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int = 0
 ) {
     companion object {
