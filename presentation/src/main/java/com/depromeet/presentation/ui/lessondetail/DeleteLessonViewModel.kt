@@ -53,7 +53,7 @@ class DeleteLessonViewModel @Inject constructor(
                             result.statusCode == UNAUTHORIZED -> {
                                 navigateToExpireDialog()
                             }
-                            else ->  showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail))
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_delete_fail))
                         }
                     }
                 }
