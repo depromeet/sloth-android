@@ -10,6 +10,7 @@ import com.depromeet.presentation.databinding.FragmentManageBinding
 import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
 import com.depromeet.presentation.ui.base.BaseFragment
+import com.depromeet.presentation.util.setOnMenuItemSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,15 +31,28 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         bind {
             vm = viewModel
         }
+        initListener()
         initObserver()
+    }
+
+    private fun initListener() {
+        binding.tbManage.setOnMenuItemSingleClickListener {
+            when (it.itemId) {
+                R.id.menu_setting -> {
+                    viewModel.navigateToSetting()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun initObserver() {
         repeatOnStarted {
             launch {
                 viewModel.navigateToUpdateMemberDialogEvent.collect {
-                        showUpdateMemberDialog()
-                    }
+                    showUpdateMemberDialog()
+                }
             }
 
             launch {
@@ -50,8 +64,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 viewModel.navigateToWithdrawalDialogEvent.collect {
-                        showWithdrawalDialog()
-                    }
+                    showWithdrawalDialog()
+                }
             }
 
             launch {
@@ -62,14 +76,14 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
             launch {
                 viewModel.navigateToExpireDialogEvent.collect {
-                        showExpireDialog()
-                    }
+                    showExpireDialog()
+                }
             }
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
