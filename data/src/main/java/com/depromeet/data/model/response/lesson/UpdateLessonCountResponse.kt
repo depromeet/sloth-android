@@ -1,14 +1,16 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class UpdateLessonCountResponse (
-    @SerializedName("isFinished")
+    @SerialName("isFinished")
     val isFinished: Boolean,
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int,
-    @SerializedName("presentNumber")
+    @SerialName("presentNumber")
     val presentNumber: Int,
 ) {
     companion object {

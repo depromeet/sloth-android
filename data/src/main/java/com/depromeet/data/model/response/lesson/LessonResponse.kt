@@ -1,34 +1,36 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonResponse (
-    @SerializedName("categoryName")
+    @SerialName("categoryName")
     val categoryName: String = "",
-    @SerializedName("currentProgressRate")
+    @SerialName("currentProgressRate")
     val currentProgressRate: Int = 0,
-    @SerializedName("endDate")
+    @SerialName("endDate")
     val endDate: String = "",
-    @SerializedName("goalProgressRate")
+    @SerialName("goalProgressRate")
     val goalProgressRate: Int = 0,
-    @SerializedName("isFinished")
+    @SerialName("isFinished")
     val isFinished: Boolean = false,
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int = 0,
-    @SerializedName("lessonName")
+    @SerialName("lessonName")
     val lessonName: String = "",
-    @SerializedName("lessonStatus")
+    @SerialName("lessonStatus")
     val lessonStatus: String = "",
-    @SerializedName("price")
+    @SerialName("price")
     val price: Int = 0,
-    @SerializedName("remainDay")
+    @SerialName("remainDay")
     val remainDay: Int = 0,
-    @SerializedName("siteName")
+    @SerialName("siteName")
     val siteName: String = "",
-    @SerializedName("startDate")
+    @SerialName("startDate")
     val startDate: String = "",
-    @SerializedName("totalNumber")
+    @SerialName("totalNumber")
     val totalNumber: Int = 0
 ) {
     companion object {

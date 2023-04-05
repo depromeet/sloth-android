@@ -1,12 +1,14 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonDeleteResponse(
-    @SerializedName("code")
+    @SerialName("code")
     val code: String = "",
-    @SerializedName("message")
+    @SerialName("message")
     val message: String = "",
 ) {
     companion object {

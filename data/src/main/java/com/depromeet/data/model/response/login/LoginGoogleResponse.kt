@@ -1,18 +1,20 @@
 package com.depromeet.data.model.response.login
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LoginGoogleResponse(
-    @SerializedName("access_token")
+    @SerialName("access_token")
     val accessToken: String = "",
-    @SerializedName("expires_in")
+    @SerialName("expires_in")
     val expiresIn: Int = 0,
-    @SerializedName("scope")
+    @SerialName("scope")
     val scope: String = "",
-    @SerializedName("token_type")
+    @SerialName("token_type")
     val tokenType: String = "",
-    @SerializedName("id_token")
+    @SerialName("id_token")
     val idToken: String = "",
 ) {
     companion object {

@@ -1,10 +1,11 @@
 package com.depromeet.data.model.request.member
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MemberUpdateRequest (
-    @SerializedName("memberName")
+    @SerialName("memberName")
     val memberName: String
 )
 

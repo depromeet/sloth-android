@@ -15,7 +15,7 @@ import java.text.DecimalFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-// TODO 바인딩어댑터 함수들 단일 책임의 원칙을 만족하도록 수정
+// TODO 바인딩 어댑터 함수들 단일 책임의 원칙을 만족하도록 수정
 // TODO visibility 관련 작업은 xml에서 직접
 
 @BindingAdapter("onSingleClick")
@@ -161,7 +161,7 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
 }
 
 @BindingAdapter("lessonDate")
-fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
+fun setLessonDate(view: TextView, date: ArrayList<Int>?) = with(view) {
     if (date.isNullOrEmpty()) return
     else {
         text = context.getString(
@@ -172,7 +172,7 @@ fun setLessonDate(view: TextView, date: ArrayList<String>?) = with(view) {
 }
 
 @BindingAdapter("startDate", "endDate")
-fun setLessonPeriod(view: TextView, startDate: ArrayList<String>?, endDate: ArrayList<String>?) =
+fun setLessonPeriod(view: TextView, startDate: ArrayList<Int>?, endDate: ArrayList<Int>?) =
     with(view) {
         if (!startDate.isNullOrEmpty() and !endDate.isNullOrEmpty()) {
             text = context.getString(

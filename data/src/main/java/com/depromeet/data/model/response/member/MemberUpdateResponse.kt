@@ -1,10 +1,11 @@
 package com.depromeet.data.model.response.member
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MemberUpdateResponse(
-    @SerializedName("memberName")
+    @SerialName("memberName")
     val memberName: String = ""
 ) {
     companion object {

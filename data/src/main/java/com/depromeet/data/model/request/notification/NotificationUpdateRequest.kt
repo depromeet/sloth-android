@@ -1,10 +1,12 @@
 package com.depromeet.data.model.request.notification
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class NotificationUpdateRequest(
-    @SerializedName("isUse")
+    @SerialName("isUse")
     val isUse: Boolean
 )
 

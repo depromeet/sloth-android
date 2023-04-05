@@ -1,10 +1,12 @@
 package com.depromeet.data.model.request.login
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LoginSlothRequest (
-    @SerializedName("socialType")
+    @SerialName("socialType")
     val socialType: String
 )
 

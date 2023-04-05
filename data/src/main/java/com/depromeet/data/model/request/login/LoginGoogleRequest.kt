@@ -1,18 +1,19 @@
 package com.depromeet.data.model.request.login
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class LoginGoogleRequest(
-    @SerializedName("grant_type")
+    @SerialName("grant_type")
     val grant_type: String,
-    @SerializedName("client_id")
+    @SerialName("client_id")
     val client_id: String,
-    @SerializedName("client_secret")
+    @SerialName("client_secret")
     val client_secret: String,
-    @SerializedName("redirect_uri")
+    @SerialName("redirect_uri")
     val redirect_uri: String,
-    @SerializedName("code")
+    @SerialName("code")
     val code: String
 )
 

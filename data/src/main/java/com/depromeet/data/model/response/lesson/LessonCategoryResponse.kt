@@ -1,12 +1,14 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonCategoryResponse(
-    @SerializedName("categoryId")
+    @SerialName("categoryId")
     val categoryId: Int,
-    @SerializedName("categoryName")
+    @SerialName("categoryName")
     val categoryName: String
 ) {
     companion object {

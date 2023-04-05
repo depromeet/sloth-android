@@ -1,40 +1,42 @@
 package com.depromeet.data.model.response.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonDetailResponse (
-    @SerializedName("alertDays")
+    @SerialName("alertDays")
     val alertDays: String? = "",
-    @SerializedName("categoryName")
+    @SerialName("categoryName")
     val categoryName: String = "",
-    @SerializedName("currentProgressRate")
+    @SerialName("currentProgressRate")
     val currentProgressRate: Int = 0,
-    @SerializedName("endDate")
-    val endDate: ArrayList<String> = ArrayList(),
-    @SerializedName("goalProgressRate")
+    @SerialName("endDate")
+    val endDate: ArrayList<Int> = ArrayList(),
+    @SerialName("goalProgressRate")
     val goalProgressRate: Int = 0,
-    @SerializedName("isFinished")
+    @SerialName("isFinished")
     val isFinished: Boolean = false,
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int = 0,
-    @SerializedName("lessonName")
+    @SerialName("lessonName")
     val lessonName: String = "",
-    @SerializedName("message")
+    @SerialName("message")
     val message: String = "",
-    @SerializedName("presentNumber")
+    @SerialName("presentNumber")
     val presentNumber: Int = 0,
-    @SerializedName("price")
+    @SerialName("price")
     val price: Int = 0,
-    @SerializedName("remainDay")
+    @SerialName("remainDay")
     val remainDay: Int = 0,
-    @SerializedName("siteName")
+    @SerialName("siteName")
     val siteName: String = "",
-    @SerializedName("startDate")
-    val startDate: ArrayList<String> = ArrayList(),
-    @SerializedName("totalNumber")
+    @SerialName("startDate")
+    val startDate: ArrayList<Int> = ArrayList(),
+    @SerialName("totalNumber")
     val totalNumber: Int = 0,
-    @SerializedName("wastePrice")
+    @SerialName("wastePrice")
     val wastePrice: Int = 0,
 ) {
     companion object {

@@ -1,12 +1,14 @@
 package com.depromeet.data.model.request.lesson
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class LessonUpdateCountRequest (
-    @SerializedName("count")
+    @SerialName("count")
     val count: Int,
-    @SerializedName("lessonId")
+    @SerialName("lessonId")
     val lessonId: Int
 )
 
