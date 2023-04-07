@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -70,9 +71,17 @@ abstract class BaseDialogFragment<B : ViewDataBinding>(
 
                     val windowManager: WindowManager =
                         activity?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                    val display = windowManager.defaultDisplay
                     val size = Point()
-                    display.getSize(size)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        val displayMetrics = windowManager.currentWindowMetrics
+                        size.x = displayMetrics.bounds.width()
+                        size.y = displayMetrics.bounds.height()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        val display = windowManager.defaultDisplay
+                        display.getSize(size)
+                    }
 
                     val params: ViewGroup.LayoutParams = window.attributes
                     // params.width = size.x - 64.ToPx
