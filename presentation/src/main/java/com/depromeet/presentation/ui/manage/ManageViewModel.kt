@@ -2,9 +2,9 @@ package com.depromeet.presentation.ui.manage
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonStatisticsInfoUseCase
-import com.depromeet.domain.usecase.member.DeleteAuthTokenUseCase
-import com.depromeet.domain.usecase.member.FetchMemberInfoUseCase
-import com.depromeet.domain.usecase.member.LogOutUseCase
+import com.depromeet.domain.usecase.userauth.DeleteAuthTokenUseCase
+import com.depromeet.domain.usecase.userprofile.FetchMemberInfoUseCase
+import com.depromeet.domain.usecase.userauth.LogoutUseCase
 import com.depromeet.domain.usecase.notification.UpdateNotificationStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -38,7 +39,7 @@ data class MemberUiState(
 @HiltViewModel
 class ManageViewModel @Inject constructor(
     private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,
-    private val logOutUseCase: LogOutUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
     private val fetchLessonStatisticsInfoUseCase: FetchLessonStatisticsInfoUseCase,
@@ -198,7 +199,7 @@ class ManageViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            logOutUseCase()
+            logoutUseCase()
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -209,8 +210,8 @@ class ManageViewModel @Inject constructor(
                             deleteAuthToken()
                             _logoutSuccessEvent.emit(Unit)
                         }
-
                         is Result.Error -> {
+                            Timber.d(result.throwable)
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))

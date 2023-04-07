@@ -3,8 +3,8 @@ package com.depromeet.presentation.ui.todaylesson
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.domain.usecase.lesson.UpdateLessonCountUseCase
-import com.depromeet.domain.usecase.login.FetchLoginStatusUseCase
-import com.depromeet.domain.usecase.member.FetchTodayLessonOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userauth.FetchLoginStatusUseCase
+import com.depromeet.domain.usecase.userprofile.FetchTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider

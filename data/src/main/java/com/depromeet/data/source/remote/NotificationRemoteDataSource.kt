@@ -1,13 +1,12 @@
-package com.depromeet.domain.repository
+package com.depromeet.data.source.remote
 
-import com.depromeet.domain.entity.NotificationFetchEntity
 import com.depromeet.domain.entity.NotificationEntity
+import com.depromeet.domain.entity.NotificationFetchEntity
 import com.depromeet.domain.entity.NotificationUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
-
-interface NotificationRepository {
+interface NotificationRemoteDataSource {
 
     fun registerNotificationToken(fcmToken: String): Flow<Result<String>>
 
@@ -19,5 +18,5 @@ interface NotificationRepository {
 
     // fun fetchNotificationList(page: Int, size: Int): Flow<PagingData<NotificationListEntity>>
 
-    fun updateNotificationState(notificationId: Long): Flow<Result<String>>
+    fun updateNotificationState(alarmId: Long): Flow<Result<String>>
 }

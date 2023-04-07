@@ -1,10 +1,14 @@
 package com.depromeet.data.di
 
 import com.depromeet.data.BuildConfig
-import com.depromeet.data.network.AccessTokenAuthenticator
-import com.depromeet.data.network.AuthenticationInterceptor
-import com.depromeet.data.network.service.*
-import com.depromeet.data.preferences.PreferenceManager
+import com.depromeet.data.source.local.preferences.PreferenceManager
+import com.depromeet.data.source.remote.AccessTokenAuthenticator
+import com.depromeet.data.source.remote.AccessTokenInterceptor
+import com.depromeet.data.source.remote.service.GoogleLoginService
+import com.depromeet.data.source.remote.service.LessonService
+import com.depromeet.data.source.remote.service.UserProfileService
+import com.depromeet.data.source.remote.service.NotificationService
+import com.depromeet.data.source.remote.service.UserAuthService
 import com.depromeet.data.util.CONNECT_TIME_OUT
 import com.depromeet.data.util.READ_TIME_OUT
 import com.depromeet.data.util.WRITE_TIME_OUT
@@ -52,8 +56,8 @@ object NetworkModule {
     @Provides
     internal fun provideAuthenticationInterceptor(
         preferences: PreferenceManager
-    ): AuthenticationInterceptor {
-        return AuthenticationInterceptor(preferences)
+    ): AccessTokenInterceptor {
+        return AccessTokenInterceptor(preferences)
     }
 
     @Provides
@@ -61,12 +65,12 @@ object NetworkModule {
     internal fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         accessTokenAuthenticator: AccessTokenAuthenticator,
-        authenticationInterceptor: AuthenticationInterceptor,
+        accessTokenInterceptor: AccessTokenInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .authenticator(accessTokenAuthenticator) // To update the token when it gets HTTP unauthorized error
-            .addInterceptor(authenticationInterceptor) // To set the token in the header
+            .addInterceptor(accessTokenInterceptor) // To set the token in the header
             .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
@@ -124,7 +128,7 @@ object NetworkModule {
     @Singleton
     @Provides
     @Named("SlothLogin")
-    internal fun provideRetrofitForSlothLogin(
+    internal fun provideRetrofitForUserAuth(
         @Named("LoginClient")
         okHttpClient: OkHttpClient,
     ): Retrofit {
@@ -132,6 +136,7 @@ object NetworkModule {
         val contentType = "application/json".toMediaType()
 
         return Retrofit.Builder()
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(format.asConverterFactory(contentType))
             .client(okHttpClient)
             .baseUrl(BuildConfig.SLOTH_BASE_URL)
@@ -146,8 +151,8 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    internal fun provideSlothLoginService(@Named("SlothLogin") retrofit: Retrofit): SlothLoginService {
-        return retrofit.create(SlothLoginService::class.java)
+    internal fun provideUserAuthService(@Named("SlothLogin") retrofit: Retrofit): UserAuthService {
+        return retrofit.create(UserAuthService::class.java)
     }
 
     @Singleton
@@ -158,8 +163,8 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    internal fun provideMemberService(@Named("SlothApi") retrofit: Retrofit): MemberService {
-        return retrofit.create(MemberService::class.java)
+    internal fun provideUserProfileService(@Named("SlothApi") retrofit: Retrofit): UserProfileService {
+        return retrofit.create(UserProfileService::class.java)
     }
 
     @Singleton

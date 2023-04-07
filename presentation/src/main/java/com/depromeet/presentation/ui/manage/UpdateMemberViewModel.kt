@@ -2,7 +2,7 @@ package com.depromeet.presentation.ui.manage
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.depromeet.domain.usecase.member.UpdateMemberUseCase
+import com.depromeet.domain.usecase.userprofile.UpdateMemberUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
