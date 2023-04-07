@@ -79,11 +79,7 @@ class ManageViewModel @Inject constructor(
     private val _logoutCancelEvent = MutableSharedFlow<Unit>()
     val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
 
-    init {
-        fetchUserProfile()
-    }
-
-    private fun fetchUserProfile() {
+    fun fetchUserProfile() {
         viewModelScope.launch {
             fetchUserProfileUseCase()
                 .onEach { result ->

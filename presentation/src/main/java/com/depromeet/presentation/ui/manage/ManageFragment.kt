@@ -22,6 +22,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     override fun onStart() {
         super.onStart()
+        viewModel.fetchUserProfile()
         viewModel.fetchLessonStatisticsInfo()
     }
 
