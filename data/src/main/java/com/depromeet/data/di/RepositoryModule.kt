@@ -29,7 +29,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun provideMemberRepository(userProfileRepositoryImpl: UserProfileRepositoryImpl): UserProfileRepository
+    abstract fun provideUserProfileRepository(userProfileRepositoryImpl: UserProfileRepositoryImpl): UserProfileRepository
 
     @Binds
     @Singleton

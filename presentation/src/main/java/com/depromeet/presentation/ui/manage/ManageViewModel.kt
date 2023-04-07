@@ -3,7 +3,7 @@ package com.depromeet.presentation.ui.manage
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonStatisticsInfoUseCase
 import com.depromeet.domain.usecase.userauth.DeleteAuthTokenUseCase
-import com.depromeet.domain.usecase.userprofile.FetchMemberInfoUseCase
+import com.depromeet.domain.usecase.userprofile.FetchUserProfileUseCase
 import com.depromeet.domain.usecase.userauth.LogoutUseCase
 import com.depromeet.domain.usecase.notification.UpdateNotificationStatusUseCase
 import com.depromeet.domain.util.Result
@@ -22,9 +22,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-data class MemberUiState(
+data class UserProfileUiState(
     val email: String = "",
-    val memberName: String = "",
+    val userName: String = "",
     val isEmailProvided: Boolean = false,
     val isPushAlarmUse: Boolean = false,
     val currentProgressRate: Float = 0f,
@@ -38,7 +38,7 @@ data class MemberUiState(
 
 @HiltViewModel
 class ManageViewModel @Inject constructor(
-    private val fetchMemberInfoUseCase: FetchMemberInfoUseCase,
+    private val fetchUserProfileUseCase: FetchUserProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
@@ -49,12 +49,12 @@ class ManageViewModel @Inject constructor(
     private var fetchLessonStatisticsInfoJob: Job? = null
     private var updateNotificationStatusJob: Job? = null
 
-    private val _uiState = MutableStateFlow(MemberUiState())
-    val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(UserProfileUiState())
+    val uiState: StateFlow<UserProfileUiState> = _uiState.asStateFlow()
 
-    private val _navigateToUpdateMemberDialogEvent = MutableSharedFlow<Unit>()
-    val navigateToUpdateMemberDialogEvent: SharedFlow<Unit> =
-        _navigateToUpdateMemberDialogEvent.asSharedFlow()
+    private val _navigateToUpdateUserProfileDialogEvent = MutableSharedFlow<Unit>()
+    val navigateToUpdateUserProfileDialogEvent: SharedFlow<Unit> =
+        _navigateToUpdateUserProfileDialogEvent.asSharedFlow()
 
     private val _navigateToSettingEvent = MutableSharedFlow<Unit>()
     val navigateToSettingEvent: SharedFlow<Unit> = _navigateToSettingEvent.asSharedFlow()
@@ -80,12 +80,12 @@ class ManageViewModel @Inject constructor(
     val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
 
     init {
-        fetchMemberInfo()
+        fetchUserProfile()
     }
 
-    private fun fetchMemberInfo() {
+    private fun fetchUserProfile() {
         viewModelScope.launch {
-            fetchMemberInfoUseCase()
+            fetchUserProfileUseCase()
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -93,10 +93,10 @@ class ManageViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            _uiState.update { memberUiState ->
-                                memberUiState.copy(
+                            _uiState.update { userProfileUiState ->
+                                userProfileUiState.copy(
                                     email = result.data.email,
-                                    memberName = result.data.memberName,
+                                    userName = result.data.userName,
                                     isEmailProvided = result.data.isEmailProvided,
                                     isPushAlarmUse = result.data.isPushAlarmUse
                                 )
@@ -110,7 +110,7 @@ class ManageViewModel @Inject constructor(
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                                else -> showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail))
                             }
                         }
                     }
@@ -130,8 +130,8 @@ class ManageViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            _uiState.update { memberUiState ->
-                                memberUiState.copy(
+                            _uiState.update { userProfileUiState ->
+                                userProfileUiState.copy(
                                     currentProgressRate = if (result.data.expiredLessonsPrice == 0) 0f
                                     else (result.data.finishedLessonsPrice * 100 / result.data.expiredLessonsPrice).toFloat(),
                                     expiredLessonsCnt = result.data.expiredLessonsCnt,
@@ -151,7 +151,7 @@ class ManageViewModel @Inject constructor(
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> showToast(stringResourcesProvider.getString(R.string.member_fetch_fail))
+                                else -> showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail))
                             }
                         }
                     }
@@ -173,8 +173,8 @@ class ManageViewModel @Inject constructor(
                             is Result.Loading -> return@collect
                             is Result.Success -> {
                                 showToast(stringResourcesProvider.getString(R.string.noti_update_complete))
-                                _uiState.update { memberUiState ->
-                                    memberUiState.copy(
+                                _uiState.update { userProfileUiState ->
+                                    userProfileUiState.copy(
                                         isPushAlarmUse = check
                                     )
                                 }
@@ -228,7 +228,7 @@ class ManageViewModel @Inject constructor(
     }
 
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
-        _navigateToUpdateMemberDialogEvent.emit(Unit)
+        _navigateToUpdateUserProfileDialogEvent.emit(Unit)
     }
 
     fun navigateToSetting() = viewModelScope.launch {

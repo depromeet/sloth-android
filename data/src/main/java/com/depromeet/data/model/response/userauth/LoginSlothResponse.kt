@@ -1,4 +1,4 @@
-package com.depromeet.data.model.response.login
+package com.depromeet.data.model.response.userauth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,7 +15,7 @@ data class LoginSlothResponse(
     @SerialName("refreshTokenExpireTime")
     val refreshTokenExpireTime: String = "",
     @SerialName("isNewMember")
-    val isNewMember: Boolean = false
+    val isNewUser: Boolean = false
 ) {
     companion object {
         val EMPTY = LoginSlothResponse("", "", "", "", false)

@@ -1,10 +1,10 @@
-package com.depromeet.data.mapper
+package com.depromeet.presentation.mapper
 
-import com.depromeet.data.model.response.userprofile.UserProfileResponse
 import com.depromeet.domain.entity.UserInfoEntity
+import com.depromeet.presentation.model.UserProfile
 
 
-internal fun UserProfileResponse.toEntity() =  UserInfoEntity(
+internal fun UserInfoEntity.toUiModel() = UserProfile(
     email = email,
     userId = userId,
     userName = userName,

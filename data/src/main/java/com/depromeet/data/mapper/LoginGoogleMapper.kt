@@ -1,6 +1,6 @@
 package com.depromeet.data.mapper
 
-import com.depromeet.data.model.response.login.LoginGoogleResponse
+import com.depromeet.data.model.response.userauth.LoginGoogleResponse
 import com.depromeet.domain.entity.LoginGoogleEntity
 
 

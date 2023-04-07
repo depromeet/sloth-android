@@ -37,7 +37,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_manage_member_info"
+            android:id="@+id/cl_manage_user_profile"
             android:layout_width="0dp"
             android:layout_height="104dp"
             android:background="@color/white"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{vm.uiState.memberName}"
+                    android:text="@{vm.uiState.userName}"
                     android:textColor="@color/gray_600"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -116,7 +116,7 @@
             android:layout_height="218dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_manage_member_info">
+            app:layout_constraintTop_toBottomOf="@id/cl_manage_user_profile">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 onSingleClick="@{()-> vm.navigateToContact()}"
@@ -145,7 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="36dp"
-                    android:text="@{vm.uiState.memberName + `님은요...`}"
+                    android:text="@{vm.uiState.userName + `님은요...`}"
                     android:textColor="@color/gray_600"
                     android:textSize="20dp"
                     android:textStyle="bold"

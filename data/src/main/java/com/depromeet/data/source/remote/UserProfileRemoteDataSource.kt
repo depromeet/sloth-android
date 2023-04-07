@@ -1,16 +1,16 @@
 package com.depromeet.data.source.remote
 
-import com.depromeet.domain.entity.MemberEntity
-import com.depromeet.domain.entity.MemberUpdateEntity
-import com.depromeet.domain.entity.MemberUpdateRequestEntity
+import com.depromeet.domain.entity.UserInfoEntity
+import com.depromeet.domain.entity.UserProfileUpdateEntity
+import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface UserProfileRemoteDataSource {
 
-    fun fetchMemberInfo(): Flow<Result<MemberEntity>>
+    fun fetchUserProfile(): Flow<Result<UserInfoEntity>>
 
-    fun updateMemberInfo(memberUpdateRequestEntity: MemberUpdateRequestEntity): Flow<Result<MemberUpdateEntity>>
+    fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity): Flow<Result<UserProfileUpdateEntity>>
 
     suspend fun fetchTodayLessonOnBoardingStatus(): Boolean
 

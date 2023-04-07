@@ -2,14 +2,14 @@ package com.depromeet.data.source.remote
 
 import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.mapper.toModel
-import com.depromeet.data.model.response.member.MemberResponse
-import com.depromeet.data.model.response.member.MemberUpdateResponse
+import com.depromeet.data.model.response.userprofile.UserProfileResponse
+import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.UserProfileService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.data.util.KEY_AUTHORIZATION
-import com.depromeet.domain.entity.MemberUpdateRequestEntity
+import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -22,9 +22,9 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
     private val preferences: PreferenceManager,
 ) : UserProfileRemoteDataSource {
 
-    override fun fetchMemberInfo() = flow {
+    override fun fetchUserProfile() = flow {
         emit(Result.Loading)
-        val response = userProfileService.fetchMemberInfo() ?: run {
+        val response = userProfileService.fetchUserProfile() ?: run {
             emit(Result.Error(Exception("Response is null")))
             return@flow
         }
@@ -34,7 +34,7 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.toEntity() ?: MemberResponse.EMPTY.toEntity()))
+                emit(Result.Success(response.body()?.toEntity() ?: UserProfileResponse.EMPTY.toEntity()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
@@ -54,10 +54,10 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
             }
         }
 
-    override fun updateMemberInfo(memberUpdateRequestEntity: MemberUpdateRequestEntity) = flow {
+    override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity) = flow {
         emit(Result.Loading)
         val response =
-            userProfileService.updateMemberInfo(memberUpdateRequestEntity.toModel())
+            userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel())
                 ?: run {
                     emit(Result.Error(Exception("Response is null")))
                     return@flow
@@ -68,7 +68,7 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
                 }
-                emit(Result.Success(response.body()?.toEntity() ?: MemberUpdateResponse.EMPTY.toEntity()))
+                emit(Result.Success(response.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()))
             }
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))

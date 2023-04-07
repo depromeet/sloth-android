@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
-import com.depromeet.presentation.databinding.FragmentUpdateMemberDialogBinding
+import com.depromeet.presentation.databinding.FragmentUpdateUserProfileDialogBinding
 import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
 import com.depromeet.presentation.extensions.setEditTextFocus
@@ -21,15 +21,15 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class UpdateMemberDialogFragment :
-    BaseDialogFragment<FragmentUpdateMemberDialogBinding>(R.layout.fragment_update_member_dialog) {
+class UpdateUserProfileDialogFragment :
+    BaseDialogFragment<FragmentUpdateUserProfileDialogBinding>(R.layout.fragment_update_user_profile_dialog) {
 
-    private val viewModel: UpdateMemberViewModel by viewModels()
+    private val viewModel: UpdateUserProfileViewModel by viewModels()
 
-    private val updateMemberTextChangeListener by lazy {
+    private val updateUserProfileTextChangeListener by lazy {
         DebounceEditTextListener(
             scope = viewModel.viewModelScope,
-            onDebounceEditTextChange = viewModel::setMemberName,
+            onDebounceEditTextChange = viewModel::setUserName,
             debouncePeriod = 0L
         )
     }
@@ -46,13 +46,13 @@ class UpdateMemberDialogFragment :
 
     override fun initViews() = with(binding) {
         super.initViews()
-        focusInputForm(etMemberName)
+        focusInputForm(etUserName)
     }
 
     private fun initObserver() {
         repeatOnStarted {
             launch {
-                viewModel.updateMemberSuccess.collect {
+                viewModel.updateUserProfileSuccess.collect {
                         navigateToManage()
                     }
             }
@@ -90,10 +90,10 @@ class UpdateMemberDialogFragment :
 
             override fun onTextChanged(charSequence: CharSequence?, i1: Int, i2: Int, i3: Int) {}
             override fun afterTextChanged(editable: Editable?) {
-                if (memberName.value.isEmpty() || memberName.value == previousMemberName) {
-                    setUpdateMemberValidation(false)
+                if (userName.value.isEmpty() || userName.value == previousUserName) {
+                    setUpdateUserProfileValidation(false)
                 } else {
-                    setUpdateMemberValidation(true)
+                    setUpdateUserProfileValidation(true)
                 }
             }
         })
@@ -101,17 +101,17 @@ class UpdateMemberDialogFragment :
     }
 
     private fun navigateToManage() {
-        val action = UpdateMemberDialogFragmentDirections.actionUpdateMemberDialogToManage()
+        val action = UpdateUserProfileDialogFragmentDirections.actionUpdateUserProfileDialogToManage()
         findNavController().safeNavigate(action)
     }
 
     override fun onResume() {
         super.onResume()
-        binding.etMemberName.addTextChangedListener(updateMemberTextChangeListener)
+        binding.etUserName.addTextChangedListener(updateUserProfileTextChangeListener)
     }
 
     override fun onPause() {
-        binding.etMemberName.removeTextChangedListener(updateMemberTextChangeListener)
+        binding.etUserName.removeTextChangedListener(updateUserProfileTextChangeListener)
         super.onPause()
     }
 }

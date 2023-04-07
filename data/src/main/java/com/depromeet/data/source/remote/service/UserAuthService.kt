@@ -1,7 +1,7 @@
 package com.depromeet.data.source.remote.service
 
-import com.depromeet.data.model.request.login.LoginSlothRequest
-import com.depromeet.data.model.response.login.LoginSlothResponse
+import com.depromeet.data.model.request.userauth.LoginSlothRequest
+import com.depromeet.data.model.response.userauth.LoginSlothResponse
 import com.depromeet.data.util.KEY_AUTHORIZATION
 import com.depromeet.data.util.KEY_CONTENT_TYPE
 import retrofit2.Response

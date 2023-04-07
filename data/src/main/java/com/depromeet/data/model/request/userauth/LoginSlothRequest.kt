@@ -1,4 +1,4 @@
-package com.depromeet.data.model.request.login
+package com.depromeet.data.model.request.userauth
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

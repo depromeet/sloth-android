@@ -1,9 +1,9 @@
 package com.depromeet.data.repository
 
 import com.depromeet.data.source.remote.UserProfileRemoteDataSource
-import com.depromeet.domain.entity.MemberEntity
-import com.depromeet.domain.entity.MemberUpdateEntity
-import com.depromeet.domain.entity.MemberUpdateRequestEntity
+import com.depromeet.domain.entity.UserInfoEntity
+import com.depromeet.domain.entity.UserProfileUpdateEntity
+import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.repository.UserProfileRepository
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -14,12 +14,12 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val userProfileRemoteDataSource: UserProfileRemoteDataSource
 ) : UserProfileRepository {
 
-    override fun fetchMemberInfo(): Flow<Result<MemberEntity>> {
-        return userProfileRemoteDataSource.fetchMemberInfo()
+    override fun fetchUserProfile(): Flow<Result<UserInfoEntity>> {
+        return userProfileRemoteDataSource.fetchUserProfile()
     }
 
-    override fun updateMemberInfo(memberUpdateRequestEntity: MemberUpdateRequestEntity): Flow<Result<MemberUpdateEntity>>{
-        return userProfileRemoteDataSource.updateMemberInfo(memberUpdateRequestEntity)
+    override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity): Flow<Result<UserProfileUpdateEntity>>{
+        return userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity)
     }
 
     override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {

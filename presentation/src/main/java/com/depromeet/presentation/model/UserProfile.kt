@@ -1,10 +1,10 @@
 package com.depromeet.presentation.model
 
 
-data class Member(
+data class UserProfile(
     val email: String = "",
-    val memberId: Int = 0,
-    val memberName: String = "",
+    val userId: Int = 0,
+    val userName: String = "",
     val isEmailProvided: Boolean = false,
     val isPushAlarmUse: Boolean = false,
 )

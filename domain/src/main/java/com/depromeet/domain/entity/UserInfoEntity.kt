@@ -1,10 +1,10 @@
 package com.depromeet.domain.entity
 
 
-data class MemberEntity(
+data class UserInfoEntity(
     val email: String,
-    val memberId: Int,
-    val memberName: String,
+    val userId: Int,
+    val userName: String,
     val isEmailProvided: Boolean,
     val isPushAlarmUse: Boolean,
 )

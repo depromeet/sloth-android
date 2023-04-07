@@ -1,6 +1,6 @@
 package com.depromeet.data.mapper
 
-import com.depromeet.data.model.response.login.LoginSlothResponse
+import com.depromeet.data.model.response.userauth.LoginSlothResponse
 import com.depromeet.domain.entity.LoginSlothEntity
 
 internal fun LoginSlothResponse.toEntity() = LoginSlothEntity(
@@ -8,5 +8,5 @@ internal fun LoginSlothResponse.toEntity() = LoginSlothEntity(
     accessTokenExpireTime = accessTokenExpireTime,
     refreshToken = refreshToken,
     refreshTokenExpireTime = refreshTokenExpireTime,
-    isNewMember = isNewMember
+    isNewUser = isNewUser
 )

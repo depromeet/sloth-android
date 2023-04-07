@@ -50,8 +50,8 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     private fun initObserver() {
         repeatOnStarted {
             launch {
-                viewModel.navigateToUpdateMemberDialogEvent.collect {
-                    showUpdateMemberDialog()
+                viewModel.navigateToUpdateUserProfileDialogEvent.collect {
+                    showUpdateUserProfileDialog()
                 }
             }
 
@@ -88,9 +88,9 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         }
     }
 
-    private fun showUpdateMemberDialog() {
-        val action = ManageFragmentDirections.actionManageToUpdateMemberDialog(
-            viewModel.uiState.value.memberName
+    private fun showUpdateUserProfileDialog() {
+        val action = ManageFragmentDirections.actionManageToUpdateUserProfileDialog(
+            viewModel.uiState.value.userName
         )
         findNavController().safeNavigate(action)
     }

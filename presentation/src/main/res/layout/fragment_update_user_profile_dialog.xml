@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.depromeet.presentation.ui.manage.UpdateMemberViewModel" />
+            type="com.depromeet.presentation.ui.manage.UpdateUserProfileViewModel" />
 
     </data>
 
@@ -18,7 +18,7 @@
         android:layout_marginHorizontal="32dp">
 
         <ImageView
-            android:id="@+id/iv_member_profile_image"
+            android:id="@+id/iv_user_profile_image"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="40dp"
@@ -29,36 +29,36 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/et_member_name"
+            android:id="@+id/et_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
-            android:text="@{vm.previousMemberName}"
+            android:text="@{vm.previousUserName}"
             android:inputType="textPersonName"
             android:paddingHorizontal="18dp"
             android:textColor="@color/gray_600"
             android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_member_profile_image"
-            tools:hint="@string/previous_member_name" />
+            app:layout_constraintTop_toBottomOf="@id/iv_user_profile_image"
+            tools:hint="@string/previous_user_name" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_update_member"
+            android:id="@+id/btn_update_user_profile"
             style="@style/Widget.Sloth.Button"
-            onSingleClick="@{() -> vm.updateMemberInfo()}"
+            onSingleClick="@{() -> vm.updateUserProfile()}"
             android:layout_width="0dp"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="40dp"
-            android:enabled="@{vm.updateMemberValidation}"
+            android:enabled="@{vm.updateUserValidation}"
             android:text="@string/finish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_member_name" />
+            app:layout_constraintTop_toBottomOf="@id/et_user_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

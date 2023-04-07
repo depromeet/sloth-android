@@ -2,10 +2,10 @@ package com.depromeet.data.source.remote
 
 import com.depromeet.data.BuildConfig
 import com.depromeet.data.mapper.toEntity
-import com.depromeet.data.model.request.login.LoginGoogleRequest
-import com.depromeet.data.model.request.login.LoginSlothRequest
-import com.depromeet.data.model.response.login.LoginGoogleResponse
-import com.depromeet.data.model.response.login.LoginSlothResponse
+import com.depromeet.data.model.request.userauth.LoginGoogleRequest
+import com.depromeet.data.model.request.userauth.LoginSlothRequest
+import com.depromeet.data.model.response.userauth.LoginGoogleResponse
+import com.depromeet.data.model.response.userauth.LoginSlothResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.GoogleLoginService
 import com.depromeet.data.source.remote.service.UserAuthService

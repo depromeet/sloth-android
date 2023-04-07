@@ -1,7 +1,7 @@
 package com.depromeet.data.source.remote.service
 
-import com.depromeet.data.model.request.login.LoginGoogleRequest
-import com.depromeet.data.model.response.login.LoginGoogleResponse
+import com.depromeet.data.model.request.userauth.LoginGoogleRequest
+import com.depromeet.data.model.response.userauth.LoginGoogleResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

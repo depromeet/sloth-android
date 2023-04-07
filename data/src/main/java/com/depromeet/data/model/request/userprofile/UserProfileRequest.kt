@@ -1,11 +1,11 @@
-package com.depromeet.data.model.request.member
+package com.depromeet.data.model.request.userprofile
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MemberUpdateRequest (
+data class UserProfileRequest (
     @SerialName("memberName")
-    val memberName: String
+    val userName: String
 )
 

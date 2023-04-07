@@ -120,7 +120,7 @@ class LoginViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        if (result.data.isNewMember) {
+                        if (result.data.isNewUser) {
                             _navigateToRegisterBottomSheetEvent.emit(Unit)
                         } else {
                             createAndRegisterNotificationToken()
