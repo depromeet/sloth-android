@@ -1,9 +1,9 @@
 package com.depromeet.data.mapper
 
-import com.depromeet.data.model.response.member.MemberUpdateResponse
-import com.depromeet.domain.entity.MemberUpdateEntity
+import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
+import com.depromeet.domain.entity.UserProfileUpdateEntity
 
 
-internal fun MemberUpdateResponse.toEntity() = MemberUpdateEntity(
-    memberName = memberName
+internal fun UserProfileUpdateResponse.toEntity() = UserProfileUpdateEntity(
+    userName = userName
 )

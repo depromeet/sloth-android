@@ -1,9 +1,9 @@
 package com.depromeet.data.mapper
 
-import com.depromeet.data.model.request.member.MemberUpdateRequest
-import com.depromeet.domain.entity.MemberUpdateRequestEntity
+import com.depromeet.data.model.request.userprofile.UserProfileRequest
+import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 
 
-internal fun MemberUpdateRequestEntity.toModel() = MemberUpdateRequest(
-    memberName = memberName
+internal fun UserProfileUpdateRequestEntity.toModel() = UserProfileRequest(
+    userName = userName
 )

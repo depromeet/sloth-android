@@ -19,5 +19,5 @@ interface NotificationRepository {
 
     // fun fetchNotificationList(page: Int, size: Int): Flow<PagingData<NotificationListEntity>>
 
-    fun updateNotificationState(alarmId: Long): Flow<Result<String>>
+    fun updateNotificationState(notificationId: Long): Flow<Result<String>>
 }

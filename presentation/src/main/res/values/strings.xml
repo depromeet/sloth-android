@@ -59,10 +59,10 @@
     <string name="input_same_nickname">현재 닉네임과 동일한 닉네임이에요</string>
     <string name="logout_fail">로그아웃 하지 못했어요</string>
     <string name="logout_fail_by_internet_error">로그아웃 하지 못했어요\n인터넷 연결을 확인해주세요</string>
-    <string name="member_update_fail">회원 정보를 변경하지 못했어요</string>
-    <string name="member_update_fail_by_internet_error">회원 정보를 변경하지 못했어요\n인터넷 연결을 확인해주세요 </string>
-    <string name="member_update_success">닉네임이 변경되었어요</string>
-    <string name="member_fetch_fail">회원 정보를 가져오지 못했어요</string>
+    <string name="user_profile_update_fail">회원 정보를 변경하지 못했어요</string>
+    <string name="user_profile_update_fail_by_internet_error">회원 정보를 변경하지 못했어요\n인터넷 연결을 확인해주세요 </string>
+    <string name="user_profile_update_success">닉네임이 변경되었어요</string>
+    <string name="user_profile_fetch_fail">회원 정보를 가져오지 못했어요</string>
     <string name="lesson_fetch_fail">강의 정보를 가져오지 못했어요</string>
     <string name="please_login_again">다시 로그인 해주세요</string>
     <string name="lesson_update_fail">강의를 수정하지 못했어요</string>
@@ -95,7 +95,7 @@
     <string name="retry_btn_text">다시 연결하기</string>
     <string name="menu_notification_list">알림 목록</string>
     <string name="menu_register_lesson">강의 등록</string>
-    <string name="previous_member_name">이전 유저 닉네임</string>
+    <string name="previous_user_name">이전 유저 닉네임</string>
     <string name="login_fail">로그인을 실패했어요</string>
     <string name="login_fail_by_internet_error">로그인을 실패했어요\n인터넷 연결을 확인해주세요</string>
     <string name="please_check_internet">인터넷 연결을 확인해주세요</string>
@@ -201,7 +201,7 @@
     <string name="setting">설정</string>
     <string name="profile_name">이름</string>
     <string name="profile_email">xxx@gmail.com</string>
-    <string name="member_name">이름</string>
+    <string name="user_name">이름</string>
     <string name="profile_image">profileImage</string>
     <string name="logout_dialog_message">정말 로그아웃 하시겠습니까?</string>
     <string name="withdraw_dialog_message">회원을 탈퇴하시겠습니까?</string>

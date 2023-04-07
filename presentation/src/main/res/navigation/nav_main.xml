@@ -229,8 +229,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
-            android:id="@+id/action_manage_to_update_member_dialog"
-            app:destination="@id/update_member_dialog" />
+            android:id="@+id/action_manage_to_update_user_profile_dialog"
+            app:destination="@id/update_user_profile_dialog" />
 
         <action
             android:id="@+id/action_manage_to_logout_dialog"
@@ -286,17 +286,17 @@
     </fragment>
 
     <dialog
-        android:id="@+id/update_member_dialog"
-        android:name="com.depromeet.presentation.ui.manage.UpdateMemberDialogFragment"
-        android:label="UpdateMemberFragment"
-        tools:layout="@layout/fragment_update_member_dialog">
+        android:id="@+id/update_user_profile_dialog"
+        android:name="com.depromeet.presentation.ui.manage.UpdateUserProfileDialogFragment"
+        android:label="UpdateUserProfileFragment"
+        tools:layout="@layout/fragment_update_user_profile_dialog">
 
         <argument
-            android:name="previous_member_name"
+            android:name="previous_user_name"
             app:argType="string" />
 
         <action
-            android:id="@+id/action_update_member_dialog_to_manage"
+            android:id="@+id/action_update_user_profile_dialog_to_manage"
             app:destination="@id/manage"
             app:popUpTo="@id/manage"
             app:popUpToInclusive="true" />

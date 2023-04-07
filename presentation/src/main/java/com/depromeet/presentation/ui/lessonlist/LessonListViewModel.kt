@@ -2,8 +2,8 @@ package com.depromeet.presentation.ui.lessonlist
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonListUseCase
-import com.depromeet.domain.usecase.member.FetchLessonListOnBoardingStatusUseCase
-import com.depromeet.domain.usecase.member.UpdateLessonListOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userprofile.FetchLessonListOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userprofile.UpdateLessonListOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider

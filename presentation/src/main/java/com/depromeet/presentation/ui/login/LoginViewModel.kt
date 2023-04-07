@@ -1,8 +1,8 @@
 package com.depromeet.presentation.ui.login
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.domain.usecase.login.FetchGoogleAuthInfoUseCase
-import com.depromeet.domain.usecase.login.FetchSlothAuthInfoUseCase
+import com.depromeet.domain.usecase.userauth.GoogleLoginUseCase
+import com.depromeet.domain.usecase.userauth.SlothLoginUseCase
 import com.depromeet.domain.usecase.notification.RegisterNotificationTokenUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val fetchGoogleAuthInfoUseCase: FetchGoogleAuthInfoUseCase,
-    private val fetchSlothAuthInfoUseCase: FetchSlothAuthInfoUseCase,
+    private val googleLoginUseCase: GoogleLoginUseCase,
+    private val slothLoginUseCase: SlothLoginUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
     // private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -92,7 +92,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
-        fetchGoogleAuthInfoUseCase(authCode = authCode)
+        googleLoginUseCase(authCode = authCode)
             .onEach { result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
@@ -113,14 +113,14 @@ class LoginViewModel @Inject constructor(
     }
 
     fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
-        fetchSlothAuthInfoUseCase(authToken = accessToken, socialType = socialType)
+        slothLoginUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
                 setLoading(result is Result.Loading)
             }.collect { result ->
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        if (result.data.isNewMember) {
+                        if (result.data.isNewUser) {
                             _navigateToRegisterBottomSheetEvent.emit(Unit)
                         } else {
                             createAndRegisterNotificationToken()

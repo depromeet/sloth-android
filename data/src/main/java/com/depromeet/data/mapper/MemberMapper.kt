@@ -1,13 +1,13 @@
 package com.depromeet.data.mapper
 
-import com.depromeet.data.model.response.member.MemberResponse
-import com.depromeet.domain.entity.MemberEntity
+import com.depromeet.data.model.response.userprofile.UserProfileResponse
+import com.depromeet.domain.entity.UserInfoEntity
 
 
-internal fun MemberResponse.toEntity() =  MemberEntity(
+internal fun UserProfileResponse.toEntity() =  UserInfoEntity(
     email = email,
-    memberId = memberId,
-    memberName = memberName,
+    userId = userId,
+    userName = userName,
     isEmailProvided = isEmailProvided,
     isPushAlarmUse = isPushAlarmUse
 )

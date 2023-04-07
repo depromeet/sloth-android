@@ -6,5 +6,5 @@ data class LoginSlothEntity(
     val accessTokenExpireTime: String,
     val refreshToken: String,
     val refreshTokenExpireTime: String,
-    val isNewMember: Boolean
+    val isNewUser: Boolean
 )

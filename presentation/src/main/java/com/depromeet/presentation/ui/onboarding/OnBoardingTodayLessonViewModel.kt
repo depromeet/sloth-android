@@ -1,7 +1,7 @@
 package com.depromeet.presentation.ui.onboarding
 
 import androidx.lifecycle.viewModelScope
-import com.depromeet.domain.usecase.member.UpdateTodayLessonOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userprofile.UpdateTodayLessonOnBoardingStatusUseCase
 import com.depromeet.presentation.model.TodayLesson
 import com.depromeet.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
