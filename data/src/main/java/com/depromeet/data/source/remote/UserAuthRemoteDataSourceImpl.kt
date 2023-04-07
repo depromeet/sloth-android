@@ -1,5 +1,6 @@
 package com.depromeet.data.source.remote
 
+import android.util.Log
 import com.depromeet.data.BuildConfig
 import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.model.request.userauth.LoginGoogleRequest
@@ -34,7 +35,7 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
         return accessToken != DEFAULT_STRING_VALUE && refreshToken != DEFAULT_STRING_VALUE
     }
 
-    override fun fetchGoogleAuthInfo(authCode: String) = flow {
+    override fun googleLogin(authCode: String) = flow {
         emit(Result.Loading)
         val response = googleLoginService.googleLogin(
             LoginGoogleRequest(
@@ -70,7 +71,7 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             }
         }
 
-    override fun fetchSlothAuthInfo(authToken: String, socialType: String) = flow {
+    override fun slothLogin(authToken: String, socialType: String) = flow {
         emit(Result.Loading)
         val response = userAuthService.slothLogin(
             authToken,
@@ -92,9 +93,17 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
         }
     }
         .catch { throwable ->
+            Log.d("slothLogin: ", "$throwable")
+            Log.d("slothLogin: ", "${throwable.message}")
             when (throwable) {
+//                is ConnectException -> {
+//                    // Handle Other Error
+//                    Log.d("fetchSlothAuthInfo: ", "ConnectException")
+//                    emit(Result.Error(throwable))
+//                }
                 is IOException -> {
                     // Handle Internet Connection Error
+                    Log.d("slothLogin: ", "IOException")
                     emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
                 }
 

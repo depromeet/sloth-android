@@ -91,7 +91,7 @@ class LoginViewModel @Inject constructor(
         _registerCancelEvent.emit(Unit)
     }
 
-    fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
+    fun googleLogin(authCode: String) = viewModelScope.launch {
         googleLoginUseCase(authCode = authCode)
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -99,7 +99,7 @@ class LoginViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
+                        slothLogin(result.data.accessToken, GOOGLE)
                     }
                     is Result.Error -> {
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
@@ -112,7 +112,7 @@ class LoginViewModel @Inject constructor(
             }
     }
 
-    fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
+    fun slothLogin(accessToken: String, socialType: String) = viewModelScope.launch {
         slothLoginUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -128,6 +128,9 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
+                        Timber.d("${result.throwable}")
+                        Timber.d("${result.throwable.message}")
+                        Timber.d("${result.statusCode}")
                         if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
                             showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
                         } else {

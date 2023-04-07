@@ -20,11 +20,11 @@ class UserAuthRepositoryImpl @Inject constructor(
     }
 
     override fun googleLogin(authCode: String): Flow<Result<LoginGoogleEntity>> {
-        return userAuthRemoteDataSource.fetchGoogleAuthInfo(authCode)
+        return userAuthRemoteDataSource.googleLogin(authCode)
     }
 
     override fun slothLogin(authToken: String, socialType: String): Flow<Result<LoginSlothEntity>> {
-        return userAuthRemoteDataSource.fetchSlothAuthInfo(authToken, socialType)
+        return userAuthRemoteDataSource.slothLogin(authToken, socialType)
     }
 
     override fun logout(): Flow<Result<String>> {
