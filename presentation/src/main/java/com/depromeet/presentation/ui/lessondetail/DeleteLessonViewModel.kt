@@ -64,9 +64,9 @@ class DeleteLessonViewModel @Inject constructor(
         _deleteLessonCancelEvent.emit(Unit)
     }
 
+    override fun retry() = Unit
+
     companion object {
         private const val KEY_LESSON_ID = "lesson_id"
     }
-
-    override fun retry() = Unit
 }
