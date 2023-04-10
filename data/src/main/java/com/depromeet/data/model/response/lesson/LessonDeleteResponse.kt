@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LessonDeleteResponse(
     @SerialName("code")
-    val code: String = "",
+    val code: Int = 0,
     @SerialName("message")
     val message: String = "",
 ) {
     companion object {
-        val EMPTY = LessonDeleteResponse("", "")
+        val EMPTY = LessonDeleteResponse(0, "")
     }
 }
 

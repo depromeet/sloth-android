@@ -2,7 +2,7 @@ package com.depromeet.presentation.ui.notification
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.notification.FetchNotificationListUseCase
-import com.depromeet.domain.usecase.notification.UpdateNotificationStateUseCase
+import com.depromeet.domain.usecase.notification.UpdateNotificationReadStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -10,6 +10,7 @@ import com.depromeet.presentation.mapper.toUiModel
 import com.depromeet.presentation.model.Notification
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -24,12 +25,12 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val fetchNotificationListUseCase: FetchNotificationListUseCase,
-    private val updateNotificationStateUseCase: UpdateNotificationStateUseCase,
+    private val updateNotificationReadStatusUseCase: UpdateNotificationReadStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
 
     private var fetchNotificationListJob: Job? = null
-    private var updateNotificationStatusJob: Job? = null
+    private var updateNotificationReadStatusJob: Job? = null
 
     private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<Notification>>()
     val fetchLessonListSuccessEvent: SharedFlow<List<Notification>> = _fetchLessonListSuccessEvent.asSharedFlow()
@@ -61,6 +62,9 @@ class NotificationViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.notification_list_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
@@ -76,14 +80,14 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun updateNotificationState(notification: Notification, isStateChanged: () -> Unit) {
+    fun updateNotificationReadStatus(notification: Notification, isStateChanged: () -> Unit) {
         // 이미 읽은 알림일 경우 api 를 호출 하지 않음
         if (notification.readTime != null) return
 
-        if (updateNotificationStatusJob != null) return
+        if (updateNotificationReadStatusJob != null) return
 
-        updateNotificationStatusJob = viewModelScope.launch {
-            updateNotificationStateUseCase(notification.alarmId)
+        updateNotificationReadStatusJob = viewModelScope.launch {
+            updateNotificationReadStatusUseCase(notification.alarmId)
                 .onEach { result ->
                     setLoading(result is Result.Loading)
                 }.collect { result ->
@@ -104,7 +108,7 @@ class NotificationViewModel @Inject constructor(
                             }
                         }
                     }
-                    updateNotificationStatusJob = null
+                    updateNotificationReadStatusJob = null
                 }
         }
     }

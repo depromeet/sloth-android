@@ -140,7 +140,7 @@ class LoginBottomSheetFragment :
         try {
             val authCode = completedTask.getResult(ApiException::class.java)?.serverAuthCode
             authCode?.run {
-                viewModel.fetchGoogleAuthInfo(this)
+                viewModel.googleLogin(this)
             } ?: Timber.tag("구글 서버 인증 실패").e("Authentication failed")
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
@@ -152,7 +152,7 @@ class LoginBottomSheetFragment :
     private suspend fun loginWithKakao() {
         try {
             val oAuthToken = UserApiClient.loginWithKakao(requireContext())
-            viewModel.fetchSlothAuthInfo(oAuthToken.accessToken, KAKAO)
+            viewModel.slothLogin(oAuthToken.accessToken, KAKAO)
         } catch (error: Throwable) {
             if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                 Timber.d("사용자가 명시적으로 취소")

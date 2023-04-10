@@ -10,7 +10,7 @@ interface NotificationRemoteDataSource {
 
     fun registerNotificationToken(fcmToken: String): Flow<Result<String>>
 
-    fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>>
+    fun updateNotificationReceiveStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>>
 
     fun fetchNotificationToken(deviceId: String): Flow<Result<NotificationFetchEntity>>
 
@@ -18,5 +18,5 @@ interface NotificationRemoteDataSource {
 
     // fun fetchNotificationList(page: Int, size: Int): Flow<PagingData<NotificationListEntity>>
 
-    fun updateNotificationState(alarmId: Long): Flow<Result<String>>
+    fun updateNotificationReadStatus(alarmId: Long): Flow<Result<String>>
 }

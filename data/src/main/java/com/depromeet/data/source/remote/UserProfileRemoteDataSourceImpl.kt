@@ -6,15 +6,13 @@ import com.depromeet.data.model.response.userprofile.UserProfileResponse
 import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.UserProfileService
-import com.depromeet.data.util.DEFAULT_STRING_VALUE
-import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.data.util.KEY_AUTHORIZATION
+import com.depromeet.data.util.RESPONSE_NULL_ERROR
+import com.depromeet.data.util.handleExceptions
+import com.depromeet.data.util.handleResponse
 import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.util.Result
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
 class UserProfileRemoteDataSourceImpl @Inject constructor(
@@ -25,70 +23,27 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
     override fun fetchUserProfile() = flow {
         emit(Result.Loading)
         val response = userProfileService.fetchUserProfile() ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            200 -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: UserProfileResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: UserProfileResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity) = flow {
         emit(Result.Loading)
-        val response =
-            userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel())
-                ?: run {
-                    emit(Result.Error(Exception("Response is null")))
-                    return@flow
-                }
-        when (response.code()) {
-            200 -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()))
+        val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel())
+            ?: run {
+                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                return@flow
             }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
-
-    override suspend fun fetchTodayLessonOnBoardingStatus(): Boolean {
+    override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
         return preferences.getTodayLessonOnBoardingStatus().first()
     }
 
@@ -96,7 +51,7 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
         preferences.updateTodayLessonOnBoardingStatus(flag)
     }
 
-    override suspend fun fetchLessonListOnBoardingStatus(): Boolean {
+    override suspend fun checkLessonListOnBoardingStatus(): Boolean {
         return preferences.getLessonListOnBoardingStatus().first()
     }
 
@@ -107,33 +62,4 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
     override suspend fun deleteAuthToken() {
         preferences.deleteAuthToken()
     }
-
-//    suspend fun handleResponse(response: Response<BaseResponse>, preferences: PreferenceManager) {
-//        when(response.code()) {
-//            200 -> {
-//                // 토큰 갱신
-//                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-//                if (newAccessToken.isNotEmpty()) {
-//                    preferences.updateAccessToken(newAccessToken)
-//                }
-//                emit(Result.Success(response.body() ?: response.EMPTY))
-//            }
-//            else -> {
-//                emit(Result.Error(Exception(response.message()), response.code()))
-//            }
-//        }
-//    }
-//
-//    suspend fun handleError(throwable: Throwable) {
-//        when(throwable) {
-//            is IOException -> {
-//                // Handle Internet connection error
-//                emit(Result.Error(Exception("Internet connect Error")))
-//            }
-//            else -> {
-//                // Handle other error
-//                emit(Result.Error(throwable))
-//            }
-//        }
-//    }
 }

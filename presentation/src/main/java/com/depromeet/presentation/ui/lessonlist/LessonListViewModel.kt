@@ -2,7 +2,7 @@ package com.depromeet.presentation.ui.lessonlist
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonListUseCase
-import com.depromeet.domain.usecase.userprofile.FetchLessonListOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userprofile.CheckLessonListOnBoardingStatusUseCase
 import com.depromeet.domain.usecase.userprofile.UpdateLessonListOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
@@ -11,6 +11,7 @@ import com.depromeet.presentation.mapper.toUiModel
 import com.depromeet.presentation.model.Lesson
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -20,11 +21,10 @@ import javax.inject.Inject
 
 
 // TODO 변수 명에 ~list 지양 by Clean Code
-// TODO stock market app 참고 해서 네트워크 예외처리 코드 개선
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
     private val fetchLessonListUseCase: FetchLessonListUseCase,
-    private val fetchLessonListOnBoardingStatusUseCase: FetchLessonListOnBoardingStatusUseCase,
+    private val checkLessonListOnBoardingStatusUseCase: CheckLessonListOnBoardingStatusUseCase,
     private val updateLessonListOnBoardingStatusUseCase: UpdateLessonListOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
@@ -74,6 +74,9 @@ class LessonListViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
@@ -160,7 +163,7 @@ class LessonListViewModel @Inject constructor(
     }
 
     private fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
-        _checkLessonListOnBoardingCompleteEvent.emit(fetchLessonListOnBoardingStatusUseCase())
+        _checkLessonListOnBoardingCompleteEvent.emit(checkLessonListOnBoardingStatusUseCase())
     }
 
     fun navigateToRegisterLesson(fragmentId: Int) = viewModelScope.launch {

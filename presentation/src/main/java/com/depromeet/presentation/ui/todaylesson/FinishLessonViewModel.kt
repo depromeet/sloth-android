@@ -8,6 +8,7 @@ import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,12 +46,17 @@ class FinishLessonViewModel @Inject constructor(
                         _finishLessonSuccessEvent.emit(Unit)
                     }
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))
-                        } else if (result.statusCode == UNAUTHORIZED) {
-                            navigateToExpireDialog()
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
+                        when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_server_error))
+                            }
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail_by_internet_error))
+                            }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
+                            else -> showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
                         }
                     }
                 }

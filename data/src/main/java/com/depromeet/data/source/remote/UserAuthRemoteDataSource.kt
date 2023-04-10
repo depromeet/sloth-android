@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserAuthRemoteDataSource {
 
-    suspend fun fetchLoginStatus(): Boolean
+    suspend fun checkLoginStatus(): Boolean
 
-    fun fetchSlothAuthInfo(
+    fun slothLogin(
         authToken: String,
         socialType: String,
     ): Flow<Result<LoginSlothEntity>>
 
-    fun fetchGoogleAuthInfo(authCode: String): Flow<Result<LoginGoogleEntity>>
+    fun googleLogin(authCode: String): Flow<Result<LoginGoogleEntity>>
 
     fun logout(): Flow<Result<String>>
 }

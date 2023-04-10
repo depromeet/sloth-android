@@ -4,7 +4,7 @@ import com.depromeet.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
 
-class FetchLessonListOnBoardingStatusUseCase @Inject constructor(
+class CheckLessonListOnBoardingStatusUseCase @Inject constructor(
     private val userProfileRepository: UserProfileRepository
 ) {
     suspend operator fun invoke() : Boolean {

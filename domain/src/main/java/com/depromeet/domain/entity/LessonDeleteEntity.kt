@@ -2,6 +2,6 @@ package com.depromeet.domain.entity
 
 
 data class LessonDeleteEntity(
-    val code: String,
+    val code: Int,
     val message: String,
 )

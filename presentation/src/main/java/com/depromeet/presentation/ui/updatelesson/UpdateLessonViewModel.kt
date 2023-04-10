@@ -17,6 +17,7 @@ import com.depromeet.presentation.model.LessonSite
 import com.depromeet.presentation.model.LessonUpdateRequest
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -117,6 +118,9 @@ class UpdateLessonViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     when {
+                        result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                            showToast(stringResourcesProvider.getString(R.string.lesson_update_fail_by_server_error))
+                        }
                         result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                             showToast(stringResourcesProvider.getString(R.string.lesson_update_fail_by_internet_error))
                         }
@@ -144,6 +148,9 @@ class UpdateLessonViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail_by_server_error))
+                            }
                             result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                 setInternetError(true)
                             }
@@ -171,6 +178,9 @@ class UpdateLessonViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail_by_server_error))
+                            }
                             result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                 setInternetError(true)
                             }

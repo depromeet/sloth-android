@@ -11,7 +11,7 @@ interface NotificationRepository {
 
     fun registerNotificationToken(fcmToken: String): Flow<Result<String>>
 
-    fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>>
+    fun updateNotificationReceiveStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>>
 
     fun fetchNotificationToken(deviceId: String): Flow<Result<NotificationFetchEntity>>
 
@@ -19,5 +19,5 @@ interface NotificationRepository {
 
     // fun fetchNotificationList(page: Int, size: Int): Flow<PagingData<NotificationListEntity>>
 
-    fun updateNotificationState(notificationId: Long): Flow<Result<String>>
+    fun updateNotificationReadStatus(notificationId: Long): Flow<Result<String>>
 }

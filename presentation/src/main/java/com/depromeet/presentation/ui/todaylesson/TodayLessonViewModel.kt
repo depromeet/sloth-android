@@ -3,8 +3,8 @@ package com.depromeet.presentation.ui.todaylesson
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.domain.usecase.lesson.UpdateLessonCountUseCase
-import com.depromeet.domain.usecase.userauth.FetchLoginStatusUseCase
-import com.depromeet.domain.usecase.userprofile.FetchTodayLessonOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userauth.CheckLoginStatusUseCase
+import com.depromeet.domain.usecase.userprofile.CheckTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -12,6 +12,7 @@ import com.depromeet.presentation.mapper.toUiModel
 import com.depromeet.presentation.model.TodayLesson
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -23,8 +24,8 @@ import javax.inject.Inject
 // TODO UiState + stateFlow 를 통한 이벤트 처리
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
-    private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
-    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
+    private val checkLoginStatusUseCase: CheckLoginStatusUseCase,
+    private val checkTodayLessonOnBoardingStatusUseCase: CheckTodayLessonOnBoardingStatusUseCase,
     private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -74,11 +75,11 @@ class TodayLessonViewModel @Inject constructor(
     val navigateToWaitDialogEvent: SharedFlow<Unit> = _navigateToWaitDialogEvent.asSharedFlow()
 
     private fun checkLoginStatus() = viewModelScope.launch {
-        _autoLoginEvent.emit(fetchLoginStatusUseCase())
+        _autoLoginEvent.emit(checkLoginStatusUseCase())
     }
 
     fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
+        _checkTodayLessonOnBoardingCompleteEvent.emit(checkTodayLessonOnBoardingStatusUseCase())
     }
 
     private fun updateTodayLessonCount(count: Int, lessonId: Int) {
@@ -186,6 +187,9 @@ class TodayLessonViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail_by_server_error))
+                            }
                             result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                 setInternetError(true)
                             }
@@ -274,6 +278,9 @@ class TodayLessonViewModel @Inject constructor(
                         is Result.Success -> Unit
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.lesson_update_count_fail_by_internet_error))
                                 }

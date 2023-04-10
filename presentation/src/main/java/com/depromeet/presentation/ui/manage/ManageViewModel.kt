@@ -5,7 +5,7 @@ import com.depromeet.domain.usecase.lesson.FetchLessonStatisticsInfoUseCase
 import com.depromeet.domain.usecase.userauth.DeleteAuthTokenUseCase
 import com.depromeet.domain.usecase.userprofile.FetchUserProfileUseCase
 import com.depromeet.domain.usecase.userauth.LogoutUseCase
-import com.depromeet.domain.usecase.notification.UpdateNotificationStatusUseCase
+import com.depromeet.domain.usecase.notification.UpdateNotificationReceiveStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -13,6 +13,7 @@ import com.depromeet.presentation.mapper.toEntity
 import com.depromeet.presentation.model.NotificationUpdateRequest
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -41,7 +42,7 @@ class ManageViewModel @Inject constructor(
     private val fetchUserProfileUseCase: FetchUserProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
-    private val updateNotificationStatusUseCase: UpdateNotificationStatusUseCase,
+    private val updateNotificationReceiveStatusUseCase: UpdateNotificationReceiveStatusUseCase,
     private val fetchLessonStatisticsInfoUseCase: FetchLessonStatisticsInfoUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
@@ -100,6 +101,9 @@ class ManageViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
@@ -141,13 +145,16 @@ class ManageViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.statistics_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail))
+                                else -> showToast(stringResourcesProvider.getString(R.string.statisticsInfo_fetch_fail))
                             }
                         }
                     }
@@ -161,7 +168,7 @@ class ManageViewModel @Inject constructor(
 
         if (uiState.value.isPushAlarmUse != check) {
             viewModelScope.launch {
-                updateNotificationStatusUseCase(NotificationUpdateRequest(check).toEntity())
+                updateNotificationReceiveStatusUseCase(NotificationUpdateRequest(check).toEntity())
                     .onEach {
                         setLoading(it is Result.Loading)
                     }.collect { result ->
@@ -177,6 +184,9 @@ class ManageViewModel @Inject constructor(
                             }
                             is Result.Error -> {
                                 when {
+                                    result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                        showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_server_error))
+                                    }
                                     result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                         showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
                                     }

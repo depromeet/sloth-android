@@ -21,6 +21,9 @@ const val WRITE_TIME_OUT = 15L
 const val DEFAULT_BOOLEAN_VALUE = false
 const val DEFAULT_STRING_VALUE = ""
 
+const val HTTP_OK = 200
+const val RESPONSE_NULL_ERROR = "Response is null"
+const val SERVER_CONNECTION_ERROR = "Server Connection Error"
 const val INTERNET_CONNECTION_ERROR = "Internet Connection Error"
 
 const val STARTING_PAGE_INDEX = 1

@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class UpdateNotificationStateUseCase @Inject constructor(
+class UpdateNotificationReadStatusUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
     operator fun invoke(alarmId: Long): Flow<Result<String>> {
-        return notificationRepository.updateNotificationState(alarmId)
+        return notificationRepository.updateNotificationReadStatus(alarmId)
     }
 }

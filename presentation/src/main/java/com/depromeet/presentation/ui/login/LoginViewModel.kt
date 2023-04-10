@@ -10,6 +10,7 @@ import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.GOOGLE
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -91,7 +92,7 @@ class LoginViewModel @Inject constructor(
         _registerCancelEvent.emit(Unit)
     }
 
-    fun fetchGoogleAuthInfo(authCode: String) = viewModelScope.launch {
+    fun googleLogin(authCode: String) = viewModelScope.launch {
         googleLoginUseCase(authCode = authCode)
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -99,20 +100,27 @@ class LoginViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> return@collect
                     is Result.Success -> {
-                        fetchSlothAuthInfo(result.data.accessToken, GOOGLE)
+                        slothLogin(result.data.accessToken, GOOGLE)
                     }
+
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.login_fail))
+                        when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail_by_server_error))
+                            }
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                            }
+                            else -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail))
+                            }
                         }
                     }
                 }
             }
     }
 
-    fun fetchSlothAuthInfo(accessToken: String, socialType: String) = viewModelScope.launch {
+    fun slothLogin(accessToken: String, socialType: String) = viewModelScope.launch {
         slothLoginUseCase(authToken = accessToken, socialType = socialType)
             .onEach { result ->
                 setLoading(result is Result.Loading)
@@ -126,12 +134,17 @@ class LoginViewModel @Inject constructor(
                             createAndRegisterNotificationToken()
                         }
                     }
-
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.login_fail))
+                        when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail_by_server_error))
+                            }
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
+                            }
+                            else -> {
+                                showToast(stringResourcesProvider.getString(R.string.login_fail))
+                            }
                         }
                     }
                 }
@@ -163,10 +176,16 @@ class LoginViewModel @Inject constructor(
                         registerNotificationTokenSuccess()
                     }
                     is Result.Error -> {
-                        if (result.throwable.message == INTERNET_CONNECTION_ERROR) {
-                            showToast(stringResourcesProvider.getString(R.string.please_check_internet))
-                        } else {
-                            showToast(stringResourcesProvider.getString(R.string.please_check_internet))
+                        when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.fcm_token_register_fail_by_server_error))
+                            }
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.fcm_token_register_fail_by_internet_error))
+                            }
+                            else -> {
+                                showToast(stringResourcesProvider.getString(R.string.fcm_token_register_fail))
+                            }
                         }
                     }
                 }
