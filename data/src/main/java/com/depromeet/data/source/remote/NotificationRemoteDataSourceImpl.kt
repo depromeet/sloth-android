@@ -41,7 +41,7 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     }.handleExceptions()
 
 
-    override fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity) = flow {
+    override fun updateNotificationReceiveStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity) = flow {
         emit(Result.Loading)
         val response = notificationService.updateFCMTokenUse(notificationUpdateRequestEntity.toModel()) ?: run {
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
@@ -98,7 +98,7 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     }
      */
 
-    override fun updateNotificationState(alarmId: Long) = flow {
+    override fun updateNotificationReadStatus(alarmId: Long) = flow {
         emit(Result.Loading)
         val response = notificationService.updateNotificationState(alarmId) ?: run {
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))

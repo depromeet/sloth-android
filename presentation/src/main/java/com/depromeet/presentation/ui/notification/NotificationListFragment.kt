@@ -24,7 +24,7 @@ internal class NotificationListFragment :
     // TODO 화면 이동 이벤트 추가
     // TODO 리스트 최하단에 튜토리얼을 다시 할 수 있는 로직 구현하기
     private val notificationItemClickListener = NotificationItemClickListener {
-        viewModel.updateNotificationState(it) {
+        viewModel.updateNotificationReadStatus(it) {
             Timber.tag("updateNotificationState").d(it.toString())
         }
     }

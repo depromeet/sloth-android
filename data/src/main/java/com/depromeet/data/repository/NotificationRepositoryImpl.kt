@@ -18,8 +18,8 @@ class NotificationRepositoryImpl @Inject constructor(
         return notificationRemoteDataSource.registerNotificationToken(fcmToken)
     }
 
-    override fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>> {
-        return notificationRemoteDataSource.updateNotificationStatus(notificationUpdateRequestEntity)
+    override fun updateNotificationReceiveStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity): Flow<Result<String>> {
+        return notificationRemoteDataSource.updateNotificationReceiveStatus(notificationUpdateRequestEntity)
     }
 
     override fun fetchNotificationToken(deviceId: String): Flow<Result<NotificationFetchEntity>> {
@@ -34,7 +34,7 @@ class NotificationRepositoryImpl @Inject constructor(
 //        return notificationRemoteDataSource.fetchNotificationList(page, size)
 //    }
 
-    override fun updateNotificationState(notificationId: Long): Flow<Result<String>> {
-        return notificationRemoteDataSource.updateNotificationState(notificationId)
+    override fun updateNotificationReadStatus(notificationId: Long): Flow<Result<String>> {
+        return notificationRemoteDataSource.updateNotificationReadStatus(notificationId)
     }
 }

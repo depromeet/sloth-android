@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class UpdateNotificationStatusUseCase @Inject constructor(
+class UpdateNotificationReceiveStatusUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository
 ) {
     operator fun invoke(notificationUpdateRequest: NotificationUpdateRequestEntity): Flow<Result<String>> {
-        return notificationRepository.updateNotificationStatus(notificationUpdateRequest)
+        return notificationRepository.updateNotificationReceiveStatus(notificationUpdateRequest)
     }
 
 //    operator fun invoke(notificationUpdateRequest: NotificationUpdateRequestEntity): Flow<Result<NotificationUpdateEntity>> {

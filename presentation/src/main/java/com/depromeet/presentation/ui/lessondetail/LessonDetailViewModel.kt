@@ -9,6 +9,7 @@ import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.model.LessonDetail
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -89,16 +90,18 @@ class LessonDetailViewModel @Inject constructor(
                                 )
                             }
                         }
-
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_detail_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
+                                else -> showToast(stringResourcesProvider.getString(R.string.lesson_detail_fetch_fail))
                             }
                         }
                     }

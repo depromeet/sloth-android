@@ -19,6 +19,7 @@ import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.CALENDAR_TIME_ZONE
 import com.depromeet.presentation.util.DEFAULT_STRING_VALUE
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -220,13 +221,16 @@ class RegisterLessonViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     when {
+                        result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                            showToast(stringResourcesProvider.getString(R.string.lesson_register_fail_by_server_error))
+                        }
                         result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                             showToast(stringResourcesProvider.getString(R.string.lesson_register_fail_by_internet_error))
                         }
                         result.statusCode == UNAUTHORIZED -> {
                             navigateToExpireDialog()
                         }
-                        else -> showToast(stringResourcesProvider.getString(R.string.lesson_finish_fail))
+                        else -> showToast(stringResourcesProvider.getString(R.string.lesson_register_fail))
                     }
                 }
             }
@@ -250,6 +254,9 @@ class RegisterLessonViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_category_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
@@ -282,6 +289,9 @@ class RegisterLessonViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.lesson_site_fetch_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }

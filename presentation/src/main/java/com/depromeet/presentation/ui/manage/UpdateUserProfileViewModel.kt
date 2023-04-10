@@ -12,6 +12,7 @@ import com.depromeet.presentation.model.UserProfileUpdateRequest
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.DEFAULT_STRING_VALUE
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -53,13 +54,16 @@ class UpdateUserProfileViewModel @Inject constructor(
 
                     is Result.Error -> {
                         when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_server_error))
+                            }
                             result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_internet_error))
                             }
                             result.statusCode == UNAUTHORIZED -> {
                                 navigateToExpireDialog()
                             }
-                            else ->showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
+                            else -> showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
                         }
                     }
                 }
