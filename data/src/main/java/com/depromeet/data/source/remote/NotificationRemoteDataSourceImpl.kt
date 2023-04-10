@@ -9,8 +9,11 @@ import com.depromeet.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.NotificationService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
+import com.depromeet.data.util.HTTP_OK
 import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.data.util.KEY_AUTHORIZATION
+import com.depromeet.data.util.RESPONSE_NULL_ERROR
+import com.depromeet.data.util.SERVER_CONNECTION_ERROR
 import com.depromeet.domain.entity.NotificationEntity
 import com.depromeet.domain.entity.NotificationUpdateRequestEntity
 import com.depromeet.domain.util.Result
@@ -18,6 +21,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
+import java.net.ConnectException
 import javax.inject.Inject
 
 class NotificationRemoteDataSourceImpl @Inject constructor(
@@ -33,11 +37,11 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     override fun registerNotificationToken(fcmToken: String) = flow {
         emit(Result.Loading)
         val response = notificationService.registerFCMToken(NotificationRegisterRequest(deviceId, fcmToken)) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val newAccessToken =
                     response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
@@ -49,17 +53,34 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
+        .catch { throwable ->
+            when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
 
     override fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity) = flow {
         emit(Result.Loading)
         val response = notificationService.updateFCMTokenUse(notificationUpdateRequestEntity.toModel()) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
@@ -72,6 +93,11 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     }
         .catch { throwable ->
             when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
                 is IOException -> {
                     // Handle Internet Connection Error
                     emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
@@ -87,11 +113,11 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     override fun fetchNotificationToken(deviceId: String) = flow {
         emit(Result.Loading)
         val response = notificationService.fetchFCMToken(deviceId) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
@@ -102,17 +128,34 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message())))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
+        .catch { throwable ->
+            when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
 
     override fun fetchNotificationList(page: Int, size: Int) = flow {
         emit(Result.Loading)
         val response = notificationService.fetchNotificationList(page, size) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
                     preferences.updateAccessToken(newAccessToken)
@@ -123,7 +166,24 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             else -> emit(Result.Error(Exception(response.message())))
         }
     }
-        .catch { throwable -> emit(Result.Error(throwable)) }
+        .catch { throwable ->
+            when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
+                is IOException -> {
+                    // Handle Internet Connection Error
+                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
+                }
+
+                else -> {
+                    // Handle Other Error
+                    emit(Result.Error(throwable))
+                }
+            }
+        }
 
 
     /*
@@ -151,11 +211,11 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     override fun updateNotificationState(alarmId: Long) = flow {
         emit(Result.Loading)
         val response = notificationService.updateNotificationState(alarmId) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val newAccessToken =
                     response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
                 if (newAccessToken.isNotEmpty()) {
@@ -169,6 +229,11 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     }
         .catch { throwable ->
             when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
                 is IOException -> {
                     // Handle Internet Connection Error
                     emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))

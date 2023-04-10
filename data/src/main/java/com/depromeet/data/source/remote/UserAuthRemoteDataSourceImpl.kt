@@ -1,6 +1,5 @@
 package com.depromeet.data.source.remote
 
-import android.util.Log
 import com.depromeet.data.BuildConfig
 import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.model.request.userauth.LoginGoogleRequest
@@ -12,7 +11,10 @@ import com.depromeet.data.source.remote.service.GoogleLoginService
 import com.depromeet.data.source.remote.service.UserAuthService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.GRANT_TYPE
+import com.depromeet.data.util.HTTP_OK
 import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
+import com.depromeet.data.util.RESPONSE_NULL_ERROR
+import com.depromeet.data.util.SERVER_CONNECTION_ERROR
 import com.depromeet.data.util.VALUE_CONTENT_TYPE
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.catch
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
+import java.net.ConnectException
 import javax.inject.Inject
 
 class UserAuthRemoteDataSourceImpl @Inject constructor(
@@ -46,11 +49,11 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
                 code = authCode
             )
         ) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 emit(Result.Success(response.body()?.toEntity() ?: LoginGoogleResponse.EMPTY.toEntity()))
             }
 
@@ -77,11 +80,11 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             authToken,
             LoginSlothRequest(socialType = socialType)
         ) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> {
+            HTTP_OK -> {
                 val accessToken = response.body()?.accessToken ?: DEFAULT_STRING_VALUE
                 val refreshToken = response.body()?.refreshToken ?: DEFAULT_STRING_VALUE
                 preferences.registerAuthToken(accessToken, refreshToken)
@@ -93,17 +96,14 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
         }
     }
         .catch { throwable ->
-            Log.d("slothLogin: ", "$throwable")
-            Log.d("slothLogin: ", "${throwable.message}")
             when (throwable) {
-//                is ConnectException -> {
-//                    // Handle Other Error
-//                    Log.d("fetchSlothAuthInfo: ", "ConnectException")
-//                    emit(Result.Error(throwable))
-//                }
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
                 is IOException -> {
                     // Handle Internet Connection Error
-                    Log.d("slothLogin: ", "IOException")
                     emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
                 }
 
@@ -121,16 +121,21 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             preferences.getAccessToken().first()
         }
         val response = userAuthService.logout(VALUE_CONTENT_TYPE, accessToken) ?: run {
-            emit(Result.Error(Exception("Response is null")))
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
         when (response.code()) {
-            200 -> emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+            HTTP_OK -> emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
     }
         .catch { throwable ->
             when (throwable) {
+                is ConnectException -> {
+                    // Handle Server Connection Error
+                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
+                }
+
                 is IOException -> {
                     // Handle Internet Connection Error
                     emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
