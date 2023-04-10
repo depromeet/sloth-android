@@ -88,7 +88,7 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun fetchTodayLessonOnBoardingStatus(): Boolean {
+    override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
         return preferences.getTodayLessonOnBoardingStatus().first()
     }
 
@@ -96,7 +96,7 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
         preferences.updateTodayLessonOnBoardingStatus(flag)
     }
 
-    override suspend fun fetchLessonListOnBoardingStatus(): Boolean {
+    override suspend fun checkLessonListOnBoardingStatus(): Boolean {
         return preferences.getLessonListOnBoardingStatus().first()
     }
 

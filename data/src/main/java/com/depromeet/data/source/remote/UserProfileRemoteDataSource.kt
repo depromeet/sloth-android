@@ -12,11 +12,11 @@ interface UserProfileRemoteDataSource {
 
     fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity): Flow<Result<UserProfileUpdateEntity>>
 
-    suspend fun fetchTodayLessonOnBoardingStatus(): Boolean
+    suspend fun checkTodayLessonOnBoardingStatus(): Boolean
 
     suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean)
 
-    suspend fun fetchLessonListOnBoardingStatus(): Boolean
+    suspend fun checkLessonListOnBoardingStatus(): Boolean
 
     suspend fun updateLessonListOnBoardingStatus(flag: Boolean)
 

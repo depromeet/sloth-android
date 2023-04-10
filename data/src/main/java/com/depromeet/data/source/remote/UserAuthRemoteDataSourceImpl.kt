@@ -28,7 +28,7 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
     private val preferences: PreferenceManager,
 ) : UserAuthRemoteDataSource {
 
-    override suspend fun fetchLoginStatus(): Boolean {
+    override suspend fun checkLoginStatus(): Boolean {
         val accessToken = preferences.getAccessToken().first()
         val refreshToken = preferences.getRefreshToken().first()
 

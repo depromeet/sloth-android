@@ -2,7 +2,7 @@ package com.depromeet.presentation.ui.lessonlist
 
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchLessonListUseCase
-import com.depromeet.domain.usecase.userprofile.FetchLessonListOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userprofile.CheckLessonListOnBoardingStatusUseCase
 import com.depromeet.domain.usecase.userprofile.UpdateLessonListOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LessonListViewModel @Inject constructor(
     private val fetchLessonListUseCase: FetchLessonListUseCase,
-    private val fetchLessonListOnBoardingStatusUseCase: FetchLessonListOnBoardingStatusUseCase,
+    private val checkLessonListOnBoardingStatusUseCase: CheckLessonListOnBoardingStatusUseCase,
     private val updateLessonListOnBoardingStatusUseCase: UpdateLessonListOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
 ) : BaseViewModel() {
@@ -160,7 +160,7 @@ class LessonListViewModel @Inject constructor(
     }
 
     private fun checkLessonListOnBoardingComplete() = viewModelScope.launch {
-        _checkLessonListOnBoardingCompleteEvent.emit(fetchLessonListOnBoardingStatusUseCase())
+        _checkLessonListOnBoardingCompleteEvent.emit(checkLessonListOnBoardingStatusUseCase())
     }
 
     fun navigateToRegisterLesson(fragmentId: Int) = viewModelScope.launch {

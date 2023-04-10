@@ -15,7 +15,7 @@ class UserAuthRepositoryImpl @Inject constructor(
     private val userAuthLocalDataSource: UserAuthLocalDataSource
 ) : UserAuthRepository {
 
-    override suspend fun fetchLoginStatus(): Boolean {
+    override suspend fun checkLoginStatus(): Boolean {
         return userAuthLocalDataSource.checkLoginStatus()
     }
 

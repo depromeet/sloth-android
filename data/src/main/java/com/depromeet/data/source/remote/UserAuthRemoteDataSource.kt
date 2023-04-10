@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserAuthRemoteDataSource {
 
-    suspend fun fetchLoginStatus(): Boolean
+    suspend fun checkLoginStatus(): Boolean
 
     fun slothLogin(
         authToken: String,

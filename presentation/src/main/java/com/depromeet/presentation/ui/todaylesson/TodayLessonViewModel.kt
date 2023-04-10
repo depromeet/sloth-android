@@ -3,8 +3,8 @@ package com.depromeet.presentation.ui.todaylesson
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.domain.usecase.lesson.UpdateLessonCountUseCase
-import com.depromeet.domain.usecase.userauth.FetchLoginStatusUseCase
-import com.depromeet.domain.usecase.userprofile.FetchTodayLessonOnBoardingStatusUseCase
+import com.depromeet.domain.usecase.userauth.CheckLoginStatusUseCase
+import com.depromeet.domain.usecase.userprofile.CheckTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -23,8 +23,8 @@ import javax.inject.Inject
 // TODO UiState + stateFlow 를 통한 이벤트 처리
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
-    private val fetchLoginStatusUseCase: FetchLoginStatusUseCase,
-    private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
+    private val checkLoginStatusUseCase: CheckLoginStatusUseCase,
+    private val checkTodayLessonOnBoardingStatusUseCase: CheckTodayLessonOnBoardingStatusUseCase,
     private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -74,11 +74,11 @@ class TodayLessonViewModel @Inject constructor(
     val navigateToWaitDialogEvent: SharedFlow<Unit> = _navigateToWaitDialogEvent.asSharedFlow()
 
     private fun checkLoginStatus() = viewModelScope.launch {
-        _autoLoginEvent.emit(fetchLoginStatusUseCase())
+        _autoLoginEvent.emit(checkLoginStatusUseCase())
     }
 
     fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(fetchTodayLessonOnBoardingStatusUseCase())
+        _checkTodayLessonOnBoardingCompleteEvent.emit(checkTodayLessonOnBoardingStatusUseCase())
     }
 
     private fun updateTodayLessonCount(count: Int, lessonId: Int) {
