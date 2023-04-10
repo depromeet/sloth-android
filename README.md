@@ -138,6 +138,12 @@
 - 로그인 
 <img width="1012" alt="image" src="https://user-images.githubusercontent.com/51016231/225786605-0af55efe-f608-419b-bd3b-9a2efc853e64.png">
 
+- 온보딩 화면 (투데이)
+<img width="695" alt="image" src="https://user-images.githubusercontent.com/51016231/230805440-467cbefe-0662-448e-a029-91b9b35c1ffd.png">
+
+- 온보딩 화면 (강의목록)
+<img width="460" alt="image" src="https://user-images.githubusercontent.com/51016231/230805491-217a8b89-e12c-4c64-9099-d92ff22db0c1.png">
+
 - 홈화면 (투데이, 강의목록, 마이페이지(강의 통계), 알림목록)
 <img width="1025" alt="image" src="https://user-images.githubusercontent.com/51016231/225782095-85a43d1a-98f7-49eb-96f9-9eacfa147721.png">
 
