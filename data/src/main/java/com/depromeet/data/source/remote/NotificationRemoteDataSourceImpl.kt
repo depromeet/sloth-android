@@ -9,19 +9,14 @@ import com.depromeet.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.NotificationService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
-import com.depromeet.data.util.HTTP_OK
-import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.data.util.KEY_AUTHORIZATION
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
-import com.depromeet.data.util.SERVER_CONNECTION_ERROR
+import com.depromeet.data.util.handleExceptions
+import com.depromeet.data.util.handleResponse
 import com.depromeet.domain.entity.NotificationEntity
 import com.depromeet.domain.entity.NotificationUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
-import java.net.ConnectException
 import javax.inject.Inject
 
 class NotificationRemoteDataSourceImpl @Inject constructor(
@@ -40,37 +35,10 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken =
-                    response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body() ?: DEFAULT_STRING_VALUE
+        })
+    }.handleExceptions()
 
 
     override fun updateNotificationStatus(notificationUpdateRequestEntity: NotificationUpdateRequestEntity) = flow {
@@ -79,36 +47,10 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body() ?: DEFAULT_STRING_VALUE
+        })
+    }.handleExceptions()
 
     override fun fetchNotificationToken(deviceId: String) = flow {
         emit(Result.Loading)
@@ -116,36 +58,10 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: NotificationFetchResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message())))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: NotificationFetchResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
 
     override fun fetchNotificationList(page: Int, size: Int) = flow {
@@ -154,36 +70,10 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: emptyList<NotificationEntity>()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message())))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: emptyList<NotificationEntity>()
+        })
+    }.handleExceptions()
 
 
     /*
@@ -214,35 +104,8 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken =
-                    response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body() ?: DEFAULT_STRING_VALUE
+        })
+    }.handleExceptions()
 }

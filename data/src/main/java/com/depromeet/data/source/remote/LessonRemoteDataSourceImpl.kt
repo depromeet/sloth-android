@@ -12,12 +12,9 @@ import com.depromeet.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.data.model.response.lesson.UpdateLessonCountResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.service.LessonService
-import com.depromeet.data.util.DEFAULT_STRING_VALUE
-import com.depromeet.data.util.HTTP_OK
-import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
-import com.depromeet.data.util.KEY_AUTHORIZATION
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
-import com.depromeet.data.util.SERVER_CONNECTION_ERROR
+import com.depromeet.data.util.handleExceptions
+import com.depromeet.data.util.handleResponse
 import com.depromeet.domain.entity.LessonCategoryEntity
 import com.depromeet.domain.entity.LessonEntity
 import com.depromeet.domain.entity.LessonRegisterRequestEntity
@@ -25,53 +22,24 @@ import com.depromeet.domain.entity.LessonSiteEntity
 import com.depromeet.domain.entity.LessonUpdateRequestEntity
 import com.depromeet.domain.entity.TodayLessonEntity
 import com.depromeet.domain.util.Result
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
-import java.net.ConnectException
 import javax.inject.Inject
 
-// TODO 반복되는 함수 모듈화
+
 class LessonRemoteDataSourceImpl @Inject constructor(
     private val lessonService: LessonService,
     private val preferences: PreferenceManager
-): LessonRemoteDataSource {
+) : LessonRemoteDataSource {
     override fun fetchTodayLessonList() = flow {
         emit(Result.Loading)
         val response = lessonService.fetchTodayLessonList() ?: run {
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: emptyList<TodayLessonEntity>()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: emptyList<TodayLessonEntity>()
+        })
+    }.handleExceptions()
 
     override fun fetchLessonList() = flow {
         emit(Result.Loading)
@@ -79,36 +47,10 @@ class LessonRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonEntity>()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: emptyList<LessonEntity>()
+        })
+    }.handleExceptions()
 
     override fun finishLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -116,151 +58,44 @@ class LessonRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonFinishResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonFinishResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun updateLessonCount(count: Int, lessonId: Int) = flow {
         emit(Result.Loading)
-        val response =
-            lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId)) ?: run {
-                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                return@flow
-            }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: UpdateLessonCountResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        val response = lessonService.updateLessonCount(LessonUpdateCountRequest(count, lessonId)) ?: run {
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+            return@flow
         }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: UpdateLessonCountResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun fetchLessonDetail(lessonId: String) = flow {
         emit(Result.Loading)
-        val response =
-            lessonService.fetchLessonDetail(lessonId) ?: run {
-                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                return@flow
-            }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonDetailResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        val response = lessonService.fetchLessonDetail(lessonId) ?: run {
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+            return@flow
         }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonDetailResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun registerLesson(lessonRegisterRequestEntity: LessonRegisterRequestEntity) = flow {
         emit(Result.Loading)
-        val response =
-            lessonService.registerLesson(lessonRegisterRequestEntity.toModel())
-                ?: run {
-                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                    return@flow
-                }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonRegisterResponse.EMPTY.toEntity()))
+        val response = lessonService.registerLesson(lessonRegisterRequestEntity.toModel())
+            ?: run {
+                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                return@flow
             }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonRegisterResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun deleteLesson(lessonId: String) = flow {
         emit(Result.Loading)
@@ -268,36 +103,10 @@ class LessonRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonDeleteResponse.EMPTY.toEntity()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonDeleteResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun fetchLessonCategoryList() = flow {
         emit(Result.Loading)
@@ -305,36 +114,10 @@ class LessonRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonCategoryEntity>()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: emptyList<LessonCategoryEntity>()
+        })
+    }.handleExceptions()
 
     override fun fetchLessonSiteList() = flow {
         emit(Result.Loading)
@@ -342,112 +125,32 @@ class LessonRemoteDataSourceImpl @Inject constructor(
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: emptyList<LessonSiteEntity>()))
-            }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: emptyList<LessonSiteEntity>()
+        })
+    }.handleExceptions()
 
     override fun updateLesson(lessonId: String, lessonUpdateRequestEntity: LessonUpdateRequestEntity) = flow {
         emit(Result.Loading)
-        val response =
-            lessonService.updateLesson(lessonId, lessonUpdateRequestEntity.toModel())
-                ?: run {
-                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                    return@flow
-                }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonUpdateResponse.EMPTY.toEntity()))
+        val response = lessonService.updateLesson(lessonId, lessonUpdateRequestEntity.toModel())
+            ?: run {
+                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                return@flow
             }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonUpdateResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 
     override fun fetchLessonStatisticsInformation() = flow {
         emit(Result.Loading)
-        val response =
-            lessonService.fetchLessonStatisticsInformation()
-                ?: run {
-                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                    return@flow
-                }
-        when (response.code()) {
-            HTTP_OK -> {
-                val newAccessToken = response.headers()[KEY_AUTHORIZATION] ?: DEFAULT_STRING_VALUE
-                if (newAccessToken.isNotEmpty()) {
-                    preferences.updateAccessToken(newAccessToken)
-                }
-                emit(Result.Success(response.body()?.toEntity() ?: LessonStatisticsResponse.EMPTY.toEntity()))
+        val response = lessonService.fetchLessonStatisticsInformation()
+            ?: run {
+                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                return@flow
             }
-
-            else -> emit(Result.Error(Exception(response.message()), response.code()))
-        }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: LessonStatisticsResponse.EMPTY.toEntity()
+        })
+    }.handleExceptions()
 }

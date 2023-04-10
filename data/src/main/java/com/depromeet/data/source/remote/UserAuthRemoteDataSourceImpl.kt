@@ -12,17 +12,13 @@ import com.depromeet.data.source.remote.service.UserAuthService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.GRANT_TYPE
 import com.depromeet.data.util.HTTP_OK
-import com.depromeet.data.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
-import com.depromeet.data.util.SERVER_CONNECTION_ERROR
 import com.depromeet.data.util.VALUE_CONTENT_TYPE
+import com.depromeet.data.util.handleExceptions
 import com.depromeet.domain.util.Result
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import java.io.IOException
-import java.net.ConnectException
 import javax.inject.Inject
 
 class UserAuthRemoteDataSourceImpl @Inject constructor(
@@ -56,23 +52,9 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             HTTP_OK -> {
                 emit(Result.Success(response.body()?.toEntity() ?: LoginGoogleResponse.EMPTY.toEntity()))
             }
-
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+    }.handleExceptions()
 
     override fun slothLogin(authToken: String, socialType: String) = flow {
         emit(Result.Loading)
@@ -94,25 +76,7 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
 
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+    }.handleExceptions()
 
     override fun logout() = flow {
         emit(Result.Loading)
@@ -128,23 +92,5 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             HTTP_OK -> emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
             else -> emit(Result.Error(Exception(response.message()), response.code()))
         }
-    }
-        .catch { throwable ->
-            when (throwable) {
-                is ConnectException -> {
-                    // Handle Server Connection Error
-                    emit(Result.Error(Exception(SERVER_CONNECTION_ERROR)))
-                }
-
-                is IOException -> {
-                    // Handle Internet Connection Error
-                    emit(Result.Error(Exception(INTERNET_CONNECTION_ERROR)))
-                }
-
-                else -> {
-                    // Handle Other Error
-                    emit(Result.Error(throwable))
-                }
-            }
-        }
+    }.handleExceptions()
 }
