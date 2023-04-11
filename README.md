@@ -137,7 +137,7 @@
 - [ ] Manage 화면 내에 달력 구현
 - [ ] 알림 목록 화면 내에 온보딩 다시 해보기 기능 구현
 
-# WireFrame
+# Screen
 - 로그인 
 <img width="1012" alt="image" src="https://user-images.githubusercontent.com/51016231/225786605-0af55efe-f608-419b-bd3b-9a2efc853e64.png">
 
