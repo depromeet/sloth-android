@@ -23,8 +23,7 @@
 # Features
 <img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/231042093-ab69d8ca-9f71-467d-994f-b18e0eaa24ae.png">
 
-- 구글 로그인 
-- 카카오 로그인 
+- 구글 / 카카오 로그인 
 
 - 강의 등록
   - 수강할 강의의 필수 정보들을 입력하여 강의를 등록합니다.(나공이와 대결을 시작합니다!)
