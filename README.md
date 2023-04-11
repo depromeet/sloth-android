@@ -1,3 +1,5 @@
+<image width="128" alt="image" src="https://user-images.githubusercontent.com/51016231/231042507-e946e3c8-29ff-4b9f-bcf8-a22d378e2cad.png">
+
 # 나나공 (나보다 나무늘보가 공부 열심히 한다)
 
 <img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/225545924-9dd06f2a-bc89-45ac-aea4-3182bda66b95.png">
@@ -10,16 +12,17 @@
 - Figma: [Android Design](https://www.figma.com/file/e4rZW5rErfa7LCkettW918/%5B%EB%94%94%ED%94%84%EB%A7%8C-10%EA%B8%B0%5D-%EB%82%98%EB%82%98%EA%B3%B5?node-id=496-1662&t=TmGwHP2mcORNkPdG-0)
 
 # Overview
-![앱 아이콘](https://user-images.githubusercontent.com/51016231/200228430-b5de928b-fe20-4578-8165-721b54463ef1.png)
-> 모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
+<img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/231042000-a9de3e41-0c9f-434f-aa35-60d6c82deabc.png">
+모든 인강을 수강하는 사람들을 위한 강의 수강 독려 서비스
 
 - 개발 기간 : 2021.09.11 ~ing
 - Team 
   Android Developer :  [이지훈](https://github.com/easyhooon)  [최철훈](https://github.com/ImIrondroid)  
 - [Trouble Shooting](https://github.com/depromeet/sloth-android/wiki)
-# About
 
-**Features**
+# Features
+<img width="1228" alt="image" src="https://user-images.githubusercontent.com/51016231/231042093-ab69d8ca-9f71-467d-994f-b18e0eaa24ae.png">
+
 - 구글 로그인 
 - 카카오 로그인 
 
@@ -59,7 +62,7 @@
   - 앱을 사용하기 전에 튜토리얼을 통해 앱의 사용방법을 익힐 수 있습니다.
   
 
-**Technology Stack**
+# Technology Stack
 - Tools : Android Studio
 - Language : Kotlin
 - Architecture Pattern : [Google Recommend Architecture](https://developer.android.com/topic/architecture#recommended-app-arch)
@@ -90,7 +93,7 @@
 - [ProgressView](https://github.com/skydoves/ProgressView)
 - StartUp
 
-**Foldering**
+# Foldering
 ```
 .
 ├── app
