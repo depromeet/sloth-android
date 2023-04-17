@@ -39,7 +39,7 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_manage_menu"
+            android:id="@+id/cl_setting_menu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tb_setting">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_manage_contact"
+                android:id="@+id/cl_setting_contact"
                 onSingleClick="@{()-> vm.navigateToContact()}"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:contentDescription="@string/right_arrow"
-                    android:src="@drawable/ic_manage_right_arrow"
+                    android:src="@drawable/ic_setting_right_arrow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -81,7 +81,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_manage_privacy"
+                android:id="@+id/cl_setting_privacy"
                 onSingleClick="@{()-> vm.navigateToPrivacyPolicy()}"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
@@ -89,7 +89,7 @@
                 android:background="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_manage_contact">
+                app:layout_constraintTop_toBottomOf="@id/cl_setting_contact">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:contentDescription="@string/right_arrow"
-                    android:src="@drawable/ic_manage_right_arrow"
+                    android:src="@drawable/ic_setting_right_arrow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -115,7 +115,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_manage_logout"
+                android:id="@+id/cl_setting_logout"
                 onSingleClick="@{()->vm.navigateToLogoutDialog()}"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
@@ -123,7 +123,7 @@
                 android:background="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_manage_privacy">
+                app:layout_constraintTop_toBottomOf="@id/cl_setting_privacy">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:contentDescription="@string/right_arrow"
-                    android:src="@drawable/ic_manage_right_arrow"
+                    android:src="@drawable/ic_setting_right_arrow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -156,10 +156,9 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="1dp"
                 android:background="@color/white"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
+                app:layout_constraintTop_toBottomOf="@id/cl_setting_logout">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -177,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:contentDescription="@string/right_arrow"
-                    android:src="@drawable/ic_manage_right_arrow"
+                    android:src="@drawable/ic_setting_right_arrow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -192,7 +191,7 @@
                 android:background="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_manage_logout">
+                app:layout_constraintTop_toBottomOf="@id/cl_manage_withdrawal">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_manage_push_noti_sloth"
