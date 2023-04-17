@@ -17,4 +17,6 @@ interface UserAuthRemoteDataSource {
     fun googleLogin(authCode: String): Flow<Result<LoginGoogleEntity>>
 
     fun logout(): Flow<Result<String>>
+
+    fun withdraw(): Flow<Result<String>>
 }

@@ -19,6 +19,8 @@ interface UserAuthRepository {
 
     fun logout(): Flow<Result<String>>
 
+    fun withdraw(): Flow<Result<String>>
+
     suspend fun registerAuthToken(accessToken: String, refreshToken: String)
 
     suspend fun deleteAuthToken()

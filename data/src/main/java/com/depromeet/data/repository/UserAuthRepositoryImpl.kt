@@ -31,6 +31,10 @@ class UserAuthRepositoryImpl @Inject constructor(
         return userAuthRemoteDataSource.logout()
     }
 
+    override fun withdraw(): Flow<Result<String>> {
+        return userAuthRemoteDataSource.withdraw()
+    }
+
     override suspend fun registerAuthToken(accessToken: String, refreshToken: String) {
         return userAuthLocalDataSource.registerAuthToken(accessToken, refreshToken)
     }

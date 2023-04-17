@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginTop="18dp"
-            android:text="@string/logout_dialog_message"
+            android:text="@string/withdraw_dialog_message"
             android:textColor="@color/black"
             android:textSize="18dp"
             android:textStyle="bold"
@@ -44,7 +44,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dialog_cancel"
             style="@style/Widget.Sloth.Button.DialogCancel"
-            onSingleClick="@{()-> vm.cancelLogout()}"
+            onSingleClick="@{()-> vm.cancelWithdraw()}"
             android:layout_marginStart="24dp"
             android:layout_marginTop="21dp"
             android:layout_marginEnd="6dp"
@@ -58,7 +58,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dialog_check"
             style="@style/Widget.Sloth.Button.DialogCheck"
-            onSingleClick="@{()-> vm.logout()}"
+            onSingleClick="@{()-> vm.withdraw()}"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"

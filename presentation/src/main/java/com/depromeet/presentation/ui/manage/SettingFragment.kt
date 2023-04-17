@@ -64,6 +64,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
                     showLogoutDialog()
                 }
             }
+
+            launch {
+                viewModel.navigateToWithdrawalDialogEvent.collect {
+                    showWithdrawDialog()
+                }
+            }
         }
     }
 
@@ -97,12 +103,18 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
     }
 
     private fun showPrivatePolicy() {
-        val action = SettingFragmentDirections.actionManageToSlothPolicyWebview()
+        val action = SettingFragmentDirections.actionSettingToSlothPolicyWebview()
         findNavController().safeNavigate(action)
     }
 
     private fun showLogoutDialog() {
-        val action = SettingFragmentDirections.actionManageToLogoutDialog()
+        val action = SettingFragmentDirections.actionSettingToLogoutDialog()
+        findNavController().safeNavigate(action)
+    }
+
+    // 회원 탈퇴 API 필요
+    private fun showWithdrawDialog() {
+        val action = SettingFragmentDirections.actionSettingToWithdrawDialog()
         findNavController().safeNavigate(action)
     }
 }

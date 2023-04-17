@@ -22,4 +22,10 @@ interface UserAuthService {
         @Header(KEY_CONTENT_TYPE) contentType: String,
         @Header(KEY_AUTHORIZATION) accessToken: String,
     ): Response<String>?
+
+    @POST("api/withdraw")
+    suspend fun withdraw(
+        @Header(KEY_CONTENT_TYPE) contentType: String,
+        @Header(KEY_AUTHORIZATION) accessToken: String,
+    ): Response<String>?
 }

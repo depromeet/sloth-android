@@ -64,12 +64,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             }
 
             launch {
-                viewModel.navigateToWithdrawalDialogEvent.collect {
-                    showWithdrawalDialog()
-                }
-            }
-
-            launch {
                 viewModel.isLoading.collect { isLoading ->
                     if (isLoading) showProgress() else hideProgress()
                 }
@@ -95,8 +89,4 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
         )
         findNavController().safeNavigate(action)
     }
-
-    // 회원 탈퇴 API 필요
-    private fun showWithdrawalDialog() = Unit
-
 }

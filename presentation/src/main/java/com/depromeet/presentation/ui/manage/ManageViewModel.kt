@@ -6,6 +6,7 @@ import com.depromeet.domain.usecase.userauth.DeleteAuthTokenUseCase
 import com.depromeet.domain.usecase.userprofile.FetchUserProfileUseCase
 import com.depromeet.domain.usecase.userauth.LogoutUseCase
 import com.depromeet.domain.usecase.notification.UpdateNotificationReceiveStatusUseCase
+import com.depromeet.domain.usecase.userauth.WithdrawUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -41,6 +42,7 @@ data class UserProfileUiState(
 class ManageViewModel @Inject constructor(
     private val fetchUserProfileUseCase: FetchUserProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val withdrawUseCase: WithdrawUseCase,
     private val deleteAuthTokenUseCase: DeleteAuthTokenUseCase,
     private val updateNotificationReceiveStatusUseCase: UpdateNotificationReceiveStatusUseCase,
     private val fetchLessonStatisticsInfoUseCase: FetchLessonStatisticsInfoUseCase,
@@ -79,6 +81,13 @@ class ManageViewModel @Inject constructor(
 
     private val _logoutCancelEvent = MutableSharedFlow<Unit>()
     val logoutCancelEvent: SharedFlow<Unit> = _logoutCancelEvent.asSharedFlow()
+
+    private val _withdrawSuccessEvent = MutableSharedFlow<Unit>()
+    val withdrawSuccessEvent: SharedFlow<Unit> = _withdrawSuccessEvent.asSharedFlow()
+
+    private val _withdrawCancelEvent = MutableSharedFlow<Unit>()
+    val withdrawCancelEvent: SharedFlow<Unit> = _withdrawCancelEvent.asSharedFlow()
+
 
     fun fetchUserProfile() {
         viewModelScope.launch {
@@ -233,6 +242,36 @@ class ManageViewModel @Inject constructor(
         }
     }
 
+    fun withdraw() {
+        viewModelScope.launch {
+            withdrawUseCase()
+                .onEach { result ->
+                    setLoading(result is Result.Loading)
+                }.collect { result ->
+                    when (result) {
+                        is Result.Loading -> return@collect
+                        is Result.Success -> {
+                            showToast(stringResourcesProvider.getString(R.string.logout_complete))
+                            deleteAuthToken()
+                            _withdrawSuccessEvent.emit(Unit)
+                        }
+                        is Result.Error -> {
+                            Timber.d(result.throwable)
+                            when {
+                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                                }
+                                result.statusCode == UNAUTHORIZED -> {
+                                    navigateToExpireDialog()
+                                }
+                                else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
     fun navigateToUpdateProfileDialog() = viewModelScope.launch {
         _navigateToUpdateUserProfileDialogEvent.emit(Unit)
     }
@@ -257,8 +296,12 @@ class ManageViewModel @Inject constructor(
         _navigateToWithdrawalDialogEvent.emit(Unit)
     }
 
-    fun navigateToManage() = viewModelScope.launch {
+    fun cancelLogout() = viewModelScope.launch {
         _logoutCancelEvent.emit(Unit)
+    }
+
+    fun cancelWithdraw() = viewModelScope.launch {
+        _withdrawCancelEvent.emit(Unit)
     }
 
     private fun deleteAuthToken() = viewModelScope.launch {

@@ -47,7 +47,7 @@
         tools:layout="@layout/fragment_setting">
 
         <action
-            android:id="@+id/action_manage_to_sloth_policy_webview"
+            android:id="@+id/action_setting_to_sloth_policy_webview"
             app:destination="@id/sloth_policy_webview"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -55,8 +55,11 @@
             app:popExitAnim="@anim/slide_right_exit" />
 
         <action
-            android:id="@+id/action_manage_to_logout_dialog"
+            android:id="@+id/action_setting_to_logout_dialog"
             app:destination="@id/logout_dialog" />
+        <action
+            android:id="@+id/action_setting_to_withdraw_dialog"
+            app:destination="@id/withdraw_dialog" />
 
     </fragment>
 
@@ -233,10 +236,6 @@
             app:destination="@id/update_user_profile_dialog" />
 
         <action
-            android:id="@+id/action_manage_to_logout_dialog"
-            app:destination="@id/logout_dialog" />
-
-        <action
             android:id="@+id/action_manage_to_today_lesson"
             app:destination="@id/today_lesson"
             app:popUpTo="@id/manage" />
@@ -398,5 +397,11 @@
                 app:nullable="false" />
         </action>
     </fragment>
+
+    <dialog
+        android:id="@+id/withdraw_dialog"
+        android:name="com.depromeet.presentation.ui.manage.WithdrawDialogFragment"
+        android:label="fragment_withdraw_dialog"
+        tools:layout="@layout/fragment_withdraw_dialog" />
 
 </navigation>

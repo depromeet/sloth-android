@@ -58,9 +58,7 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
 
     override fun slothLogin(authToken: String, socialType: String) = flow {
         emit(Result.Loading)
-        val response = userAuthService.slothLogin(
-            authToken,
-            LoginSlothRequest(socialType = socialType)
+        val response = userAuthService.slothLogin(authToken, LoginSlothRequest(socialType = socialType)
         ) ?: run {
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
@@ -85,6 +83,22 @@ class UserAuthRemoteDataSourceImpl @Inject constructor(
             preferences.getAccessToken().first()
         }
         val response = userAuthService.logout(VALUE_CONTENT_TYPE, accessToken) ?: run {
+            emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+            return@flow
+        }
+        when (response.code()) {
+            HTTP_OK -> emit(Result.Success(response.body() ?: DEFAULT_STRING_VALUE))
+            else -> emit(Result.Error(Exception(response.message()), response.code()))
+        }
+    }.handleExceptions()
+
+    override fun withdraw() = flow {
+        emit(Result.Loading)
+
+        val accessToken = runBlocking {
+            preferences.getAccessToken().first()
+        }
+        val response = userAuthService.withdraw(VALUE_CONTENT_TYPE, accessToken) ?: run {
             emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
             return@flow
         }
