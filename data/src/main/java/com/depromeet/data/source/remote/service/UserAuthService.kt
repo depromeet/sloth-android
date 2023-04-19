@@ -7,6 +7,7 @@ import com.depromeet.data.util.KEY_CONTENT_TYPE
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 
@@ -23,7 +24,7 @@ interface UserAuthService {
         @Header(KEY_AUTHORIZATION) accessToken: String,
     ): Response<String>?
 
-    @POST("api/withdraw")
+    @PATCH("/api/member/delete")
     suspend fun withdraw(
         @Header(KEY_CONTENT_TYPE) contentType: String,
         @Header(KEY_AUTHORIZATION) accessToken: String,

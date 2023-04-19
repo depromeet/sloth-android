@@ -55,10 +55,12 @@
     <string name="cannot_get_lesson_category">강의 카테고리를 가져오지 못했어요</string>
     <string name="cannot_get_lesson_site">강의 사이트를 가져오지 못했어요</string>
     <string name="logout_complete">로그아웃 되었어요</string>
-    <string name="withdrawal_complete">회원탈퇴 되었어요</string>
+    <string name="withdraw_complete">회원탈퇴 되었어요</string>
     <string name="input_same_nickname">현재 닉네임과 동일한 닉네임이에요</string>
     <string name="logout_fail">로그아웃 하지 못했어요</string>
     <string name="logout_fail_by_internet_error">로그아웃 하지 못했어요\n인터넷 연결을 확인해주세요</string>
+    <string name="withdraw_fail">회원탈퇴 하지 못했어요</string>
+    <string name="withdraw_fail_by_internet_error">회원탈퇴 하지 못했어요\n인터넷 연결을 확인해주세요</string>
     <string name="user_profile_update_fail">유저 정보를 변경하지 못했어요</string>
     <string name="user_profile_update_fail_by_internet_error">유저 정보를 변경하지 못했어요\n인터넷 연결을 확인해주세요 </string>
     <string name="user_profile_update_success">닉네임이 변경되었어요</string>

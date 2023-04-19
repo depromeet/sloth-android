@@ -251,7 +251,7 @@ class ManageViewModel @Inject constructor(
                     when (result) {
                         is Result.Loading -> return@collect
                         is Result.Success -> {
-                            showToast(stringResourcesProvider.getString(R.string.logout_complete))
+                            showToast(stringResourcesProvider.getString(R.string.withdraw_complete))
                             deleteAuthToken()
                             _withdrawSuccessEvent.emit(Unit)
                         }
@@ -259,12 +259,12 @@ class ManageViewModel @Inject constructor(
                             Timber.d(result.throwable)
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
+                                    showToast(stringResourcesProvider.getString(R.string.withdraw_fail_by_internet_error))
                                 }
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
-                                else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
+                                else -> showToast(stringResourcesProvider.getString(R.string.withdraw_fail))
                             }
                         }
                     }

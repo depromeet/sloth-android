@@ -9,6 +9,6 @@ class WithdrawUseCase @Inject constructor(
     private val userAuthRepository: UserAuthRepository
 ) {
     operator fun invoke() : Flow<Result<String>> {
-        return userAuthRepository.logout()
+        return userAuthRepository.withdraw()
     }
 }
