@@ -39,32 +39,3 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun provideNotificationRepository(notificationRepositoryImpl: NotificationRepositoryImpl): NotificationRepository
 }
-
-//@Module
-//@InstallIn(SingletonComponent::class)
-//class RepositoryModule {
-//
-//    @Singleton
-//    @Provides
-//    internal fun provideLessonRepository(preferences: PreferenceManager, lessonService: LessonService): LessonRepository {
-//        return LessonRepositoryImpl(preferences, lessonService)
-//    }
-//
-//    @Singleton
-//    @Provides
-//    internal fun provideMemberRepository(preferences: PreferenceManager, memberService: MemberService): MemberRepository {
-//        return MemberRepositoryImpl(preferences, memberService)
-//    }
-//
-//    @Singleton
-//    @Provides
-//    internal fun provideLoginRepository(preferences: PreferenceManager, slothLoginService: SlothLoginService, googleLoginService: GoogleLoginService): LoginRepository {
-//        return LoginRepositoryImpl(preferences, slothLoginService, googleLoginService)
-//    }
-//
-//    @Singleton
-//    @Provides
-//    internal fun provideNotificationRepository(@ApplicationContext context: Context, preferences: PreferenceManager, notificationService: NotificationService): NotificationRepository {
-//        return NotificationRepositoryImpl(context, preferences, notificationService)
-//    }
-//}
