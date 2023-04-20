@@ -7,8 +7,8 @@ import com.depromeet.data.model.request.userauth.LoginSlothRequest
 import com.depromeet.data.model.response.userauth.LoginGoogleResponse
 import com.depromeet.data.model.response.userauth.LoginSlothResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
-import com.depromeet.data.source.remote.service.GoogleLoginService
-import com.depromeet.data.source.remote.service.UserAuthService
+import com.depromeet.data.service.GoogleLoginService
+import com.depromeet.data.service.UserAuthService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.GRANT_TYPE
 import com.depromeet.data.util.HTTP_OK

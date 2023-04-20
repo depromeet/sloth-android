@@ -5,7 +5,7 @@ import com.depromeet.data.mapper.toModel
 import com.depromeet.data.model.response.userprofile.UserProfileResponse
 import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
-import com.depromeet.data.source.remote.service.UserProfileService
+import com.depromeet.data.service.UserProfileService
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
 import com.depromeet.data.util.handleResponse

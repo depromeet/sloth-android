@@ -4,7 +4,7 @@ import androidx.paging.LoadState.Loading.endOfPaginationReached
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.depromeet.data.model.response.notification.NotificationResponse
-import com.depromeet.data.source.remote.service.NotificationService
+import com.depromeet.data.service.NotificationService
 import com.depromeet.data.util.PAGING_SIZE
 import com.depromeet.data.util.STARTING_PAGE_INDEX
 import retrofit2.HttpException

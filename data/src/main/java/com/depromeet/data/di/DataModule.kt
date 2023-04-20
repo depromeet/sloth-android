@@ -12,11 +12,11 @@ import com.depromeet.data.source.remote.UserAuthRemoteDataSource
 import com.depromeet.data.source.remote.UserAuthRemoteDataSourceImpl
 import com.depromeet.data.source.remote.UserProfileRemoteDataSource
 import com.depromeet.data.source.remote.UserProfileRemoteDataSourceImpl
-import com.depromeet.data.source.remote.service.GoogleLoginService
-import com.depromeet.data.source.remote.service.LessonService
-import com.depromeet.data.source.remote.service.UserProfileService
-import com.depromeet.data.source.remote.service.NotificationService
-import com.depromeet.data.source.remote.service.UserAuthService
+import com.depromeet.data.service.GoogleLoginService
+import com.depromeet.data.service.LessonService
+import com.depromeet.data.service.UserProfileService
+import com.depromeet.data.service.NotificationService
+import com.depromeet.data.service.UserAuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

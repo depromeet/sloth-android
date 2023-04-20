@@ -1,4 +1,4 @@
-package com.depromeet.data.source.remote.service
+package com.depromeet.data.service
 
 import com.depromeet.data.model.request.lesson.LessonRegisterRequest
 import com.depromeet.data.model.request.lesson.LessonUpdateCountRequest

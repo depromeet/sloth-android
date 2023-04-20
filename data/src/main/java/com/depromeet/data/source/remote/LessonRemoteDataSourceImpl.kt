@@ -11,7 +11,7 @@ import com.depromeet.data.model.response.lesson.LessonStatisticsResponse
 import com.depromeet.data.model.response.lesson.LessonUpdateResponse
 import com.depromeet.data.model.response.lesson.UpdateLessonCountResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
-import com.depromeet.data.source.remote.service.LessonService
+import com.depromeet.data.service.LessonService
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
 import com.depromeet.data.util.handleResponse

@@ -4,11 +4,11 @@ import com.depromeet.data.BuildConfig
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.source.remote.AccessTokenAuthenticator
 import com.depromeet.data.source.remote.AccessTokenInterceptor
-import com.depromeet.data.source.remote.service.GoogleLoginService
-import com.depromeet.data.source.remote.service.LessonService
-import com.depromeet.data.source.remote.service.UserProfileService
-import com.depromeet.data.source.remote.service.NotificationService
-import com.depromeet.data.source.remote.service.UserAuthService
+import com.depromeet.data.service.GoogleLoginService
+import com.depromeet.data.service.LessonService
+import com.depromeet.data.service.UserProfileService
+import com.depromeet.data.service.NotificationService
+import com.depromeet.data.service.UserAuthService
 import com.depromeet.data.util.CONNECT_TIME_OUT
 import com.depromeet.data.util.READ_TIME_OUT
 import com.depromeet.data.util.WRITE_TIME_OUT

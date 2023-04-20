@@ -7,7 +7,7 @@ import com.depromeet.data.mapper.toModel
 import com.depromeet.data.model.request.notification.NotificationRegisterRequest
 import com.depromeet.data.model.response.notification.NotificationFetchResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
-import com.depromeet.data.source.remote.service.NotificationService
+import com.depromeet.data.service.NotificationService
 import com.depromeet.data.util.DEFAULT_STRING_VALUE
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
