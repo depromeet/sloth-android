@@ -76,7 +76,7 @@
   - Naivgation Conponent
   - Hilt
   - DataStore
-- Coroutine
+- Coroutines
 - Livedata -> Flow
 - Retrofit2
 - Okhttp3
