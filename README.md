@@ -77,10 +77,10 @@
   - Hilt
   - DataStore
 - Coroutine
-- Flow
+- Livedata -> Flow
 - Retrofit2
 - Okhttp3
-- Gson
+- Gson -> Kotlinx-serialization
 - KAKAO_SDK
 - Glide
 - Firebase 
