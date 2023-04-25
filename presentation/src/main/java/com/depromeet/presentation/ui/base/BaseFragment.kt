@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.DialogLoadingBinding
@@ -51,12 +50,6 @@ abstract class BaseFragment<B : ViewDataBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
-    }
-
-    fun mainScope(block: suspend () -> Unit) {
-        lifecycleScope.launchWhenCreated {
-            block.invoke()
-        }
     }
 
     protected inline fun bind(block: B.() -> Unit) {
