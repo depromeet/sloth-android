@@ -80,4 +80,6 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.splash)
+
+    implementation(libs.calendar.view)
 }
