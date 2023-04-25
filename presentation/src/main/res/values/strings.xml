@@ -214,6 +214,7 @@
 
     <!--    Manage-->
     <string name="setting">설정</string>
+    <string name="update_profile">프로필 변경</string>
     <string name="profile_name">이름</string>
     <string name="profile_email">xxx@gmail.com</string>
     <string name="user_name">이름</string>

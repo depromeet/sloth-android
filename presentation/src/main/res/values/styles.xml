@@ -113,6 +113,11 @@
         <item name="android:textColor">@color/gray_500</item>
     </style>
 
+    <style name="Widget.Sloth.Button.UpdateProfile" parent="Widget.Sloth.Button">
+        <item name="android:backgroundTint">@color/gray_200</item>
+        <item name="android:textColor">@color/gray_600</item>
+    </style>
+
     <style name="Widget.Sloth.Button.DialogCheck" parent="Widget.Sloth.Button">
         <item name="android:backgroundTint">@color/error</item>
         <item name="android:layout_height">56dp</item>
