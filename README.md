@@ -132,10 +132,10 @@
 # ToDo
 - [x] 멀티 모듈화
 - [x] 네트워크 상태 처리 개선 (앱 안정화)
-- [ ] 회원 탈퇴 기능 구현
-- [ ] 프로필 사진 변경 기능 구현
-- [ ] Manage 화면 내에 달력 구현
-- [ ] 알림 목록 화면 내에 온보딩 다시 해보기 기능 구현
+- [x] 회원 탈퇴 기능 구현
+- [ ] 프로필 사진 변경 기능 구현 (진행중)
+- [ ] Manage 화면 내에 달력 구현 (진행중)
+- [ ] 알림 목록 화면 내에 온보딩 다시 해보기 기능 구현 (진행중)
 
 # Screen
 - 로그인 
@@ -159,4 +159,6 @@
 - 설정 화면, 프로필 수정,문의, 개인정보 처리 방침
 <img width="1031" alt="image" src="https://user-images.githubusercontent.com/51016231/225783202-679d053e-bc7b-4d51-9da4-e9ed6d5e2f14.png">
 
+- 인터넷 연결이 끊겼을 경우 
+<img width="252" alt="image" src="https://user-images.githubusercontent.com/51016231/234324433-98fcbd73-ea8c-49ec-9e26-89d1e21fde7a.png">
 
