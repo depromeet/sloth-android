@@ -2,8 +2,8 @@ package com.depromeet.data.di
 
 import com.depromeet.data.BuildConfig
 import com.depromeet.data.source.local.preferences.PreferenceManager
-import com.depromeet.data.source.remote.AccessTokenAuthenticator
-import com.depromeet.data.source.remote.AccessTokenInterceptor
+import com.depromeet.data.service.AccessTokenAuthenticator
+import com.depromeet.data.service.AccessTokenInterceptor
 import com.depromeet.data.service.GoogleLoginService
 import com.depromeet.data.service.LessonService
 import com.depromeet.data.service.UserProfileService

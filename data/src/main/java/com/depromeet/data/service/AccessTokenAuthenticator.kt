@@ -1,4 +1,4 @@
-package com.depromeet.data.source.remote
+package com.depromeet.data.service
 
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.util.KEY_AUTHORIZATION
