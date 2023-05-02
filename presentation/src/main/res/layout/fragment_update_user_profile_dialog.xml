@@ -28,6 +28,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/iv_update_user_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_update_profile_plus"
+            app:layout_constraintBottom_toBottomOf="@id/iv_user_profile_image"
+            app:layout_constraintEnd_toEndOf="@id/iv_user_profile_image" />
+
+
         <EditText
             android:id="@+id/et_user_name"
             android:layout_width="0dp"
@@ -35,9 +44,9 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/bg_register_lesson_rounded_edit_text_gray"
-            android:text="@{vm.previousUserName}"
             android:inputType="textPersonName"
             android:paddingHorizontal="18dp"
+            android:text="@{vm.previousUserName}"
             android:textColor="@color/gray_600"
             android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
