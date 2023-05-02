@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_restart_on_boarding"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:paddingHorizontal="16dp"
+            android:background="@color/gray_100"
+            android:paddingVertical="24dp">
+
+            <TextView
+                android:id="@+id/tv_lesson_list_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="😊 나공이랑 대결을 하려면 어떻게 해야할까?"
+                android:textColor="@color/gray_400"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tv_lesson_list_planning_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="튜토리얼 다시 해보기"
+                android:textSize="12dp"
+                android:textColor="@color/gray_400"
+                app:layout_constraintTop_toBottomOf="@id/tv_lesson_list_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_lesson_list_name"
+                tools:ignore="HardcodedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
