@@ -13,7 +13,7 @@ fun uriToFile(context: Context, uri: Uri): File {
         path.substring(path.lastIndexOf(".") + 1)
     } ?: "tmp"
 
-    // 임시파일 생성
+    // 임시 파일 생성
     val cacheFile = File.createTempFile("temp_image", ".$extension", context.cacheDir)
     val outputStream = FileOutputStream(cacheFile)
 
