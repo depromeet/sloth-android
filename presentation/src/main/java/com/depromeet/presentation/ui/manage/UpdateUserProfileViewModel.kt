@@ -52,56 +52,12 @@ class UpdateUserProfileViewModel @Inject constructor(
     //TODO 사진이 존재하는 경우와 존재하지 않은 경우의 대한 분기 처리
     fun updateUserProfile() = viewModelScope.launch {
         val currentUri = profileImageUrl
+        val shouldUpdateImage = currentUri != Uri.EMPTY
 
         if (currentUri == Uri.EMPTY) {
             updateUserProfileUseCase(
-                UserProfileUpdateRequest(
-                    userName = userName.value,
-                    profileImageUrl = null
-                ).toEntity(),
-                null
-            )
-                .onEach { result ->
-                    setLoading(result is Result.Loading)
-                }.collect { result ->
-                    when (result) {
-                        is Result.Loading -> return@collect
-                        is Result.Success -> {
-                            showToast(stringResourcesProvider.getString(R.string.user_profile_update_success))
-                            _updateUserProfileSuccess.emit(Unit)
-                            // btnUpdateMember 활성 상태 초기화
-                            setUpdateUserProfileValidation(false)
-                        }
-
-                        is Result.Error -> {
-                            when {
-                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_server_error))
-                                }
-
-                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_internet_error))
-                                }
-
-                                result.statusCode == UNAUTHORIZED -> {
-                                    navigateToExpireDialog()
-                                }
-
-                                else -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
-                                    Timber.tag("updateUserProfile").d(result.throwable)
-                                }
-                            }
-                        }
-                    }
-                }
-        } else {
-            updateUserProfileUseCase(
-                UserProfileUpdateRequest(
-                    userName = userName.value,
-                    profileImageUrl = null
-                ).toEntity(),
-                currentUri.toString()
+                UserProfileUpdateRequest(userName = userName.value).toEntity(),
+                if (shouldUpdateImage) currentUri.toString() else null
             )
                 .onEach { result ->
                     setLoading(result is Result.Loading)
@@ -138,6 +94,7 @@ class UpdateUserProfileViewModel @Inject constructor(
                     }
                 }
         }
+
     }
 
     fun setUserName(userName: String) {

@@ -38,56 +38,45 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
         })
     }.handleExceptions()
 
-    //TODO Context 를 주입 받아야 함
     override fun updateUserProfile(
         userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity,
         profileImageUrl: Uri?
     ) = flow {
         emit(Result.Loading)
-        if (profileImageUrl != null) {
-            //TODO uri 와 fileName 전달 받아오기
+
+        val imagePart = profileImageUrl?.let { profileImageUrl ->
             val imageFile = uriToFile(context, profileImageUrl)
             val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-            val imagePart = MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
-
-            val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), imagePart)
-                ?: run {
-                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                    return@flow
-                }
-            emit(response.handleResponse(preferences) {
-                it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
-            })
-        } else {
-            val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), null)
-                ?: run {
-                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                    return@flow
-                }
-            emit(response.handleResponse(preferences) {
-                it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
-            })
+            MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
         }
 
+        val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), imagePart)
+            ?: run {
+                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                return@flow
+            }
+        emit(response.handleResponse(preferences) {
+            it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
+        })
     }.handleExceptions()
 
-    override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
-        return preferences.getTodayLessonOnBoardingStatus().first()
-    }
+override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
+    return preferences.getTodayLessonOnBoardingStatus().first()
+}
 
-    override suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
-        preferences.updateTodayLessonOnBoardingStatus(flag)
-    }
+override suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
+    preferences.updateTodayLessonOnBoardingStatus(flag)
+}
 
-    override suspend fun checkLessonListOnBoardingStatus(): Boolean {
-        return preferences.getLessonListOnBoardingStatus().first()
-    }
+override suspend fun checkLessonListOnBoardingStatus(): Boolean {
+    return preferences.getLessonListOnBoardingStatus().first()
+}
 
-    override suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
-        preferences.updateLessonListOnBoardingStatus(flag)
-    }
+override suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
+    preferences.updateLessonListOnBoardingStatus(flag)
+}
 
-    override suspend fun deleteAuthToken() {
-        preferences.deleteAuthToken()
-    }
+override suspend fun deleteAuthToken() {
+    preferences.deleteAuthToken()
+}
 }

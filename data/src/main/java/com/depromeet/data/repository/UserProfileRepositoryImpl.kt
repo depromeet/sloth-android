@@ -20,12 +20,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity, profileImageUrl: String?): Flow<Result<UserProfileUpdateEntity>>{
-        return if (profileImageUrl != null) {
-            userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity, Uri.parse(profileImageUrl))
-        }
-        else {
-            userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity, null)
-        }
+        val uri = profileImageUrl?.let { (Uri.parse(it))}
+        return userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity, uri)
     }
 
     override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
