@@ -238,6 +238,8 @@
     <!-- NotificationList-->
     <string name="notification">알림</string>
     <string name="notification_list_fetch_fail_by_server_error">알림 목록을 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="notificiation_restart_on_boarding_title">😊나공이랑 대결을 하려면 어떻게 해야할까?</string>
+    <string name="notification_restart_on_boarding_message">튜토리얼 다시 해보기</string>
 
 
 </resources>
