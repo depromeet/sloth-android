@@ -1,6 +1,8 @@
 package com.depromeet.presentation.util
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.widget.EditText
@@ -8,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import com.depromeet.presentation.R
 import com.depromeet.presentation.extensions.changeDateFormatToDot
 import com.skydoves.progressview.ProgressView
@@ -147,12 +150,14 @@ fun showLessonState(view: TextView, goalProgressRate: Float, remainDay: Int) = w
                     AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_caution)
                 text = view.context.getString(R.string.lesson_warning)
             }
+
             remainDay < 0 -> {
                 visibility = View.VISIBLE
                 background =
                     AppCompatResources.getDrawable(context, R.drawable.bg_rounded_chip_black)
                 text = view.context.getString(R.string.lesson_close)
             }
+
             else -> {
                 visibility = View.INVISIBLE
             }
@@ -172,24 +177,42 @@ fun setLessonDate(view: TextView, date: ArrayList<Int>?) = with(view) {
 }
 
 @BindingAdapter("startDate", "endDate")
-fun setLessonPeriod(view: TextView, startDate: ArrayList<Int>?, endDate: ArrayList<Int>?) =
-    with(view) {
-        if (!startDate.isNullOrEmpty() and !endDate.isNullOrEmpty()) {
-            text = context.getString(
-                R.string.lesson_period_info,
-                changeDateFormatToDot(startDate!!),
-                changeDateFormatToDot(endDate!!)
-            )
-        } else return
-    }
+fun setLessonPeriod(view: TextView, startDate: ArrayList<Int>?, endDate: ArrayList<Int>?) = with(view) {
+    if (!startDate.isNullOrEmpty() and !endDate.isNullOrEmpty()) {
+        text = context.getString(
+            R.string.lesson_period_info,
+            changeDateFormatToDot(startDate!!),
+            changeDateFormatToDot(endDate!!)
+        )
+    } else return
+}
 
 @BindingAdapter("email", "isEmailProvided")
-fun setUserEmail(view: TextView, email: String, isEmailProvided: Boolean) =
-    with(view) {
-        text = if (isEmailProvided) {
-            email
-        } else {
-            DEFAULT_STRING_VALUE
-        }
+fun setUserEmail(view: TextView, email: String, isEmailProvided: Boolean) = with(view) {
+    text = if (isEmailProvided) {
+        email
+    } else {
+        DEFAULT_STRING_VALUE
     }
+}
+
+@BindingAdapter("imageUrl")
+fun loadImage(view: ImageView, imageUrl: String?) {
+    if (!imageUrl.isNullOrEmpty()) {
+        if (!isValidContextForGlide(view.context)) return
+
+        Glide.with(view.context)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_profile_oval)
+            .into(view)
+    }
+}
+
+private fun isValidContextForGlide(context: Context): Boolean {
+    if (context is Activity) {
+        return !context.isFinishing
+    }
+    return true
+}
+
 

@@ -11,7 +11,7 @@ interface UserProfileRepository {
 
      fun fetchUserProfile(): Flow<Result<UserInfoEntity>>
 
-    fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity): Flow<Result<UserProfileUpdateEntity>>
+    fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity, profileImageUrl: String?): Flow<Result<UserProfileUpdateEntity>>
 
     suspend fun checkTodayLessonOnBoardingStatus(): Boolean
 

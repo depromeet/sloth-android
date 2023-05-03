@@ -294,6 +294,10 @@
             android:name="previous_user_name"
             app:argType="string" />
 
+        <argument
+            android:name="previouse_profile_image_url"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_update_user_profile_dialog_to_manage"
             app:destination="@id/manage"

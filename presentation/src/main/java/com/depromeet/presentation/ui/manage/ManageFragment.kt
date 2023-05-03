@@ -289,7 +289,7 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
 
     private fun showUpdateUserProfileDialog() {
         val action = ManageFragmentDirections.actionManageToUpdateUserProfileDialog(
-            viewModel.uiState.value.userName
+            viewModel.uiState.value.userName, viewModel.uiState.value.picture.toString()
         )
         findNavController().safeNavigate(action)
     }

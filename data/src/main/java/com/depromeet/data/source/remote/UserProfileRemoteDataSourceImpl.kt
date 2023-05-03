@@ -1,5 +1,7 @@
 package com.depromeet.data.source.remote
 
+import android.content.Context
+import android.net.Uri
 import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.mapper.toModel
 import com.depromeet.data.model.response.userprofile.UserProfileResponse
@@ -9,13 +11,18 @@ import com.depromeet.data.service.UserProfileService
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
 import com.depromeet.data.util.handleResponse
+import com.depromeet.data.util.uriToFile
 import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 class UserProfileRemoteDataSourceImpl @Inject constructor(
+    private val context: Context,
     private val userProfileService: UserProfileService,
     private val preferences: PreferenceManager,
 ) : UserProfileRemoteDataSource {
@@ -31,16 +38,37 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
         })
     }.handleExceptions()
 
-    override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity) = flow {
+    //TODO Context 를 주입 받아야 함
+    override fun updateUserProfile(
+        userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity,
+        profileImageUrl: Uri?
+    ) = flow {
         emit(Result.Loading)
-        val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel())
-            ?: run {
-                emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
-                return@flow
-            }
-        emit(response.handleResponse(preferences) {
-            it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
-        })
+        if (profileImageUrl != null) {
+            //TODO uri 와 fileName 전달 받아오기
+            val imageFile = uriToFile(context, profileImageUrl)
+            val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+            val imagePart = MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
+
+            val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), imagePart)
+                ?: run {
+                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                    return@flow
+                }
+            emit(response.handleResponse(preferences) {
+                it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
+            })
+        } else {
+            val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), null)
+                ?: run {
+                    emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
+                    return@flow
+                }
+            emit(response.handleResponse(preferences) {
+                it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
+            })
+        }
+
     }.handleExceptions()
 
     override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {

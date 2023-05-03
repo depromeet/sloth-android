@@ -6,6 +6,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -16,10 +18,13 @@ import com.depromeet.presentation.extensions.safeNavigate
 import com.depromeet.presentation.extensions.setEditTextFocus
 import com.depromeet.presentation.ui.base.BaseDialogFragment
 import com.depromeet.presentation.util.DebounceEditTextListener
+import com.depromeet.presentation.util.GlideApp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
+//TODO 프로필 이미지 변경 로직 추가 (type: String 인거 체크)
 @AndroidEntryPoint
 class UpdateUserProfileDialogFragment :
     BaseDialogFragment<FragmentUpdateUserProfileDialogBinding>(R.layout.fragment_update_user_profile_dialog) {
@@ -33,6 +38,21 @@ class UpdateUserProfileDialogFragment :
             debouncePeriod = 0L
         )
     }
+
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                Timber.tag("PhotoPicker").d("Selected URI: $uri")
+                // 필요한가
+                val type = requireContext().contentResolver.getType(uri)?.split("/")?.last() ?: "jpg"
+                Timber.tag("PhotoPicker").d("Selected type: $type")
+                // viewModel.addImage(image = uri, itemType = type)
+                //TODO uri 을 파일 타입으로 변환하여 requestBody에 담아 api call
+                GlideApp.with(requireContext()).load(uri).into(binding.ivUserProfileImage)
+            } else {
+                Timber.tag("PhotoPicker").d("No media selected")
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,8 +73,8 @@ class UpdateUserProfileDialogFragment :
         repeatOnStarted {
             launch {
                 viewModel.updateUserProfileSuccess.collect {
-                        navigateToManage()
-                    }
+                    navigateToManage()
+                }
             }
 
             launch {
@@ -65,15 +85,21 @@ class UpdateUserProfileDialogFragment :
 
             launch {
                 viewModel.navigateToExpireDialogEvent.collect {
-                        showExpireDialog()
-                    }
+                    showExpireDialog()
+                }
             }
 
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            launch {
+                viewModel.navigateToPhotoPickerEvent.collect {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
             }
         }
     }
@@ -101,7 +127,8 @@ class UpdateUserProfileDialogFragment :
     }
 
     private fun navigateToManage() {
-        val action = UpdateUserProfileDialogFragmentDirections.actionUpdateUserProfileDialogToManage()
+        val action =
+            UpdateUserProfileDialogFragmentDirections.actionUpdateUserProfileDialogToManage()
         findNavController().safeNavigate(action)
     }
 

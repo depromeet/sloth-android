@@ -58,15 +58,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/iv_manage_profile_image"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="16dp"
+                        imageUrl="@{vm.uiState.picture}"
                         android:contentDescription="@string/profile_image"
+                        android:scaleType="centerInside"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/circleImageView"
                         app:srcCompat="@drawable/ic_profile_oval" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout

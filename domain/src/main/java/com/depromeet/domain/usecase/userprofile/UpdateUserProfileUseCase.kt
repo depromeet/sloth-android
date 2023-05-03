@@ -11,7 +11,7 @@ import javax.inject.Inject
 class UpdateUserProfileUseCase @Inject constructor(
     private val userProfileRepository: UserProfileRepository
 ) {
-    operator fun invoke(userProfileUpdateRequest: UserProfileUpdateRequestEntity): Flow<Result<UserProfileUpdateEntity>> {
-        return userProfileRepository.updateUserProfile(userProfileUpdateRequest)
+    operator fun invoke(userProfileUpdateRequest: UserProfileUpdateRequestEntity, profileImageUrl: String?): Flow<Result<UserProfileUpdateEntity>> {
+        return userProfileRepository.updateUserProfile(userProfileUpdateRequest, profileImageUrl)
     }
 }

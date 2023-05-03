@@ -6,9 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserProfileUpdateResponse(
     @SerialName("memberName")
-    val userName: String = ""
+    val userName: String = "",
+    @SerialName("profileImageUrl")
+    val profileImageUrl: String? = ""
 ) {
     companion object {
-        val EMPTY = UserProfileUpdateResponse("")
+        val EMPTY = UserProfileUpdateResponse("", "")
     }
 }

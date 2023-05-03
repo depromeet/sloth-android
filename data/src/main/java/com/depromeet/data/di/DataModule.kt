@@ -51,10 +51,11 @@ object DataModule {
     @Singleton
     @Provides
     internal fun provideUserProfileRemoteDataSource(
+        @ApplicationContext context: Context,
         userProfileService: UserProfileService,
         preferences: PreferenceManager
     ): UserProfileRemoteDataSource {
-        return UserProfileRemoteDataSourceImpl(userProfileService, preferences)
+        return UserProfileRemoteDataSourceImpl(context, userProfileService, preferences)
     }
 
     @Singleton

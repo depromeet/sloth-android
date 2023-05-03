@@ -17,16 +17,20 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="32dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_user_profile_image"
+            imageUrl="@{vm.previousProfileImageUrl}"
+            onSingleClick="@{() -> vm.navigateToPhotoPicker()}"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="40dp"
             android:contentDescription="@string/profile_image"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_profile_oval"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circleImageView" />
 
         <ImageView
             android:id="@+id/iv_update_user_profile"

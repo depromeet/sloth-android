@@ -5,5 +5,6 @@ import com.depromeet.domain.entity.UserProfileUpdateEntity
 
 
 internal fun UserProfileUpdateResponse.toEntity() = UserProfileUpdateEntity(
-    userName = userName
+    userName = userName,
+    profileImageUrl = profileImageUrl
 )

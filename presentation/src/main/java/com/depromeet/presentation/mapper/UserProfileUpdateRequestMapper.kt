@@ -5,5 +5,6 @@ import com.depromeet.presentation.model.UserProfileUpdateRequest
 
 
 internal fun UserProfileUpdateRequest.toEntity() = UserProfileUpdateRequestEntity(
-    userName = userName
+    userName = userName,
+    profileImageUrl = profileImageUrl
 )

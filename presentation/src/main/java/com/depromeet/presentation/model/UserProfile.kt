@@ -7,5 +7,6 @@ data class UserProfile(
     val userName: String = "",
     val isEmailProvided: Boolean = false,
     val isPushAlarmUse: Boolean = false,
+    val picture: String? = ""
 )
 

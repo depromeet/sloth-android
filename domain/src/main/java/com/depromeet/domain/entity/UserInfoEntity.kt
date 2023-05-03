@@ -7,4 +7,5 @@ data class UserInfoEntity(
     val userName: String,
     val isEmailProvided: Boolean,
     val isPushAlarmUse: Boolean,
+    val picture: String?
 )

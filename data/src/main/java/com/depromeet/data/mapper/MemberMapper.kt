@@ -9,5 +9,6 @@ internal fun UserProfileResponse.toEntity() =  UserInfoEntity(
     userId = userId,
     userName = userName,
     isEmailProvided = isEmailProvided,
-    isPushAlarmUse = isPushAlarmUse
+    isPushAlarmUse = isPushAlarmUse,
+    picture = picture
 )

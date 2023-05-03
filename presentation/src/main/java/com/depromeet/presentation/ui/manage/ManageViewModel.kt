@@ -26,6 +26,7 @@ import javax.inject.Inject
 
 data class UserProfileUiState(
     val email: String = "",
+    val picture: String? = "",
     val userName: String = "",
     val isEmailProvided: Boolean = false,
     val isPushAlarmUse: Boolean = false,
@@ -102,6 +103,7 @@ class ManageViewModel @Inject constructor(
                             _uiState.update { userProfileUiState ->
                                 userProfileUiState.copy(
                                     email = result.data.email,
+                                    picture = result.data.picture,
                                     userName = result.data.userName,
                                     isEmailProvided = result.data.isEmailProvided,
                                     isPushAlarmUse = result.data.isPushAlarmUse

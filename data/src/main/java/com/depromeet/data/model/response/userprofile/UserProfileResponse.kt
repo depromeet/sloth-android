@@ -16,9 +16,11 @@ data class UserProfileResponse(
     val isEmailProvided: Boolean = false,
     @SerialName("isPushAlarmUse")
     val isPushAlarmUse: Boolean = false,
+    @SerialName("picture")
+    val picture: String? = ""
 ) {
     companion object {
-        val EMPTY = UserProfileResponse("", 0, "", false, false)
+        val EMPTY = UserProfileResponse("", 0, "", false, false, "")
     }
 }
 

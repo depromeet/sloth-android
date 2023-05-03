@@ -9,5 +9,6 @@ internal fun UserInfoEntity.toUiModel() = UserProfile(
     userId = userId,
     userName = userName,
     isEmailProvided = isEmailProvided,
-    isPushAlarmUse = isPushAlarmUse
+    isPushAlarmUse = isPushAlarmUse,
+    picture = picture
 )
