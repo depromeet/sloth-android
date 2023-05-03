@@ -30,18 +30,16 @@ class UpdateUserProfileViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val previousUserName: String = checkNotNull(savedStateHandle[KEY_PREVIOUS_USER_NAME])
-    val previousProfileImageUrl: String = checkNotNull(savedStateHandle[KEY_PROFILE_IMAGE_URL])
+    private val previousProfileImageUrl: String = savedStateHandle[KEY_PROFILE_IMAGE_URL] ?: DEFAULT_STRING_VALUE
 
     private val _updateUserProfileSuccess = MutableSharedFlow<Unit>()
     val updateUserProfileSuccess: SharedFlow<Unit> = _updateUserProfileSuccess.asSharedFlow()
 
-    private val _userName =
-        savedStateHandle.getMutableStateFlow(KEY_USER_NAME, DEFAULT_STRING_VALUE)
+    private val _userName = savedStateHandle.getMutableStateFlow(KEY_USER_NAME, DEFAULT_STRING_VALUE)
     val userName: StateFlow<String> = _userName.asStateFlow()
 
-    private val _profileImageUrl =
-        savedStateHandle.getMutableStateFlow(KEY_PROFILE_IMAGE_URL, Uri.EMPTY)
-    val profileImageUrl: StateFlow<Uri> = _profileImageUrl.asStateFlow()
+    private val _profileImageUrl = savedStateHandle.getMutableStateFlow(KEY_PROFILE_IMAGE_URL, previousProfileImageUrl)
+    val profileImageUrl: StateFlow<String> = _profileImageUrl.asStateFlow()
 
     private val _updateUserProfileValidation = MutableStateFlow(false)
     val updateUserValidation: StateFlow<Boolean> = _updateUserProfileValidation.asStateFlow()
@@ -49,7 +47,6 @@ class UpdateUserProfileViewModel @Inject constructor(
     private val _navigateToPhotoPickerEvent = MutableSharedFlow<Unit>()
     val navigateToPhotoPickerEvent: SharedFlow<Unit> = _navigateToPhotoPickerEvent.asSharedFlow()
 
-    //TODO 사진이 존재하는 경우와 존재하지 않은 경우의 대한 분기 처리
     fun updateUserProfile() = viewModelScope.launch {
         val currentUri = profileImageUrl
         val shouldUpdateImage = currentUri != Uri.EMPTY
@@ -99,6 +96,10 @@ class UpdateUserProfileViewModel @Inject constructor(
 
     fun setUserName(userName: String) {
         _userName.value = userName
+    }
+
+    fun setProfileImageUrl(profileImageUrl: String) {
+        _profileImageUrl.value = profileImageUrl
     }
 
     fun setUpdateUserProfileValidation(isEnable: Boolean) {

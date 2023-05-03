@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-//TODO 프로필 이미지 변경 로직 추가 (type: String 인거 체크)
 @AndroidEntryPoint
 class UpdateUserProfileDialogFragment :
     BaseDialogFragment<FragmentUpdateUserProfileDialogBinding>(R.layout.fragment_update_user_profile_dialog) {
@@ -46,8 +45,7 @@ class UpdateUserProfileDialogFragment :
                 // 필요한가
                 val type = requireContext().contentResolver.getType(uri)?.split("/")?.last() ?: "jpg"
                 Timber.tag("PhotoPicker").d("Selected type: $type")
-                // viewModel.addImage(image = uri, itemType = type)
-                //TODO uri 을 파일 타입으로 변환하여 requestBody에 담아 api call
+                viewModel.setProfileImageUrl(uri.toString())
                 GlideApp.with(requireContext()).load(uri).into(binding.ivUserProfileImage)
             } else {
                 Timber.tag("PhotoPicker").d("No media selected")

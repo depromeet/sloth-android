@@ -12,7 +12,6 @@ interface UserProfileService {
     @GET("api/member")
     suspend fun fetchUserProfile(): Response<UserProfileResponse>?
 
-    //TODO userProfileRquest와 profileImage를 파라미터에 담아서 통신, @Multipart
     @Multipart
     @PATCH("api/member")
     suspend fun updateUserProfile(
