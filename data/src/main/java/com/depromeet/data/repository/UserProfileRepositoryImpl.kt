@@ -1,6 +1,5 @@
 package com.depromeet.data.repository
 
-import android.net.Uri
 import com.depromeet.data.source.remote.UserProfileRemoteDataSource
 import com.depromeet.domain.entity.UserInfoEntity
 import com.depromeet.domain.entity.UserProfileUpdateEntity
@@ -20,8 +19,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity, profileImageUrl: String?): Flow<Result<UserProfileUpdateEntity>>{
-        val uri = profileImageUrl?.let { (Uri.parse(it))}
-        return userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity, uri)
+        return userProfileRemoteDataSource.updateUserProfile(userProfileUpdateRequestEntity, profileImageUrl)
     }
 
     override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {

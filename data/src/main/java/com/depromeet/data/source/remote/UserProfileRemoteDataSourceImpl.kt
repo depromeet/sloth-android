@@ -40,12 +40,12 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
 
     override fun updateUserProfile(
         userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity,
-        profileImageUrl: Uri?
+        profileImageUrl: String?
     ) = flow {
         emit(Result.Loading)
 
         val imagePart = profileImageUrl?.let { profileImageUrl ->
-            val imageFile = uriToFile(context, profileImageUrl)
+            val imageFile = uriToFile(context, Uri.parse(profileImageUrl))
             val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
             MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
         }

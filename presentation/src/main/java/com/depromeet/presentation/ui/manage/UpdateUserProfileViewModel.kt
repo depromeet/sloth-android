@@ -1,6 +1,5 @@
 package com.depromeet.presentation.ui.manage
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.userprofile.UpdateUserProfileUseCase
@@ -16,7 +15,13 @@ import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,50 +53,48 @@ class UpdateUserProfileViewModel @Inject constructor(
     val navigateToPhotoPickerEvent: SharedFlow<Unit> = _navigateToPhotoPickerEvent.asSharedFlow()
 
     fun updateUserProfile() = viewModelScope.launch {
-        val currentUri = profileImageUrl
-        val shouldUpdateImage = currentUri != Uri.EMPTY
+        val currentProfileImageUriString = profileImageUrl.value
+        val shouldUpdateImage = currentProfileImageUriString != previousProfileImageUrl
 
-        if (currentUri == Uri.EMPTY) {
-            updateUserProfileUseCase(
-                UserProfileUpdateRequest(userName = userName.value).toEntity(),
-                if (shouldUpdateImage) currentUri.toString() else null
-            )
-                .onEach { result ->
-                    setLoading(result is Result.Loading)
-                }.collect { result ->
-                    when (result) {
-                        is Result.Loading -> return@collect
-                        is Result.Success -> {
-                            showToast(stringResourcesProvider.getString(R.string.user_profile_update_success))
-                            _updateUserProfileSuccess.emit(Unit)
-                            // btnUpdateMember 활성 상태 초기화
-                            setUpdateUserProfileValidation(false)
-                        }
+        updateUserProfileUseCase(
+            UserProfileUpdateRequest(userName = userName.value).toEntity(),
+            if (shouldUpdateImage) currentProfileImageUriString else null
+        )
+            .onEach { result ->
+                setLoading(result is Result.Loading)
+            }.collect { result ->
+                when (result) {
+                    is Result.Loading -> return@collect
+                    is Result.Success -> {
+                        showToast(stringResourcesProvider.getString(R.string.user_profile_update_success))
+                        _updateUserProfileSuccess.emit(Unit)
+                        // btnUpdateMember 활성 상태 초기화
+                        setUpdateUserProfileValidation(false)
+                    }
 
-                        is Result.Error -> {
-                            when {
-                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_server_error))
-                                }
+                    is Result.Error -> {
+                        when {
+                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_server_error))
+                            }
 
-                                result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_internet_error))
-                                }
+                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                                showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail_by_internet_error))
+                            }
 
-                                result.statusCode == UNAUTHORIZED -> {
-                                    navigateToExpireDialog()
-                                }
+                            result.statusCode == UNAUTHORIZED -> {
+                                navigateToExpireDialog()
+                            }
 
-                                else -> {
-                                    showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
-                                    Timber.tag("updateUserProfile").d(result.throwable)
-                                }
+                            else -> {
+                                showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
+                                Timber.tag("updateUserProfile").d(result.throwable)
                             }
                         }
                     }
                 }
-        }
 
+            }
     }
 
     fun setUserName(userName: String) {

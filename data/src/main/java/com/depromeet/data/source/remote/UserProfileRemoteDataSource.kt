@@ -1,6 +1,5 @@
 package com.depromeet.data.source.remote
 
-import android.net.Uri
 import com.depromeet.domain.entity.UserInfoEntity
 import com.depromeet.domain.entity.UserProfileUpdateEntity
 import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
@@ -11,7 +10,7 @@ interface UserProfileRemoteDataSource {
 
     fun fetchUserProfile(): Flow<Result<UserInfoEntity>>
 
-    fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity, profileImageUrl: Uri?): Flow<Result<UserProfileUpdateEntity>>
+    fun updateUserProfile(userProfileUpdateRequestEntity: UserProfileUpdateRequestEntity, profileImageUrl: String?): Flow<Result<UserProfileUpdateEntity>>
 
     suspend fun checkTodayLessonOnBoardingStatus(): Boolean
 
