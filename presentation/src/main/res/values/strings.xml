@@ -119,10 +119,10 @@
     <string name="start_sloth">나나공 시작하기</string>
     <string name="ic_login_sloth">login_sloth_icon</string>
     <string name="check">확인</string>
-    <string name="login_fail_by_server_error">로그인을 실패했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="login_fail_by_server_error">로그인을 하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
     <string name="fcm_token_register_fail">푸시알림 토큰 등록을 실패했어요</string>
     <string name="fcm_token_register_fail_by_internet_error">푸시알림 토큰 등록을 실패했어요\n인터넷 연결을 확인해 주세요</string>
-    <string name="fcm_token_register_fail_by_server_error">푸시알림 등록을 실패했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="fcm_token_register_fail_by_server_error">푸시알림 등록을 실패했어요\n공식 계정을 통해 문의 해주세요</string>
 
     <!--    TodayLesson-->
     <string name="today_lesson_title_empty_lesson">아래 버튼을 눌러 강의를 등록해주세요</string>
@@ -132,12 +132,12 @@
     <string name="today_lesson_header_doing">짜란~오늘은\n내가 너보다 더\n부지런했답니다?</string>
     <string name="today_lesson_header_not_start">시작이 반인데…\n너 설마 아직도\n시작 안했어?</string>
     <string name="today_lesson_header_finished">젠장..\n오늘은\n나의 완패다..</string>
-    <string name="lesson_fetch_fail_by_server_error">강의 목록를 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
-    <string name="lesson_finish_fail_by_server_error">강의를 완강하지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="lesson_fetch_fail_by_server_error">강의 목록를 가져오지 못했어요\공식 계정을 통해 문의 해주세요</string>
+    <string name="lesson_finish_fail_by_server_error">강의를 완강하지 못했어요\공식 계정을 통해 문의 해주세요</string>
     <string name="today_lesson_item_description">들어야 할 강의 수</string>
     <string name="lesson_update_count_fail">강의를 갱신하지 못했어요</string>
     <string name="lesson_update_count_fail_by_internet_error">강의를 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
-    <string name="lesson_update_count_fail_by_server_error">강의를 갱신하지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="lesson_update_count_fail_by_server_error">강의를 갱신하지 못했어요\공식 계정을 통해 문의 해주세요</string>
 
     <!--    OnBoardingTodayLesson-->
     <string name="today_lesson_header_on_boarding_empty">등록되어 있는\n강의가 없네요!</string>
@@ -172,9 +172,9 @@
     <string name="lesson_message">각오 한마디(선택)</string>
     <string name="next">다음</string>
     <string name="finish">완료</string>
-    <string name="lesson_category_fetch_fail_by_server_error">강의 카테고리를 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
-    <string name="lesson_site_fetch_fail_by_server_error">강의 사이트를 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
-    <string name="lesson_register_fail_by_server_error">강의 등록을 실패했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="lesson_category_fetch_fail_by_server_error">강의 카테고리를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="lesson_site_fetch_fail_by_server_error">강의 사이트를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="lesson_register_fail_by_server_error">강의 등록을 실패했어요\n공식 계정을 통해 문의 해주세요</string>
 
     <!--    LessonDetail-->
     <string name="update">수정</string>
@@ -206,11 +206,11 @@
     <string name="not_started_yet">결투를 기다리고\n있다구!</string>
     <string name="delete_lesson_dialog_message">한층 성장할 기회, 정말 포기할거야?</string>
     <string name="delete_lesson_dialog_check">포기하기</string>
-    <string name="lesson_detail_fetch_fail_by_server_error">강의 상세 정보를 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
-    <string name="lesson_delete_fail_by_server_error">강의를 삭제하지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="lesson_detail_fetch_fail_by_server_error">강의 상세 정보를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="lesson_delete_fail_by_server_error">강의를 삭제하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
 
     <!--    UpdateLesson-->
-    <string name="lesson_update_fail_by_server_error">강의를 수정하지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="lesson_update_fail_by_server_error">강의를 수정하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
 
     <!--    Manage-->
     <string name="setting">설정</string>
@@ -230,14 +230,14 @@
     <string name="notification_list_update_fail">알림 목록을 갱신하지 못했어요</string>
     <string name="notification_list_update_fail_by_internet_error">알림 목록을 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
     <string name="statisticsInfo_fetch_fail">강의 통계 정보를 가져오지 못했어요</string>
-    <string name="statistics_fetch_fail_by_server_error">강의 통계 정보를 가져오지 못했어요\nofficial04nanagong@gmail.com</string>
-    <string name="noti_update_fail_by_server_error">알림 수신 여부를 변경하지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
-    <string name="user_profile_update_fail_by_server_error">유저 정보를 변경하지 못했어요\nofficial04nanagong@gmail.com</string>
-    <string name="user_profile_fetch_fail_by_server_error">유저 정보를 가져오지 못했어요\nofficial04nanagong@gmail.com</string>
+    <string name="statistics_fetch_fail_by_server_error">강의 통계 정보를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="noti_update_fail_by_server_error">알림 수신 여부를 변경하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="user_profile_update_fail_by_server_error">유저 정보를 변경하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="user_profile_fetch_fail_by_server_error">유저 정보를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
 
     <!-- NotificationList-->
     <string name="notification">알림</string>
-    <string name="notification_list_fetch_fail_by_server_error">알림 목록을 가져오지 못했어요\nofficial04nanagong@gmail.com로 문의 해주세요</string>
+    <string name="notification_list_fetch_fail_by_server_error">알림 목록을 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
     <string name="notificiation_restart_on_boarding_title">😊나공이랑 대결을 하려면 어떻게 해야할까?</string>
     <string name="notification_restart_on_boarding_message">튜토리얼 다시 해보기</string>
 
