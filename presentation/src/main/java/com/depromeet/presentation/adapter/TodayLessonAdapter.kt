@@ -15,15 +15,13 @@ import com.depromeet.presentation.ui.todaylesson.TodayLessonUiModel
 import com.depromeet.presentation.util.setOnSingleClickListener
 
 
-class TodayLessonAdapter(
-    private val clickListener: TodayLessonItemClickListener
+class TodayLessonAdapter(private val clickListener: TodayLessonItemClickListener
 ) : ListAdapter<TodayLessonUiModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<TodayLessonUiModel>() {
         override fun areItemsTheSame(oldItem: TodayLessonUiModel, newItem: TodayLessonUiModel): Boolean {
             return (oldItem is TodayLessonUiModel.TodayLessonEmptyItem && newItem is TodayLessonUiModel.TodayLessonEmptyItem) ||
                     (oldItem is TodayLessonUiModel.TodayLessonDoingItem && newItem is TodayLessonUiModel.TodayLessonDoingItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId) ||
                     (oldItem is TodayLessonUiModel.TodayLessonFinishedItem && newItem is TodayLessonUiModel.TodayLessonFinishedItem && oldItem.todayLesson.lessonId == newItem.todayLesson.lessonId)
-
         }
 
         override fun areContentsTheSame(oldItem: TodayLessonUiModel, newItem: TodayLessonUiModel): Boolean {
