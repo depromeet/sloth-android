@@ -108,6 +108,7 @@ class RegisterLessonSecondFragment : BaseFragment<FragmentRegisterLessonSecondBi
         focusInputFormOptional(etRegisterLessonMessage)
     }
 
+    //TODO 문제가 되는 부분
     @SuppressLint("NewApi")
     private fun showLessonStartDateCalendar() = with(binding) {
         val materialDateBuilder = MaterialDatePicker.Builder.datePicker().apply {
