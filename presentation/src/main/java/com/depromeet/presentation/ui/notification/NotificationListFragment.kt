@@ -8,26 +8,29 @@ import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
 import com.depromeet.presentation.adapter.NotificationAdapter
 import com.depromeet.presentation.databinding.FragmentNotificationListBinding
-import com.depromeet.presentation.ui.base.BaseFragment
 import com.depromeet.presentation.extensions.repeatOnStarted
+import com.depromeet.presentation.extensions.safeNavigate
+import com.depromeet.presentation.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 @AndroidEntryPoint
-internal class NotificationListFragment :
+class NotificationListFragment :
     BaseFragment<FragmentNotificationListBinding>(R.layout.fragment_notification_list) {
 
     private val viewModel: NotificationViewModel by viewModels()
 
     // TODO 화면 이동 이벤트 추가
-    // TODO 리스트 최하단에 튜토리얼을 다시 할 수 있는 로직 구현하기
-    private val notificationItemClickListener = NotificationItemClickListener {
-        viewModel.updateNotificationReadStatus(it) {
-            Timber.tag("updateNotificationState").d(it.toString())
+    private val notificationItemClickListener = NotificationItemClickListener(
+        onRestartOnBoardingClick = { viewModel.navigateToOnBoardingTodayLesson() },
+        onNotificationClick = { notification ->
+            viewModel.updateNotificationReadStatus(notification) {
+                Timber.tag("updateNotificationState").d(notification.toString())
+            }
         }
-    }
+    )
 
     private val notificationAdapter by lazy {
         NotificationAdapter(notificationItemClickListener)
@@ -70,18 +73,23 @@ internal class NotificationListFragment :
         }
     }
 
-    private fun initObserver()  {
+    private fun initObserver() {
         repeatOnStarted {
             launch {
                 viewModel.fetchLessonListSuccessEvent.collect {
-                        notificationAdapter.submitList(it)
-                    }
-
+                    notificationAdapter.submitList(it)
+                }
                 /*
                 viewModel.notificationList.collectLatest {
                     notificationAdapter.submitData(it)
                 }
                  */
+            }
+
+            launch {
+                viewModel.navigateToOnBoardingTodayLessonEvent.collect {
+                    navigateToOnBoardingTodayLesson()
+                }
             }
 
             launch {
@@ -92,9 +100,14 @@ internal class NotificationListFragment :
 
             launch {
                 viewModel.showToastEvent.collect { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
+    }
+
+    private fun navigateToOnBoardingTodayLesson() {
+        val action = NotificationListFragmentDirections.actionNotificationListToOnBoardingTodayLesson()
+        findNavController().safeNavigate(action)
     }
 }

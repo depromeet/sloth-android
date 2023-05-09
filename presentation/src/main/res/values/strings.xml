@@ -226,9 +226,6 @@
     <string name="contact">문의사항</string>
     <string name="sloth_official_mail">official04nanagong@gmail.com</string>
     <string name="contact_email_subject">[Android]나나공 1:1 문의</string>
-    <string name="notification_list_fetch_fail">알림 목록을 가져오지 못했어요</string>
-    <string name="notification_list_update_fail">알림 목록을 갱신하지 못했어요</string>
-    <string name="notification_list_update_fail_by_internet_error">알림 목록을 갱신하지 못했어요\n인터넷 연결을 확인해 주세요</string>
     <string name="statisticsInfo_fetch_fail">강의 통계 정보를 가져오지 못했어요</string>
     <string name="statistics_fetch_fail_by_server_error">강의 통계 정보를 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
     <string name="noti_update_fail_by_server_error">알림 수신 여부를 변경하지 못했어요\n공식 계정을 통해 문의 해주세요</string>
@@ -237,7 +234,11 @@
 
     <!-- NotificationList-->
     <string name="notification">알림</string>
+    <string name="notification_list_fetch_fail">알림 목록을 가져오지 못했어요</string>
+    <string name="notification_list_update_fail">알림 목록을 갱신하지 못했어요</string>
     <string name="notification_list_fetch_fail_by_server_error">알림 목록을 가져오지 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="notification_list_update_fail_by_server_error">알림 목록을 갱신 못했어요\n공식 계정을 통해 문의 해주세요</string>
+    <string name="notification_list_update_fail_by_internet_error">알림 목록을 갱신 못했어요\n인터넷 연결을 확인 해주세요</string>
     <string name="notificiation_restart_on_boarding_title">😊나공이랑 대결을 하려면 어떻게 해야할까?</string>
     <string name="notification_restart_on_boarding_message">튜토리얼 다시 해보기</string>
 

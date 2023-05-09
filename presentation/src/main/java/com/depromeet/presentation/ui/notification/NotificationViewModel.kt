@@ -7,7 +7,7 @@ import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.mapper.toUiModel
-import com.depromeet.presentation.model.Notification
+import com.depromeet.presentation.model.NotificationItem
 import com.depromeet.presentation.ui.base.BaseViewModel
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
@@ -32,8 +32,11 @@ class NotificationViewModel @Inject constructor(
     private var fetchNotificationListJob: Job? = null
     private var updateNotificationReadStatusJob: Job? = null
 
-    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<Notification>>()
-    val fetchLessonListSuccessEvent: SharedFlow<List<Notification>> = _fetchLessonListSuccessEvent.asSharedFlow()
+    private val _fetchLessonListSuccessEvent = MutableSharedFlow<List<NotificationItem>>()
+    val fetchLessonListSuccessEvent: SharedFlow<List<NotificationItem>> = _fetchLessonListSuccessEvent.asSharedFlow()
+
+    private val _navigateToOnBoardingTodayLessonEvent = MutableSharedFlow<Unit>()
+    val navigateToOnBoardingTodayLessonEvent: SharedFlow<Unit> = _navigateToOnBoardingTodayLessonEvent.asSharedFlow()
 
     /*
     val notificationList: Flow<PagingData<NotificationListResponse>> =
@@ -58,7 +61,9 @@ class NotificationViewModel @Inject constructor(
                         is Result.Loading -> return@collect
                         is Result.Success -> {
                             setInternetError(false)
-                            _fetchLessonListSuccessEvent.emit(result.data.toUiModel())
+                            val notificationItemList: MutableList<NotificationItem> = result.data.toUiModel().toMutableList()
+                            notificationItemList.add(NotificationItem.RestartOnBoarding)
+                            _fetchLessonListSuccessEvent.emit(notificationItemList.toList())
                         }
                         is Result.Error -> {
                             when {
@@ -80,7 +85,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun updateNotificationReadStatus(notification: Notification, isStateChanged: () -> Unit) {
+    fun updateNotificationReadStatus(notification: NotificationItem.Notification, isStateChanged: () -> Unit) {
         // 이미 읽은 알림일 경우 api 를 호출 하지 않음
         if (notification.readTime != null) return
 
@@ -98,8 +103,11 @@ class NotificationViewModel @Inject constructor(
                         }
                         is Result.Error -> {
                             when {
+                                result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                                    showToast(stringResourcesProvider.getString(R.string.notification_list_update_fail_by_server_error))
+                                }
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
-                                    showToast(stringResourcesProvider.getString(R.string.notification_list_update_fail))
+                                    showToast(stringResourcesProvider.getString(R.string.notification_list_update_fail_by_internet_error))
                                 }
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
@@ -111,6 +119,10 @@ class NotificationViewModel @Inject constructor(
                     updateNotificationReadStatusJob = null
                 }
         }
+    }
+
+    fun navigateToOnBoardingTodayLesson() = viewModelScope.launch {
+        _navigateToOnBoardingTodayLessonEvent.emit(Unit)
     }
 
     override fun retry() = fetchNotificationList()

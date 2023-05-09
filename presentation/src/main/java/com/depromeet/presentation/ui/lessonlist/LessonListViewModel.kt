@@ -34,7 +34,7 @@ class LessonListViewModel @Inject constructor(
     // private val _uiState = MutableStateFlow<UiState>(UiState())
     // val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _checkLessonListOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(1)
+    private val _checkLessonListOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
     val checkLessonListOnBoardingCompleteEvent: SharedFlow<Boolean> =
         _checkLessonListOnBoardingCompleteEvent.asSharedFlow()
 
@@ -70,6 +70,7 @@ class LessonListViewModel @Inject constructor(
                         is Result.Success -> {
                             setInternetError(false)
                             setLessonList(result.data.toUiModel())
+                            //TODO 강의 목록 화면 온보딩 완료 체크 로직 변경
                             checkLessonListOnBoardingComplete()
                         }
                         is Result.Error -> {
@@ -91,36 +92,6 @@ class LessonListViewModel @Inject constructor(
                 }
         }
     }
-
-//    fun fetchLessonList() {
-//        if (lessonListJob != null) return
-//
-//        lessonListJob = viewModelScope.launch {
-//            try {
-//                fetchLessonListUseCase()
-//                    .onEach { result ->
-//                        setLoading(result is Result.Loading)
-//                    }.collect { result ->
-//                        when (result) {
-//                            is Result.Loading -> return@collect
-//                            is Result.Success -> {
-//                                setInternetError(false)
-//                                setLessonList(result.data.toUiModel())
-//                            }
-//                            is Result.Error -> {
-//                                if (result.statusCode == UNAUTHORIZED) {
-//                                    navigateToExpireDialog()
-//                                }
-//                            }
-//                        }
-//                    }
-//            } catch (ioe: IOException) {
-//                showToast(stringResourcesProvider.getString(R.string.lesson_fetch_fail))
-//                setInternetError(true)
-//            }
-//            finally { lessonListJob = null }
-//        }
-//    }
 
     private fun setLessonList(result: List<Lesson>) {
         _lessonList.update {
