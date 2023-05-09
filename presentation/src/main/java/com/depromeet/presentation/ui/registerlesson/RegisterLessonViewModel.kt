@@ -163,10 +163,10 @@ class RegisterLessonViewModel @Inject constructor(
         if (lessonEndDateSelectedItemPosition.value == CUSTOM_SETTING) return
 
         when (lessonEndDateSelectedItemPosition.value) {
-            ONE_WEEK -> _lessonEndDate.value = lessonEndDate.value.plusDays(7)
-            ONE_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(1)
-            TWO_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(2)
-            THREE_MONTH -> _lessonEndDate.value = lessonEndDate.value.plusMonths(3)
+            ONE_WEEK -> _lessonEndDate.value = lessonStartDate.value.plusDays(7)
+            ONE_MONTH -> _lessonEndDate.value = lessonStartDate.value.plusMonths(1)
+            TWO_MONTH -> _lessonEndDate.value = lessonStartDate.value.plusMonths(2)
+            THREE_MONTH -> _lessonEndDate.value = lessonStartDate.value.plusMonths(3)
         }
         setLessonDateRangeValidation()
     }
