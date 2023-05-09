@@ -37,7 +37,11 @@ junit = "4.13.2"
 androidx-test-junit = "1.1.4"
 androidx-test-espresso = "3.5.0"
 desugar = "1.2.0"
-calendar= "2.3.0"
+calendar = "2.3.0"
+photoview = "2.0.0"
+android-image-cropper = "2.8.0"
+
+
 
 [plugins]
 
@@ -125,6 +129,8 @@ android-test-espresso = { module = "androidx.test.espresso:espresso-core", versi
 desugar-jdk = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 
 calendar-view = { module ="com.kizitonwose.calendar:view", version.ref = "calendar"}
+photoview = { module = "com.github.chrisbanes:PhotoView", version.ref = "photoview"}
+android-image-cropper = { module = "com.theartofdev.edmodo:android-image-cropper", version.ref = "android-image-cropper"}
 
 [bundles]
 

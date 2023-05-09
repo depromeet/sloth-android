@@ -1,8 +1,9 @@
 pluginManagement {
     repositories {
-        google()
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
+        maven { url = uri("https://www.jitpack.io") }
+        google()
     }
 }
 
@@ -14,6 +15,7 @@ dependencyResolutionManagement {
         maven(url = "https://devrepo.kakao.com/nexus/content/groups/public/")
     }
 }
+
 rootProject.name = "sloth"
 include(":app")
 include(":data")

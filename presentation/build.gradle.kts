@@ -82,4 +82,6 @@ dependencies {
     implementation(libs.splash)
 
     implementation(libs.calendar.view)
+    implementation(libs.photoview)
+    implementation(libs.android.image.cropper)
 }

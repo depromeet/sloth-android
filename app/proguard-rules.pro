@@ -32,3 +32,5 @@
 
 # navigation 사용시 argument 로전달하는 class들에 대해 난독화 제외
 -keep class com.depromeet.presentation.model.** { *; }
+
+-keep class androidx.appcompat.widget.** { *; }
