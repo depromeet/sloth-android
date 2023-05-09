@@ -7,9 +7,9 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.depromeet.presentation.R
 import com.depromeet.presentation.databinding.FragmentRegisterBottomDialogBinding
-import com.depromeet.presentation.ui.base.BaseBottomSheetFragment
 import com.depromeet.presentation.extensions.repeatOnStarted
 import com.depromeet.presentation.extensions.safeNavigate
+import com.depromeet.presentation.ui.base.BaseBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -51,7 +51,7 @@ class RegisterBottomSheetFragment :
 
             launch {
                 viewModel.registerNotificationTokenSuccessEvent.collect {
-                    navigateToTodayLesson()
+                    navigateToOnBoardingTodayLesson()
                 }
             }
 
@@ -69,11 +69,6 @@ class RegisterBottomSheetFragment :
         }
     }
 
-    private fun navigateToTodayLesson() {
-        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToTodayLesson()
-        findNavController().safeNavigate(action)
-    }
-
     private fun closeRegisterBottomSheet() {
         val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToLogin()
         findNavController().safeNavigate(action)
@@ -81,6 +76,11 @@ class RegisterBottomSheetFragment :
 
     private fun showPrivatePolicy() {
         val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToSlothPolicyWebview()
+        findNavController().safeNavigate(action)
+    }
+
+    private fun navigateToOnBoardingTodayLesson() {
+        val action = RegisterBottomSheetFragmentDirections.actionRegisterBottomDialogToOnBoardingTodayLesson()
         findNavController().safeNavigate(action)
     }
 }

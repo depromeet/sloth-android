@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.depromeet.domain.usecase.lesson.FetchTodayLessonListUseCase
 import com.depromeet.domain.usecase.lesson.UpdateLessonCountUseCase
 import com.depromeet.domain.usecase.userauth.CheckLoginStatusUseCase
-import com.depromeet.domain.usecase.userprofile.CheckTodayLessonOnBoardingStatusUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -16,7 +15,14 @@ import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +31,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayLessonViewModel @Inject constructor(
     private val checkLoginStatusUseCase: CheckLoginStatusUseCase,
-    private val checkTodayLessonOnBoardingStatusUseCase: CheckTodayLessonOnBoardingStatusUseCase,
     private val fetchTodayLessonListUseCase: FetchTodayLessonListUseCase,
     private val updateLessonCountUseCase: UpdateLessonCountUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
@@ -47,10 +52,6 @@ class TodayLessonViewModel @Inject constructor(
 
     private val _autoLoginEvent = MutableSharedFlow<Boolean>(replay = 1)
     val autoLoginEvent: SharedFlow<Boolean> = _autoLoginEvent.asSharedFlow()
-
-    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>()
-    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
-        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
 
     private val _navigateToLoginEvent = MutableSharedFlow<Unit>()
     val navigateToLoginEvent = _navigateToLoginEvent.asSharedFlow()
@@ -76,10 +77,6 @@ class TodayLessonViewModel @Inject constructor(
 
     private fun checkLoginStatus() = viewModelScope.launch {
         _autoLoginEvent.emit(checkLoginStatusUseCase())
-    }
-
-    fun checkTodayLessonOnBoardingComplete() = viewModelScope.launch {
-        _checkTodayLessonOnBoardingCompleteEvent.emit(checkTodayLessonOnBoardingStatusUseCase())
     }
 
     private fun updateTodayLessonCount(count: Int, lessonId: Int) {

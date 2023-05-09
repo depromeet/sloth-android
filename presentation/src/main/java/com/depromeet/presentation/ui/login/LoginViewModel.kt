@@ -1,9 +1,9 @@
 package com.depromeet.presentation.ui.login
 
 import androidx.lifecycle.viewModelScope
+import com.depromeet.domain.usecase.notification.RegisterNotificationTokenUseCase
 import com.depromeet.domain.usecase.userauth.GoogleLoginUseCase
 import com.depromeet.domain.usecase.userauth.SlothLoginUseCase
-import com.depromeet.domain.usecase.notification.RegisterNotificationTokenUseCase
 import com.depromeet.domain.util.Result
 import com.depromeet.presentation.R
 import com.depromeet.presentation.di.StringResourcesProvider
@@ -27,18 +27,9 @@ class LoginViewModel @Inject constructor(
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val slothLoginUseCase: SlothLoginUseCase,
     private val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase,
-    // private val fetchTodayLessonOnBoardingStatusUseCase: FetchTodayLessonOnBoardingStatusUseCase,
     private val stringResourcesProvider: StringResourcesProvider,
     private val messaging: FirebaseMessaging,
 ) : BaseViewModel() {
-
-//    private val _checkTodayLessonOnBoardingCompleteEvent = MutableSharedFlow<Boolean>(replay = 1)
-//    val checkTodayLessonOnBoardingCompleteEvent: SharedFlow<Boolean> =
-//        _checkTodayLessonOnBoardingCompleteEvent.asSharedFlow()
-
-//    private val _checkTodayLessonOnBoardingCompleteEvent = MutableEventFlow<Boolean>()
-//    val checkTodayLessonOnBoardingCompleteEvent: EventFlow<Boolean> =
-//        _checkTodayLessonOnBoardingCompleteEvent.asEventFlow()
 
     private val _navigateToLoginBottomSheetEvent = MutableSharedFlow<Unit>()
     val navigateToLoginBottomSheetEvent: SharedFlow<Unit> =
@@ -104,11 +95,11 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        when {
-                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                        when (result.throwable.message) {
+                            SERVER_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.login_fail_by_server_error))
                             }
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                            INTERNET_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
                             }
                             else -> {
@@ -135,11 +126,11 @@ class LoginViewModel @Inject constructor(
                         }
                     }
                     is Result.Error -> {
-                        when {
-                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                        when (result.throwable.message) {
+                            SERVER_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.login_fail_by_server_error))
                             }
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                            INTERNET_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.login_fail_by_internet_error))
                             }
                             else -> {
@@ -176,11 +167,11 @@ class LoginViewModel @Inject constructor(
                         registerNotificationTokenSuccess()
                     }
                     is Result.Error -> {
-                        when {
-                            result.throwable.message == SERVER_CONNECTION_ERROR -> {
+                        when (result.throwable.message) {
+                            SERVER_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.fcm_token_register_fail_by_server_error))
                             }
-                            result.throwable.message == INTERNET_CONNECTION_ERROR -> {
+                            INTERNET_CONNECTION_ERROR -> {
                                 showToast(stringResourcesProvider.getString(R.string.fcm_token_register_fail_by_internet_error))
                             }
                             else -> {
