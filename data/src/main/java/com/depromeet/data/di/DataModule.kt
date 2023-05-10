@@ -17,6 +17,7 @@ import com.depromeet.data.service.LessonService
 import com.depromeet.data.service.UserProfileService
 import com.depromeet.data.service.NotificationService
 import com.depromeet.data.service.UserAuthService
+import com.depromeet.data.util.FileManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,9 +54,10 @@ object DataModule {
     internal fun provideUserProfileRemoteDataSource(
         @ApplicationContext context: Context,
         userProfileService: UserProfileService,
-        preferences: PreferenceManager
+        preferences: PreferenceManager,
+        fileManager: FileManager
     ): UserProfileRemoteDataSource {
-        return UserProfileRemoteDataSourceImpl(context, userProfileService, preferences)
+        return UserProfileRemoteDataSourceImpl(context, userProfileService, preferences, fileManager)
     }
 
     @Singleton

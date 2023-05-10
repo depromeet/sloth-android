@@ -8,6 +8,7 @@ import com.depromeet.data.model.response.userprofile.UserProfileResponse
 import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
 import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.service.UserProfileService
+import com.depromeet.data.util.FileManager
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
 import com.depromeet.data.util.handleResponse
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserProfileRemoteDataSourceImpl @Inject constructor(
     private val context: Context,
     private val userProfileService: UserProfileService,
     private val preferences: PreferenceManager,
+    private val fileManager: FileManager,
 ) : UserProfileRemoteDataSource {
 
     override fun fetchUserProfile() = flow {
@@ -46,7 +49,9 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
 
         val imagePart = profileImageUrl?.let { profileImageUrl ->
             val imageFile = uriToFile(context, Uri.parse(profileImageUrl))
+            Timber.tag("UserProfileRemoteDataSourceImpl").d("$imageFile")
             val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+            Timber.tag("UserProfileRemoteDataSourceImpl").d("$imageRequestBody")
             MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
         }
 
@@ -55,28 +60,29 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
                 emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
                 return@flow
             }
+
         emit(response.handleResponse(preferences) {
             it.body()?.toEntity() ?: UserProfileUpdateResponse.EMPTY.toEntity()
         })
     }.handleExceptions()
 
-override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
-    return preferences.getTodayLessonOnBoardingStatus().first()
-}
+    override suspend fun checkTodayLessonOnBoardingStatus(): Boolean {
+        return preferences.getTodayLessonOnBoardingStatus().first()
+    }
 
-override suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
-    preferences.updateTodayLessonOnBoardingStatus(flag)
-}
+    override suspend fun updateTodayLessonOnBoardingStatus(flag: Boolean) {
+        preferences.updateTodayLessonOnBoardingStatus(flag)
+    }
 
-override suspend fun checkLessonListOnBoardingStatus(): Boolean {
-    return preferences.getLessonListOnBoardingStatus().first()
-}
+    override suspend fun checkLessonListOnBoardingStatus(): Boolean {
+        return preferences.getLessonListOnBoardingStatus().first()
+    }
 
-override suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
-    preferences.updateLessonListOnBoardingStatus(flag)
-}
+    override suspend fun updateLessonListOnBoardingStatus(flag: Boolean) {
+        preferences.updateLessonListOnBoardingStatus(flag)
+    }
 
-override suspend fun deleteAuthToken() {
-    preferences.deleteAuthToken()
-}
+    override suspend fun deleteAuthToken() {
+        preferences.deleteAuthToken()
+    }
 }
