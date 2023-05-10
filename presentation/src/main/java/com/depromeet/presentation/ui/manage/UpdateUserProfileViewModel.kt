@@ -90,9 +90,6 @@ class UpdateUserProfileViewModel @Inject constructor(
                             else -> {
                                 showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
                                 Timber.tag("updateUserProfileViewModel").d(result.throwable)
-                                result.throwable.stackTrace.forEach { stackTraceElement ->
-                                    Timber.d("$stackTraceElement")
-                                }
                             }
                         }
                     }
