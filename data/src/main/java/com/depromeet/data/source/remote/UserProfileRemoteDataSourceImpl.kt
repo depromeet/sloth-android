@@ -6,13 +6,12 @@ import com.depromeet.data.mapper.toEntity
 import com.depromeet.data.mapper.toModel
 import com.depromeet.data.model.response.userprofile.UserProfileResponse
 import com.depromeet.data.model.response.userprofile.UserProfileUpdateResponse
-import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.service.UserProfileService
+import com.depromeet.data.source.local.preferences.PreferenceManager
 import com.depromeet.data.util.FileManager
 import com.depromeet.data.util.RESPONSE_NULL_ERROR
 import com.depromeet.data.util.handleExceptions
 import com.depromeet.data.util.handleResponse
-import com.depromeet.data.util.uriToFile
 import com.depromeet.domain.entity.UserProfileUpdateRequestEntity
 import com.depromeet.domain.util.Result
 import kotlinx.coroutines.flow.first
@@ -20,8 +19,8 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import timber.log.Timber
 import javax.inject.Inject
+
 
 class UserProfileRemoteDataSourceImpl @Inject constructor(
     private val context: Context,
@@ -47,15 +46,13 @@ class UserProfileRemoteDataSourceImpl @Inject constructor(
     ) = flow {
         emit(Result.Loading)
 
-        val imagePart = profileImageUrl?.let { profileImageUrl ->
-            val imageFile = uriToFile(context, Uri.parse(profileImageUrl))
-            Timber.tag("UserProfileRemoteDataSourceImpl").d("$imageFile")
-            val imageRequestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-            Timber.tag("UserProfileRemoteDataSourceImpl").d("$imageRequestBody")
+        val imageMultiPart = profileImageUrl?.let { profileImageUrl ->
+            val imageFile = fileManager.getFileForUploadImageFormat(context, Uri.parse(profileImageUrl))
+            val imageRequestBody = imageFile!!.asRequestBody("image/*".toMediaTypeOrNull())
             MultipartBody.Part.createFormData("profileImage", imageFile.name, imageRequestBody)
         }
 
-        val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), imagePart)
+        val response = userProfileService.updateUserProfile(userProfileUpdateRequestEntity.toModel(), imageMultiPart)
             ?: run {
                 emit(Result.Error(Exception(RESPONSE_NULL_ERROR)))
                 return@flow

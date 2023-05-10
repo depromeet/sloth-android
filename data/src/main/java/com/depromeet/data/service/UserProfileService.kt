@@ -15,7 +15,7 @@ interface UserProfileService {
     @Multipart
     @PATCH("api/member/v2")
     suspend fun updateUserProfile(
-        @Part("userProfileRequest") userProfileRequest: UserProfileRequest,
-        @Part profileImageUrl: MultipartBody.Part?
+        @Part("requestDto") userProfileRequest: UserProfileRequest,
+        @Part profileImage: MultipartBody.Part?
     ): Response<UserProfileUpdateResponse>?
 }
