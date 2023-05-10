@@ -10,6 +10,10 @@
         <item name="navigationIcon">@drawable/ic_toolbar_arrow_back</item>
     </style>
 
+    <style name="Widget.Sloth.Toolbar.WithClose" parent="Widget.Sloth.Toolbar">
+        <item name="navigationIcon">@drawable/ic_toolbar_close</item>
+    </style>
+
     <style name="Widget.Sloth.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:background">@drawable/bg_register_lesson_rounded_edit_text_gray</item>
         <item name="android:textSize">16dp</item>

@@ -227,6 +227,10 @@
             android:id="@+id/action_manage_to_today_lesson"
             app:destination="@id/today_lesson"
             app:popUpTo="@id/manage" />
+
+        <action
+            android:id="@+id/action_manage_to_user_profile_detail_fragment"
+            app:destination="@id/user_profile_detail_fragment" />
     </fragment>
 
     <fragment
@@ -404,5 +408,15 @@
         android:name="com.depromeet.presentation.ui.manage.WithdrawDialogFragment"
         android:label="fragment_withdraw_dialog"
         tools:layout="@layout/fragment_withdraw_dialog" />
+
+    <fragment
+        android:id="@+id/user_profile_detail_fragment"
+        android:name="com.depromeet.presentation.ui.manage.UserProfileDetailFragment"
+        android:label="fragment_user_profile_detail"
+        tools:layout="@layout/fragment_user_profile_detail">
+        <argument
+            android:name="profile_image_url"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

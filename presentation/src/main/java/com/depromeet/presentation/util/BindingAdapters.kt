@@ -13,6 +13,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.depromeet.presentation.R
 import com.depromeet.presentation.extensions.changeDateFormatToDot
+import com.github.chrisbanes.photoview.PhotoView
 import com.skydoves.progressview.ProgressView
 import java.text.DecimalFormat
 import java.time.ZonedDateTime
@@ -198,6 +199,18 @@ fun setUserEmail(view: TextView, email: String, isEmailProvided: Boolean) = with
 
 @BindingAdapter("imageUrl")
 fun loadImage(view: ImageView, imageUrl: String?) {
+    if (!imageUrl.isNullOrEmpty()) {
+        if (!isValidContextForGlide(view.context)) return
+
+        Glide.with(view.context)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_profile_oval)
+            .into(view)
+    }
+}
+
+@BindingAdapter("imageUrl")
+fun loadImage(view: PhotoView, imageUrl: String?) {
     if (!imageUrl.isNullOrEmpty()) {
         if (!isValidContextForGlide(view.context)) return
 

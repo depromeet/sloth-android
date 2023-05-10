@@ -13,6 +13,7 @@ import com.depromeet.presentation.di.StringResourcesProvider
 import com.depromeet.presentation.mapper.toEntity
 import com.depromeet.presentation.model.NotificationUpdateRequest
 import com.depromeet.presentation.ui.base.BaseViewModel
+import com.depromeet.presentation.util.DEFAULT_STRING_VALUE
 import com.depromeet.presentation.util.INTERNET_CONNECTION_ERROR
 import com.depromeet.presentation.util.SERVER_CONNECTION_ERROR
 import com.depromeet.presentation.util.UNAUTHORIZED
@@ -89,6 +90,8 @@ class ManageViewModel @Inject constructor(
     private val _withdrawCancelEvent = MutableSharedFlow<Unit>()
     val withdrawCancelEvent: SharedFlow<Unit> = _withdrawCancelEvent.asSharedFlow()
 
+    private val _navigateToUserProfileDetailEvent = MutableSharedFlow<String>()
+    val navigateToUserProfileDetailEvent: SharedFlow<String> = _navigateToUserProfileDetailEvent.asSharedFlow()
 
     fun fetchUserProfile() {
         viewModelScope.launch {
@@ -110,17 +113,21 @@ class ManageViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is Result.Error -> {
                             when {
                                 result.throwable.message == SERVER_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail_by_server_error))
                                 }
+
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
+
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
+
                                 else -> showToast(stringResourcesProvider.getString(R.string.user_profile_fetch_fail))
                             }
                         }
@@ -154,17 +161,21 @@ class ManageViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is Result.Error -> {
                             when {
                                 result.throwable.message == SERVER_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.statistics_fetch_fail_by_server_error))
                                 }
+
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     setInternetError(true)
                                 }
+
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
+
                                 else -> showToast(stringResourcesProvider.getString(R.string.statisticsInfo_fetch_fail))
                             }
                         }
@@ -193,17 +204,21 @@ class ManageViewModel @Inject constructor(
                                     )
                                 }
                             }
+
                             is Result.Error -> {
                                 when {
                                     result.throwable.message == SERVER_CONNECTION_ERROR -> {
                                         showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_server_error))
                                     }
+
                                     result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                         showToast(stringResourcesProvider.getString(R.string.noti_update_fail_by_internet_error))
                                     }
+
                                     result.statusCode == UNAUTHORIZED -> {
                                         navigateToExpireDialog()
                                     }
+
                                     else -> showToast(stringResourcesProvider.getString(R.string.noti_update_fail))
                                 }
                             }
@@ -227,15 +242,18 @@ class ManageViewModel @Inject constructor(
                             deleteAuthToken()
                             _logoutSuccessEvent.emit(Unit)
                         }
+
                         is Result.Error -> {
                             Timber.d(result.throwable)
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.logout_fail_by_internet_error))
                                 }
+
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
+
                                 else -> showToast(stringResourcesProvider.getString(R.string.logout_fail))
                             }
                         }
@@ -257,15 +275,18 @@ class ManageViewModel @Inject constructor(
                             deleteAuthToken()
                             _withdrawSuccessEvent.emit(Unit)
                         }
+
                         is Result.Error -> {
                             Timber.d(result.throwable)
                             when {
                                 result.throwable.message == INTERNET_CONNECTION_ERROR -> {
                                     showToast(stringResourcesProvider.getString(R.string.withdraw_fail_by_internet_error))
                                 }
+
                                 result.statusCode == UNAUTHORIZED -> {
                                     navigateToExpireDialog()
                                 }
+
                                 else -> showToast(stringResourcesProvider.getString(R.string.withdraw_fail))
                             }
                         }
@@ -308,6 +329,14 @@ class ManageViewModel @Inject constructor(
 
     private fun deleteAuthToken() = viewModelScope.launch {
         deleteAuthTokenUseCase()
+    }
+
+    fun navigateToUserProfileDetail() {
+        if (uiState.value.picture == null) return
+
+        viewModelScope.launch {
+            _navigateToUserProfileDetailEvent.emit(uiState.value.picture!!)
+        }
     }
 
     override fun retry() {

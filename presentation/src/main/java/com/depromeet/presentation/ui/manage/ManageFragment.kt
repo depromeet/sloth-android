@@ -47,7 +47,6 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
     private val viewModel: ManageViewModel by hiltNavGraphViewModels(R.id.nav_main)
 
     private var selectedDate: LocalDate? = null
-
     private val today = LocalDate.now()
 
     //TODO 한글로 텍스트를 변환
@@ -263,6 +262,13 @@ class ManageFragment : BaseFragment<FragmentManageBinding>(R.layout.fragment_man
             launch {
                 viewModel.navigateToSettingEvent.collect {
                     val action = ManageFragmentDirections.actionManageToSetting()
+                    findNavController().safeNavigate(action)
+                }
+            }
+
+            launch {
+                viewModel.navigateToUserProfileDetailEvent.collect { profileImageUri ->
+                    val action = ManageFragmentDirections.actionManageToUserProfileDetailFragment(profileImageUri)
                     findNavController().safeNavigate(action)
                 }
             }
