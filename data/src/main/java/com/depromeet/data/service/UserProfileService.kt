@@ -13,7 +13,7 @@ interface UserProfileService {
     suspend fun fetchUserProfile(): Response<UserProfileResponse>?
 
     @Multipart
-    @PATCH("api/member")
+    @PATCH("api/member/v2")
     suspend fun updateUserProfile(
         @Part("userProfileRequest") userProfileRequest: UserProfileRequest,
         @Part profileImageUrl: MultipartBody.Part?
