@@ -296,8 +296,9 @@
             app:argType="string" />
 
         <argument
-            android:name="previouse_profile_image_url"
-            app:argType="string" />
+            android:name="previous_profile_image_url"
+            app:argType="string"
+            app:nullable="true" />
 
         <action
             android:id="@+id/action_update_user_profile_dialog_to_manage"

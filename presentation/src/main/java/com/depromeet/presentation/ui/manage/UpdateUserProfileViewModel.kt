@@ -35,7 +35,8 @@ class UpdateUserProfileViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val previousUserName: String = checkNotNull(savedStateHandle[KEY_PREVIOUS_USER_NAME])
-    private val previousProfileImageUrl: String = savedStateHandle[KEY_PROFILE_IMAGE_URL] ?: DEFAULT_STRING_VALUE
+
+    val previousProfileImageUrl: String = savedStateHandle[KEY_PREVIOUS_PROFILE_IMAGE_URL] ?: DEFAULT_STRING_VALUE
 
     private val _updateUserProfileSuccess = MutableSharedFlow<Unit>()
     val updateUserProfileSuccess: SharedFlow<Unit> = _updateUserProfileSuccess.asSharedFlow()
@@ -88,7 +89,10 @@ class UpdateUserProfileViewModel @Inject constructor(
 
                             else -> {
                                 showToast(stringResourcesProvider.getString(R.string.user_profile_update_fail))
-                                Timber.tag("updateUserProfile").d(result.throwable)
+                                Timber.tag("updateUserProfileViewModel").d(result.throwable)
+                                result.throwable.stackTrace.forEach { stackTraceElement ->
+                                    Timber.d("$stackTraceElement")
+                                }
                             }
                         }
                     }
@@ -105,6 +109,7 @@ class UpdateUserProfileViewModel @Inject constructor(
         _profileImageUrl.value = profileImageUrl
     }
 
+    //TODO 프로필 사진이 추가된 관계로 Validation 로직도 combine 으로 변경해야 함
     fun setUpdateUserProfileValidation(isEnable: Boolean) {
         _updateUserProfileValidation.value = isEnable
     }
@@ -117,7 +122,8 @@ class UpdateUserProfileViewModel @Inject constructor(
 
     companion object {
         private const val KEY_PREVIOUS_USER_NAME = "previous_user_name"
+        private const val KEY_PREVIOUS_PROFILE_IMAGE_URL = "previous_profile_image_url"
         private const val KEY_USER_NAME = "user_name"
-        private const val KEY_PROFILE_IMAGE_URL = "previous_profile_image_url"
+        private const val KEY_PROFILE_IMAGE_URL = "profile_image_url"
     }
 }

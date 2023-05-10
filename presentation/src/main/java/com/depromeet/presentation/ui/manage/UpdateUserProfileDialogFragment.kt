@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
+//TODO 프로필 이미지를 없애는 기능도 만들어야 할 듯
+//TODO 프로필 변경 validation 수정 -> 프로필 사진만 변경 되어서 완료 버튼을 누를 수 있도록
 @AndroidEntryPoint
 class UpdateUserProfileDialogFragment :
     BaseDialogFragment<FragmentUpdateUserProfileDialogBinding>(R.layout.fragment_update_user_profile_dialog) {

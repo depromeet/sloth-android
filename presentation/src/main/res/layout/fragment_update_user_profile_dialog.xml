@@ -19,7 +19,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_user_profile_image"
-            imageUrl="@{vm.profileImageUrl}"
+            imageUrl="@{vm.previousProfileImageUrl}"
             onSingleClick="@{() -> vm.navigateToPhotoPicker()}"
             android:layout_width="80dp"
             android:layout_height="80dp"
