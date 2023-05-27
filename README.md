@@ -138,6 +138,7 @@
 - [ ] 프로필 사진 크롭 기능 지원 (진행중)
 - [ ] Manage 화면 내에 달력 구현 (진행중)
 - [ ] JWT 토큰 암호화 처리 
+- [ ] navigation graph 분리 
 
 
 # Screen
