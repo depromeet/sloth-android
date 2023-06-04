@@ -139,6 +139,7 @@
 - [ ] Manage 화면 내에 달력 구현 (진행중)
 - [ ] JWT 토큰 암호화 처리 
 - [ ] navigation graph 분리 
+- [ ] 아키텍처 구조 개선
 
 
 # Screen
