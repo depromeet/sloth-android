@@ -7,7 +7,7 @@
 디프만 10기 4조 신동빈센조 나나공 Android Repository
 
 - 구글 플레이스토어: https://play.google.com/store/apps/details?id=com.depromeet.sloth 
-  - 현재 개발 서버만 가동 중이며, 운영 서버는 비활성화되어 있습니다.
+  - 현재 서버가 중단되었습니다.
 - Disquiet: https://disquiet.io/product/나나공
 - Behance: https://www.behance.net/gallery/133424149/_?locale=ko_KR
 - Figma: [Android Design](https://www.figma.com/file/e4rZW5rErfa7LCkettW918/%5B%EB%94%94%ED%94%84%EB%A7%8C-10%EA%B8%B0%5D-%EB%82%98%EB%82%98%EA%B3%B5?node-id=496-1662&t=TmGwHP2mcORNkPdG-0)
